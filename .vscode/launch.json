@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "podku_flutter",
+            "cwd": "${workspaceFolder}/podku_flutter",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "podku_server",
+            "cwd": "${workspaceFolder}/podku_server",
+            "request": "launch",
+            "type": "dart",
+            "preLaunchTask": "docker_compose_up",
+            "program": "bin/main.dart",
+            "env": {
+                "SERVERPOD_PASSWORD_database": "o1HC88oNaNCxtIy1Sc6mzDtTormrmBRC"
+            },
+            "args": [
+                "--apply-migrations"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "podku (full stack)",
+            "configurations": [
+                "podku_server",
+                "podku_flutter"
+            ],
+            "presentation": {
+                "order": 1
+            }
+        }
+    ]
+}
