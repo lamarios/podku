@@ -514,6 +514,12 @@
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/integration_test/integration_test_macos/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/integration_test/integration_test_macos/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/integration_test/integration_test_macos/build" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_flutter/android" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_flutter/ios" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_flutter/linux" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_flutter/macos" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_flutter/web" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_flutter/windows" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

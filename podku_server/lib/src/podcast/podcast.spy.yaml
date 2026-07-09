@@ -1,0 +1,11 @@
+class: Podcast
+table: podcasts
+fields:
+  id: UuidValue, defaultModel=random
+  url: String
+  name: String
+  artworkUrl: String?
+  description: String?
+  author: String?
+  link: String?
+  episodes: List<Episode>?, relation

@@ -1,9 +1,12 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:flutter/material.dart';
+import 'package:podku_flutter/player/states/player.dart';
+import 'package:podku_flutter/podcasts/views/screens/podcasts.dart';
+import 'package:podku_flutter/router.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
-import 'screens/greetings_screen.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -44,10 +47,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Serverpod Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const MyHomePage(title: 'Serverpod Example'),
+    return BlocProvider(
+      create: (context) => PlayerCubit(PlayerState()),
+      child: MaterialApp.router(
+        routerConfig: router,
+      ),
     );
   }
 }
@@ -61,7 +65,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: const GreetingsScreen(),
+      body: const PodcastsScreen(),
       // To test authentication in this example app, uncomment the line below
       // and comment out the line above. This wraps the GreetingsScreen with a
       // SignInScreen, which automatically shows a sign-in UI when the user is

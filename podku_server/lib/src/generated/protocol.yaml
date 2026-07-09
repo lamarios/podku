@@ -9,5 +9,10 @@ emailIdp:
   - hasAccount:
 jwtRefresh:
   - refreshAccessToken:
-greeting:
-  - hello:
+episodes:
+  - getEpisodes:
+  - setProgress:
+podcast:
+  - getPodcasts:
+  - searchPodcasts:
+  - subscribeToPodcast:

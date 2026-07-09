@@ -1,0 +1,24 @@
+class: Episode
+table: episodes
+fields:
+  id: UuidValue, defaultModel=random
+  title: String,
+  description: String?,
+  audioUrl: String?
+  audioType: String?
+  audioLengthBytes: int?
+  pubDateMillis: int?
+  durationSeconds: int?
+  guid: String?
+  imageUrl: String?
+  seasonNumber: int?
+  episodeNumber: int?
+  episodeType: String?
+  explicit: bool,
+  link: String?
+  podcast: Podcast?, relation
+  progress: double, default=0.000
+indexes:
+  timeIndex:
+    fields: pubDateMillis
+

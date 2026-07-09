@@ -16,8 +16,10 @@ import 'package:serverpod_client/serverpod_client.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
-import 'package:podku_client/src/protocol/greetings/greeting.dart' as _i5;
-import 'protocol.dart' as _i6;
+import 'package:podku_client/src/protocol/podcast/episode.dart' as _i5;
+import 'package:podku_client/src/protocol/podcast/podcast.dart' as _i6;
+import 'package:podku_client/src/protocol/podcast/search_result.dart' as _i7;
+import 'protocol.dart' as _i8;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -240,21 +242,54 @@ class EndpointJwtRefresh extends _i4.EndpointRefreshJwtTokens {
   );
 }
 
-/// This is an example endpoint that returns a greeting message through
-/// its [hello] method.
 /// {@category Endpoint}
-class EndpointGreeting extends _i2.EndpointRef {
-  EndpointGreeting(_i2.EndpointCaller caller) : super(caller);
+class EndpointEpisodes extends _i2.EndpointRef {
+  EndpointEpisodes(_i2.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'greeting';
+  String get name => 'episodes';
 
-  /// Returns a personalized greeting message: "Hello {name}".
-  _i3.Future<_i5.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i5.Greeting>(
-        'greeting',
-        'hello',
-        {'name': name},
+  _i3.Future<List<_i5.Episode>> getEpisodes(int? after) =>
+      caller.callServerEndpoint<List<_i5.Episode>>(
+        'episodes',
+        'getEpisodes',
+        {'after': after},
+      );
+
+  _i3.Future<void> setProgress(_i5.Episode episode) =>
+      caller.callServerEndpoint<void>(
+        'episodes',
+        'setProgress',
+        {'episode': episode},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointPodcast extends _i2.EndpointRef {
+  EndpointPodcast(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'podcast';
+
+  _i3.Future<List<_i6.Podcast>> getPodcasts() =>
+      caller.callServerEndpoint<List<_i6.Podcast>>(
+        'podcast',
+        'getPodcasts',
+        {},
+      );
+
+  _i3.Future<List<_i7.SearchResult>> searchPodcasts(String query) =>
+      caller.callServerEndpoint<List<_i7.SearchResult>>(
+        'podcast',
+        'searchPodcasts',
+        {'query': query},
+      );
+
+  _i3.Future<void> subscribeToPodcast(_i7.SearchResult result) =>
+      caller.callServerEndpoint<void>(
+        'podcast',
+        'subscribeToPodcast',
+        {'result': result},
       );
 }
 
@@ -289,7 +324,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i6.Protocol(),
+         _i8.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -300,7 +335,8 @@ class Client extends _i2.ServerpodClientShared {
        ) {
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
-    greeting = EndpointGreeting(this);
+    episodes = EndpointEpisodes(this);
+    podcast = EndpointPodcast(this);
     modules = Modules(this);
   }
 
@@ -308,7 +344,9 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointJwtRefresh jwtRefresh;
 
-  late final EndpointGreeting greeting;
+  late final EndpointEpisodes episodes;
+
+  late final EndpointPodcast podcast;
 
   late final Modules modules;
 
@@ -316,7 +354,8 @@ class Client extends _i2.ServerpodClientShared {
   Map<String, _i2.EndpointRef> get endpointRefLookup => {
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
-    'greeting': greeting,
+    'episodes': episodes,
+    'podcast': podcast,
   };
 
   @override

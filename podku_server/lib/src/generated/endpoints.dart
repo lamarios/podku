@@ -13,11 +13,14 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../auth/email_idp_endpoint.dart' as _i2;
 import '../auth/jwt_refresh_endpoint.dart' as _i3;
-import '../greetings/greeting_endpoint.dart' as _i4;
+import '../episodes/episodes_endoint.dart' as _i4;
+import '../podcast/podcast_endpoint.dart' as _i5;
+import 'package:podku_server/src/generated/podcast/episode.dart' as _i6;
+import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i5;
+    as _i8;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i6;
+    as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -35,10 +38,16 @@ class Endpoints extends _i1.EndpointDispatch {
           'jwtRefresh',
           null,
         ),
-      'greeting': _i4.GreetingEndpoint()
+      'episodes': _i4.EpisodesEndpoint()
         ..initialize(
           server,
-          'greeting',
+          'episodes',
+          null,
+        ),
+      'podcast': _i5.PodcastEndpoint()
+        ..initialize(
+          server,
+          'podcast',
           null,
         ),
     };
@@ -246,15 +255,69 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
+    connectors['episodes'] = _i1.EndpointConnector(
+      name: 'episodes',
+      endpoint: endpoints['episodes']!,
       methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
+        'getEpisodes': _i1.MethodConnector(
+          name: 'getEpisodes',
           params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
+            'after': _i1.ParameterDescription(
+              name: 'after',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['episodes'] as _i4.EpisodesEndpoint).getEpisodes(
+                    session,
+                    params['after'],
+                  ),
+        ),
+        'setProgress': _i1.MethodConnector(
+          name: 'setProgress',
+          params: {
+            'episode': _i1.ParameterDescription(
+              name: 'episode',
+              type: _i1.getType<_i6.Episode>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['episodes'] as _i4.EpisodesEndpoint).setProgress(
+                    session,
+                    params['episode'],
+                  ),
+        ),
+      },
+    );
+    connectors['podcast'] = _i1.EndpointConnector(
+      name: 'podcast',
+      endpoint: endpoints['podcast']!,
+      methodConnectors: {
+        'getPodcasts': _i1.MethodConnector(
+          name: 'getPodcasts',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['podcast'] as _i5.PodcastEndpoint)
+                  .getPodcasts(session),
+        ),
+        'searchPodcasts': _i1.MethodConnector(
+          name: 'searchPodcasts',
+          params: {
+            'query': _i1.ParameterDescription(
+              name: 'query',
               type: _i1.getType<String>(),
               nullable: false,
             ),
@@ -263,16 +326,36 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['greeting'] as _i4.GreetingEndpoint).hello(
-                session,
-                params['name'],
-              ),
+              ) async =>
+                  (endpoints['podcast'] as _i5.PodcastEndpoint).searchPodcasts(
+                    session,
+                    params['query'],
+                  ),
+        ),
+        'subscribeToPodcast': _i1.MethodConnector(
+          name: 'subscribeToPodcast',
+          params: {
+            'result': _i1.ParameterDescription(
+              name: 'result',
+              type: _i1.getType<_i7.SearchResult>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['podcast'] as _i5.PodcastEndpoint)
+                  .subscribeToPodcast(
+                    session,
+                    params['result'],
+                  ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i5.Endpoints()
+    modules['serverpod_auth_idp'] = _i8.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i6.Endpoints()
+    modules['serverpod_auth_core'] = _i9.Endpoints()
       ..initializeEndpoints(server);
   }
 }

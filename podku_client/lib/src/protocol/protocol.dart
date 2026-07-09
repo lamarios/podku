@@ -11,12 +11,19 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'greetings/greeting.dart' as _i2;
+import 'podcast/episode.dart' as _i2;
+import 'podcast/podcast.dart' as _i3;
+import 'podcast/search_result.dart' as _i4;
+import 'package:podku_client/src/protocol/podcast/episode.dart' as _i5;
+import 'package:podku_client/src/protocol/podcast/podcast.dart' as _i6;
+import 'package:podku_client/src/protocol/podcast/search_result.dart' as _i7;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i3;
+    as _i8;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i4;
-export 'greetings/greeting.dart';
+    as _i9;
+export 'podcast/episode.dart';
+export 'podcast/podcast.dart';
+export 'podcast/search_result.dart';
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -53,24 +60,62 @@ class Protocol extends _i1.SerializationManager {
       }
     }
 
-    if (t == _i2.Greeting) {
-      return _i2.Greeting.fromJson(data) as T;
+    if (t == _i2.Episode) {
+      return _i2.Episode.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i2.Greeting?>()) {
-      return (data != null ? _i2.Greeting.fromJson(data) : null) as T;
+    if (t == _i3.Podcast) {
+      return _i3.Podcast.fromJson(data) as T;
+    }
+    if (t == _i4.SearchResult) {
+      return _i4.SearchResult.fromJson(data) as T;
+    }
+    if (t == _i1.getType<_i2.Episode?>()) {
+      return (data != null ? _i2.Episode.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i3.Podcast?>()) {
+      return (data != null ? _i3.Podcast.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i4.SearchResult?>()) {
+      return (data != null ? _i4.SearchResult.fromJson(data) : null) as T;
+    }
+    if (t == List<_i2.Episode>) {
+      return (data as List).map((e) => deserialize<_i2.Episode>(e)).toList()
+          as T;
+    }
+    if (t == _i1.getType<List<_i2.Episode>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<_i2.Episode>(e)).toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i5.Episode>) {
+      return (data as List).map((e) => deserialize<_i5.Episode>(e)).toList()
+          as T;
+    }
+    if (t == List<_i6.Podcast>) {
+      return (data as List).map((e) => deserialize<_i6.Podcast>(e)).toList()
+          as T;
+    }
+    if (t == List<_i7.SearchResult>) {
+      return (data as List)
+              .map((e) => deserialize<_i7.SearchResult>(e))
+              .toList()
+          as T;
     }
     try {
-      return _i3.Protocol().deserialize<T>(data, t);
+      return _i8.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i4.Protocol().deserialize<T>(data, t);
+      return _i9.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i2.Greeting => 'Greeting',
+      _i2.Episode => 'Episode',
+      _i3.Podcast => 'Podcast',
+      _i4.SearchResult => 'SearchResult',
       _ => null,
     };
   }
@@ -85,14 +130,18 @@ class Protocol extends _i1.SerializationManager {
     }
 
     switch (data) {
-      case _i2.Greeting():
-        return 'Greeting';
+      case _i2.Episode():
+        return 'Episode';
+      case _i3.Podcast():
+        return 'Podcast';
+      case _i4.SearchResult():
+        return 'SearchResult';
     }
-    className = _i3.Protocol().getClassNameForObject(data);
+    className = _i8.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i4.Protocol().getClassNameForObject(data);
+    className = _i9.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -105,16 +154,22 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'Greeting') {
-      return deserialize<_i2.Greeting>(data['data']);
+    if (dataClassName == 'Episode') {
+      return deserialize<_i2.Episode>(data['data']);
+    }
+    if (dataClassName == 'Podcast') {
+      return deserialize<_i3.Podcast>(data['data']);
+    }
+    if (dataClassName == 'SearchResult') {
+      return deserialize<_i4.SearchResult>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i3.Protocol().deserializeByClassName(data);
+      return _i8.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i4.Protocol().deserializeByClassName(data);
+      return _i9.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -129,10 +184,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i3.Protocol().mapRecordToJson(record);
+      return _i8.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i4.Protocol().mapRecordToJson(record);
+      return _i9.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

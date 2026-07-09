@@ -1,0 +1,8 @@
+class: SearchResult
+fields:
+  artistName: String
+  feedUrl: String?
+  artworkUrl600: String?
+  trackViewUrl: String?
+  trackName: String?
+  collectionName: String?
