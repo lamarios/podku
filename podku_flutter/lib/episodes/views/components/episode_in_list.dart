@@ -13,6 +13,7 @@ class EpisodeInList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('episode rebuild');
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     return Padding(

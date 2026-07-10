@@ -16,3 +16,4 @@ podcast:
   - getPodcasts:
   - searchPodcasts:
   - subscribeToPodcast:
+  - getPodcastImage:

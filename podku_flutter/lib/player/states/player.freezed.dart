@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerState {
 
- Episode? get episode;
+ Episode? get episode; Duration get position; Duration get bufferPosition; bool get playing; bool get showMiniPlayer;
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PlayerStateCopyWith<PlayerState> get copyWith => _$PlayerStateCopyWithImpl<Play
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerState&&(identical(other.episode, episode) || other.episode == episode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerState&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,episode);
+int get hashCode => Object.hash(runtimeType,episode,position,bufferPosition,playing,showMiniPlayer);
 
 @override
 String toString() {
-  return 'PlayerState(episode: $episode)';
+  return 'PlayerState(episode: $episode, position: $position, bufferPosition: $bufferPosition, playing: $playing, showMiniPlayer: $showMiniPlayer)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PlayerStateCopyWith<$Res>  {
   factory $PlayerStateCopyWith(PlayerState value, $Res Function(PlayerState) _then) = _$PlayerStateCopyWithImpl;
 @useResult
 $Res call({
- Episode? episode
+ Episode? episode, Duration position, Duration bufferPosition, bool playing, bool showMiniPlayer
 });
 
 
@@ -62,10 +62,14 @@ class _$PlayerStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? episode = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? playing = null,Object? showMiniPlayer = null,}) {
   return _then(_self.copyWith(
 episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
-as Episode?,
+as Episode?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Duration,bufferPosition: null == bufferPosition ? _self.bufferPosition : bufferPosition // ignore: cast_nullable_to_non_nullable
+as Duration,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
+as bool,showMiniPlayer: null == showMiniPlayer ? _self.showMiniPlayer : showMiniPlayer // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -147,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Episode? episode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Episode? episode,  Duration position,  Duration bufferPosition,  bool playing,  bool showMiniPlayer)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlayerState() when $default != null:
-return $default(_that.episode);case _:
+return $default(_that.episode,_that.position,_that.bufferPosition,_that.playing,_that.showMiniPlayer);case _:
   return orElse();
 
 }
@@ -168,10 +172,10 @@ return $default(_that.episode);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Episode? episode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Episode? episode,  Duration position,  Duration bufferPosition,  bool playing,  bool showMiniPlayer)  $default,) {final _that = this;
 switch (_that) {
 case _PlayerState():
-return $default(_that.episode);}
+return $default(_that.episode,_that.position,_that.bufferPosition,_that.playing,_that.showMiniPlayer);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -185,10 +189,10 @@ return $default(_that.episode);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Episode? episode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Episode? episode,  Duration position,  Duration bufferPosition,  bool playing,  bool showMiniPlayer)?  $default,) {final _that = this;
 switch (_that) {
 case _PlayerState() when $default != null:
-return $default(_that.episode);case _:
+return $default(_that.episode,_that.position,_that.bufferPosition,_that.playing,_that.showMiniPlayer);case _:
   return null;
 
 }
@@ -200,10 +204,14 @@ return $default(_that.episode);case _:
 
 
 class _PlayerState implements PlayerState {
-  const _PlayerState({this.episode});
+  const _PlayerState({this.episode, this.position = const Duration(seconds: 0), this.bufferPosition = const Duration(seconds: 0), this.playing = false, this.showMiniPlayer = true});
   
 
 @override final  Episode? episode;
+@override@JsonKey() final  Duration position;
+@override@JsonKey() final  Duration bufferPosition;
+@override@JsonKey() final  bool playing;
+@override@JsonKey() final  bool showMiniPlayer;
 
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
@@ -215,16 +223,16 @@ _$PlayerStateCopyWith<_PlayerState> get copyWith => __$PlayerStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerState&&(identical(other.episode, episode) || other.episode == episode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerState&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,episode);
+int get hashCode => Object.hash(runtimeType,episode,position,bufferPosition,playing,showMiniPlayer);
 
 @override
 String toString() {
-  return 'PlayerState(episode: $episode)';
+  return 'PlayerState(episode: $episode, position: $position, bufferPosition: $bufferPosition, playing: $playing, showMiniPlayer: $showMiniPlayer)';
 }
 
 
@@ -235,7 +243,7 @@ abstract mixin class _$PlayerStateCopyWith<$Res> implements $PlayerStateCopyWith
   factory _$PlayerStateCopyWith(_PlayerState value, $Res Function(_PlayerState) _then) = __$PlayerStateCopyWithImpl;
 @override @useResult
 $Res call({
- Episode? episode
+ Episode? episode, Duration position, Duration bufferPosition, bool playing, bool showMiniPlayer
 });
 
 
@@ -252,10 +260,14 @@ class __$PlayerStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? episode = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? playing = null,Object? showMiniPlayer = null,}) {
   return _then(_PlayerState(
 episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
-as Episode?,
+as Episode?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Duration,bufferPosition: null == bufferPosition ? _self.bufferPosition : bufferPosition // ignore: cast_nullable_to_non_nullable
+as Duration,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
+as bool,showMiniPlayer: null == showMiniPlayer ? _self.showMiniPlayer : showMiniPlayer // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

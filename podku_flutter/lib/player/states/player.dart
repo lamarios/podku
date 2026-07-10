@@ -14,6 +14,7 @@ class PlayerCubit extends Cubit<PlayerState> {
     player.playerStateStream.listen((event) => onPlayerUpdate(event));
     player.playbackEventStream.listen((event) => onPlaybackEvent(event));
     player.positionStream.listen((event) => updateProgress(event));
+    player.bufferedPositionStream.listen((event) => emit(state.copyWith(bufferPosition: event)));
   }
 
   @override
@@ -25,11 +26,15 @@ class PlayerCubit extends Cubit<PlayerState> {
   Future<void> updateProgress(Duration duration) async {
     if (player.duration != null && state.episode != null) {
       final progress = duration.inSeconds / player.duration!.inSeconds;
+      emit(
+        state.copyWith(
+          position: duration,
+        ),
+      );
       EasyThrottle.throttle(
         'progress-update',
         Duration(seconds: 5),
         () async {
-          emit(state.copyWith(episode: state.episode!.copyWith(progress: progress)));
           await client.episodes.setProgress(state.episode!.copyWith(progress: progress));
         },
       );
@@ -38,7 +43,7 @@ class PlayerCubit extends Cubit<PlayerState> {
 
   Future<void> playEpisode(Episode episode) async {
     if (episode.audioUrl != null) {
-      emit(state.copyWith(episode: episode));
+      emit(state.copyWith(episode: episode, bufferPosition: Duration.zero, position: Duration.zero));
       if (player.playing) {
         player.stop();
       }
@@ -49,7 +54,12 @@ class PlayerCubit extends Cubit<PlayerState> {
 
   void onPlaybackEvent(audio.PlaybackEvent playbackEvent) {}
 
+  void setMiniPlayer(bool show) {
+    emit(state.copyWith(showMiniPlayer: show));
+  }
+
   void onPlayerUpdate(audio.PlayerState state) {
+    emit(this.state.copyWith(playing: state.playing));
     /*
     state.
     switch(state.processingState){
@@ -57,9 +67,20 @@ class PlayerCubit extends Cubit<PlayerState> {
     }
 */
   }
+
+  void skip(int seconds){
+    player.seek(state.position + Duration(seconds: seconds));
+  }
+
 }
 
 @freezed
 sealed class PlayerState with _$PlayerState {
-  const factory PlayerState({Episode? episode}) = _PlayerState;
+  const factory PlayerState({
+    Episode? episode,
+    @Default(Duration(seconds: 0)) Duration position,
+    @Default(Duration(seconds: 0)) Duration bufferPosition,
+    @Default(false) bool playing,
+    @Default(true) bool showMiniPlayer,
+  }) = _PlayerState;
 }

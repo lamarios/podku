@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:podku_client/podku_client.dart';
+import 'package:podku_flutter/main.dart';
+import 'package:podku_flutter/utils/views/components/simple_cubit.dart';
 
 class PodcastImage extends StatelessWidget {
   final Podcast podcast;
@@ -15,11 +19,11 @@ class PodcastImage extends StatelessWidget {
     return ClipRRect(
       borderRadius: .circular(borderRadius ?? 0),
       child: CachedNetworkImage(
-        imageUrl: podcast.artworkUrl ?? '',
+        imageUrl: '$serverUrl/podcasts/${podcast.id.uuid}/image',
         width: width,
         height: height,
-        imageRenderMethodForWeb: .HttpGet,
         fit: .cover,
+        imageRenderMethodForWeb: .HttpGet,
       ),
     );
   }

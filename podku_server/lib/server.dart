@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:podku_server/src/api/redirect_router.dart';
+import 'package:podku_server/src/podcast/podcast_route.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
@@ -11,8 +13,23 @@ import 'src/web/routes/root.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
+
+  // CORS.
+  final headers = Headers.build((h) {
+    h.accessControlAllowOrigin = AccessControlAllowOriginHeader.wildcard();
+    h.accessControlAllowMethods = AccessControlAllowMethodsHeader.methods([
+      Method.get,
+      Method.post,
+      Method.put,
+      Method.delete,
+      Method.options,
+      Method.head,
+    ]);
+    h.accessControlAllowHeaders = AccessControlAllowHeadersHeader.wildcard();
+  });
   // Initialize Serverpod and connect it with your generated code.
-  final pod = Serverpod(args, Protocol(), Endpoints());
+  final pod = Serverpod(args, Protocol(), Endpoints(), httpResponseHeaders: headers, httpOptionsResponseHeaders: headers);
+
 
   // Initialize authentication services for the server.
   // Token managers will be used to validate and issue authentication keys,
@@ -35,6 +52,8 @@ void run(List<String> args) async {
   // These are used by the default page.
   pod.webServer.addRoute(RootRoute(), '/');
   pod.webServer.addRoute(RootRoute(), '/index.html');
+  pod.webServer.addRoute(PodcastRoute(), '/podcasts/:podcastId/image');
+  pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
 
   // Serve all files in the web/static relative directory under /.
   // These are used by the default web page.

@@ -19,6 +19,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'package:podku_server/src/generated/podcast/episode.dart' as _i5;
 import 'package:podku_server/src/generated/podcast/podcast.dart' as _i6;
 import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
+import 'dart:typed_data' as _i8;
 import 'package:podku_server/src/generated/protocol.dart';
 import 'package:podku_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -654,6 +655,37 @@ class _PodcastEndpoint {
                   _localCallContext.arguments,
                 )
                 as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i8.ByteData?> getPodcastImage(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.Podcast podcast,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'podcast',
+            method: 'getPodcastImage',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'podcast',
+          methodName: 'getPodcastImage',
+          parameters: _i1.testObjectToJson({'podcast': podcast}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i8.ByteData?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -7,6 +7,7 @@ const double pu6 = pu*6;
 const double pu7 = pu*7;
 const double pu8 = pu*8;
 
+const animationDuration = Duration(milliseconds: 250);
 
 
 String printDuration(Duration duration) {

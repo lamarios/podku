@@ -1,6 +1,9 @@
+
+import 'dart:typed_data';
+
 import 'package:podku_server/src/podcast/podcast_parser.dart';
 import 'package:podku_server/src/podcast/search/search.dart';
-
+import 'package:http/http.dart' as http;
 import '../generated/protocol.dart';
 import 'package:serverpod/server.dart';
 
@@ -31,4 +34,15 @@ class PodcastEndpoint extends Endpoint {
       }
     }
   }
+
+  Future<ByteData?> getPodcastImage(Session session, Podcast podcast) async {
+    if(podcast.artworkUrl == null){
+      return null;
+    }
+    final response = await http.get(Uri.parse(podcast.artworkUrl!));
+
+    var bodyBytes = response.bodyBytes;
+    return bodyBytes.buffer.asByteData();
+  }
+
 }

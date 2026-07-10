@@ -17,7 +17,7 @@ class EpisodeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final e = state.episodes[index];
 
-              return EpisodeInList(key: ValueKey(e), episode: e);
+              return EpisodeInList(key: ValueKey(e.id.uuid), episode: e);
             },
           );
         },

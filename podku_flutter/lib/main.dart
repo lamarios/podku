@@ -31,9 +31,10 @@ void main() async {
   //
   // Otherwise, the server URL is fetched from the assets/config.json file or
   // defaults to http://$localhost:8080/ if not found.
-  final serverUrl = await getServerUrl();
+  serverUrl = 'http://localhost:8082';
+  final apiUrl = '$serverUrl/api';
 
-  client = Client(serverUrl)
+  client = Client(apiUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();
 
