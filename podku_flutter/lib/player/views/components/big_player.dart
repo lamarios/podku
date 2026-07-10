@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku_flutter/player/states/player.dart';
 import 'package:podku_flutter/player/views/components/play_pause_button.dart';
 import 'package:podku_flutter/player/views/components/progress_bar.dart';
@@ -24,9 +25,14 @@ class BigPlayer extends StatelessWidget {
       body: Builder(
         builder: (context) {
           final episode = context.select((PlayerCubit c) => c.state.episode);
+          final loading = context.select((PlayerCubit c) => c.state.loading);
           return episode == null
               ? Center(
                   child: Text('nothing is playing'),
+                )
+              : loading
+              ? Center(
+                  child: LoadingIndicator(),
                 )
               : Column(
                   crossAxisAlignment: .stretch,
@@ -42,7 +48,7 @@ class BigPlayer extends StatelessWidget {
                     Gap(pu4),
                     Text(
                       episode!.title,
-                      style: textTheme.displaySmall,
+                      style: textTheme.titleLarge,
                       overflow: .ellipsis,
                       maxLines: 3,
                       textAlign: .center,

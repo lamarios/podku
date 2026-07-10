@@ -10,17 +10,13 @@ class PodcastRoute extends Route {
   @override
   Future<Result> handleCall(Session session, Request request) async {
     if (request.method == Method.get) {
-      final podcastId = request.pathParameters.raw[#podcastId];
-      if (podcastId == null) {
-        return Response.badRequest();
-      }
-      final podcast = await Podcast.db.findById(session, UuidValue.fromString(podcastId));
+        final artUrl = request.queryParameters.raw['art'];
 
-      if (podcast == null || podcast.artworkUrl == null) {
+      if (artUrl== null) {
         return Response.notFound();
       }
 
-      final response = await http.get(Uri.parse(podcast.artworkUrl!));
+      final response = await http.get(Uri.parse(artUrl));
 
       var bodyBytes = response.bodyBytes;
 

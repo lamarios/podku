@@ -1,12 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:podku_client/podku_client.dart';
-import 'package:flutter/material.dart';
 import 'package:podku_flutter/player/states/player.dart';
 import 'package:podku_flutter/podcasts/views/screens/podcasts.dart';
 import 'package:podku_flutter/router.dart';
-import 'package:serverpod_flutter/serverpod_flutter.dart';
-import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
-
+import 'package:podku_flutter/server/states/server.dart';
+import 'package:podku_flutter/utils.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -15,30 +14,14 @@ import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 /// production servers.
 /// In a larger app, you may want to use the dependency injection of your choice
 /// instead of using a global client object. This is just a simple example.
-late final Client client;
 
-late String serverUrl;
+Client get client => getIt.get<ServerCubit>().client!;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // When you are running the app on a physical device, you need to set the
-  // server URL to the IP address of your computer. You can find the IP
-  // address by running `ipconfig` on Windows or `ifconfig` on Mac/Linux.
-  //
-  // You can set the variable when running or building your app like this:
-  // E.g. `flutter run --dart-define=SERVER_URL=https://api.example.com/`.
-  //
-  // Otherwise, the server URL is fetched from the assets/config.json file or
-  // defaults to http://$localhost:8080/ if not found.
-  serverUrl = 'http://localhost:8082';
-  final apiUrl = '$serverUrl/api';
-
-  client = Client(apiUrl)
-    ..connectivityMonitor = FlutterConnectivityMonitor()
-    ..authSessionManager = FlutterAuthSessionManager();
-
-  client.auth.initialize();
+  final ServerCubit serverCubit = ServerCubit(ServerState());
+  getIt.registerSingleton(serverCubit);
 
   runApp(const MyApp());
 }
@@ -48,10 +31,51 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PlayerCubit(PlayerState()),
-      child: MaterialApp.router(
-        routerConfig: router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt.get<ServerCubit>()),
+        BlocProvider(
+          create: (context) => PlayerCubit(PlayerState()),
+        ),
+      ],
+      child: BlocBuilder<ServerCubit, ServerState>(
+        builder: (context, state) {
+          return state.initialized
+              ? MaterialApp.router(
+                  routerConfig: router(state.serverUrl),
+                  darkTheme: ThemeData(
+                    colorScheme: .fromSeed(
+                      seedColor: appColor,
+                      brightness: Brightness.dark,
+                    ),
+                  ),
+                  themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
+                  theme: ThemeData(
+                    // This is the theme of your application.
+                    //
+                    // TRY THIS: Try running your application with "flutter run". You'll see
+                    // the application has a purple toolbar. Then, without quitting the app,
+                    // try changing the seedColor in the colorScheme below to Colors.green
+                    // and then invoke "hot reload" (save your changes or press the "hot
+                    // reload" button in a Flutter-supported IDE, or press "r" if you used
+                    // the command line to start the app).
+                    //
+                    // Notice that the counter didn't reset back to zero; the application
+                    // state is not lost during the reload. To reset the state, use hot
+                    // restart instead.
+                    //
+                    // This works for code too, not just values: Most code changes can be
+                    // tested with just a hot reload.
+                    colorScheme: .fromSeed(
+                      seedColor: appColor,
+                      surface: Colors.white,
+                      surfaceContainerHigh: Color.fromARGB(255, 233, 234, 237),
+                      onSurface: Colors.black,
+                    ),
+                  ),
+                )
+              : SizedBox.shrink();
+        },
       ),
     );
   }

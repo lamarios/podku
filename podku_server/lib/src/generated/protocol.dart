@@ -144,12 +144,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'double',
           columnDefault: '0.000',
         ),
-        _i2.ColumnDefinition(
-          name: '_podcastsEpisodesPodcastsId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: true,
-          dartType: 'UuidValue?',
-        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -159,17 +153,7 @@ class Protocol extends _i1.SerializationManagerServer {
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'episodes_fk_1',
-          columns: ['_podcastsEpisodesPodcastsId'],
-          referenceTable: 'podcasts',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
           matchType: null,
         ),
       ],

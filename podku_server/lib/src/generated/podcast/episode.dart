@@ -37,8 +37,7 @@ abstract class Episode
     this.podcast,
     double? progress,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       progress = progress ?? 0.0,
-       _podcastsEpisodesPodcastsId = null;
+       progress = progress ?? 0.0;
 
   factory Episode({
     _i1.UuidValue? id,
@@ -62,7 +61,7 @@ abstract class Episode
   }) = _EpisodeImpl;
 
   factory Episode.fromJson(Map<String, dynamic> jsonSerialization) {
-    return EpisodeImplicit._(
+    return Episode(
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
@@ -89,12 +88,6 @@ abstract class Episode
               jsonSerialization['podcast'],
             ),
       progress: (jsonSerialization['progress'] as num?)?.toDouble(),
-      $_podcastsEpisodesPodcastsId:
-          jsonSerialization['_podcastsEpisodesPodcastsId'] == null
-          ? null
-          : _i1.UuidValueJsonExtension.fromJson(
-              jsonSerialization['_podcastsEpisodesPodcastsId'],
-            ),
     );
   }
 
@@ -138,8 +131,6 @@ abstract class Episode
   _i2.Podcast? podcast;
 
   double progress;
-
-  final _i1.UuidValue? _podcastsEpisodesPodcastsId;
 
   @override
   _i1.Table<_i1.UuidValue> get table => t;
@@ -189,8 +180,6 @@ abstract class Episode
       'podcastId': podcastId.toJson(),
       if (podcast != null) 'podcast': podcast?.toJson(),
       'progress': progress,
-      if (_podcastsEpisodesPodcastsId != null)
-        '_podcastsEpisodesPodcastsId': _podcastsEpisodesPodcastsId.toJson(),
     };
   }
 
@@ -316,7 +305,7 @@ class _EpisodeImpl extends Episode {
     Object? podcast = _Undefined,
     double? progress,
   }) {
-    return EpisodeImplicit._(
+    return Episode(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description is String? ? description : this.description,
@@ -339,83 +328,8 @@ class _EpisodeImpl extends Episode {
       podcastId: podcastId ?? this.podcastId,
       podcast: podcast is _i2.Podcast? ? podcast : this.podcast?.copyWith(),
       progress: progress ?? this.progress,
-      $_podcastsEpisodesPodcastsId: this._podcastsEpisodesPodcastsId,
     );
   }
-}
-
-class EpisodeImplicit extends _EpisodeImpl {
-  EpisodeImplicit._({
-    _i1.UuidValue? id,
-    required String title,
-    String? description,
-    String? audioUrl,
-    String? audioType,
-    int? audioLengthBytes,
-    int? pubDateMillis,
-    int? durationSeconds,
-    String? guid,
-    String? imageUrl,
-    int? seasonNumber,
-    int? episodeNumber,
-    String? episodeType,
-    required bool explicit,
-    String? link,
-    required _i1.UuidValue podcastId,
-    _i2.Podcast? podcast,
-    double? progress,
-    _i1.UuidValue? $_podcastsEpisodesPodcastsId,
-  }) : _podcastsEpisodesPodcastsId = $_podcastsEpisodesPodcastsId,
-       super(
-         id: id,
-         title: title,
-         description: description,
-         audioUrl: audioUrl,
-         audioType: audioType,
-         audioLengthBytes: audioLengthBytes,
-         pubDateMillis: pubDateMillis,
-         durationSeconds: durationSeconds,
-         guid: guid,
-         imageUrl: imageUrl,
-         seasonNumber: seasonNumber,
-         episodeNumber: episodeNumber,
-         episodeType: episodeType,
-         explicit: explicit,
-         link: link,
-         podcastId: podcastId,
-         podcast: podcast,
-         progress: progress,
-       );
-
-  factory EpisodeImplicit(
-    Episode episode, {
-    _i1.UuidValue? $_podcastsEpisodesPodcastsId,
-  }) {
-    return EpisodeImplicit._(
-      id: episode.id,
-      title: episode.title,
-      description: episode.description,
-      audioUrl: episode.audioUrl,
-      audioType: episode.audioType,
-      audioLengthBytes: episode.audioLengthBytes,
-      pubDateMillis: episode.pubDateMillis,
-      durationSeconds: episode.durationSeconds,
-      guid: episode.guid,
-      imageUrl: episode.imageUrl,
-      seasonNumber: episode.seasonNumber,
-      episodeNumber: episode.episodeNumber,
-      episodeType: episode.episodeType,
-      explicit: episode.explicit,
-      link: episode.link,
-      podcastId: episode.podcastId,
-      podcast: episode.podcast,
-      progress: episode.progress,
-      $_podcastsEpisodesPodcastsId: $_podcastsEpisodesPodcastsId,
-    );
-  }
-
-  @override
-  final _i1.UuidValue? _podcastsEpisodesPodcastsId;
 }
 
 class EpisodeUpdateTable extends _i1.UpdateTable<EpisodeTable> {
@@ -502,13 +416,6 @@ class EpisodeUpdateTable extends _i1.UpdateTable<EpisodeTable> {
     table.progress,
     value,
   );
-
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> $_podcastsEpisodesPodcastsId(
-    _i1.UuidValue? value,
-  ) => _i1.ColumnValue(
-    table.$_podcastsEpisodesPodcastsId,
-    value,
-  );
 }
 
 class EpisodeTable extends _i1.Table<_i1.UuidValue> {
@@ -579,10 +486,6 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
       this,
       hasDefault: true,
     );
-    $_podcastsEpisodesPodcastsId = _i1.ColumnUuid(
-      '_podcastsEpisodesPodcastsId',
-      this,
-    );
   }
 
   late final EpisodeUpdateTable updateTable;
@@ -621,8 +524,6 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnDouble progress;
 
-  late final _i1.ColumnUuid $_podcastsEpisodesPodcastsId;
-
   _i2.PodcastTable get podcast {
     if (_podcast != null) return _podcast!;
     _podcast = _i1.createRelationTable(
@@ -638,28 +539,6 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
 
   @override
   List<_i1.Column> get columns => [
-    id,
-    title,
-    description,
-    audioUrl,
-    audioType,
-    audioLengthBytes,
-    pubDateMillis,
-    durationSeconds,
-    guid,
-    imageUrl,
-    seasonNumber,
-    episodeNumber,
-    episodeType,
-    explicit,
-    link,
-    podcastId,
-    progress,
-    $_podcastsEpisodesPodcastsId,
-  ];
-
-  @override
-  List<_i1.Column> get managedColumns => [
     id,
     title,
     description,

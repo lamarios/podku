@@ -11,9 +11,10 @@ jwtRefresh:
   - refreshAccessToken:
 episodes:
   - getEpisodes:
+  - getEpisode:
   - setProgress:
 podcast:
   - getPodcasts:
   - searchPodcasts:
   - subscribeToPodcast:
-  - getPodcastImage:
+  - getPodcast:

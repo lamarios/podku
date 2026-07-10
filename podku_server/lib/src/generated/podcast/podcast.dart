@@ -295,7 +295,7 @@ class PodcastTable extends _i1.Table<_i1.UuidValue> {
     ___episodes = _i1.createRelationTable(
       relationFieldName: '__episodes',
       field: Podcast.t.id,
-      foreignField: _i2.Episode.t.$_podcastsEpisodesPodcastsId,
+      foreignField: _i2.Episode.t.podcastId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i2.EpisodeTable(tableRelation: foreignTableRelation),
@@ -308,7 +308,7 @@ class PodcastTable extends _i1.Table<_i1.UuidValue> {
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'episodes',
       field: Podcast.t.id,
-      foreignField: _i2.Episode.t.$_podcastsEpisodesPodcastsId,
+      foreignField: _i2.Episode.t.podcastId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i2.EpisodeTable(tableRelation: foreignTableRelation),
@@ -382,10 +382,6 @@ class PodcastRepository {
   final attach = const PodcastAttachRepository._();
 
   final attachRow = const PodcastAttachRowRepository._();
-
-  final detach = const PodcastDetachRepository._();
-
-  final detachRow = const PodcastDetachRowRepository._();
 
   /// Returns a list of [Podcast]s matching the given query parameters.
   ///
@@ -681,7 +677,7 @@ class PodcastAttachRepository {
   const PodcastAttachRepository._();
 
   /// Creates a relation between this [Podcast] and the given [Episode]s
-  /// by setting each [Episode]'s foreign key `_podcastsEpisodesPodcastsId` to refer to this [Podcast].
+  /// by setting each [Episode]'s foreign key `podcastId` to refer to this [Podcast].
   Future<void> episodes(
     _i1.DatabaseSession session,
     Podcast podcast,
@@ -696,16 +692,11 @@ class PodcastAttachRepository {
     }
 
     var $episode = episode
-        .map(
-          (e) => _i2.EpisodeImplicit(
-            e,
-            $_podcastsEpisodesPodcastsId: podcast.id,
-          ),
-        )
+        .map((e) => e.copyWith(podcastId: podcast.id))
         .toList();
     await session.db.update<_i2.Episode>(
       $episode,
-      columns: [_i2.Episode.t.$_podcastsEpisodesPodcastsId],
+      columns: [_i2.Episode.t.podcastId],
       transaction: transaction,
     );
   }
@@ -715,7 +706,7 @@ class PodcastAttachRowRepository {
   const PodcastAttachRowRepository._();
 
   /// Creates a relation between this [Podcast] and the given [Episode]
-  /// by setting the [Episode]'s foreign key `_podcastsEpisodesPodcastsId` to refer to this [Podcast].
+  /// by setting the [Episode]'s foreign key `podcastId` to refer to this [Podcast].
   Future<void> episodes(
     _i1.DatabaseSession session,
     Podcast podcast,
@@ -729,75 +720,10 @@ class PodcastAttachRowRepository {
       throw ArgumentError.notNull('podcast.id');
     }
 
-    var $episode = _i2.EpisodeImplicit(
-      episode,
-      $_podcastsEpisodesPodcastsId: podcast.id,
-    );
+    var $episode = episode.copyWith(podcastId: podcast.id);
     await session.db.updateRow<_i2.Episode>(
       $episode,
-      columns: [_i2.Episode.t.$_podcastsEpisodesPodcastsId],
-      transaction: transaction,
-    );
-  }
-}
-
-class PodcastDetachRepository {
-  const PodcastDetachRepository._();
-
-  /// Detaches the relation between this [Podcast] and the given [Episode]
-  /// by setting the [Episode]'s foreign key `_podcastsEpisodesPodcastsId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> episodes(
-    _i1.DatabaseSession session,
-    List<_i2.Episode> episode, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (episode.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('episode.id');
-    }
-
-    var $episode = episode
-        .map(
-          (e) => _i2.EpisodeImplicit(
-            e,
-            $_podcastsEpisodesPodcastsId: null,
-          ),
-        )
-        .toList();
-    await session.db.update<_i2.Episode>(
-      $episode,
-      columns: [_i2.Episode.t.$_podcastsEpisodesPodcastsId],
-      transaction: transaction,
-    );
-  }
-}
-
-class PodcastDetachRowRepository {
-  const PodcastDetachRowRepository._();
-
-  /// Detaches the relation between this [Podcast] and the given [Episode]
-  /// by setting the [Episode]'s foreign key `_podcastsEpisodesPodcastsId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> episodes(
-    _i1.DatabaseSession session,
-    _i2.Episode episode, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (episode.id == null) {
-      throw ArgumentError.notNull('episode.id');
-    }
-
-    var $episode = _i2.EpisodeImplicit(
-      episode,
-      $_podcastsEpisodesPodcastsId: null,
-    );
-    await session.db.updateRow<_i2.Episode>(
-      $episode,
-      columns: [_i2.Episode.t.$_podcastsEpisodesPodcastsId],
+      columns: [_i2.Episode.t.podcastId],
       transaction: transaction,
     );
   }

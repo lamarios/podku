@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:podku_flutter/home/states/home.dart';
 import 'package:podku_flutter/podcasts/states/podcasts.dart';
 
+import '../../../utils.dart';
+
 class HomeScreen extends StatelessWidget {
   final Widget child;
 
@@ -25,7 +27,10 @@ class HomeScreen extends StatelessWidget {
           final cubit = context.read<HomeCubit>();
 
           return Scaffold(
-            body: child,
+            body: SafeArea(child: Padding(
+              padding: .all(pu2),
+              child: child,
+            )),
             bottomNavigationBar: NavigationBar(
               selectedIndex: state.selectedIndex,
               destinations: [

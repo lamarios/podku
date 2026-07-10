@@ -42,13 +42,19 @@ class PlayerCubit extends Cubit<PlayerState> {
   }
 
   Future<void> playEpisode(Episode episode) async {
-    if (episode.audioUrl != null) {
+    emit(state.copyWith(loading: true));
+    final backendEpisode = await client.episodes.getEpisode(episode.id);
+    if (backendEpisode != null && episode.audioUrl != null) {
+      episode = backendEpisode;
       emit(state.copyWith(episode: episode, bufferPosition: Duration.zero, position: Duration.zero));
       if (player.playing) {
         player.stop();
       }
       await player.setUrl(episode.audioUrl!);
-      player.play();
+      await player.play();
+      if (player.duration != null) {
+        player.seek(Duration(seconds: (episode.progress * player.duration!.inSeconds).round()));
+      }
     }
   }
 
@@ -59,7 +65,11 @@ class PlayerCubit extends Cubit<PlayerState> {
   }
 
   void onPlayerUpdate(audio.PlayerState state) {
+    final wasPlaying = this.state.playing;
     emit(this.state.copyWith(playing: state.playing));
+    if (this.state.loading && !wasPlaying && state.playing) {
+      emit(this.state.copyWith(loading: false));
+    }
     /*
     state.
     switch(state.processingState){
@@ -68,15 +78,15 @@ class PlayerCubit extends Cubit<PlayerState> {
 */
   }
 
-  void skip(int seconds){
+  void skip(int seconds) {
     player.seek(state.position + Duration(seconds: seconds));
   }
-
 }
 
 @freezed
 sealed class PlayerState with _$PlayerState {
   const factory PlayerState({
+    @Default(false) bool loading,
     Episode? episode,
     @Default(Duration(seconds: 0)) Duration position,
     @Default(Duration(seconds: 0)) Duration bufferPosition,

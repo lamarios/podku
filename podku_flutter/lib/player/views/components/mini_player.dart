@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:podku_flutter/player/states/player.dart';
 import 'package:podku_flutter/player/views/components/play_pause_button.dart';
@@ -42,29 +43,39 @@ class MiniPlayer extends StatelessWidget {
                       Expanded(
                         child: Builder(
                           builder: (context) {
-                            return Column(
-                              mainAxisAlignment: .center,
-                              crossAxisAlignment: .stretch,
-                              children: [
-                                Builder(
-                                  builder: (context) {
-                                    final title = context.select((PlayerCubit c) => c.state.episode?.title ?? 'nothing is player');
-                                    return Text(
-                                      title,
-                                      style: textTheme.titleMedium,
-                                      overflow: .ellipsis,
-                                      maxLines: 2,
-                                    );
-                                  },
-                                ),
-                                ProgressBar(height: 5),
-                              ],
-                            );
+                            final loading = context.select((PlayerCubit c) => c.state.loading);
+                            return loading
+                                ? Center(
+                                    child: LoadingIndicator(),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: .center,
+                                    crossAxisAlignment: .stretch,
+                                    children: [
+                                      Builder(
+                                        builder: (context) {
+                                          final title = context.select((PlayerCubit c) => c.state.episode?.title ?? 'nothing is player');
+                                          return Text(
+                                            title,
+                                            overflow: .ellipsis,
+                                            maxLines: 2,
+                                          );
+                                        },
+                                      ),
+                                      Gap(pu2),
+                                      ProgressBar(height: 5),
+                                    ],
+                                  );
                           },
                         ),
                       ),
                       Gap(pu2),
-                      PlayPauseButton(),
+                      Builder(
+                        builder: (context) {
+                          final loading = context.select((PlayerCubit c) => c.state.loading);
+                          return loading ? SizedBox.shrink() : PlayPauseButton();
+                        },
+                      ),
                       Gap(pu6),
                     ],
                   ),
@@ -74,15 +85,25 @@ class MiniPlayer extends StatelessWidget {
               Builder(
                 builder: (context) {
                   final episode = context.select((PlayerCubit c) => c.state.episode);
+                  final loading = context.select((PlayerCubit c) => c.state.loading);
                   if (episode == null) return SizedBox.shrink();
                   return Positioned(
                     left: pu6,
-                    child: PodcastImage(
-                      key: ValueKey(episode!.id),
-                      podcast: episode!.podcast!,
-                      width: _imagesize,
-                      height: _imagesize,
-                      borderRadius: pu3,
+                    child: AnimatedSwitcher(
+                      duration: animationDuration,
+                      child: loading
+                          ? Container(
+                              width: _imagesize,
+                              height: _imagesize,
+                              decoration: BoxDecoration(borderRadius: .circular(pu3), color: colors.secondaryContainer),
+                            )
+                          : PodcastImage(
+                              key: ValueKey(episode!.id),
+                              podcast: episode!.podcast!,
+                              width: _imagesize,
+                              height: _imagesize,
+                              borderRadius: pu3,
+                            ),
                     ),
                   );
                 },

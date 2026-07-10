@@ -16,7 +16,7 @@ fields:
   episodeType: String?
   explicit: bool,
   link: String?
-  podcast: Podcast?, relation
+  podcast: Podcast?, relation(name=podcast_episodes, onDelete=cascade)
   progress: double, default=0.000
 indexes:
   timeIndex:

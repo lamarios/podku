@@ -1,9 +1,9 @@
-
 import 'dart:typed_data';
 
 import 'package:podku_server/src/podcast/podcast_parser.dart';
 import 'package:podku_server/src/podcast/search/search.dart';
 import 'package:http/http.dart' as http;
+import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import 'package:serverpod/server.dart';
 
@@ -35,14 +35,8 @@ class PodcastEndpoint extends Endpoint {
     }
   }
 
-  Future<ByteData?> getPodcastImage(Session session, Podcast podcast) async {
-    if(podcast.artworkUrl == null){
-      return null;
-    }
-    final response = await http.get(Uri.parse(podcast.artworkUrl!));
-
-    var bodyBytes = response.bodyBytes;
-    return bodyBytes.buffer.asByteData();
+  Future<Podcast?> getPodcast(Session session, String podcastId) async {
+    var podcast = await Podcast.db.findById(session, UuidValue.fromString(podcastId), include: Podcast.include(episodes: Episode.includeList()));
+    return podcast;
   }
-
 }

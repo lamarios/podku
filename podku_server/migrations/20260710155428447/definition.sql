@@ -30,6 +30,45 @@ language plpgsql
 volatile;
 
 --
+-- Class Episode as table episodes
+--
+CREATE TABLE "episodes" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "title" text NOT NULL,
+    "description" text,
+    "audioUrl" text,
+    "audioType" text,
+    "audioLengthBytes" bigint,
+    "pubDateMillis" bigint,
+    "durationSeconds" bigint,
+    "guid" text,
+    "imageUrl" text,
+    "seasonNumber" bigint,
+    "episodeNumber" bigint,
+    "episodeType" text,
+    "explicit" boolean NOT NULL,
+    "link" text,
+    "podcastId" uuid NOT NULL,
+    "progress" double precision NOT NULL DEFAULT 0.000
+);
+
+-- Indexes
+CREATE INDEX "timeIndex" ON "episodes" USING btree ("pubDateMillis");
+
+--
+-- Class Podcast as table podcasts
+--
+CREATE TABLE "podcasts" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "url" text NOT NULL,
+    "name" text NOT NULL,
+    "artworkUrl" text,
+    "description" text,
+    "author" text,
+    "link" text
+);
+
+--
 -- Class CloudStorageEntry as table serverpod_cloud_storage
 --
 CREATE TABLE "serverpod_cloud_storage" (
@@ -503,6 +542,16 @@ CREATE TABLE "serverpod_auth_core_user" (
 );
 
 --
+-- Foreign relations for "episodes" table
+--
+ALTER TABLE ONLY "episodes"
+    ADD CONSTRAINT "episodes_fk_0"
+    FOREIGN KEY("podcastId")
+    REFERENCES "podcasts"("id")
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION;
+
+--
 -- Foreign relations for "serverpod_log" table
 --
 ALTER TABLE ONLY "serverpod_log"
@@ -711,9 +760,9 @@ ALTER TABLE ONLY "serverpod_auth_core_session"
 -- MIGRATION VERSION FOR podku
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('podku', '20260708065348813', now())
+    VALUES ('podku', '20260710155428447', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20260708065348813', "timestamp" = now();
+    DO UPDATE SET "version" = '20260710155428447', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

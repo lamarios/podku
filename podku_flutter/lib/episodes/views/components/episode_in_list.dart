@@ -13,19 +13,19 @@ class EpisodeInList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('episode rebuild');
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: .only(bottom: pu2),
       child: Row(
         children: [
-          PodcastImage(
-            podcast: episode.podcast!,
-            width: 75,
-            height: 75,
-            borderRadius: pu,
-          ),
+          if (episode.podcast != null)
+            PodcastImage(
+              podcast: episode.podcast!,
+              width: 75,
+              height: 75,
+              borderRadius: pu,
+            ),
           Gap(pu2),
           Expanded(
             child: Column(
@@ -33,11 +33,12 @@ class EpisodeInList extends StatelessWidget {
               children: [
                 Text(
                   episode.title,
-                  style: textTheme.titleMedium,
+                  maxLines: 2,
+                  overflow: .ellipsis,
                 ),
                 Text(
                   printDuration(Duration(seconds: episode.durationSeconds ?? 0)),
-                  style: textTheme.bodySmall,
+                  style: textTheme.labelSmall,
                 ),
               ],
             ),

@@ -17,11 +17,10 @@ import '../episodes/episodes_endoint.dart' as _i4;
 import '../podcast/podcast_endpoint.dart' as _i5;
 import 'package:podku_server/src/generated/podcast/episode.dart' as _i6;
 import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
-import 'package:podku_server/src/generated/podcast/podcast.dart' as _i8;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i9;
+    as _i8;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i10;
+    as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -279,6 +278,25 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['after'],
                   ),
         ),
+        'getEpisode': _i1.MethodConnector(
+          name: 'getEpisode',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['episodes'] as _i4.EpisodesEndpoint).getEpisode(
+                    session,
+                    params['id'],
+                  ),
+        ),
         'setProgress': _i1.MethodConnector(
           name: 'setProgress',
           params: {
@@ -352,12 +370,12 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['result'],
                   ),
         ),
-        'getPodcastImage': _i1.MethodConnector(
-          name: 'getPodcastImage',
+        'getPodcast': _i1.MethodConnector(
+          name: 'getPodcast',
           params: {
-            'podcast': _i1.ParameterDescription(
-              name: 'podcast',
-              type: _i1.getType<_i8.Podcast>(),
+            'podcastId': _i1.ParameterDescription(
+              name: 'podcastId',
+              type: _i1.getType<String>(),
               nullable: false,
             ),
           },
@@ -366,16 +384,16 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['podcast'] as _i5.PodcastEndpoint).getPodcastImage(
+                  (endpoints['podcast'] as _i5.PodcastEndpoint).getPodcast(
                     session,
-                    params['podcast'],
+                    params['podcastId'],
                   ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i9.Endpoints()
+    modules['serverpod_auth_idp'] = _i8.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i10.Endpoints()
+    modules['serverpod_auth_core'] = _i9.Endpoints()
       ..initializeEndpoints(server);
   }
 }

@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:get_it/get_it.dart';
+
 const double pu = 4;
 const double pu2 = pu*2;
 const double pu3 = pu*3;
@@ -9,6 +13,9 @@ const double pu8 = pu*8;
 
 const animationDuration = Duration(milliseconds: 250);
 
+final getIt = GetIt.instance;
+
+final Color appColor = Color(0xff5fc9c0);
 
 String printDuration(Duration duration) {
   String negativeSign = duration.isNegative ? '-' : '';

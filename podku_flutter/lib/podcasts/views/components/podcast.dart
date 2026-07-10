@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:podku_flutter/podcasts/views/components/podcast_image.dart';
 import 'package:podku_flutter/utils.dart';
@@ -12,16 +13,19 @@ class PodcastInGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        PodcastImage(
-          podcast: podcast,
-          width: _imageSize,
-          height: _imageSize,
-          borderRadius: pu4,
-        ),
-        Text(podcast.name),
-      ],
+    return InkWell(
+      onTap: () => context.push('/podcast/${podcast.id.toString()}'),
+      child: Column(
+        children: [
+          PodcastImage(
+            podcast: podcast,
+            width: _imageSize,
+            height: _imageSize,
+            borderRadius: pu4,
+          ),
+          Text(podcast.name),
+        ],
+      ),
     );
   }
 }

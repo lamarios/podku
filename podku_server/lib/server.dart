@@ -52,7 +52,7 @@ void run(List<String> args) async {
   // These are used by the default page.
   pod.webServer.addRoute(RootRoute(), '/');
   pod.webServer.addRoute(RootRoute(), '/index.html');
-  pod.webServer.addRoute(PodcastRoute(), '/podcasts/:podcastId/image');
+  pod.webServer.addRoute(PodcastRoute(), '/podcasts/image');
   pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
 
   // Serve all files in the web/static relative directory under /.

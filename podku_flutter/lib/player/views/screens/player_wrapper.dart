@@ -15,7 +15,6 @@ class PlayerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    print('rebuild');
     return Stack(
       children: [
         child,
@@ -29,7 +28,6 @@ class PlayerWrapper extends StatelessWidget {
               from: 0,
               builder: (context, value, child) {
                 double miniPlayerEffectiveValue = hasEpisode ? value : 0;
-                print('value: ${value}');
                 return value <= 0.1
                     ? SizedBox.shrink()
                     : Positioned(

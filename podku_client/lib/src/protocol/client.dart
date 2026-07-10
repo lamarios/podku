@@ -19,8 +19,7 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:podku_client/src/protocol/podcast/episode.dart' as _i5;
 import 'package:podku_client/src/protocol/podcast/podcast.dart' as _i6;
 import 'package:podku_client/src/protocol/podcast/search_result.dart' as _i7;
-import 'dart:typed_data' as _i8;
-import 'protocol.dart' as _i9;
+import 'protocol.dart' as _i8;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -257,6 +256,13 @@ class EndpointEpisodes extends _i2.EndpointRef {
         {'after': after},
       );
 
+  _i3.Future<_i5.Episode?> getEpisode(_i2.UuidValue id) =>
+      caller.callServerEndpoint<_i5.Episode?>(
+        'episodes',
+        'getEpisode',
+        {'id': id},
+      );
+
   _i3.Future<void> setProgress(_i5.Episode episode) =>
       caller.callServerEndpoint<void>(
         'episodes',
@@ -293,11 +299,11 @@ class EndpointPodcast extends _i2.EndpointRef {
         {'result': result},
       );
 
-  _i3.Future<_i8.ByteData?> getPodcastImage(_i6.Podcast podcast) =>
-      caller.callServerEndpoint<_i8.ByteData?>(
+  _i3.Future<_i6.Podcast?> getPodcast(String podcastId) =>
+      caller.callServerEndpoint<_i6.Podcast?>(
         'podcast',
-        'getPodcastImage',
-        {'podcast': podcast},
+        'getPodcast',
+        {'podcastId': podcastId},
       );
 }
 
@@ -332,7 +338,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i9.Protocol(),
+         _i8.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
