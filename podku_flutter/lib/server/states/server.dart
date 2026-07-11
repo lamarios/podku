@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'server.freezed.dart';
 
-final RegExp _urlRegex = RegExp(r'[-a-zA-Z0-9@:%_+.~#?&/=]{2,256}\.[a-z]{2,4}\b(/[-a-zA-Z0-9@:%_+.~#?&/=]*)?');
+final RegExp _urlRegex = RegExp(r'http.+');
 
 class ServerCubit extends Cubit<ServerState> {
   Client? client;
@@ -21,7 +21,7 @@ class ServerCubit extends Cubit<ServerState> {
 
   Future<void> init() async {
     String? serverUrl;
-    if (kIsWeb && !kDebugMode) {
+    if (kIsWeb) {
       Uri base = Uri.base;
       serverUrl = '${base.scheme}://${base.host}';
 
@@ -33,28 +33,38 @@ class ServerCubit extends Cubit<ServerState> {
       serverUrl = prefs.getString("serverUrl");
     }
 
-   await setServerUrl(serverUrl);
+    await setServerUrl(serverUrl);
   }
 
   Future<bool> setServerUrl(String? serverUrl) async {
-    emit(state.copyWith(serverUrl: serverUrl));
-    final prefs = await SharedPreferences.getInstance();
-    if (serverUrl != null && _urlRegex.hasMatch(serverUrl)) {
-      if (serverUrl.endsWith('/')) {
-        serverUrl = serverUrl.substring(0, serverUrl.length - 1);
+    try {
+      emit(state.copyWith(serverUrl: serverUrl));
+      if (serverUrl != null && _urlRegex.hasMatch(serverUrl)) {
+        if (serverUrl.endsWith('/')) {
+          serverUrl = serverUrl.substring(0, serverUrl.length - 1);
+        }
+
+        if (!kIsWeb) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString("serverUrl", serverUrl);
+        }
+        client = Client(state.apiUrl)
+          ..connectivityMonitor = FlutterConnectivityMonitor()
+          ..authSessionManager = FlutterAuthSessionManager();
+
+        client?.auth.initialize();
+        emit(state.copyWith(initialized: true));
+        return true;
+      } else {
+        if (!kIsWeb) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove("serverUrl");
+        }
+        emit(state.copyWith(initialized: true));
+        return false;
       }
-
-      await prefs.setString("serverUrl", serverUrl);
-      client = Client(state.apiUrl)
-        ..connectivityMonitor = FlutterConnectivityMonitor()
-        ..authSessionManager = FlutterAuthSessionManager();
-
-      client?.auth.initialize();
-      emit(state.copyWith(initialized: true));
-      return true;
-    } else {
-      await prefs.remove("serverUrl");
-      emit(state.copyWith(initialized: true));
+    } catch (e) {
+      print(e);
       return false;
     }
   }
