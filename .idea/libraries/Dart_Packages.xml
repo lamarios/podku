@@ -355,7 +355,7 @@
         <entry key="flutter">
           <value>
             <list>
-              <option value="/nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter/lib" />
+              <option value="$PROJECT_DIR$/submodules/flutter/packages/flutter/lib" />
             </list>
           </value>
         </entry>
@@ -383,7 +383,7 @@
         <entry key="flutter_localizations">
           <value>
             <list>
-              <option value="/nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter_localizations/lib" />
+              <option value="$PROJECT_DIR$/submodules/flutter/packages/flutter_localizations/lib" />
             </list>
           </value>
         </entry>
@@ -439,7 +439,7 @@
         <entry key="flutter_test">
           <value>
             <list>
-              <option value="/nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter_test/lib" />
+              <option value="$PROJECT_DIR$/submodules/flutter/packages/flutter_test/lib" />
             </list>
           </value>
         </entry>
@@ -460,7 +460,7 @@
         <entry key="flutter_web_plugins">
           <value>
             <list>
-              <option value="/nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter_web_plugins/lib" />
+              <option value="$PROJECT_DIR$/submodules/flutter/packages/flutter_web_plugins/lib" />
             </list>
           </value>
         </entry>
@@ -635,7 +635,7 @@
         <entry key="intl">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.3/lib" />
             </list>
           </value>
         </entry>
@@ -740,7 +740,7 @@
         <entry key="matcher">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/matcher-0.12.19/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/matcher-0.12.20/lib" />
             </list>
           </value>
         </entry>
@@ -768,7 +768,7 @@
         <entry key="meta">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.18.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.19.0/lib" />
             </list>
           </value>
         </entry>
@@ -1223,7 +1223,7 @@
         <entry key="sky_engine">
           <value>
             <list>
-              <option value="/nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/bin/cache/pkg/sky_engine/lib" />
+              <option value="$PROJECT_DIR$/submodules/flutter/bin/cache/pkg/sky_engine/lib" />
             </list>
           </value>
         </entry>
@@ -1349,21 +1349,21 @@
         <entry key="test">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.1/lib" />
             </list>
           </value>
         </entry>
         <entry key="test_api">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.11/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.12/lib" />
             </list>
           </value>
         </entry>
         <entry key="test_core">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.17/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.18/lib" />
             </list>
           </value>
         </entry>
@@ -1461,7 +1461,7 @@
         <entry key="vector_math">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/vector_math-2.2.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/vector_math-2.4.0/lib" />
             </list>
           </value>
         </entry>
@@ -1631,7 +1631,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_multi_server-3.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_parser-4.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/image-4.9.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/io-1.0.5/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni_flutter-1.0.1/lib" />
@@ -1646,11 +1646,11 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/leak_tracker_testing-3.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/lints-6.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/logging-1.3.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/matcher-0.12.19/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/matcher-0.12.20/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/material_color_utilities-0.13.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/material_loading_indicator-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/material_new_shapes-1.0.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.18.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.19.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/mime-2.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/motor-1.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/mustache_template-2.0.5/lib" />
@@ -1732,9 +1732,9 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/synchronized-3.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/system_resources_2-2.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/term_glyph-1.2.2/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.11/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.17/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.12/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.18/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/typed_data-1.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/url_launcher-6.3.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.32/lib" />
@@ -1748,7 +1748,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_graphics-1.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_graphics_codec-1.1.13/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.2.6/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_math-2.2.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_math-2.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vm_service-15.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/watcher-1.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web-1.1.1/lib" />
@@ -1760,11 +1760,11 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/xdg_directories-1.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/xml-7.0.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/yaml-3.1.3/lib" />
-      <root url="file:///nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/bin/cache/pkg/sky_engine/lib" />
-      <root url="file:///nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter/lib" />
-      <root url="file:///nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter_localizations/lib" />
-      <root url="file:///nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter_test/lib" />
-      <root url="file:///nix/store/s03y7q2ihssvbq0dckq7r4p20zazayjb-flutter-wrapped-3.44.3-sdk-links/packages/flutter_web_plugins/lib" />
+      <root url="file://$PROJECT_DIR$/submodules/flutter/bin/cache/pkg/sky_engine/lib" />
+      <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter/lib" />
+      <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter_localizations/lib" />
+      <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter_test/lib" />
+      <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
