@@ -21,7 +21,7 @@ class ServerCubit extends Cubit<ServerState> {
 
   Future<void> init() async {
     String? serverUrl;
-    if (kIsWeb) {
+    if (kIsWeb && !kDebugMode) {
       Uri base = Uri.base;
       serverUrl = '${base.scheme}://${base.host}';
 
@@ -48,6 +48,7 @@ class ServerCubit extends Cubit<ServerState> {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString("serverUrl", serverUrl);
         }
+
         client = Client(state.apiUrl)
           ..connectivityMonitor = FlutterConnectivityMonitor()
           ..authSessionManager = FlutterAuthSessionManager();
