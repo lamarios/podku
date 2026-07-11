@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:podku_server/src/generated/podcast/podcast.dart';
-import 'package:serverpod/serverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:serverpod/serverpod.dart';
 
 class PodcastRoute extends Route {
   PodcastRoute() : super(methods: {Method.get});

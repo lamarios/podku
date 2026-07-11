@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:just_audio/just_audio.dart' as audio;
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:podku/main.dart';
 import 'package:podku/podcasts/models/podcast.dart';
@@ -52,8 +53,13 @@ class PlayerCubit extends Cubit<PlayerState> {
       if (player.playing) {
         player.stop();
       }
+
+
+
+      var audioProxyUrl = episode.audioProxyUrl;
+      print(audioProxyUrl);
       await player.setUrl(
-        episode.audioUrl!,
+        audioProxyUrl,
         tag: MediaItem(id: episode.id.uuid, title: episode.title, artUri: episode.podcast?.artUri, artist: episode.podcast?.name),
       );
       await player.play();

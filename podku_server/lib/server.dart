@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:podku_server/src/api/redirect_router.dart';
+import 'package:podku_server/src/podcast/podcast_audio_route.dart';
 import 'package:podku_server/src/podcast/podcast_route.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
@@ -9,7 +10,6 @@ import 'package:serverpod_auth_idp_server/providers/email.dart';
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
 import 'src/web/routes/app_config_route.dart';
-import 'src/web/routes/root.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
@@ -52,6 +52,7 @@ void run(List<String> args) async {
   // pod.webServer.addRoute(RootRoute(), '/');
   // pod.webServer.addRoute(RootRoute(), '/index.html');
   pod.webServer.addRoute(PodcastRoute(), '/podcasts/image');
+  pod.webServer.addRoute(PodcastAudioRoute(), '/podcasts/audio');
   pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
 
   // Serve all files in the web/static relative directory under /.
