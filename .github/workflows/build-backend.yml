@@ -50,9 +50,9 @@ jobs:
         run: echo "TAG_NAME=1" >> $GITHUB_ENV
       # Build web app
       - name: build web
-        working-directory: ./
+        working-directory: ./podku_flutter
         run: |
-          nix-shell --run "cd podku_flutter && flutter build web --release --build-number ${{ env.TAG_NAME }} -o ../podku_server/web"
+          nix-shell --run "cd podku_flutter && flutter build web --release --build-number ${{ env.TAG_NAME }} -o ../podku_server/web" ../shell.nix
       # build backend
 
       - name: Build and push Docker image
