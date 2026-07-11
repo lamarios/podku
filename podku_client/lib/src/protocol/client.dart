@@ -299,6 +299,13 @@ class EndpointPodcast extends _i2.EndpointRef {
         {'result': result},
       );
 
+  _i3.Future<bool> unsubscribe(_i6.Podcast podcast) =>
+      caller.callServerEndpoint<bool>(
+        'podcast',
+        'unsubscribe',
+        {'podcast': podcast},
+      );
+
   _i3.Future<_i6.Podcast?> getPodcast(String podcastId) =>
       caller.callServerEndpoint<_i6.Podcast?>(
         'podcast',

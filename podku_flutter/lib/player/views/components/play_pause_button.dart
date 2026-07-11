@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motor/motor.dart';
-import 'package:podku_flutter/player/states/player.dart';
+import 'package:podku/player/states/player.dart';
 
 class PlayPauseButton extends StatelessWidget {
   final double? size;

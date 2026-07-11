@@ -13,7 +13,6 @@ import 'src/web/routes/root.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
-
   // CORS.
   final headers = Headers.build((h) {
     h.accessControlAllowOrigin = AccessControlAllowOriginHeader.wildcard();
@@ -94,6 +93,10 @@ void run(List<String> args) async {
 
   // Start the server.
   await pod.start();
+
+
+  // refresh podcasts job
+  await pod.futureCalls.callWithDelay(Duration(seconds: 10)).podcastRefresh.refreshPodcasts();
 }
 
 void _sendRegistrationCode(

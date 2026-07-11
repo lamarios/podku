@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
-import 'package:podku_flutter/episodes/views/components/episode_in_list.dart';
-import 'package:podku_flutter/podcasts/states/podcast.dart';
-import 'package:podku_flutter/podcasts/views/components/podcast_image.dart';
-import 'package:podku_flutter/utils.dart';
+import 'package:podku/episodes/views/components/episode_in_list.dart';
+import 'package:podku/main.dart';
+import 'package:podku/podcasts/states/podcast.dart';
+import 'package:podku/podcasts/views/components/podcast_image.dart';
+import 'package:podku/utils.dart';
+import 'package:podku/utils/views/components/conditional_wrap.dart';
 
 class PodcastScreen extends StatelessWidget {
   final String? podcastId;
@@ -29,7 +32,7 @@ class PodcastScreen extends StatelessWidget {
                     child: state.loading
                         ? Center(child: LoadingIndicator())
                         : Padding(
-                            padding: const EdgeInsets.all(pu2),
+                            padding: const EdgeInsets.symmetric(horizontal: pu2),
                             child: Column(
                               crossAxisAlignment: .stretch,
                               children: [
@@ -50,6 +53,19 @@ class PodcastScreen extends StatelessWidget {
                                   ),
                                 ],
                                 Gap(pu2),
+                                Row(
+                                  mainAxisAlignment: .end,
+                                  children: [
+                                  TextButton.icon(onPressed: () async {
+                                    if(state.podcast != null) {
+                                      final unsubscribed = await client.podcast.unsubscribe(state.podcast!.copyWith(episodes: []));
+                                      if(unsubscribed && context.mounted){
+                                        context.pop();
+                                      }
+                                    }
+                                  }, label: Text('Unsubscribe', style: textTheme.bodyMedium!.copyWith(color: colors.error),), icon: Icon(Icons.block, color: colors.error,),)
+                                ],),
+                                Gap(pu2),
                                 Text(
                                   'Episodes',
                                   style: textTheme.titleMedium,
@@ -59,7 +75,14 @@ class PodcastScreen extends StatelessWidget {
                                   Expanded(
                                     child: ListView.builder(
                                       itemCount: state.podcast!.episodes!.length,
-                                      itemBuilder: (context, index) => EpisodeInList(episode: state.podcast!.episodes![index]),
+                                      itemBuilder: (context, index) => ConditionalWrap(
+                                        wrapIf: index == state.podcast!.episodes!.length - 1,
+                                        wrapper: (child) => Padding(
+                                          padding: .only(bottom: 200),
+                                          child: child,
+                                        ),
+                                        child: EpisodeInList(episode: state.podcast!.episodes![index]),
+                                      ),
                                     ),
                                   ),
                               ],

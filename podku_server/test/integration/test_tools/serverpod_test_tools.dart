@@ -19,6 +19,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'package:podku_server/src/generated/podcast/episode.dart' as _i5;
 import 'package:podku_server/src/generated/podcast/podcast.dart' as _i6;
 import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
+import 'package:podku_server/src/generated/future_calls.dart' as _i8;
 import 'package:podku_server/src/generated/protocol.dart';
 import 'package:podku_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -133,6 +134,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final futureCalls = _FutureCalls();
+
   late final _EmailIdpEndpoint emailIdp;
 
   late final _JwtRefreshEndpoint jwtRefresh;
@@ -166,6 +169,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
   }
+}
+
+class _FutureCalls {
+  late final podcastRefresh = _PodcastRefreshFutureCall();
 }
 
 class _EmailIdpEndpoint {
@@ -692,6 +699,37 @@ class _PodcastEndpoint {
     });
   }
 
+  _i3.Future<bool> unsubscribe(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.Podcast podcast,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'podcast',
+            method: 'unsubscribe',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'podcast',
+          methodName: 'unsubscribe',
+          parameters: _i1.testObjectToJson({'podcast': podcast}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i6.Podcast?> getPodcast(
     _i1.TestSessionBuilder sessionBuilder,
     String podcastId,
@@ -721,5 +759,20 @@ class _PodcastEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+}
+
+class _PodcastRefreshFutureCall {
+  Future<void> refreshPodcasts(_i1.TestSessionBuilder sessionBuilder) async {
+    var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
+        .internalBuild();
+    try {
+      await _i8.PodcastRefreshRefreshPodcastsFutureCall().invoke(
+        _localUniqueSession,
+        null,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
   }
 }

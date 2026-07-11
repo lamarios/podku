@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podku_flutter/player/states/player.dart';
-import 'package:podku_flutter/utils.dart';
+import 'package:podku/player/states/player.dart';
+import 'package:podku/utils.dart';
 
 class ProgressBar extends StatelessWidget {
   final double height;
@@ -10,7 +10,6 @@ class ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
     return Builder(

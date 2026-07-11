@@ -17,4 +17,5 @@ podcast:
   - getPodcasts:
   - searchPodcasts:
   - subscribeToPodcast:
+  - unsubscribe:
   - getPodcast:

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:podku/episodes/views/components/episode_play_button.dart';
+import 'package:podku/podcasts/views/components/podcast_image.dart';
+import 'package:podku/utils.dart';
 import 'package:podku_client/podku_client.dart';
-import 'package:podku_flutter/player/states/player.dart';
-import 'package:podku_flutter/podcasts/views/components/podcast_image.dart';
-import 'package:podku_flutter/utils.dart';
 
 class EpisodeInList extends StatelessWidget {
   final Episode episode;
@@ -14,7 +13,6 @@ class EpisodeInList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: .only(bottom: pu2),
       child: Row(
@@ -43,22 +41,8 @@ class EpisodeInList extends StatelessWidget {
               ],
             ),
           ),
-          Stack(
-            children: [
-              CircularProgressIndicator(
-                value: episode.progress,
-                backgroundColor: colors.secondaryContainer,
-              ),
-              IconButton(
-                onPressed: () => context.read<PlayerCubit>().playEpisode(episode),
-                icon: Icon(
-                  Icons.play_arrow,
-                  size: 20,
-                ),
-                visualDensity: .comfortable,
-              ),
-            ],
-          ),
+          Gap(pu),
+          EpisodePlayButton(episode: episode),
         ],
       ),
     );

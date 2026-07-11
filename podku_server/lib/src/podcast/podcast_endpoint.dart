@@ -1,11 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:podku_server/src/podcast/podcast_parser.dart';
 import 'package:podku_server/src/podcast/search/search.dart';
-import 'package:http/http.dart' as http;
 import 'package:serverpod/serverpod.dart';
+
 import '../generated/protocol.dart';
-import 'package:serverpod/server.dart';
 
 class PodcastEndpoint extends Endpoint {
   Future<List<Podcast>> getPodcasts(Session session) async {
@@ -35,8 +32,22 @@ class PodcastEndpoint extends Endpoint {
     }
   }
 
+  Future<bool> unsubscribe(Session session, Podcast podcast) async {
+    final dbPodcast = await getPodcast(session, podcast.id.uuid);
+    if (dbPodcast != null) {
+      await Podcast.db.deleteRow(session, dbPodcast);
+      return true;
+    }
+
+    return false;
+  }
+
   Future<Podcast?> getPodcast(Session session, String podcastId) async {
-    var podcast = await Podcast.db.findById(session, UuidValue.fromString(podcastId), include: Podcast.include(episodes: Episode.includeList()));
+    var podcast = await Podcast.db.findById(
+      session,
+      UuidValue.fromString(podcastId),
+      include: Podcast.include(episodes: Episode.includeList(orderBy: (p0) => p0.pubDateMillis, orderDescending: true)),
+    );
     return podcast;
   }
 }

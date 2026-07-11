@@ -17,10 +17,13 @@ import '../episodes/episodes_endoint.dart' as _i4;
 import '../podcast/podcast_endpoint.dart' as _i5;
 import 'package:podku_server/src/generated/podcast/episode.dart' as _i6;
 import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
+import 'package:podku_server/src/generated/podcast/podcast.dart' as _i8;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i8;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i9;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i10;
+import 'package:podku_server/src/generated/future_calls.dart' as _i11;
+export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -370,6 +373,25 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['result'],
                   ),
         ),
+        'unsubscribe': _i1.MethodConnector(
+          name: 'unsubscribe',
+          params: {
+            'podcast': _i1.ParameterDescription(
+              name: 'podcast',
+              type: _i1.getType<_i8.Podcast>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['podcast'] as _i5.PodcastEndpoint).unsubscribe(
+                    session,
+                    params['podcast'],
+                  ),
+        ),
         'getPodcast': _i1.MethodConnector(
           name: 'getPodcast',
           params: {
@@ -391,9 +413,14 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i8.Endpoints()
+    modules['serverpod_auth_idp'] = _i9.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i9.Endpoints()
+    modules['serverpod_auth_core'] = _i10.Endpoints()
       ..initializeEndpoints(server);
+  }
+
+  @override
+  _i1.FutureCallDispatch? get futureCalls {
+    return _i11.FutureCalls();
   }
 }

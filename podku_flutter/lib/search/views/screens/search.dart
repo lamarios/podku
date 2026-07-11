@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podku_flutter/podcasts/states/podcasts.dart';
-import 'package:podku_flutter/search/states/search.dart';
-import 'package:podku_flutter/search/views/components/search_result.dart';
-import 'package:podku_flutter/utils.dart';
-import 'package:podku_flutter/utils/views/components/page_title.dart';
+import 'package:podku/podcasts/states/podcasts.dart';
+import 'package:podku/search/states/search.dart';
+import 'package:podku/search/views/components/search_result.dart';
+import 'package:podku/utils.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -21,7 +20,6 @@ class SearchScreen extends StatelessWidget {
           return Column(
             crossAxisAlignment: .stretch,
             children: [
-              PageTitle(title: 'Search'),
               TextField(controller: cubit.searchController, decoration: InputDecoration(
                   icon: Icon(Icons.search),
                   hintText: 'Search podcasts'),),
@@ -40,7 +38,7 @@ class SearchScreen extends StatelessWidget {
                     );
                   },
                 ),
-              )else Expanded(child: Center(child: Icon(Icons.search, size:200, color: colors.secondary.withValues(alpha: 0.1)))),
+              )else Expanded(child: Center(child: Icon(Icons.search, size:100, color: colors.onSurface.withValues(alpha: 0.1)))),
             ],
           );
         },

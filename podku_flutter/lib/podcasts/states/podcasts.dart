@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:podku/main.dart';
 import 'package:podku_client/podku_client.dart';
-import 'package:podku_flutter/main.dart';
 
 part 'podcasts.freezed.dart';
 
@@ -17,13 +15,14 @@ class PodcastsCubit extends Cubit<PodcastState> {
   }
 
   Future<void> subscribe(SearchResult result) async {
+    emit(state.copyWith(subscribingTo: result));
     await client.podcast.subscribeToPodcast(result);
+    emit(state.copyWith(subscribingTo: null));
     getPodcasts();
   }
-
 }
 
 @freezed
 sealed class PodcastState with _$PodcastState {
-  const factory PodcastState({@Default([]) List<Podcast> subscriptions}) = _PodcastState;
+  const factory PodcastState({@Default([]) List<Podcast> subscriptions, SearchResult? subscribingTo}) = _PodcastState;
 }

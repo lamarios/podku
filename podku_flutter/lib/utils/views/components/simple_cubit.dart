@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podku_flutter/utils/states/simple_cubit.dart';
+import 'package:podku/utils/states/simple_cubit.dart';
 
 class SimpleCubitView<T> extends StatelessWidget {
   final Widget Function(BuildContext context, T? value) builder;

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
-import 'package:podku_flutter/player/states/player.dart';
-import 'package:podku_flutter/player/views/components/play_pause_button.dart';
-import 'package:podku_flutter/player/views/components/progress_bar.dart';
-import 'package:podku_flutter/podcasts/views/components/podcast_image.dart';
-import 'package:podku_flutter/utils.dart';
+import 'package:podku/player/states/player.dart';
+import 'package:podku/player/views/components/play_pause_button.dart';
+import 'package:podku/player/views/components/progress_bar.dart';
+import 'package:podku/podcasts/views/components/podcast_image.dart';
+import 'package:podku/utils.dart';
 
-const double _imageWidth = 300;
+const double _imageWidth = 200;
 
 class BigPlayer extends StatelessWidget {
   const BigPlayer({super.key});
@@ -19,8 +19,10 @@ class BigPlayer extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final cubit = context.read<PlayerCubit>();
     return Scaffold(
+      backgroundColor: colors.secondaryContainer,
       appBar: AppBar(
-        actions: [IconButton(onPressed: () => context.read<PlayerCubit>().setMiniPlayer(true), icon: Icon(Icons.arrow_drop_down))],
+        backgroundColor: colors.secondaryContainer,
+        actions: [IconButton(onPressed: () => context.read<PlayerCubit>().showPlayers(true, false), icon: Icon(Icons.arrow_drop_down))],
       ),
       body: Builder(
         builder: (context) {
@@ -39,19 +41,22 @@ class BigPlayer extends StatelessWidget {
                   children: [
                     Center(
                       child: PodcastImage(
-                        podcast: episode!.podcast!,
+                        podcast: episode.podcast!,
                         width: _imageWidth,
                         height: _imageWidth,
                         borderRadius: pu8,
                       ),
                     ),
                     Gap(pu4),
-                    Text(
-                      episode!.title,
-                      style: textTheme.titleLarge,
-                      overflow: .ellipsis,
-                      maxLines: 3,
-                      textAlign: .center,
+                    Padding(
+                      padding: .symmetric(horizontal: pu2),
+                      child: Text(
+                        episode.title,
+                        style: textTheme.titleLarge,
+                        overflow: .ellipsis,
+                        maxLines: 3,
+                        textAlign: .center,
+                      ),
                     ),
                     Gap(pu4),
                     Row(
@@ -72,11 +77,37 @@ class BigPlayer extends StatelessWidget {
                       padding: .symmetric(horizontal: pu6),
                       child: ProgressBar(height: 10),
                     ),
+                    Builder(
+                      builder: (context) {
+                        final position = context.select((PlayerCubit c) => c.state.position);
+                        final duration = context.select((PlayerCubit c) => c.player.duration ?? Duration(milliseconds: 1));
+                        return Padding(
+                          padding: .symmetric(horizontal: pu6),
+                          child: Row(
+                            mainAxisAlignment: .spaceBetween,
+                            children: [
+                              Text(
+                                printDuration(position),
+                                style: textTheme.bodySmall,
+                              ),
+                              Text(
+                                printDuration(duration),
+                                style: textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    Gap(pu4),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: .all(pu4),
-                          child: Text(episode?.description ?? ''),
+                      child: Container(
+                        color: colors.surface,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: .all(pu4),
+                            child: Text(episode.description ?? ''),
+                          ),
                         ),
                       ),
                     ),

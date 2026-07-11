@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:podku_client/podku_client.dart';
-import 'package:podku_flutter/player/states/player.dart';
-import 'package:podku_flutter/podcasts/views/screens/podcasts.dart';
-import 'package:podku_flutter/router.dart';
-import 'package:podku_flutter/server/states/server.dart';
-import 'package:podku_flutter/utils.dart';
+import 'package:podku/player/states/player.dart';
+import 'package:podku/podcasts/views/screens/podcasts.dart';
+import 'package:podku/router.dart';
+import 'package:podku/server/states/server.dart';
+import 'package:podku/utils.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -20,6 +21,12 @@ Client get client => getIt.get<ServerCubit>().client!;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+
   final ServerCubit serverCubit = ServerCubit(ServerState());
   getIt.registerSingleton(serverCubit);
 
@@ -31,6 +38,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appBarTheme = AppBarThemeData(scrolledUnderElevation: 0, surfaceTintColor: Colors.transparent);
+    ColorScheme darkColorScheme = .fromSeed(
+      seedColor: appColor,
+      brightness: Brightness.dark,
+    );
+    ColorScheme lightColorScheme = .fromSeed(
+      seedColor: appColor,
+    );
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => getIt.get<ServerCubit>()),
@@ -44,10 +59,8 @@ class MyApp extends StatelessWidget {
               ? MaterialApp.router(
                   routerConfig: router(state.serverUrl),
                   darkTheme: ThemeData(
-                    colorScheme: .fromSeed(
-                      seedColor: appColor,
-                      brightness: Brightness.dark,
-                    ),
+                    colorScheme: darkColorScheme,
+                    appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
                   ),
                   themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
                   theme: ThemeData(
@@ -66,12 +79,8 @@ class MyApp extends StatelessWidget {
                     //
                     // This works for code too, not just values: Most code changes can be
                     // tested with just a hot reload.
-                    colorScheme: .fromSeed(
-                      seedColor: appColor,
-                      surface: Colors.white,
-                      surfaceContainerHigh: Color.fromARGB(255, 233, 234, 237),
-                      onSurface: Colors.black,
-                    ),
+                    colorScheme: lightColorScheme,
+                    appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
                   ),
                 )
               : SizedBox.shrink();
