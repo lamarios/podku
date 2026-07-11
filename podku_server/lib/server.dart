@@ -49,15 +49,17 @@ void run(List<String> args) async {
 
   // Setup a default page at the web root.
   // These are used by the default page.
-  pod.webServer.addRoute(RootRoute(), '/');
-  pod.webServer.addRoute(RootRoute(), '/index.html');
+  // pod.webServer.addRoute(RootRoute(), '/');
+  // pod.webServer.addRoute(RootRoute(), '/index.html');
   pod.webServer.addRoute(PodcastRoute(), '/podcasts/image');
   pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
 
   // Serve all files in the web/static relative directory under /.
   // These are used by the default web page.
-  final root = Directory(Uri(path: 'web/static').toFilePath());
+/*
+  final root = Directory(Uri(path: 'web/').toFilePath());
   pod.webServer.addRoute(StaticRoute.directory(root));
+*/
 
   // Setup the app config route.
   // We build this configuration based on the servers api url and serve it to
@@ -68,16 +70,16 @@ void run(List<String> args) async {
   );
 
   // Checks if the flutter web app has been built and serves it if it has.
-  final appDir = Directory(Uri(path: 'web/app').toFilePath());
+  final appDir = Directory(Uri(path: 'web').toFilePath());
   if (appDir.existsSync()) {
     // Serve the flutter web app under the /app path.
     pod.webServer.addRoute(
       FlutterRoute(
         Directory(
-          Uri(path: 'web/app').toFilePath(),
+          Uri(path: 'web').toFilePath(),
         ),
       ),
-      '/app',
+      '/',
     );
   } else {
     // If the flutter web app has not been built, serve the build app page.
