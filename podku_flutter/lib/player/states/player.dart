@@ -29,28 +29,37 @@ class PlayerCubit extends Cubit<PlayerState> {
   Future<void> updateProgress(Duration duration) async {}
 
   Future<void> playEpisode(Episode episode) async {
-    if (state.episode?.id == episode.id) {
-      return;
-    }
-    emit(state.copyWith(loading: true, showMiniPlayer: state.showMiniPlayer || true, showBigPlayer: false));
-    final backendEpisode = await client.episodes.getEpisode(episode.id);
-    if (backendEpisode != null && episode.audioUrl != null) {
-      episode = backendEpisode;
-      emit(
-        state.copyWith(
-          episode: episode,
-          bufferPosition: Duration.zero,
-          position: Duration.zero,
-          duration: Duration(seconds: episode.durationSeconds ?? 1),
-        ),
-      );
-      await _player.stop();
+    try {
+      if (state.episode?.id == episode.id) {
+        return;
+      }
+      emit(state.copyWith(loading: true,
+          showMiniPlayer: state.showMiniPlayer || true,
+          showBigPlayer: false));
+      final backendEpisode = await client.episodes.getEpisode(episode.id);
+      if (backendEpisode != null && episode.audioUrl != null) {
+        episode = backendEpisode;
+        emit(
+          state.copyWith(
+            episode: episode,
+            bufferPosition: Duration.zero,
+            position: Duration.zero,
+            duration: Duration(seconds: episode.durationSeconds ?? 1),
+          ),
+        );
+        await _player.stop();
 
-
-      await _player.playEpisode(
-        episode
-      );
-      await _player.play();
+        await _player.playEpisode(
+            episode
+        );
+        await _player.seek(Duration(
+            seconds: (state.episode!.progress * state.duration.inSeconds)
+                .round()));
+        emit(state.copyWith(loading: false));
+        await _player.play();
+      }
+    }catch(e){
+      print(e);
     }
   }
 
@@ -67,14 +76,7 @@ class PlayerCubit extends Cubit<PlayerState> {
   }
 
   Future<void> onStateChanged(PlaybackState event) async {
-    // handle when to remove the loading
-    emit(state.copyWith(playing: event.playing));
-    if (state.loading  && event.processingState == .ready && event.playing) {
-      await _player.seek(Duration(seconds: (state.episode!.progress * state.duration.inSeconds).round()));
-      emit(state.copyWith(loading: false));
-    }
-
-    emit(state.copyWith(position: event.position, bufferPosition: event.bufferedPosition));
+    emit(state.copyWith(playing: event.playing, position: event.position, bufferPosition: event.bufferedPosition));
     _updateProgress();
   }
 
