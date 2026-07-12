@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:podku/episodes/views/components/episode_play_button.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
@@ -35,7 +36,7 @@ class EpisodeInList extends StatelessWidget {
                   overflow: .ellipsis,
                 ),
                 Text(
-                  printDuration(Duration(seconds: episode.durationSeconds ?? 0)),
+                  DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(episode.pubDateMillis ?? 0)),
                   style: textTheme.labelSmall,
                 ),
               ],

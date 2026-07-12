@@ -681,13 +681,6 @@
             </list>
           </value>
         </entry>
-        <entry key="just_audio_background">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio_background-0.0.1-beta.17/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="just_audio_platform_interface">
           <value>
             <list>
@@ -1638,7 +1631,6 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/js-0.7.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.12.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio-0.10.6/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio_background-0.0.1-beta.17/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio_platform_interface-4.6.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/just_audio_web-0.4.16/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/leak_tracker-11.0.2/lib" />

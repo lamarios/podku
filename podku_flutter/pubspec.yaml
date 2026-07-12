@@ -26,6 +26,7 @@ resolution: workspace
 dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  audio_service: 0.18.19
   cached_network_image: 3.4.1
   cupertino_icons: ^1.0.5
   easy_debounce: 2.0.3
@@ -37,8 +38,8 @@ dependencies:
   gap: 3.0.1
   get_it: 9.2.1
   go_router: 17.3.0
+  intl: any
   just_audio: 0.10.6
-  just_audio_background: 0.0.1-beta.17
   material_loading_indicator: 1.0.0
   motor: 1.1.0
   podku_client:

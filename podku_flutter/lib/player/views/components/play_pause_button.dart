@@ -5,10 +5,12 @@ import 'package:podku/player/states/player.dart';
 
 class PlayPauseButton extends StatelessWidget {
   final double? size;
+
   const PlayPauseButton({super.key, this.size});
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Builder(
       builder: (context) {
         final cubit = context.read<PlayerCubit>();
@@ -19,10 +21,15 @@ class PlayPauseButton extends StatelessWidget {
             value: playing ? 1 : 0,
             from: 0,
             motion: MaterialSpringMotion.expressiveEffectsDefault(),
-            builder: (context, value, child) => AnimatedIcon(icon: AnimatedIcons.play_pause, progress: AlwaysStoppedAnimation(value), size: size,),
+            builder: (context, value, child) => AnimatedIcon(
+              icon: AnimatedIcons.play_pause,
+              color: colors.onSecondaryContainer,
+              progress: AlwaysStoppedAnimation(value),
+              size: size,
+            ),
           ),
         );
-      }
+      },
     );
   }
 }

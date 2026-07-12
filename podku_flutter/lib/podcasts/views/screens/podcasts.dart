@@ -23,7 +23,7 @@ class PodcastsScreen extends StatelessWidget {
               Expanded(
                 child: state.subscriptions.isNotEmpty
                     ? GridView.extent(
-                        maxCrossAxisExtent: 400,
+                        maxCrossAxisExtent: 250,
                         mainAxisExtent: 250,
                         crossAxisSpacing: pu2,
                         mainAxisSpacing: pu2,

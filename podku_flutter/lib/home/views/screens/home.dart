@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(_titles[navigationShell.currentIndex]),
           actions: [
-            if (!kIsWeb || !kDebugMode)
+            if (!kIsWeb || kDebugMode)
               IconButton(
                 onPressed: () async {
                   await getIt.get<ServerCubit>().setServerUrl(null);

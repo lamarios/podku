@@ -4,6 +4,7 @@ import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/player/states/player.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 
 class EpisodeScreen extends StatelessWidget {
@@ -16,9 +17,17 @@ class EpisodeScreen extends StatelessWidget {
       create: (context) => EpisodeCubit(EpisodeState()),
       child: BlocBuilder<EpisodeCubit, EpisodeState>(
         builder: (context, state) {
-          return BlocListener<HomeCubit, HomeState>(
-            listenWhen: (previous, current) => current.selectedIndex == 0,
-            listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(fromScratch: true),
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<HomeCubit, HomeState>(
+                listenWhen: (previous, current) => current.selectedIndex == 0,
+                listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(fromScratch: true),
+              ),
+              BlocListener<PlayerCubit, PlayerState>(
+                listenWhen: (previous, current) => previous.episode != current.episode,
+                listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(fromScratch: true),
+              )
+            ],
             child: Column(
               crossAxisAlignment: .stretch,
               children: [

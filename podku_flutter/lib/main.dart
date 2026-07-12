@@ -1,6 +1,7 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio_background/just_audio_background.dart';
+import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/views/screens/podcasts.dart';
@@ -21,11 +22,11 @@ Client get client => getIt.get<ServerCubit>().client!;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );
+  final audioHandler = await AudioService.init(builder: () => PodkuAudioHandler(), config: AudioServiceConfig(
+    androidNotificationChannelId: 'com.github.lamarios.podku.audio',
+    androidNotificationChannelName: 'Podku podcast'
+  ));
+  getIt.registerSingleton(audioHandler);
 
   final ServerCubit serverCubit = ServerCubit(ServerState());
   getIt.registerSingleton(serverCubit);

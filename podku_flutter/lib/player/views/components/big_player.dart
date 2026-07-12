@@ -63,19 +63,19 @@ class BigPlayer extends StatelessWidget {
                       mainAxisAlignment: .center,
                       crossAxisAlignment: .center,
                       children: [
-                        IconButton(iconSize: 60, onPressed: () => cubit.skip(-10), icon: Icon(Icons.fast_rewind)),
+                        IconButton(iconSize: 60, onPressed: () => cubit.skip(-10), icon: Icon(Icons.fast_rewind, color: colors.onSecondaryContainer,)),
                         Gap(pu4),
                         PlayPauseButton(
                           size: 75,
                         ),
                         Gap(pu4),
-                        IconButton(iconSize: 60, onPressed: () => cubit.skip(30), icon: Icon(Icons.fast_forward)),
+                        IconButton(iconSize: 60, onPressed: () => cubit.skip(30), icon: Icon(Icons.fast_forward, color: colors.onSecondaryContainer,)),
                       ],
                     ),
                     Gap(pu4),
                     Padding(
                       padding: .symmetric(horizontal: pu6),
-                      child: ProgressBar(height: 10),
+                      child: ProgressBar(height: 10, scrobblingDot: true,),
                     ),
                     Builder(
                       builder: (context) {
