@@ -19,7 +19,7 @@ class ProgressBar extends StatelessWidget {
 
         final Duration position = context.select((PlayerCubit c) => c.state.position);
         final Duration bufferPosition = context.select((PlayerCubit c) => c.state.bufferPosition);
-        final Duration totalDuration = context.select((PlayerCubit c) => c.player.duration ?? Duration(milliseconds: 1));
+        final Duration totalDuration = context.select((PlayerCubit c) => c.state.duration);
 
 
         final totalDurationAdjusted = totalDuration.inSeconds == 0 ? 1 : totalDuration.inSeconds;
@@ -37,7 +37,7 @@ class ProgressBar extends StatelessWidget {
                   widthFactor: bufferPosition.inSeconds / totalDurationAdjusted,
                   duration: animationDuration,
                   child: Container(
-                    decoration: BoxDecoration(borderRadius: .circular(height), color: colors.secondaryContainer),
+                    decoration: BoxDecoration(borderRadius: .circular(height), color: colors.secondaryContainer.withValues(alpha: 0.8)),
                   ),
                 ),
                 AnimatedFractionallySizedBox(

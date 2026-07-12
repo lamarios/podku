@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -26,15 +27,16 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(_titles[navigationShell.currentIndex]),
           actions: [
-            IconButton(
-              onPressed: () async {
-                await getIt.get<ServerCubit>().setServerUrl(null);
-                if (context.mounted) {
-                  context.go('/setup');
-                }
-              },
-              icon: Icon(Icons.logout),
-            ),
+            if (!kIsWeb || !kDebugMode)
+              IconButton(
+                onPressed: () async {
+                  await getIt.get<ServerCubit>().setServerUrl(null);
+                  if (context.mounted) {
+                    context.go('/setup');
+                  }
+                },
+                icon: Icon(Icons.logout),
+              ),
           ],
         ),
         body: SafeArea(

@@ -14,6 +14,9 @@ class PodcastRefresh extends FutureCall {
     final podcasts = await Podcast.db.find(session);
 
     for (final podcast in podcasts) {
+
+      session.log("Refreshing podcast ${podcast.name} (${podcast.id})");
+
       final p = await PodcastFeedParser.parseUrl(podcast);
       await Podcast.db.updateRow(session, p);
 
@@ -24,6 +27,7 @@ class PodcastRefresh extends FutureCall {
         );
 
         if (dbEpisode == null) {
+          session.log('Found new episode ${episode.title} (${episode.id}');
           await Episode.db.insertRow(session, episode);
         }
       }

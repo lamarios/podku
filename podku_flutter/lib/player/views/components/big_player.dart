@@ -80,7 +80,7 @@ class BigPlayer extends StatelessWidget {
                     Builder(
                       builder: (context) {
                         final position = context.select((PlayerCubit c) => c.state.position);
-                        final duration = context.select((PlayerCubit c) => c.player.duration ?? Duration(milliseconds: 1));
+                        final duration = context.select((PlayerCubit c) => c.state.duration);
                         return Padding(
                           padding: .symmetric(horizontal: pu6),
                           child: Row(

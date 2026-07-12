@@ -44,10 +44,10 @@ class ServerCubit extends Cubit<ServerState> {
           serverUrl = serverUrl.substring(0, serverUrl.length - 1);
         }
 
-        if (!kIsWeb) {
+        // if (!kIsWeb) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString("serverUrl", serverUrl);
-        }
+        // }
 
         client = Client(state.apiUrl)
           ..connectivityMonitor = FlutterConnectivityMonitor()
@@ -57,10 +57,10 @@ class ServerCubit extends Cubit<ServerState> {
         emit(state.copyWith(initialized: true));
         return true;
       } else {
-        if (!kIsWeb) {
+        // if (!kIsWeb) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.remove("serverUrl");
-        }
+        // }
         emit(state.copyWith(initialized: true));
         return false;
       }

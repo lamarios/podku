@@ -36,12 +36,17 @@ class PodcastAudioRoute extends Route {
         (chunk) => chunk is Uint8List ? chunk : Uint8List.fromList(chunk),
       );
 
-      final responseHeaders = Headers.build((h) {
+      final responseHeaders = Map<String, Iterable<String>>.from(Headers.build((h) {
         h.accessControlAllowOrigin = AccessControlAllowOriginHeader.wildcard();
         // copy over whatever downstream headers you're already forwarding here too
-      });
+      }));
 
-      headers.addAll(response.headers);
+
+      responseHeaders.addAll(
+        response.headers.map(
+          (key, value) => MapEntry(key, [value]),
+        ),
+      );
 
       return Response(
         response.statusCode,
@@ -50,7 +55,7 @@ class PodcastAudioRoute extends Route {
           contentLength: response.contentLength,
         ),
 
-        headers: responseHeaders,
+        headers: Headers.fromMap(responseHeaders),
       );
     } else {
       return Response.forbidden();

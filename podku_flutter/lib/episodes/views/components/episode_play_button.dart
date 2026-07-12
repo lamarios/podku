@@ -18,7 +18,7 @@ class EpisodePlayButton extends StatelessWidget {
         final playerEpisode = context.select((PlayerCubit c) => c.state.episode);
         final isEpisodePlaying = playerEpisode?.id == episode.id;
         final playerProgress = context.select(
-          (PlayerCubit c) => isEpisodePlaying && c.state.loading == false ? (c.state.position.inSeconds) / (c.player.duration?.inSeconds ?? Duration(milliseconds: 1).inSeconds) : episode.progress,
+          (PlayerCubit c) => isEpisodePlaying && c.state.loading == false ? (c.state.position.inSeconds) / (c.state.duration.inSeconds) : episode.progress,
         );
 
         return Stack(
