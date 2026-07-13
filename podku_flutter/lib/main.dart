@@ -24,7 +24,8 @@ void main() async {
 
   final audioHandler = await AudioService.init(builder: () => PodkuAudioHandler(), config: AudioServiceConfig(
     androidNotificationChannelId: 'com.github.lamarios.podku.audio',
-    androidNotificationChannelName: 'Podku podcast'
+    androidNotificationChannelName: 'Podku podcast',
+      androidNotificationIcon: 'mipmap/ic_launcher'
   ));
   getIt.registerSingleton(audioHandler);
 
