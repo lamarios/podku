@@ -4,10 +4,10 @@ import 'package:serverpod/server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class EpisodesEndpoint extends Endpoint {
-  Future<List<Episode>> getEpisodes(Session session, int? after) async {
+  Future<List<Episode>> getEpisodes(Session session, { int? after, required int pageSize}) async {
     return await Episode.db.find(
       session,
-      limit: 100,
+      limit: pageSize,
       orderBy: (p0) => p0.pubDateMillis,
       orderDescending: true,
       where: (p0) => p0.pubDateMillis < (after ?? DateTime.now().millisecondsSinceEpoch),

@@ -28,6 +28,16 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> stop() => _player.stop();
 
   @override
+  Future<void> skipToNext() {
+    return fastForward();
+  }
+
+  @override
+  Future<void> skipToPrevious() {
+    return rewind();
+  }
+
+  @override
   Future<void> seek(Duration position) async {
     _player.seek(position);
     playbackState.add(playbackState.value.copyWith(updatePosition: position));

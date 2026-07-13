@@ -5,6 +5,7 @@ import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/player/states/player.dart';
+import 'package:podku/utils.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 
 class EpisodeScreen extends StatelessWidget {
@@ -17,54 +18,81 @@ class EpisodeScreen extends StatelessWidget {
       create: (context) => EpisodeCubit(EpisodeState()),
       child: BlocBuilder<EpisodeCubit, EpisodeState>(
         builder: (context, state) {
+          final cubit = context.read<EpisodeCubit>();
           return MultiBlocListener(
             listeners: [
               BlocListener<HomeCubit, HomeState>(
                 listenWhen: (previous, current) => current.selectedIndex == 0,
-                listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(fromScratch: true),
+                listener: (context, state) =>
+                    context.read<EpisodeCubit>().getEpisodes(refresh: true),
               ),
               BlocListener<PlayerCubit, PlayerState>(
-                listenWhen: (previous, current) => previous.episode != current.episode,
-                listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(fromScratch: true),
-              )
+                listenWhen: (previous, current) =>
+                    previous.episode != current.episode,
+                listener: (context, state) =>
+                    context.read<EpisodeCubit>().getEpisodes(refresh: true),
+              ),
             ],
             child: Column(
               crossAxisAlignment: .stretch,
               children: [
-
                 if (state.episodes.isNotEmpty)
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: state.episodes.length + (state.episodes.isNotEmpty && state.episodes.length % 100 == 0 ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        final hasMore = state.episodes.length % 100 == 0;
-                        final isLast = index >= state.episodes.length - 1;
+                    child: RefreshIndicator(
+                      onRefresh: () => cubit.getEpisodes(refresh: true),
+                      child: Padding(
+                        padding: .symmetric(horizontal: pu2),
+                        child: ListView.builder(
+                          itemCount:
+                              state.episodes.length +
+                              (state.episodes.isNotEmpty &&
+                                      state.episodes.length % 100 == 0
+                                  ? 1
+                                  : 0),
+                          itemBuilder: (context, index) {
+                            final hasMore = state.episodes.length % 100 == 0;
+                            final isLast = index >= state.episodes.length - 1;
 
-                        if (index < state.episodes.length) {
-                          final e = state.episodes[index];
+                            if (index < state.episodes.length) {
+                              final e = state.episodes[index];
 
-                          return ConditionalWrap(
-                            wrapIf: isLast && !hasMore,
-                            wrapper: (child) => Padding(
-                              padding: .only(bottom: 200),
-                              child: child,
-                            ),
-                            child: EpisodeInList(key: ValueKey(e.id.uuid), episode: e),
-                          );
-                        } else {
-                          return Padding(
-                            padding: .only(bottom: 200),
-                            child: TextButton(
-                              child: Text('Load more'),
-                              onPressed: () => context.read<EpisodeCubit>().loadMore(),
-                            ),
-                          );
-                        }
-                      },
+                              return ConditionalWrap(
+                                wrapIf: isLast && !hasMore,
+                                wrapper: (child) => Padding(
+                                  padding: .only(bottom: 200),
+                                  child: child,
+                                ),
+                                child: EpisodeInList(
+                                  key: ValueKey(e.id.uuid),
+                                  episode: e,
+                                ),
+                              );
+                            } else {
+                              return Padding(
+                                padding: .only(bottom: 200),
+                                child: TextButton(
+                                  child: Text('Load more'),
+                                  onPressed: () =>
+                                      context.read<EpisodeCubit>().loadMore(),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
                     ),
-                  ) else if (!state.loading)
-                   ...[Expanded(child: Center(child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2),),))]
-                ,
+                  )
+                else if (!state.loading) ...[
+                  Expanded(
+                    child: Center(
+                      child: Icon(
+                        Icons.playlist_remove,
+                        size: 100,
+                        color: colors.onSurface.withValues(alpha: 0.2),
+                      ),
+                    ),
+                  ),
+                ],
                 if (state.loading) Center(child: LoadingIndicator()),
               ],
             ),

@@ -249,12 +249,17 @@ class EndpointEpisodes extends _i2.EndpointRef {
   @override
   String get name => 'episodes';
 
-  _i3.Future<List<_i5.Episode>> getEpisodes(int? after) =>
-      caller.callServerEndpoint<List<_i5.Episode>>(
-        'episodes',
-        'getEpisodes',
-        {'after': after},
-      );
+  _i3.Future<List<_i5.Episode>> getEpisodes({
+    int? after,
+    required int pageSize,
+  }) => caller.callServerEndpoint<List<_i5.Episode>>(
+    'episodes',
+    'getEpisodes',
+    {
+      'after': after,
+      'pageSize': pageSize,
+    },
+  );
 
   _i3.Future<_i5.Episode?> getEpisode(_i2.UuidValue id) =>
       caller.callServerEndpoint<_i5.Episode?>(

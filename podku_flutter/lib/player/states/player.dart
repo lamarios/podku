@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -22,6 +23,7 @@ class PlayerCubit extends Cubit<PlayerState> {
     }
 */
     _player.playbackState.stream.listen(onStateChanged);
+    stream.map((event) => event.showBigPlayer).listen(handleBackButton);
   }
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
@@ -33,9 +35,13 @@ class PlayerCubit extends Cubit<PlayerState> {
       if (state.episode?.id == episode.id) {
         return;
       }
-      emit(state.copyWith(loading: true,
-          showMiniPlayer: state.showMiniPlayer || true,
-          showBigPlayer: false));
+      emit(
+        state.copyWith(
+          loading: true,
+          showMiniPlayer: false,
+          showBigPlayer: true,
+        ),
+      );
       final backendEpisode = await client.episodes.getEpisode(episode.id);
       if (backendEpisode != null && episode.audioUrl != null) {
         episode = backendEpisode;
@@ -49,16 +55,17 @@ class PlayerCubit extends Cubit<PlayerState> {
         );
         await _player.stop();
 
-        await _player.playEpisode(
-            episode
-        );
-        await _player.seek(Duration(
+        await _player.playEpisode(episode);
+        await _player.seek(
+          Duration(
             seconds: (state.episode!.progress * state.duration.inSeconds)
-                .round()));
+                .round(),
+          ),
+        );
         emit(state.copyWith(loading: false));
         await _player.play();
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -76,7 +83,13 @@ class PlayerCubit extends Cubit<PlayerState> {
   }
 
   Future<void> onStateChanged(PlaybackState event) async {
-    emit(state.copyWith(playing: event.playing, position: event.position, bufferPosition: event.bufferedPosition));
+    emit(
+      state.copyWith(
+        playing: event.playing,
+        position: event.position,
+        bufferPosition: event.bufferedPosition,
+      ),
+    );
     _updateProgress();
   }
 
@@ -87,9 +100,24 @@ class PlayerCubit extends Cubit<PlayerState> {
         'progress-update',
         Duration(seconds: 5),
         () async {
-          await client.episodes.setProgress(state.episode!.copyWith(progress: progress));
+          await client.episodes.setProgress(
+            state.episode!.copyWith(progress: progress),
+          );
         },
       );
+    }
+  }
+
+  bool backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true));
+    return true;
+  }
+
+  void handleBackButton(bool showBigScreen) {
+    if (showBigScreen) {
+      BackButtonInterceptor.add(backButtonInterceptor);
+    } else {
+      BackButtonInterceptor.remove(backButtonInterceptor);
     }
   }
 }

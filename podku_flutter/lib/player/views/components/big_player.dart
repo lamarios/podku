@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/player/states/player.dart';
@@ -22,97 +23,129 @@ class BigPlayer extends StatelessWidget {
       backgroundColor: colors.secondaryContainer,
       appBar: AppBar(
         backgroundColor: colors.secondaryContainer,
-        actions: [IconButton(onPressed: () => context.read<PlayerCubit>().showPlayers(true, false), icon: Icon(Icons.arrow_drop_down))],
+        actions: [
+          IconButton(
+            onPressed: () =>
+                context.read<PlayerCubit>().showPlayers(true, false),
+            icon: Icon(Icons.arrow_drop_down),
+          ),
+        ],
       ),
       body: Builder(
         builder: (context) {
           final episode = context.select((PlayerCubit c) => c.state.episode);
           final loading = context.select((PlayerCubit c) => c.state.loading);
-          return episode == null
-              ? Center(
-                  child: Text('nothing is playing'),
-                )
-              : loading
-              ? Center(
-                  child: LoadingIndicator(),
-                )
-              : Column(
-                  crossAxisAlignment: .stretch,
-                  children: [
-                    Center(
-                      child: PodcastImage(
-                        podcast: episode.podcast!,
-                        width: _imageWidth,
-                        height: _imageWidth,
-                        borderRadius: pu8,
-                      ),
-                    ),
-                    Gap(pu4),
-                    Padding(
-                      padding: .symmetric(horizontal: pu2),
-                      child: Text(
-                        episode.title,
-                        style: textTheme.titleLarge,
-                        overflow: .ellipsis,
-                        maxLines: 3,
-                        textAlign: .center,
-                      ),
-                    ),
-                    Gap(pu4),
-                    Row(
-                      mainAxisAlignment: .center,
-                      crossAxisAlignment: .center,
-                      children: [
-                        IconButton(iconSize: 60, onPressed: () => cubit.skip(-10), icon: Icon(Icons.fast_rewind, color: colors.onSecondaryContainer,)),
-                        Gap(pu4),
-                        PlayPauseButton(
-                          size: 75,
-                        ),
-                        Gap(pu4),
-                        IconButton(iconSize: 60, onPressed: () => cubit.skip(30), icon: Icon(Icons.fast_forward, color: colors.onSecondaryContainer,)),
-                      ],
-                    ),
-                    Gap(pu4),
-                    Padding(
-                      padding: .symmetric(horizontal: pu6),
-                      child: ProgressBar(height: 10, scrobblingDot: true,),
-                    ),
-                    Builder(
-                      builder: (context) {
-                        final position = context.select((PlayerCubit c) => c.state.position);
-                        final duration = context.select((PlayerCubit c) => c.state.duration);
-                        return Padding(
-                          padding: .symmetric(horizontal: pu6),
-                          child: Row(
-                            mainAxisAlignment: .spaceBetween,
-                            children: [
-                              Text(
-                                printDuration(position),
-                                style: textTheme.bodySmall,
-                              ),
-                              Text(
-                                printDuration(duration),
-                                style: textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    Gap(pu4),
-                    Expanded(
-                      child: Container(
-                        color: colors.surface,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: .all(pu4),
-                            child: Text(episode.description ?? ''),
-                          ),
+          return AnimatedSwitcher(
+            switchOutCurve: Curves.easeInOutQuad,
+            switchInCurve: Curves.easeInOutQuad,
+            duration: animationDuration,
+            child: episode == null
+                ? Center(
+                    child: Text('nothing is playing'),
+                  )
+                : loading
+                ? Center(
+                    child: LoadingIndicator(),
+                  )
+                : Column(
+                    crossAxisAlignment: .stretch,
+                    children: [
+                      Center(
+                        child: PodcastImage(
+                          podcast: episode.podcast!,
+                          width: _imageWidth,
+                          height: _imageWidth,
+                          borderRadius: pu8,
                         ),
                       ),
-                    ),
-                  ],
-                );
+                      Gap(pu4),
+                      Padding(
+                        padding: .symmetric(horizontal: pu2),
+                        child: Text(
+                          episode.title,
+                          style: textTheme.titleLarge,
+                          overflow: .ellipsis,
+                          maxLines: 3,
+                          textAlign: .center,
+                        ),
+                      ),
+                      Gap(pu4),
+                      Row(
+                        mainAxisAlignment: .center,
+                        crossAxisAlignment: .center,
+                        children: [
+                          IconButton(
+                            iconSize: 60,
+                            onPressed: () => cubit.skip(-10),
+                            icon: Icon(
+                              Icons.fast_rewind,
+                              color: colors.onSecondaryContainer,
+                            ),
+                          ),
+                          Gap(pu4),
+                          PlayPauseButton(
+                            size: 75,
+                          ),
+                          Gap(pu4),
+                          IconButton(
+                            iconSize: 60,
+                            onPressed: () => cubit.skip(30),
+                            icon: Icon(
+                              Icons.fast_forward,
+                              color: colors.onSecondaryContainer,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Gap(pu4),
+                      Padding(
+                        padding: .symmetric(horizontal: pu6),
+                        child: ProgressBar(
+                          height: 10,
+                          scrobblingDot: true,
+                        ),
+                      ),
+                      Builder(
+                        builder: (context) {
+                          final position = context.select(
+                            (PlayerCubit c) => c.state.position,
+                          );
+                          final duration = context.select(
+                            (PlayerCubit c) => c.state.duration,
+                          );
+                          return Padding(
+                            padding: .symmetric(horizontal: pu6),
+                            child: Row(
+                              mainAxisAlignment: .spaceBetween,
+                              children: [
+                                Text(
+                                  printDuration(position),
+                                  style: textTheme.bodySmall,
+                                ),
+                                Text(
+                                  printDuration(duration),
+                                  style: textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      Gap(pu4),
+                      Expanded(
+                        child: Container(
+                          color: colors.surface,
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: .all(pu4),
+                              child: HtmlWidget(episode.description ?? ''),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          );
         },
       ),
     );

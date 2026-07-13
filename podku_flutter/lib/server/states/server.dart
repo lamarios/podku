@@ -45,28 +45,31 @@ class ServerCubit extends Cubit<ServerState> {
         }
 
         // if (!kIsWeb) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString("serverUrl", serverUrl);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("serverUrl", serverUrl);
         // }
 
-        client = Client(state.apiUrl)
+        final client = Client(state.apiUrl)
           ..connectivityMonitor = FlutterConnectivityMonitor()
           ..authSessionManager = FlutterAuthSessionManager();
 
-        client?.auth.initialize();
-        emit(state.copyWith(initialized: true));
+        await client?.auth.initialize();
+
+        this.client = client;
+
         return true;
       } else {
         // if (!kIsWeb) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove("serverUrl");
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove("serverUrl");
         // }
-        emit(state.copyWith(initialized: true));
         return false;
       }
     } catch (e) {
       print(e);
       return false;
+    }finally{
+      emit(state.copyWith(initialized: true));
     }
   }
 

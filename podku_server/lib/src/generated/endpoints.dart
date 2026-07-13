@@ -270,6 +270,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int?>(),
               nullable: true,
             ),
+            'pageSize': _i1.ParameterDescription(
+              name: 'pageSize',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -278,7 +283,8 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async =>
                   (endpoints['episodes'] as _i4.EpisodesEndpoint).getEpisodes(
                     session,
-                    params['after'],
+                    after: params['after'],
+                    pageSize: params['pageSize'],
                   ),
         ),
         'getEpisode': _i1.MethodConnector(

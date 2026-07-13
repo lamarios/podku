@@ -5,15 +5,18 @@ import 'package:podku/main.dart';
 
 part 'episodes.freezed.dart';
 
+
+const int _pageSize =100;
+
 class EpisodeCubit extends Cubit<EpisodeState> {
   EpisodeCubit(super.initialState) {
     getEpisodes();
   }
 
-  Future<void> getEpisodes({bool fromScratch = false}) async {
-    emit(state.copyWith(loading: true));
+  Future<void> getEpisodes({bool refresh = false}) async {
+    emit(state.copyWith(loading: !refresh));
 
-    final episodes = await client.episodes.getEpisodes(fromScratch ? DateTime.now().millisecondsSinceEpoch : state.cursor);
+    final episodes = await client.episodes.getEpisodes(after: refresh ? DateTime.now().millisecondsSinceEpoch : state.cursor, pageSize: refresh && state.episodes.isNotEmpty? state.episodes.length : _pageSize);
 
     emit(state.copyWith(episodes: episodes, cursor: episodes.lastOrNull?.pubDateMillis, loading: false));
   }
@@ -23,7 +26,7 @@ class EpisodeCubit extends Cubit<EpisodeState> {
       emit(state.copyWith(loading: true));
       final episodes = List<Episode>.from(state.episodes);
 
-      episodes.addAll(await client.episodes.getEpisodes(state.cursor));
+      episodes.addAll(await client.episodes.getEpisodes(after: state.cursor, pageSize: _pageSize));
 
       emit(state.copyWith(episodes: episodes, loading: false, cursor: episodes.lastOrNull?.pubDateMillis));
     }

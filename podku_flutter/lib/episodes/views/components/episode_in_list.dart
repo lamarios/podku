@@ -14,6 +14,7 @@ class EpisodeInList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
     return Padding(
       padding: .only(bottom: pu2),
       child: Row(
@@ -35,9 +36,32 @@ class EpisodeInList extends StatelessWidget {
                   maxLines: 2,
                   overflow: .ellipsis,
                 ),
-                Text(
-                  DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(episode.pubDateMillis ?? 0)),
-                  style: textTheme.labelSmall,
+                Row(
+                  crossAxisAlignment: .center,
+                  children: [
+                    Text(
+                      DateFormat.yMMMd().format(
+                        DateTime.fromMillisecondsSinceEpoch(
+                          episode.pubDateMillis ?? 0,
+                        ),
+                      ),
+                      style: textTheme.bodySmall?.copyWith(color: colors.outline),
+                    ),
+                    if (episode.durationSeconds != null) ...[
+                      Gap(pu2),
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 12,
+                        color: colors.outline,
+                      ),
+                      Text(
+                        printDuration(
+                          Duration(seconds: episode.durationSeconds ?? 0),
+                        ),
+                        style: textTheme.bodySmall?.copyWith(color: colors.outline),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),

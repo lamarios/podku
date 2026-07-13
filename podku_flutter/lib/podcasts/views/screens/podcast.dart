@@ -27,67 +27,80 @@ class PodcastScreen extends StatelessWidget {
                 return Scaffold(
                   appBar: AppBar(
                     title: Text(state.podcast?.name ?? ''),
+                    backgroundColor: colors.secondaryContainer,
                   ),
+                  backgroundColor: colors.secondaryContainer,
                   body: SafeArea(
+                    bottom: false,
                     child: state.loading
                         ? Center(child: LoadingIndicator())
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: pu2),
-                            child: Column(
-                              crossAxisAlignment: .stretch,
-                              children: [
-                                Center(
-                                  child: PodcastImage(
-                                    podcast: state.podcast!,
-                                    width: 200,
-                                    height: 200,
-                                    borderRadius: pu4,
-                                  ),
+                        : Column(
+                          crossAxisAlignment: .stretch,
+                          children: [
+                            Center(
+                              child: PodcastImage(
+                                podcast: state.podcast!,
+                                width: 200,
+                                height: 200,
+                                borderRadius: pu4,
+                              ),
+                            ),
+                            if (state.podcast?.description != null) ...[
+                              Gap(pu2),
+                              Padding(
+                                padding: .symmetric(horizontal: pu2),
+                                child: Text(
+                                  state.podcast!.description!,
+                                  maxLines: 5,
+                                  overflow: .ellipsis,
                                 ),
-                                if (state.podcast?.description != null) ...[
-                                  Gap(pu2),
-                                  Text(
-                                    state.podcast!.description!,
-                                    maxLines: 5,
-                                    overflow: .ellipsis,
-                                  ),
-                                ],
-                                Gap(pu2),
-                                Row(
-                                  mainAxisAlignment: .end,
-                                  children: [
-                                  TextButton.icon(onPressed: () async {
-                                    if(state.podcast != null) {
-                                      final unsubscribed = await client.podcast.unsubscribe(state.podcast!.copyWith(episodes: []));
-                                      if(unsubscribed && context.mounted){
-                                        context.pop();
-                                      }
+                              ),
+                            ],
+                            Gap(pu2),
+                            Padding(
+                              padding: .symmetric(horizontal: pu2),
+                              child: Row(
+                                mainAxisAlignment: .end,
+                                children: [
+                                TextButton.icon(onPressed: () async {
+                                  if(state.podcast != null) {
+                                    final unsubscribed = await client.podcast.unsubscribe(state.podcast!.copyWith(episodes: []));
+                                    if(unsubscribed && context.mounted){
+                                      context.pop();
                                     }
-                                  }, label: Text('Unsubscribe', style: textTheme.bodyMedium!.copyWith(color: colors.error),), icon: Icon(Icons.block, color: colors.error,),)
-                                ],),
-                                Gap(pu2),
-                                Text(
-                                  'Episodes',
-                                  style: textTheme.titleMedium,
-                                ),
-                                Gap(pu2),
-                                if (state.podcast?.episodes != null)
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount: state.podcast!.episodes!.length,
-                                      itemBuilder: (context, index) => ConditionalWrap(
-                                        wrapIf: index == state.podcast!.episodes!.length - 1,
-                                        wrapper: (child) => Padding(
-                                          padding: .only(bottom: 200),
-                                          child: child,
-                                        ),
-                                        child: EpisodeInList(episode: state.podcast!.episodes![index]),
+                                  }
+                                }, label: Text('Unsubscribe', style: textTheme.bodyMedium!.copyWith(color: colors.error),), icon: Icon(Icons.block, color: colors.error,),)
+                              ],),
+                            ),
+                            Gap(pu2),
+                            Padding(
+                              padding: .symmetric(horizontal: pu2),
+                              child: Text(
+                                'Episodes',
+                                style: textTheme.titleMedium,
+                              ),
+                            ),
+                            Gap(pu2),
+                            if (state.podcast?.episodes != null)
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(color: colors.surface),
+                                  padding: .only(left: pu4, right: pu4, top: pu4),
+                                  child: ListView.builder(
+                                    itemCount: state.podcast!.episodes!.length,
+                                    itemBuilder: (context, index) => ConditionalWrap(
+                                      wrapIf: index == state.podcast!.episodes!.length - 1,
+                                      wrapper: (child) => Padding(
+                                        padding: .only(bottom: 200),
+                                        child: child,
                                       ),
+                                      child: EpisodeInList(episode: state.podcast!.episodes![index]),
                                     ),
                                   ),
-                              ],
-                            ),
-                          ),
+                                ),
+                              ),
+                          ],
+                        ),
                   ),
                 );
               },

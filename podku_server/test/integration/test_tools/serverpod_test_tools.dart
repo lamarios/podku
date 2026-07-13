@@ -504,9 +504,10 @@ class _EpisodesEndpoint {
   final _i2.SerializationManager _serializationManager;
 
   _i3.Future<List<_i5.Episode>> getEpisodes(
-    _i1.TestSessionBuilder sessionBuilder,
+    _i1.TestSessionBuilder sessionBuilder, {
     int? after,
-  ) async {
+    required int pageSize,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -518,7 +519,10 @@ class _EpisodesEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'episodes',
           methodName: 'getEpisodes',
-          parameters: _i1.testObjectToJson({'after': after}),
+          parameters: _i1.testObjectToJson({
+            'after': after,
+            'pageSize': pageSize,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
