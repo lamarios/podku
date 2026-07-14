@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
@@ -19,6 +21,7 @@ class EpisodeScreen extends StatelessWidget {
       child: BlocBuilder<EpisodeCubit, EpisodeState>(
         builder: (context, state) {
           final cubit = context.read<EpisodeCubit>();
+
           return MultiBlocListener(
             listeners: [
               BlocListener<HomeCubit, HomeState>(
@@ -56,16 +59,43 @@ class EpisodeScreen extends StatelessWidget {
                             if (index < state.episodes.length) {
                               final e = state.episodes[index];
 
-                              return ConditionalWrap(
-                                wrapIf: isLast && !hasMore,
-                                wrapper: (child) => Padding(
-                                  padding: .only(bottom: 200),
-                                  child: child,
-                                ),
-                                child: EpisodeInList(
-                                  key: ValueKey(e.id.uuid),
-                                  episode: e,
-                                ),
+                              return Builder(
+                                builder: (context) {
+                                  final downloadStatus = context.select(
+                                    (DownloadManagerCubit c) =>
+                                        c.state.downloadStatus[e.id.uuid],
+                                  );
+                                  return SwipeActionCell(
+                                    key: Key(e.id.uuid),
+                                    trailingActions: downloadStatus == null
+                                        ? [
+                                            SwipeAction(
+                                              icon: Icon(Icons.download),
+                                              color: colors.secondaryContainer,
+                                              onTap: (handler) async {
+                                                context
+                                                    .read<
+                                                      DownloadManagerCubit
+                                                    >()
+                                                    .download(e, manualDownload: true);
+                                                await handler(false);
+                                              },
+                                            ),
+                                          ]
+                                        : null,
+                                    child: ConditionalWrap(
+                                      wrapIf: isLast && !hasMore,
+                                      wrapper: (child) => Padding(
+                                        padding: .only(bottom: 200),
+                                        child: child,
+                                      ),
+                                      child: EpisodeInList(
+                                        key: ValueKey(e.id.uuid),
+                                        episode: e,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
                             } else {
                               return Padding(

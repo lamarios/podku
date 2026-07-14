@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:podku/episodes/views/components/download_status.dart';
 import 'package:podku/episodes/views/components/episode_play_button.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
@@ -8,8 +9,9 @@ import 'package:podku_client/podku_client.dart';
 
 class EpisodeInList extends StatelessWidget {
   final Episode episode;
+  final bool offline;
 
-  const EpisodeInList({super.key, required this.episode});
+  const EpisodeInList({super.key, required this.episode, this.offline = false});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,9 @@ class EpisodeInList extends StatelessWidget {
                           episode.pubDateMillis ?? 0,
                         ),
                       ),
-                      style: textTheme.bodySmall?.copyWith(color: colors.outline),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.outline,
+                      ),
                     ),
                     if (episode.durationSeconds != null) ...[
                       Gap(pu2),
@@ -58,9 +62,13 @@ class EpisodeInList extends StatelessWidget {
                         printDuration(
                           Duration(seconds: episode.durationSeconds ?? 0),
                         ),
-                        style: textTheme.bodySmall?.copyWith(color: colors.outline),
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.outline,
+                        ),
                       ),
                     ],
+                    Gap(pu),
+                    if (!offline) EpisodeDownloadStatus(episode: episode),
                   ],
                 ),
               ],

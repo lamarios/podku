@@ -35,6 +35,7 @@ class PlayerCubit extends Cubit<PlayerState> {
       if (state.episode?.id == episode.id) {
         return;
       }
+
       emit(
         state.copyWith(
           loading: true,
@@ -56,12 +57,6 @@ class PlayerCubit extends Cubit<PlayerState> {
         await _player.stop();
 
         await _player.playEpisode(episode);
-        await _player.seek(
-          Duration(
-            seconds: (state.episode!.progress * state.duration.inSeconds)
-                .round(),
-          ),
-        );
         emit(state.copyWith(loading: false));
         await _player.play();
       }

@@ -1,11 +1,14 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logging/logging.dart';
+import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/podcasts/models/podcast.dart';
 import 'package:podku_client/podku_client.dart';
 
 class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
+  static final _log = Logger('PodkuAudioHandler');
   final _player = AudioPlayer();
 
   PodkuAudioHandler() {
@@ -61,15 +64,33 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> playEpisode(Episode episode) async {
     playbackState.add(playbackState.value.copyWith(processingState: .loading));
 
+    var offlineFiles = await episode.offlineFiles;
+
+    final offlineFile = offlineFiles
+        .where((s) => s.endsWith(episode.episodeFile))
+        .firstOrNull;
+
+    final imageFile = offlineFiles
+        .where((s) => s.endsWith(episode.imageFile))
+        .firstOrNull;
 
     var audioProxyUrl = episode.audioProxyUrl;
-    await _player.setUrl(audioProxyUrl);
+
+    final initialPosition = episode.durationSeconds == null ? Duration.zero : Duration(seconds:(episode.progress * episode.durationSeconds!).round());
+
+    if(offlineFile != null) {
+      _log.fine('playing from offline file');
+      await _player.setFilePath(offlineFile, initialPosition: initialPosition);
+    } else{
+      _log.fine('playing online');
+      await _player.setUrl(audioProxyUrl,initialPosition: initialPosition);
+    }
     final item = MediaItem(
       id: episode.id.uuid,
       title: episode.title,
       artist: episode.podcast?.name,
       duration: Duration(seconds: episode.durationSeconds ?? 1),
-      artUri: Uri.tryParse(episode.podcast?.artUrl ?? ''),
+      artUri: imageFile != null ? Uri.file(imageFile) : Uri.tryParse(episode.podcast?.artUrl ?? ''),
     );
 
     mediaItem.add(item);

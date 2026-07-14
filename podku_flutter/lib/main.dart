@@ -1,6 +1,9 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
+import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:podku/player/states/player.dart';
@@ -20,6 +23,11 @@ import 'package:podku/utils.dart';
 Client get client => getIt.get<ServerCubit>().client!;
 
 void main() async {
+  Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
+
   WidgetsFlutterBinding.ensureInitialized();
 
   final audioHandler = await AudioService.init(builder: () => PodkuAudioHandler(), config: AudioServiceConfig(
@@ -31,6 +39,9 @@ void main() async {
 
   final ServerCubit serverCubit = ServerCubit(ServerState());
   getIt.registerSingleton(serverCubit);
+
+  final downloadManager = DownloadManagerCubit(DownloadManagerState());
+  getIt.registerSingleton(downloadManager);
 
   runApp(const MyApp());
 }
@@ -54,6 +65,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => PlayerCubit(PlayerState()),
         ),
+        BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>(),)
       ],
       child: BlocBuilder<ServerCubit, ServerState>(
         builder: (context, state) {
