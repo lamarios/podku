@@ -8,6 +8,7 @@ import 'package:podku/player/views/components/play_pause_button.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/models/breakpoint.dart';
 
 const double _imageWidth = 200;
 
@@ -19,16 +20,23 @@ class BigPlayer extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     final cubit = context.read<PlayerCubit>();
+    final isMobile = BreakPoint.get(context) == .mobile;
     return Scaffold(
       backgroundColor: colors.secondaryContainer,
       appBar: AppBar(
         backgroundColor: colors.secondaryContainer,
         actions: [
-          IconButton(
-            onPressed: () =>
-                context.read<PlayerCubit>().showPlayers(true, false),
-            icon: Icon(Icons.arrow_drop_down),
-          ),
+          isMobile
+              ? IconButton(
+                  onPressed: () =>
+                      context.read<PlayerCubit>().showPlayers(true, false),
+                  icon: Icon(Icons.arrow_drop_down),
+                )
+              : IconButton(
+                  onPressed: () =>
+                      context.read<PlayerCubit>().stop(),
+                  icon: Icon(Icons.close),
+                ),
         ],
       ),
       body: Builder(

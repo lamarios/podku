@@ -28,6 +28,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   audio_service: 0.18.19
   back_button_interceptor: 8.0.4
+  background_downloader: 9.5.6
   cached_network_image: 3.4.1
   cupertino_icons: ^1.0.5
   easy_debounce: 2.0.3

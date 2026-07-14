@@ -14,37 +14,46 @@ class EpisodeDownloadStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     return Builder(
       builder: (context) {
-        final downloadStatus = context.select(
-          (DownloadManagerCubit c) =>
-              c.state.downloadStatus[episode.id.uuid] ?? .noDownload,
+        final download = context.select(
+          (DownloadManagerCubit c) => c.state.downloadStatus[episode.id.uuid],
         );
 
-        _log.fine('download status for ${episode.title}: $downloadStatus');
-        return switch (downloadStatus) {
-          .queuing => Icon(
+        _log.fine('download status for ${episode.title}: ${download?.status}');
+        if (download == null) {
+          return SizedBox.shrink();
+        }
+
+        return switch (download.status) {
+          .enqueued => Icon(
             Icons.download,
             size: _iconHeight,
             color: colors.outline,
           ),
-          .downloading =>
-            Icon(
-                  Icons.download,
-                  size: _iconHeight,
-                  color: colors.outline,
-                )
-                .animate(
-                  onPlay: (controller) => controller.repeat(reverse: true),
-                )
-                .tint(color: Colors.green, duration: Duration(seconds: 1)),
-          .downloaded => Icon(
+          .running => Row(
+            children: [
+              Icon(
+                    Icons.download,
+                    size: _iconHeight,
+                    color: colors.outline,
+                  )
+                  .animate(
+                    onPlay: (controller) => controller.repeat(reverse: true),
+                  )
+                  .tint(color: Colors.green, duration: Duration(seconds: 1)),
+              Text('${(download.progress * 100).toStringAsFixed(0)}%', style: textTheme.bodySmall?.copyWith(color: colors.outline),),
+            ],
+
+          ),
+          .complete => Icon(
             Icons.download,
             size: _iconHeight,
             color: Colors.green,
           ),
-          .noDownload => SizedBox.shrink(),
+          _ => SizedBox.shrink(),
         };
       },
     );

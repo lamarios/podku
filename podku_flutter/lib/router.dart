@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podku/episodes/views/screens/episodes.dart';
@@ -10,7 +11,10 @@ import 'package:podku/podcasts/views/screens/podcasts.dart';
 import 'package:podku/search/views/screens/search.dart';
 import 'package:podku/server/views/screens/setup.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 GoRouter router(String? serverUrl) => GoRouter(
+  navigatorKey: navigatorKey,
   initialLocation: serverUrl == null ? '/setup' : '/episodes',
   routes: [
     GoRoute(

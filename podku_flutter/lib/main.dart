@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
-import 'package:podku_client/podku_client.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/views/screens/podcasts.dart';
 import 'package:podku/router.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
+import 'package:podku_client/podku_client.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -20,7 +20,7 @@ import 'package:podku/utils.dart';
 /// In a larger app, you may want to use the dependency injection of your choice
 /// instead of using a global client object. This is just a simple example.
 
-Client get client => getIt.get<ServerCubit>().client!;
+Client get client => getIt.get<ServerCubit>().state.client!;
 
 void main() async {
   Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;

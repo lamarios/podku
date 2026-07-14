@@ -12,10 +12,9 @@ part of 'download_manager.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$DownloadManagerState {
+mixin _$DownloadManagerState implements DiagnosticableTreeMixin {
 
-/// bool: false queing
- Map<String, DownloadStatus> get ongoingDownloads; List<Episode> get offlineEpisodes;
+ Map<String, DownloadProgress> get ongoingDownloads; List<Episode> get offlineEpisodes;
 /// Create a copy of DownloadManagerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -23,6 +22,12 @@ mixin _$DownloadManagerState {
 $DownloadManagerStateCopyWith<DownloadManagerState> get copyWith => _$DownloadManagerStateCopyWithImpl<DownloadManagerState>(this as DownloadManagerState, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DownloadManagerState'))
+    ..add(DiagnosticsProperty('ongoingDownloads', ongoingDownloads))..add(DiagnosticsProperty('offlineEpisodes', offlineEpisodes));
+}
 
 @override
 bool operator ==(Object other) {
@@ -34,7 +39,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(ongoingDownloads),const DeepCollectionEquality().hash(offlineEpisodes));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'DownloadManagerState(ongoingDownloads: $ongoingDownloads, offlineEpisodes: $offlineEpisodes)';
 }
 
@@ -46,7 +51,7 @@ abstract mixin class $DownloadManagerStateCopyWith<$Res>  {
   factory $DownloadManagerStateCopyWith(DownloadManagerState value, $Res Function(DownloadManagerState) _then) = _$DownloadManagerStateCopyWithImpl;
 @useResult
 $Res call({
- Map<String, DownloadStatus> ongoingDownloads, List<Episode> offlineEpisodes
+ Map<String, DownloadProgress> ongoingDownloads, List<Episode> offlineEpisodes
 });
 
 
@@ -66,7 +71,7 @@ class _$DownloadManagerStateCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? ongoingDownloads = null,Object? offlineEpisodes = null,}) {
   return _then(_self.copyWith(
 ongoingDownloads: null == ongoingDownloads ? _self.ongoingDownloads : ongoingDownloads // ignore: cast_nullable_to_non_nullable
-as Map<String, DownloadStatus>,offlineEpisodes: null == offlineEpisodes ? _self.offlineEpisodes : offlineEpisodes // ignore: cast_nullable_to_non_nullable
+as Map<String, DownloadProgress>,offlineEpisodes: null == offlineEpisodes ? _self.offlineEpisodes : offlineEpisodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,
   ));
 }
@@ -149,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, DownloadStatus> ongoingDownloads,  List<Episode> offlineEpisodes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, DownloadProgress> ongoingDownloads,  List<Episode> offlineEpisodes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DownloadManagerState() when $default != null:
 return $default(_that.ongoingDownloads,_that.offlineEpisodes);case _:
@@ -170,7 +175,7 @@ return $default(_that.ongoingDownloads,_that.offlineEpisodes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, DownloadStatus> ongoingDownloads,  List<Episode> offlineEpisodes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, DownloadProgress> ongoingDownloads,  List<Episode> offlineEpisodes)  $default,) {final _that = this;
 switch (_that) {
 case _DownloadManagerState():
 return $default(_that.ongoingDownloads,_that.offlineEpisodes);}
@@ -187,7 +192,7 @@ return $default(_that.ongoingDownloads,_that.offlineEpisodes);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, DownloadStatus> ongoingDownloads,  List<Episode> offlineEpisodes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, DownloadProgress> ongoingDownloads,  List<Episode> offlineEpisodes)?  $default,) {final _that = this;
 switch (_that) {
 case _DownloadManagerState() when $default != null:
 return $default(_that.ongoingDownloads,_that.offlineEpisodes);case _:
@@ -201,14 +206,12 @@ return $default(_that.ongoingDownloads,_that.offlineEpisodes);case _:
 /// @nodoc
 
 
-class _DownloadManagerState extends DownloadManagerState {
-  const _DownloadManagerState({final  Map<String, DownloadStatus> ongoingDownloads = const {}, final  List<Episode> offlineEpisodes = const []}): _ongoingDownloads = ongoingDownloads,_offlineEpisodes = offlineEpisodes,super._();
+class _DownloadManagerState extends DownloadManagerState with DiagnosticableTreeMixin {
+  const _DownloadManagerState({final  Map<String, DownloadProgress> ongoingDownloads = const {}, final  List<Episode> offlineEpisodes = const []}): _ongoingDownloads = ongoingDownloads,_offlineEpisodes = offlineEpisodes,super._();
   
 
-/// bool: false queing
- final  Map<String, DownloadStatus> _ongoingDownloads;
-/// bool: false queing
-@override@JsonKey() Map<String, DownloadStatus> get ongoingDownloads {
+ final  Map<String, DownloadProgress> _ongoingDownloads;
+@override@JsonKey() Map<String, DownloadProgress> get ongoingDownloads {
   if (_ongoingDownloads is EqualUnmodifiableMapView) return _ongoingDownloads;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_ongoingDownloads);
@@ -229,6 +232,12 @@ class _DownloadManagerState extends DownloadManagerState {
 _$DownloadManagerStateCopyWith<_DownloadManagerState> get copyWith => __$DownloadManagerStateCopyWithImpl<_DownloadManagerState>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'DownloadManagerState'))
+    ..add(DiagnosticsProperty('ongoingDownloads', ongoingDownloads))..add(DiagnosticsProperty('offlineEpisodes', offlineEpisodes));
+}
 
 @override
 bool operator ==(Object other) {
@@ -240,7 +249,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_ongoingDownloads),const DeepCollectionEquality().hash(_offlineEpisodes));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'DownloadManagerState(ongoingDownloads: $ongoingDownloads, offlineEpisodes: $offlineEpisodes)';
 }
 
@@ -252,7 +261,7 @@ abstract mixin class _$DownloadManagerStateCopyWith<$Res> implements $DownloadMa
   factory _$DownloadManagerStateCopyWith(_DownloadManagerState value, $Res Function(_DownloadManagerState) _then) = __$DownloadManagerStateCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, DownloadStatus> ongoingDownloads, List<Episode> offlineEpisodes
+ Map<String, DownloadProgress> ongoingDownloads, List<Episode> offlineEpisodes
 });
 
 
@@ -272,7 +281,7 @@ class __$DownloadManagerStateCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? ongoingDownloads = null,Object? offlineEpisodes = null,}) {
   return _then(_DownloadManagerState(
 ongoingDownloads: null == ongoingDownloads ? _self._ongoingDownloads : ongoingDownloads // ignore: cast_nullable_to_non_nullable
-as Map<String, DownloadStatus>,offlineEpisodes: null == offlineEpisodes ? _self._offlineEpisodes : offlineEpisodes // ignore: cast_nullable_to_non_nullable
+as Map<String, DownloadProgress>,offlineEpisodes: null == offlineEpisodes ? _self._offlineEpisodes : offlineEpisodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,
   ));
 }

@@ -6,8 +6,11 @@ import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/big_player.dart';
 import 'package:podku/player/views/components/mini_player.dart';
+import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/views/components/conditional_wrap.dart';
 
 class PlayerWrapper extends StatelessWidget {
+  static final double _bigPlayerWidth = BreakPoint.mobile.maxWidth *0.7;
   final Widget child;
 
   const PlayerWrapper({super.key, required this.child});
@@ -15,53 +18,111 @@ class PlayerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    return Stack(
-      children: [
-        child,
-        Builder(
-          builder: (context) {
-            final showMiniPlayer = context.select((PlayerCubit c) => c.state.showMiniPlayer);
-            final hasEpisode = context.select((PlayerCubit c) => c.state.episode != null);
-            return SingleMotionBuilder(
-              motion: MaterialSpringMotion.expressiveSpatialDefault(),
-              value: showMiniPlayer ? 1 : 0,
-              from: 0,
-              builder: (context, value, child) {
-                double miniPlayerEffectiveValue = hasEpisode ? value : 0;
-                return value <= 0.1
-                    ? SizedBox.shrink()
-                    : Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: lerpDouble(300, 100, miniPlayerEffectiveValue),
-                        child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
-                      );
+    final isMobile = BreakPoint.get(context) == .mobile;
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      color: colors.surface,
+      child: Stack(
+        children: [
+          ConditionalWrap(
+            wrapIf: !isMobile,
+            wrapper: (child) => Builder(
+              builder: (context) {
+                final showBigPlayer = context.select(
+                  (PlayerCubit c) => c.state.showBigPlayer,
+                );
+                return SingleMotionBuilder(
+                  motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                  value: showBigPlayer ? 1 : 0,
+                  from: 0,
+                  builder: (context, value, child) {
+                    return Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: lerpDouble(0, _bigPlayerWidth, value),
+                      child: child!,
+                    );
+                  },
+                  child: child,
+                );
               },
-            );
-          },
-        ),
-        Builder(
-          builder: (context) {
-            final showBigPlayer = context.select((PlayerCubit c) => c.state.showBigPlayer);
-            return SingleMotionBuilder(
-              motion: MaterialSpringMotion.expressiveSpatialDefault(),
-              value: showBigPlayer ? 0 : 1,
-              from: 0,
-              builder: (context, value, child) {
-                return value >= 0.9
-                    ? SizedBox.shrink()
-                    : Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        top: lerpDouble(0, screenHeight, value),
-                        child: Opacity(opacity: (1 - value).clamp(0, 1), child: BigPlayer()),
-                      );
+            ),
+            child: child,
+          ),
+          if (isMobile)
+            Builder(
+              builder: (context) {
+                final showMiniPlayer = context.select(
+                  (PlayerCubit c) => c.state.showMiniPlayer,
+                );
+                final hasEpisode = context.select(
+                  (PlayerCubit c) => c.state.episode != null,
+                );
+                return SingleMotionBuilder(
+                  motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                  value: showMiniPlayer ? 1 : 0,
+                  from: 0,
+                  builder: (context, value, child) {
+                    double miniPlayerEffectiveValue = hasEpisode ? value : 0;
+                    return value <= 0.1
+                        ? SizedBox.shrink()
+                        : Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: lerpDouble(
+                              300,
+                              100,
+                              miniPlayerEffectiveValue,
+                            ),
+                            child: Opacity(
+                              opacity: value.clamp(0, 1),
+                              child: MiniPlayer(),
+                            ),
+                          );
+                  },
+                );
               },
-            );
-          },
-        ),
-      ],
+            ),
+          Builder(
+            builder: (context) {
+              final showBigPlayer = context.select(
+                (PlayerCubit c) => c.state.showBigPlayer,
+              );
+              return SingleMotionBuilder(
+                motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                value: showBigPlayer ? 1 : 0,
+                from: 0,
+                builder: (context, value, child) {
+                  return value <= 0.1
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          left: isMobile ? 0 : null,
+                          right: isMobile
+                              ? 0
+                              : lerpDouble(-_bigPlayerWidth, 0, value),
+                          bottom: 0,
+                          top: isMobile
+                              ? lerpDouble(screenHeight, 0, value)
+                              : 0,
+                          child: Opacity(
+                            opacity: (value).clamp(0, 1),
+                            child: ConditionalWrap(
+                              wrapIf: !isMobile,
+                              wrapper: (child) => SizedBox(
+                                width: _bigPlayerWidth,
+                                child: child,
+                              ),
+                              child: BigPlayer(),
+                            ),
+                          ),
+                        );
+                },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

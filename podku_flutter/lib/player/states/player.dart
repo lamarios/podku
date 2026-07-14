@@ -1,17 +1,23 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku_client/podku_client.dart';
 
 part 'player.freezed.dart';
 
-class PlayerCubit extends Cubit<PlayerState> {
+class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
+  late BreakPoint _currentBreakPoint;
+
+  WidgetsBinding get widgetsBinding => WidgetsBinding.instance;
+
   PlayerCubit(super.initialState) {
     /*
     _player.androidPlaybackInfo.stream.playbackEventStream.listen((event) => onPlaybackEvent(event));
@@ -25,6 +31,34 @@ class PlayerCubit extends Cubit<PlayerState> {
 */
     _player.playbackState.stream.listen(onStateChanged);
     stream.map((event) => event.showBigPlayer).listen(handleBackButton);
+    widgetsBinding.addObserver(this);
+    var view = PlatformDispatcher.instance.views.first;
+    _currentBreakPoint = BreakPoint.getFromSize(
+      (view.physicalSize / view.devicePixelRatio).width,
+    );
+  }
+
+  @override
+  Future<void> close() {
+    widgetsBinding.removeObserver(this);
+    return super.close();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final oldBreakPoint = _currentBreakPoint;
+
+    var view = PlatformDispatcher.instance.views.first;
+    _currentBreakPoint = BreakPoint.getFromSize(
+      (view.physicalSize / view.devicePixelRatio).width,
+    );
+
+    // when we go from mobile to bigger, we need to switch to big player
+    if (oldBreakPoint != _currentBreakPoint &&
+        oldBreakPoint == .mobile &&
+        state.showMiniPlayer) {
+      emit(state.copyWith(showBigPlayer: true, showMiniPlayer: false));
+    }
   }
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
@@ -117,6 +151,21 @@ class PlayerCubit extends Cubit<PlayerState> {
     } else {
       BackButtonInterceptor.remove(backButtonInterceptor);
     }
+  }
+
+  void stop() {
+    _player.stop();
+    emit(
+      state.copyWith(
+        showMiniPlayer: false,
+        showBigPlayer: false,
+        episode: null,
+        position: .zero,
+        bufferPosition: .zero,
+        duration: .zero,
+        playing: false,
+      ),
+    );
   }
 }
 

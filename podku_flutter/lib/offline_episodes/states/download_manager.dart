@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +12,9 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
+import 'package:podku/offline_episodes/models/download_progress.dart';
 import 'package:podku/podcasts/models/podcast.dart';
+import 'package:podku/router.dart';
 import 'package:podku_client/podku_client.dart';
 
 part 'download_manager.freezed.dart';
@@ -19,7 +23,52 @@ final _log = Logger('DownloadManagerCubit');
 
 class DownloadManagerCubit extends Cubit<DownloadManagerState> {
   DownloadManagerCubit(super.initialState) {
-    getOfflineEpisodes();
+    if (!kIsWeb) {
+      getOfflineEpisodes();
+      initDownloadListener();
+    }
+  }
+
+  Future<void> initDownloadListener() async {
+    FileDownloader().updates.listen(updateDownloadStatus);
+
+    FileDownloader().configureNotification(
+      running: TaskNotification('Downloading {displayName}', ''),
+      progressBar: true,
+    );
+
+    final permissionType = PermissionType.notifications;
+    var status = await FileDownloader().permissions.status(permissionType);
+    if (status != PermissionStatus.granted) {
+      if (await FileDownloader().permissions.shouldShowRationale(
+        permissionType,
+      )) {
+        final context = navigatorKey.currentContext;
+        _log.fine('has context for rationale: ${context != null}');
+        if (context != null) {
+          await showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text('Enable notifications'),
+              content: const Text(
+                'We need this to show podcast download progress',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+        // hello
+      }
+      status = await FileDownloader().permissions.request(permissionType);
+      debugPrint('Permission for $permissionType was $status');
+    }
+
+    // FileDownloader().start();
   }
 
   Future<Directory> getEpisodeFolder() async {
@@ -45,11 +94,57 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
 
     List<Episode> episodes = [];
     for (final f in episodeDirectories) {
-      episodes.add(Episode.fromJson(jsonDecode(await f.readAsString())));
+      var episode = Episode.fromJson(jsonDecode(await f.readAsString()));
+      if (await episode.validOfflineFiles) {
+        episodes.add(episode);
+      }
     }
 
     _log.fine('found ${episodes.length} offline episodes');
     emit(state.copyWith(offlineEpisodes: episodes));
+  }
+
+  Future<void> updateDownloadStatus(TaskUpdate update) async {
+    _log.fine('Download update: $update');
+    Map<String, DownloadProgress> tasks = Map.from(state.ongoingDownloads);
+    var task = tasks[update.task.taskId];
+
+    if (task != null) {
+      switch (update) {
+        case TaskStatusUpdate():
+          task = task.copyWith(status: update.status);
+
+          if (update.status == .complete) {
+            /*
+            Episode e = Episode(
+              id: UuidValue.fromString(task.id),
+              title: 'aaa',
+              explicit: false,
+              podcastId: Uuid().v4obj(),
+            );
+            var episodeDirectory = await e.episodeFolder;
+            File tempEpisode = File(
+              p.join((episodeDirectory).path, e.episodeTempFile),
+            );
+            File episode = File(p.join((episodeDirectory).path, e.episodeFile));
+
+            await tempEpisode.copy(episode.path);
+            await tempEpisode.delete();
+*/
+            getOfflineEpisodes();
+          }
+
+          break;
+
+        case TaskProgressUpdate():
+          task = task.copyWith(progress: update.progress);
+          break;
+      }
+      tasks[update.task.taskId] = task;
+      emit(state.copyWith(ongoingDownloads: tasks));
+    }
+
+    // Map<String, DownloadProgress> progresses = map
   }
 
   Future<void> download(Episode e, {required bool manualDownload}) async {
@@ -59,8 +154,12 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
 
     try {
       _log.fine('Downloading episode: ${e.title} (#{${e.id})');
-      Map<String, DownloadStatus> statuses = Map.from(state.ongoingDownloads);
-      statuses[e.id.uuid] = .downloading;
+      Map<String, DownloadProgress> statuses = Map.from(state.ongoingDownloads);
+      statuses[e.id.uuid] = DownloadProgress(
+        id: e.id.uuid,
+        status: .enqueued,
+        progress: 0,
+      );
       emit(state.copyWith(ongoingDownloads: statuses));
 
       _log.fine('Creating data.json');
@@ -68,13 +167,6 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
 
       final File data = File(p.join(directory.path, EpisodeDownloads.data));
       await data.writeAsString(jsonEncode(e.toJson()));
-
-      _log.fine('Downloading audio');
-
-      // downloading the episode
-      final File episode = File(p.join(directory.path, e.episodeFile));
-      final episodeResponse = await http.get(Uri.parse(e.audioProxyUrl));
-      await episode.writeAsBytes(episodeResponse.bodyBytes);
 
       _log.fine('Downloading image');
       // downloading the image
@@ -84,9 +176,25 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
         await image.writeAsBytes(imageResponse.bodyBytes);
       }
 
-      statuses = Map.from(state.ongoingDownloads);
-      statuses[e.id.uuid] = .downloaded;
-      emit(state.copyWith(ongoingDownloads: statuses));
+      _log.fine('Downloading audio');
+
+      // downloading the episode
+      /*
+      final File episode = File(p.join(directory.path, e.episodeFile));
+      final episodeResponse = await http.get(Uri.parse(e.audioProxyUrl));
+      await episode.writeAsBytes(episodeResponse.bodyBytes);
+*/
+      final task = DownloadTask(
+        url: e.audioProxyUrl,
+        baseDirectory: BaseDirectory.applicationDocuments,
+        directory: '${EpisodeDownloads.episodesFolder}/${e.id.uuid}',
+        filename: e.episodeFile,
+        updates: .statusAndProgress,
+        taskId: e.id.uuid,
+        displayName: e.title,
+      );
+
+      await FileDownloader().enqueue(task);
 
       if (manualDownload) {
         File manualFlag = File(p.join(directory.path, 'manual'));
@@ -102,26 +210,32 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
   Future<void> delete(Episode e) async {
     final folder = await e.episodeFolder;
     await folder.delete(recursive: true);
+    Map<String, DownloadProgress> statuses = Map.from(state.ongoingDownloads);
+    statuses.remove(e.id.uuid);
 
     List<Episode> episodes = List.from(state.offlineEpisodes);
     episodes.remove(e);
-    emit(state.copyWith(offlineEpisodes: episodes));
+    emit(state.copyWith(offlineEpisodes: episodes, ongoingDownloads: statuses));
   }
 }
 
 @freezed
 sealed class DownloadManagerState with _$DownloadManagerState {
   const factory DownloadManagerState({
-    @Default({}) Map<String, DownloadStatus> ongoingDownloads,
+    @Default({}) Map<String, DownloadProgress> ongoingDownloads,
     @Default([]) List<Episode> offlineEpisodes,
   }) = _DownloadManagerState;
 
   const DownloadManagerState._();
 
-  Map<String, DownloadStatus> get downloadStatus {
-    Map<String, DownloadStatus> statuses = Map.from(ongoingDownloads);
+  Map<String, DownloadProgress> get downloadStatus {
+    Map<String, DownloadProgress> statuses = Map.from(ongoingDownloads);
     for (final e in offlineEpisodes) {
-      statuses[e.id.uuid] = .downloaded;
+      statuses[e.id.uuid] = DownloadProgress(
+        id: '',
+        status: .complete,
+        progress: 100,
+      );
     }
 
     return statuses;

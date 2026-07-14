@@ -19,7 +19,7 @@ extension EpisodeDownloads on Episode {
       await episodeDirectory.create(recursive: true);
     }
 
-    return episodeDirectory;
+    return episodeDirectory.absolute;
   }
 
   Future<List<String>> get offlineFiles async {
@@ -38,6 +38,9 @@ extension EpisodeDownloads on Episode {
 
   String get episodeFile =>
       'episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
+
+  String get episodeTempFile =>
+      'tmp_episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
 
   String get imageFile =>
       'image${p.extension(Uri.parse(podcast?.artworkUrl ?? '').path)}';

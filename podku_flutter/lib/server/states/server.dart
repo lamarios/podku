@@ -12,7 +12,6 @@ part 'server.freezed.dart';
 final RegExp _urlRegex = RegExp(r'http.+');
 
 class ServerCubit extends Cubit<ServerState> {
-  Client? client;
   final TextEditingController controller = TextEditingController();
 
   ServerCubit(super.initialState) {
@@ -53,22 +52,23 @@ class ServerCubit extends Cubit<ServerState> {
           ..connectivityMonitor = FlutterConnectivityMonitor()
           ..authSessionManager = FlutterAuthSessionManager();
 
-        await client?.auth.initialize();
+        await client.auth.initialize();
 
-        this.client = client;
+        emit(state.copyWith(client: client));
 
         return true;
       } else {
         // if (!kIsWeb) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove("serverUrl");
+        emit(state.copyWith(client: null));
         // }
         return false;
       }
     } catch (e) {
       print(e);
       return false;
-    }finally{
+    } finally {
       emit(state.copyWith(initialized: true));
     }
   }
@@ -85,6 +85,7 @@ sealed class ServerState with _$ServerState {
   const factory ServerState({
     String? serverUrl,
     @Default(false) initialized,
+    Client? client,
   }) = _ServerState;
 
   const ServerState._();

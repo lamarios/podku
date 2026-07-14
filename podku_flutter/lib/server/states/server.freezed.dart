@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ServerState {
 
- String? get serverUrl; dynamic get initialized;
+ String? get serverUrl; dynamic get initialized; Client? get client;
 /// Create a copy of ServerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ServerStateCopyWith<ServerState> get copyWith => _$ServerStateCopyWithImpl<Serv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized)&&(identical(other.client, client) || other.client == client));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized));
+int get hashCode => Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized),client);
 
 @override
 String toString() {
-  return 'ServerState(serverUrl: $serverUrl, initialized: $initialized)';
+  return 'ServerState(serverUrl: $serverUrl, initialized: $initialized, client: $client)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ServerStateCopyWith<$Res>  {
   factory $ServerStateCopyWith(ServerState value, $Res Function(ServerState) _then) = _$ServerStateCopyWithImpl;
 @useResult
 $Res call({
- String? serverUrl, dynamic initialized
+ String? serverUrl, dynamic initialized, Client? client
 });
 
 
@@ -62,11 +62,12 @@ class _$ServerStateCopyWithImpl<$Res>
 
 /// Create a copy of ServerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? serverUrl = freezed,Object? initialized = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? serverUrl = freezed,Object? initialized = freezed,Object? client = freezed,}) {
   return _then(_self.copyWith(
 serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,initialized: freezed == initialized ? _self.initialized : initialized // ignore: cast_nullable_to_non_nullable
-as dynamic,
+as dynamic,client: freezed == client ? _self.client : client // ignore: cast_nullable_to_non_nullable
+as Client?,
   ));
 }
 
@@ -148,10 +149,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? serverUrl,  dynamic initialized)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? serverUrl,  dynamic initialized,  Client? client)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ServerState() when $default != null:
-return $default(_that.serverUrl,_that.initialized);case _:
+return $default(_that.serverUrl,_that.initialized,_that.client);case _:
   return orElse();
 
 }
@@ -169,10 +170,10 @@ return $default(_that.serverUrl,_that.initialized);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? serverUrl,  dynamic initialized)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? serverUrl,  dynamic initialized,  Client? client)  $default,) {final _that = this;
 switch (_that) {
 case _ServerState():
-return $default(_that.serverUrl,_that.initialized);}
+return $default(_that.serverUrl,_that.initialized,_that.client);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +187,10 @@ return $default(_that.serverUrl,_that.initialized);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? serverUrl,  dynamic initialized)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? serverUrl,  dynamic initialized,  Client? client)?  $default,) {final _that = this;
 switch (_that) {
 case _ServerState() when $default != null:
-return $default(_that.serverUrl,_that.initialized);case _:
+return $default(_that.serverUrl,_that.initialized,_that.client);case _:
   return null;
 
 }
@@ -201,11 +202,12 @@ return $default(_that.serverUrl,_that.initialized);case _:
 
 
 class _ServerState extends ServerState {
-  const _ServerState({this.serverUrl, this.initialized = false}): super._();
+  const _ServerState({this.serverUrl, this.initialized = false, this.client}): super._();
   
 
 @override final  String? serverUrl;
 @override@JsonKey() final  dynamic initialized;
+@override final  Client? client;
 
 /// Create a copy of ServerState
 /// with the given fields replaced by the non-null parameter values.
@@ -217,16 +219,16 @@ _$ServerStateCopyWith<_ServerState> get copyWith => __$ServerStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized)&&(identical(other.client, client) || other.client == client));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized));
+int get hashCode => Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized),client);
 
 @override
 String toString() {
-  return 'ServerState(serverUrl: $serverUrl, initialized: $initialized)';
+  return 'ServerState(serverUrl: $serverUrl, initialized: $initialized, client: $client)';
 }
 
 
@@ -237,7 +239,7 @@ abstract mixin class _$ServerStateCopyWith<$Res> implements $ServerStateCopyWith
   factory _$ServerStateCopyWith(_ServerState value, $Res Function(_ServerState) _then) = __$ServerStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? serverUrl, dynamic initialized
+ String? serverUrl, dynamic initialized, Client? client
 });
 
 
@@ -254,11 +256,12 @@ class __$ServerStateCopyWithImpl<$Res>
 
 /// Create a copy of ServerState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? serverUrl = freezed,Object? initialized = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? serverUrl = freezed,Object? initialized = freezed,Object? client = freezed,}) {
   return _then(_ServerState(
 serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,initialized: freezed == initialized ? _self.initialized : initialized // ignore: cast_nullable_to_non_nullable
-as dynamic,
+as dynamic,client: freezed == client ? _self.client : client // ignore: cast_nullable_to_non_nullable
+as Client?,
   ));
 }
 

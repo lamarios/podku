@@ -64,7 +64,7 @@ class EpisodeScreen extends StatelessWidget {
                               return Builder(
                                 builder: (context) {
                                   final downloadStatus = kIsWeb
-                                      ? DownloadStatus.noDownload
+                                      ? null
                                       : context.select(
                                           (DownloadManagerCubit c) =>
                                               c.state.downloadStatus[e.id.uuid],
@@ -73,8 +73,7 @@ class EpisodeScreen extends StatelessWidget {
                                     key: Key(e.id.uuid),
                                     trailingActions:
                                         !kIsWeb &&
-                                            (downloadStatus == null ||
-                                                downloadStatus == .noDownload)
+                                            (downloadStatus == null || downloadStatus.status == .canceled  || downloadStatus.status == .failed)
                                         ? [
                                             SwipeAction(
                                               content: SwipeActionButton(

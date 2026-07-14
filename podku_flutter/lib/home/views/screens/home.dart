@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/server/states/server.dart';
@@ -27,7 +28,11 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(_titles[navigationShell.currentIndex]),
           actions: [
-            if(!kIsWeb)IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
+            if (!kIsWeb)
+              IconButton(
+                onPressed: () => context.push('/offline'),
+                icon: Icon(Icons.download),
+              ),
             if (!kIsWeb || kDebugMode)
               IconButton(
                 onPressed: () async {
@@ -40,17 +45,34 @@ class HomeScreen extends StatelessWidget {
               ),
           ],
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: .symmetric(horizontal: pu2),
-            child: KeyedSubtree(key: ValueKey(navigationShell.currentIndex), child: navigationShell),
-          ),
+        body: BlocBuilder<ServerCubit, ServerState>(
+          builder: (context, state) {
+            return SafeArea(
+              child: Padding(
+                padding: .symmetric(horizontal: pu2),
+                child: state.client == null
+                    ? Center(
+                        child: LoadingIndicator(),
+                      )
+                    : KeyedSubtree(
+                        key: ValueKey(navigationShell.currentIndex),
+                        child: navigationShell,
+                      ),
+              ),
+            );
+          },
         ),
         bottomNavigationBar: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
           destinations: [
-            NavigationDestination(icon: Icon(Icons.playlist_play), label: 'Episodes'),
-            NavigationDestination(icon: Icon(Icons.podcasts), label: 'Podcasts'),
+            NavigationDestination(
+              icon: Icon(Icons.playlist_play),
+              label: 'Episodes',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.podcasts),
+              label: 'Podcasts',
+            ),
             NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
           ],
           onDestinationSelected: (value) {
