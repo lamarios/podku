@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -68,7 +69,7 @@ class EpisodeInList extends StatelessWidget {
                       ),
                     ],
                     Gap(pu),
-                    if (!offline) EpisodeDownloadStatus(episode: episode),
+                    if (!kIsWeb && !offline) EpisodeDownloadStatus(episode: episode),
                   ],
                 ),
               ],

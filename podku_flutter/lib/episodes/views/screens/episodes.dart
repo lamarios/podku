@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
@@ -62,23 +63,35 @@ class EpisodeScreen extends StatelessWidget {
 
                               return Builder(
                                 builder: (context) {
-                                  final downloadStatus = context.select(
-                                    (DownloadManagerCubit c) =>
-                                        c.state.downloadStatus[e.id.uuid],
-                                  );
+                                  final downloadStatus = kIsWeb
+                                      ? DownloadStatus.noDownload
+                                      : context.select(
+                                          (DownloadManagerCubit c) =>
+                                              c.state.downloadStatus[e.id.uuid],
+                                        );
                                   return SwipeActionCell(
                                     key: Key(e.id.uuid),
-                                    trailingActions: downloadStatus == null
+                                    trailingActions:
+                                        !kIsWeb &&
+                                            (downloadStatus == null ||
+                                                downloadStatus == .noDownload)
                                         ? [
                                             SwipeAction(
-                                              content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
+                                              content: SwipeActionButton(
+                                                color:
+                                                    colors.secondaryContainer,
+                                                icon: Icon(Icons.download),
+                                              ),
                                               color: Colors.transparent,
                                               onTap: (handler) async {
                                                 context
                                                     .read<
                                                       DownloadManagerCubit
                                                     >()
-                                                    .download(e, manualDownload: true);
+                                                    .download(
+                                                      e,
+                                                      manualDownload: true,
+                                                    );
                                                 await handler(false);
                                               },
                                             ),

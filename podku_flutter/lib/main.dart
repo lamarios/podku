@@ -30,19 +30,22 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  final audioHandler = await AudioService.init(builder: () => PodkuAudioHandler(), config: AudioServiceConfig(
-    androidNotificationChannelId: 'com.github.lamarios.podku.audio',
-    androidNotificationChannelName: 'Podku podcast',
-      androidNotificationIcon: 'mipmap/ic_launcher'
-  ));
+  final audioHandler = await AudioService.init(
+    builder: () => PodkuAudioHandler(),
+    config: AudioServiceConfig(
+      androidNotificationChannelId: 'com.github.lamarios.podku.audio',
+      androidNotificationChannelName: 'Podku podcast',
+      androidNotificationIcon: 'mipmap/ic_launcher',
+    ),
+  );
   getIt.registerSingleton(audioHandler);
 
   final ServerCubit serverCubit = ServerCubit(ServerState());
   getIt.registerSingleton(serverCubit);
-
-  final downloadManager = DownloadManagerCubit(DownloadManagerState());
-  getIt.registerSingleton(downloadManager);
-
+  if (!kIsWeb) {
+    final downloadManager = DownloadManagerCubit(DownloadManagerState());
+    getIt.registerSingleton(downloadManager);
+  }
   runApp(const MyApp());
 }
 
@@ -51,7 +54,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBarTheme = AppBarThemeData(scrolledUnderElevation: 0, surfaceTintColor: Colors.transparent);
+    final appBarTheme = AppBarThemeData(
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+    );
     ColorScheme darkColorScheme = .fromSeed(
       seedColor: appColor,
       brightness: Brightness.dark,
@@ -65,7 +71,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => PlayerCubit(PlayerState()),
         ),
-        BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>(),)
+        if (!kIsWeb)
+          BlocProvider(
+            create: (context) => getIt.get<DownloadManagerCubit>(),
+          ),
       ],
       child: BlocBuilder<ServerCubit, ServerState>(
         builder: (context, state) {
@@ -74,9 +83,13 @@ class MyApp extends StatelessWidget {
                   routerConfig: router(state.serverUrl),
                   darkTheme: ThemeData(
                     colorScheme: darkColorScheme,
-                    appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
+                    appBarTheme: appBarTheme.copyWith(
+                      backgroundColor: darkColorScheme.surface,
+                    ),
                   ),
-                  themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
+                  themeMode: MediaQuery.platformBrightnessOf(context) == .dark
+                      ? .dark
+                      : .light,
                   theme: ThemeData(
                     // This is the theme of your application.
                     //
@@ -94,7 +107,9 @@ class MyApp extends StatelessWidget {
                     // This works for code too, not just values: Most code changes can be
                     // tested with just a hot reload.
                     colorScheme: lightColorScheme,
-                    appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
+                    appBarTheme: appBarTheme.copyWith(
+                      backgroundColor: lightColorScheme.surface,
+                    ),
                   ),
                 )
               : SizedBox.shrink();

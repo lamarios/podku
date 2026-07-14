@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podku/main.dart';
@@ -43,7 +44,7 @@ class PlayerCubit extends Cubit<PlayerState> {
           showBigPlayer: true,
         ),
       );
-      final backendEpisode = offline
+      final backendEpisode = !kIsWeb && offline
           ? episode
           : await client.episodes.getEpisode(episode.id);
       if (backendEpisode != null && episode.audioUrl != null) {
