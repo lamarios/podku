@@ -44,6 +44,8 @@ dependencies:
   just_audio: 0.10.6
   material_loading_indicator: 1.0.0
   motor: 1.1.0
+  path: 1.9.1
+  path_provider: 2.1.6
   podku_client:
     path: ../podku_client
   serverpod_auth_idp_flutter: 3.4.10

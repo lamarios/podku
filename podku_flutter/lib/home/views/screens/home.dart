@@ -27,6 +27,7 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(_titles[navigationShell.currentIndex]),
           actions: [
+            if(!kIsWeb)IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
             if (!kIsWeb || kDebugMode)
               IconButton(
                 onPressed: () async {

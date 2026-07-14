@@ -33,7 +33,7 @@ class PlayerWrapper extends StatelessWidget {
                     : Positioned(
                         left: 0,
                         right: 0,
-                        bottom: lerpDouble(-300, 100, miniPlayerEffectiveValue),
+                        bottom: lerpDouble(300, 100, miniPlayerEffectiveValue),
                         child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
                       );
               },

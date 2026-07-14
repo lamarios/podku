@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:podku/episodes/views/screens/episodes.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/home/views/screens/home.dart';
+import 'package:podku/offline_episodes/views/screens/offline_episodes.dart';
 import 'package:podku/player/views/screens/player_wrapper.dart';
 import 'package:podku/podcasts/views/screens/podcast.dart';
 import 'package:podku/podcasts/views/screens/podcasts.dart';
@@ -24,6 +25,10 @@ GoRouter router(String? serverUrl) => GoRouter(
           builder: (context, state) => PodcastScreen(
             podcastId: state.pathParameters['podcastId'],
           ),
+        ),
+        GoRoute(
+          path: '/offline',
+          builder: (context, state) => OfflineEpisodesScreen(),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
