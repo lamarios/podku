@@ -18,7 +18,7 @@ class EpisodeInList extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     return Padding(
-      padding: .only(bottom: pu2),
+      padding: .only(bottom: pu, top: pu),
       child: Row(
         children: [
           if (episode.podcast != null)
@@ -75,7 +75,7 @@ class EpisodeInList extends StatelessWidget {
             ),
           ),
           Gap(pu),
-          EpisodePlayButton(episode: episode),
+          EpisodePlayButton(episode: episode, offline: offline),
         ],
       ),
     );

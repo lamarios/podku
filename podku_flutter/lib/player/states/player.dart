@@ -30,7 +30,7 @@ class PlayerCubit extends Cubit<PlayerState> {
 
   Future<void> updateProgress(Duration duration) async {}
 
-  Future<void> playEpisode(Episode episode) async {
+  Future<void> playEpisode(Episode episode, {bool offline = false}) async {
     try {
       if (state.episode?.id == episode.id) {
         return;
@@ -43,7 +43,9 @@ class PlayerCubit extends Cubit<PlayerState> {
           showBigPlayer: true,
         ),
       );
-      final backendEpisode = await client.episodes.getEpisode(episode.id);
+      final backendEpisode = offline
+          ? episode
+          : await client.episodes.getEpisode(episode.id);
       if (backendEpisode != null && episode.audioUrl != null) {
         episode = backendEpisode;
         emit(

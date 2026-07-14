@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +11,6 @@ import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/podcasts/models/podcast.dart';
 import 'package:podku_client/podku_client.dart';
-import 'package:http/http.dart' as http;
 
 part 'download_manager.freezed.dart';
 
@@ -97,6 +97,15 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
       _log.severe('Failed to download episode', e, s);
     }
   }
+
+  Future<void> delete(Episode e) async {
+    final folder = await e.episodeFolder;
+    await folder.delete(recursive: true);
+
+    List<Episode> episodes = List.from(state.offlineEpisodes);
+    episodes.remove(e);
+    emit(state.copyWith(offlineEpisodes: episodes));
+  }
 }
 
 @freezed
@@ -111,7 +120,7 @@ sealed class DownloadManagerState with _$DownloadManagerState {
   Map<String, DownloadStatus> get downloadStatus {
     Map<String, DownloadStatus> statuses = Map.from(ongoingDownloads);
     for (final e in offlineEpisodes) {
-      statuses[e.id.uuid] == .downloaded;
+      statuses[e.id.uuid] = .downloaded;
     }
 
     return statuses;

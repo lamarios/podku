@@ -4,10 +4,16 @@ import 'package:podku_client/podku_client.dart';
 import 'package:podku/player/states/player.dart';
 
 const double _playedThreshold = 0.95;
+
 class EpisodePlayButton extends StatelessWidget {
   final Episode episode;
+  final bool offline;
 
-  const EpisodePlayButton({super.key, required this.episode});
+  const EpisodePlayButton({
+    super.key,
+    required this.episode,
+    required this.offline,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +22,37 @@ class EpisodePlayButton extends StatelessWidget {
       builder: (context) {
         var cubit = context.read<PlayerCubit>();
 
-        final playerEpisode = context.select((PlayerCubit c) => c.state.episode);
+        final playerEpisode = context.select(
+          (PlayerCubit c) => c.state.episode,
+        );
         final isEpisodePlaying = playerEpisode?.id == episode.id;
         final playerProgress = context.select(
-          (PlayerCubit c) => isEpisodePlaying && c.state.loading == false ? (c.state.position.inSeconds) / (c.state.duration.inSeconds) : episode.progress,
+          (PlayerCubit c) => isEpisodePlaying && c.state.loading == false
+              ? (c.state.position.inSeconds) / (c.state.duration.inSeconds)
+              : episode.progress,
         );
 
         return Stack(
           alignment: .center,
           children: [
-            CircularProgressIndicator(
-              value: playerProgress,
-              backgroundColor: colors.secondaryContainer,
-            ),
+            if (!offline)
+              CircularProgressIndicator(
+                value: playerProgress,
+                backgroundColor: colors.secondaryContainer,
+              ),
             IconButton(
               onPressed: () {
-                cubit.playEpisode(episode);
+                cubit.playEpisode(episode, offline: offline);
               },
-              color: isEpisodePlaying ? colors.primary : playerProgress > _playedThreshold ?  Colors.green : null,
+              color: isEpisodePlaying
+                  ? colors.primary
+                  : playerProgress > _playedThreshold
+                  ? Colors.green
+                  : null,
               icon: Icon(
-                !isEpisodePlaying && playerProgress > _playedThreshold ? Icons.check : Icons.play_arrow,
+                !isEpisodePlaying && playerProgress > _playedThreshold
+                    ? Icons.check
+                    : Icons.play_arrow,
                 size: 20,
               ),
               visualDensity: .compact,

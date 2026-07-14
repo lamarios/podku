@@ -9,6 +9,7 @@ import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
+import 'package:podku/utils/views/components/swite_action_button.dart';
 
 class EpisodeScreen extends StatelessWidget {
   const EpisodeScreen({super.key});
@@ -70,8 +71,8 @@ class EpisodeScreen extends StatelessWidget {
                                     trailingActions: downloadStatus == null
                                         ? [
                                             SwipeAction(
-                                              icon: Icon(Icons.download),
-                                              color: colors.secondaryContainer,
+                                              content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
+                                              color: Colors.transparent,
                                               onTap: (handler) async {
                                                 context
                                                     .read<
