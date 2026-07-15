@@ -59,6 +59,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         state.showMiniPlayer) {
       emit(state.copyWith(showBigPlayer: true, showMiniPlayer: false));
     }
+
+    handleBackButton(state.showBigPlayer);
   }
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
@@ -141,12 +143,14 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   bool backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true));
+    if (_currentBreakPoint == .mobile) {
+      emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true));
+    }
     return true;
   }
 
   void handleBackButton(bool showBigScreen) {
-    if (showBigScreen) {
+    if (_currentBreakPoint == .mobile && showBigScreen) {
       BackButtonInterceptor.add(backButtonInterceptor);
     } else {
       BackButtonInterceptor.remove(backButtonInterceptor);

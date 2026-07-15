@@ -24,19 +24,16 @@ class BigPlayer extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.secondaryContainer,
       appBar: AppBar(
+        leading: isMobile ? IconButton(
+          onPressed: () => context.read<PlayerCubit>().showPlayers(true, false),
+          icon: Icon(Icons.arrow_drop_down),
+        ) : null,
         backgroundColor: colors.secondaryContainer,
         actions: [
-          isMobile
-              ? IconButton(
-                  onPressed: () =>
-                      context.read<PlayerCubit>().showPlayers(true, false),
-                  icon: Icon(Icons.arrow_drop_down),
-                )
-              : IconButton(
-                  onPressed: () =>
-                      context.read<PlayerCubit>().stop(),
-                  icon: Icon(Icons.close),
-                ),
+          IconButton(
+            onPressed: () => context.read<PlayerCubit>().stop(),
+            icon: Icon(Icons.close),
+          ),
         ],
       ),
       body: Builder(
