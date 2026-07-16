@@ -77,6 +77,11 @@ jobs:
         with:
           name: apks
           path: podku_flutter/build/app/outputs/flutter-apk
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: appbundle
+          path: podku_flutter/build/app/outputs/bundle/release/
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         if: startsWith(github.ref, 'refs/tags/')
