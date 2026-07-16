@@ -30,6 +30,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     }
 */
     _player.playbackState.stream.listen(onStateChanged);
+    _player.mediaItem.stream.listen(episodeChangedListener);
     stream.map((event) => event.showBigPlayer).listen(handleBackButton);
     widgetsBinding.addObserver(this);
     var view = PlatformDispatcher.instance.views.first;
@@ -127,10 +128,6 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void _updateProgress() {
     if (!state.loading && state.episode != null) {
-      if (!state.showBigPlayer && !state.showMiniPlayer) {
-        emit(state.copyWith(showBigPlayer: true));
-      }
-
       final progress = state.position.inSeconds / state.duration.inSeconds;
       EasyThrottle.throttle(
         'progress-update',
@@ -141,7 +138,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           );
         },
       );
-    }
+    } else {}
   }
 
   bool backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -172,6 +169,21 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         playing: false,
       ),
     );
+  }
+
+  Future<void> episodeChangedListener(MediaItem? event) async {
+    if (state.episode == null && event != null) {
+      final episode = await client.episodes.getEpisode(
+        UuidValue.fromString(event.id),
+      );
+
+      if (episode != null) {
+        emit(state.copyWith(episode: episode, duration: Duration(seconds: episode.durationSeconds ?? 1)));
+      }
+      if (!state.showBigPlayer && !state.showMiniPlayer) {
+        emit(state.copyWith(showBigPlayer: true));
+      }
+    }
   }
 }
 

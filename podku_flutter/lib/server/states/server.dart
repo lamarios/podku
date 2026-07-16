@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -10,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 part 'server.freezed.dart';
 
 final RegExp _urlRegex = RegExp(r'http.+');
+final _log = Logger('ServerCubit');
 
 class ServerCubit extends Cubit<ServerState> {
   final TextEditingController controller = TextEditingController();
@@ -33,6 +37,27 @@ class ServerCubit extends Cubit<ServerState> {
     }
 
     await setServerUrl(serverUrl);
+  }
+
+  Future<Client?> waitForClientToBeSet() async {
+    if (state.client == null) {
+      try {
+        _log.fine('Waiting for client to be set');
+        return await stream
+            .map(
+              (event) => event.client,
+            )
+            .firstWhere((c) => c != null)
+            .timeout(Duration(seconds: 10));
+      } on TimeoutException {
+        _log.fine(
+          'app not ready yet, client is missing. stopping here...',
+        );
+        return null;
+      }
+    }else{
+      return state.client;
+    }
   }
 
   Future<bool> setServerUrl(String? serverUrl) async {

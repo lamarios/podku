@@ -7,6 +7,8 @@ import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/main.dart';
 import 'package:podku/podcasts/models/podcast.dart';
+import 'package:podku/server/states/server.dart';
+import 'package:podku/utils.dart';
 import 'package:podku_client/podku_client.dart';
 
 class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
@@ -47,6 +49,12 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     String parentMediaId, [
     Map<String, dynamic>? options,
   ]) async {
+    final serverCubit = getIt.get<ServerCubit>();
+    if ((await serverCubit.waitForClientToBeSet()) == null) {
+      _log.fine('could not get a client');
+      return [];
+    }
+
     List<MediaItem> items = [];
     if (parentMediaId == AudioService.browsableRootId) {
       final episodes = await client.episodes.getEpisodes(pageSize: 100);
@@ -60,6 +68,21 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
             duration: Duration(seconds: episode.durationSeconds ?? 1),
             playable: true,
             artUri: Uri.tryParse(episode.podcast?.artUrl ?? ''),
+
+            extras: {
+              // Completion status — key AND value are different from what I said earlier
+              'android.media.extra.PLAYBACK_STATUS': episode.progress > 0.95
+                  ? 2 // DESCRIPTION_EXTRAS_VALUE_COMPLETION_STATUS_FULLY_PLAYED
+                  : episode.progress > 0
+                  ? 1 // ...PARTIALLY_PLAYED
+                  : 0,
+              // ...NOT_PLAYED
+
+              // Completion percentage
+              'androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE':
+                  episode.progress,
+              // double 0.0–1.0
+            },
           ),
         );
       }
@@ -68,13 +91,16 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async {
+  Future<void> playFromMediaId(
+    String mediaId, [
+    Map<String, dynamic>? extras,
+  ]) async {
     final episode = await client.episodes.getEpisode(
       UuidValue.fromString(mediaId),
     );
     if (episode != null) {
-     await  playEpisode(episode);
-     await play();
+      await playEpisode(episode);
+      await play();
     }
   }
 
@@ -117,7 +143,8 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     final initialPosition = episode.durationSeconds == null
         ? Duration.zero
         : Duration(
-            seconds: (episode.progress * episode.durationSeconds!).round(),
+            seconds: (episode.progress.clamp(0, 1) * episode.durationSeconds!)
+                .round(),
           );
 
     if (offlineFile != null) {

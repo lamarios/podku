@@ -37,22 +37,9 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
 
   Future<void> startAutomaticDownloads() async {
     final serverCubit = getIt.get<ServerCubit>();
-    if (serverCubit.state.client == null) {
-      _log.fine('[Automatic] Waiting for client to be set');
-      try {
-        await serverCubit.stream
-            .map(
-              (event) => event.client,
-            )
-            .firstWhere((c) => c != null)
-            .timeout(Duration(seconds: 5));
-        _log.fine('[Automatic] got client: $client');
-      } on TimeoutException {
-        _log.fine(
-          '[Automatic] app not ready yet, client is missing. stopping here...',
-        );
-        return;
-      }
+    if ((await serverCubit.waitForClientToBeSet()) == null) {
+      _log.fine('[Automatic] could not get a client');
+      return;
     }
 
     final shouldDownload = await DownloadSettingsCubit.downloadAutomatically;
