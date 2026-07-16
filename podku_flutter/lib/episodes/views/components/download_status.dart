@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:logging/logging.dart';
+import 'package:motor/motor.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
+import 'package:podku/utils.dart';
 import 'package:podku_client/podku_client.dart';
 
 class EpisodeDownloadStatus extends StatelessWidget {
@@ -35,18 +37,31 @@ class EpisodeDownloadStatus extends StatelessWidget {
           ),
           .running => Row(
             children: [
-              Icon(
-                    Icons.download,
-                    size: _iconHeight,
-                    color: colors.outline,
-                  )
-                  .animate(
-                    onPlay: (controller) => controller.repeat(reverse: true),
-                  )
-                  .tint(color: Colors.green, duration: Duration(seconds: 1)),
-              Text('${(download.progress * 100).toStringAsFixed(0)}%', style: textTheme.bodySmall?.copyWith(color: colors.outline),),
+              SizedBox(
+                width: 10,
+                height: 10,
+                child: SingleMotionBuilder(
+                  motion: MaterialSpringMotion.expressiveEffectsDefault(),
+                  value: download.progress,
+                  from: 0,
+                  builder: (context, value, child) => CircularProgressIndicator(
+                    value: value,
+                    strokeWidth: 2,
+                    backgroundColor: colors.outline.withValues(alpha: 0.2),
+                    color: Color.lerp(
+                      colors.outline,
+                      Colors.green,
+                      download.progress,
+                    ),
+                  ),
+                ),
+              ),
+              Gap(pu),
+              Text(
+                '${(download.progress * 100).toStringAsFixed(0)}%',
+                style: textTheme.bodySmall?.copyWith(color: colors.outline),
+              ),
             ],
-
           ),
           .complete => Icon(
             Icons.download,

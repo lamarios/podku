@@ -8,14 +8,14 @@ extension EpisodeDownloads on Episode {
   static const String episodesFolder = 'episodes';
   static const String data = 'data.json';
 
-  Future<Directory> get episodeFolder async {
+  Future<Directory> episodeFolder({bool createIfMissing = false}) async {
     final downloads = await getApplicationDocumentsDirectory();
 
     final episodeDirectory = Directory(
       p.join(downloads.path, episodesFolder, id.uuid),
     );
 
-    if (!(await episodeDirectory.exists())) {
+    if (createIfMissing && !(await episodeDirectory.exists())) {
       await episodeDirectory.create(recursive: true);
     }
 
@@ -23,17 +23,13 @@ extension EpisodeDownloads on Episode {
   }
 
   Future<List<String>> get offlineFiles async {
-    final downloads = await getApplicationDocumentsDirectory();
+    final f = await episodeFolder(createIfMissing: false);
 
-    final episodeDirectory = Directory(
-      p.join(downloads.path, episodesFolder, id.uuid),
-    );
-
-    if (!(await episodeDirectory.exists())) {
-      await episodeDirectory.create(recursive: true);
+    if (!(await f.exists())) {
+      return [];
     }
 
-    return episodeDirectory.listSync().map((f) => f.path).toList();
+    return f.listSync().map((f) => f.path).toList();
   }
 
   String get episodeFile =>
@@ -45,6 +41,8 @@ extension EpisodeDownloads on Episode {
   String get imageFile =>
       'image${p.extension(Uri.parse(podcast?.artworkUrl ?? '').path)}';
 
+  String get manualDownload => 'manual';
+
   Future<bool> get validOfflineFiles async {
     final files = await offlineFiles;
     final hasData = files.any((element) => element.endsWith(data));
@@ -52,5 +50,11 @@ extension EpisodeDownloads on Episode {
     final hasEpisode = files.any((element) => element.endsWith(episodeFile));
 
     return hasData && hasEpisode & hasImage;
+  }
+
+  Future<bool> get isManualDownload async {
+    final files = await offlineFiles;
+
+    return files.any((element) => element.endsWith(manualDownload));
   }
 }

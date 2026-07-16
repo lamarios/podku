@@ -65,8 +65,6 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
 
-  Future<void> updateProgress(Duration duration) async {}
-
   Future<void> playEpisode(Episode episode, {bool offline = false}) async {
     try {
       if (state.episode?.id == episode.id) {
@@ -129,6 +127,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void _updateProgress() {
     if (!state.loading && state.episode != null) {
+      if (!state.showBigPlayer || !state.showMiniPlayer) {
+        emit(state.copyWith(showBigPlayer: true));
+      }
+
       final progress = state.position.inSeconds / state.duration.inSeconds;
       EasyThrottle.throttle(
         'progress-update',

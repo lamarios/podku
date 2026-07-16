@@ -12,7 +12,7 @@ part of 'player.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PlayerState implements DiagnosticableTreeMixin {
+mixin _$PlayerState {
 
  bool get loading; Episode? get episode; Duration get position; Duration get bufferPosition; Duration get duration; bool get playing; bool get showMiniPlayer; bool get showBigPlayer;
 /// Create a copy of PlayerState
@@ -22,12 +22,6 @@ mixin _$PlayerState implements DiagnosticableTreeMixin {
 $PlayerStateCopyWith<PlayerState> get copyWith => _$PlayerStateCopyWithImpl<PlayerState>(this as PlayerState, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'PlayerState'))
-    ..add(DiagnosticsProperty('loading', loading))..add(DiagnosticsProperty('episode', episode))..add(DiagnosticsProperty('position', position))..add(DiagnosticsProperty('bufferPosition', bufferPosition))..add(DiagnosticsProperty('duration', duration))..add(DiagnosticsProperty('playing', playing))..add(DiagnosticsProperty('showMiniPlayer', showMiniPlayer))..add(DiagnosticsProperty('showBigPlayer', showBigPlayer));
-}
 
 @override
 bool operator ==(Object other) {
@@ -39,7 +33,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,loading,episode,position,bufferPosition,duration,playing,showMiniPlayer,showBigPlayer);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, playing: $playing, showMiniPlayer: $showMiniPlayer, showBigPlayer: $showBigPlayer)';
 }
 
@@ -212,7 +206,7 @@ return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,
 /// @nodoc
 
 
-class _PlayerState with DiagnosticableTreeMixin implements PlayerState {
+class _PlayerState implements PlayerState {
   const _PlayerState({this.loading = false, this.episode, this.position = const Duration(seconds: 0), this.bufferPosition = const Duration(seconds: 0), this.duration = const Duration(seconds: 1), this.playing = false, this.showMiniPlayer = false, this.showBigPlayer = false});
   
 
@@ -232,12 +226,6 @@ class _PlayerState with DiagnosticableTreeMixin implements PlayerState {
 _$PlayerStateCopyWith<_PlayerState> get copyWith => __$PlayerStateCopyWithImpl<_PlayerState>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'PlayerState'))
-    ..add(DiagnosticsProperty('loading', loading))..add(DiagnosticsProperty('episode', episode))..add(DiagnosticsProperty('position', position))..add(DiagnosticsProperty('bufferPosition', bufferPosition))..add(DiagnosticsProperty('duration', duration))..add(DiagnosticsProperty('playing', playing))..add(DiagnosticsProperty('showMiniPlayer', showMiniPlayer))..add(DiagnosticsProperty('showBigPlayer', showBigPlayer));
-}
 
 @override
 bool operator ==(Object other) {
@@ -249,7 +237,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,loading,episode,position,bufferPosition,duration,playing,showMiniPlayer,showBigPlayer);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, playing: $playing, showMiniPlayer: $showMiniPlayer, showBigPlayer: $showBigPlayer)';
 }
 

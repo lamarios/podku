@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -12,9 +13,13 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
+import 'package:podku/main.dart';
 import 'package:podku/offline_episodes/models/download_progress.dart';
+import 'package:podku/offline_episodes/states/download_settings.dart';
 import 'package:podku/podcasts/models/podcast.dart';
 import 'package:podku/router.dart';
+import 'package:podku/server/states/server.dart';
+import 'package:podku/utils.dart';
 import 'package:podku_client/podku_client.dart';
 
 part 'download_manager.freezed.dart';
@@ -26,6 +31,68 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
     if (!kIsWeb) {
       getOfflineEpisodes();
       initDownloadListener();
+      startAutomaticDownloads();
+    }
+  }
+
+  Future<void> startAutomaticDownloads() async {
+    final serverCubit = getIt.get<ServerCubit>();
+    if (serverCubit.state.client == null) {
+      _log.fine('[Automatic] Waiting for client to be set');
+      try {
+        await serverCubit.stream
+            .map(
+              (event) => event.client,
+            )
+            .firstWhere((c) => c != null)
+            .timeout(Duration(seconds: 5));
+        _log.fine('[Automatic] got client: $client');
+      } on TimeoutException {
+        _log.fine(
+          '[Automatic] app not ready yet, client is missing. stopping here...',
+        );
+        return;
+      }
+    }
+
+    final shouldDownload = await DownloadSettingsCubit.downloadAutomatically;
+    if (!shouldDownload) {
+      _log.fine('[Automatic] user do not want to download episodes');
+      return;
+    }
+    _log.fine('[Automatic] Starting to download episodes');
+    final int episodesToDownload = await DownloadSettingsCubit.podcastEpisodes;
+    final podcasts = await client.podcast.getPodcasts();
+    for (final p in podcasts) {
+      final podcast = await client.podcast.getPodcast(p.id.uuid);
+      if (podcast?.episodes?.isEmpty ?? true) {
+        continue;
+      }
+      // we get the first x episodes and downloads them if not already done
+      var downloadableEpisodes = podcast!.episodes!.take(episodesToDownload);
+      for (final e in downloadableEpisodes) {
+        final completeEpisode = e.copyWith(podcast: p);
+        if (!await completeEpisode.validOfflineFiles) {
+          _log.fine('[Automatic] downloading ${completeEpisode.title}');
+          download(completeEpisode, manualDownload: false);
+        } else {
+          _log.fine('[Automatic] ${completeEpisode.title} already exists');
+        }
+      }
+
+      // we get the episodes after x and delete if they exist
+      var episodesToClean = podcast.episodes!.skip(episodesToDownload);
+      for (final e in episodesToClean) {
+        final completeEpisode = e.copyWith(podcast: p);
+        if ((await completeEpisode.validOfflineFiles) &&
+            !(await completeEpisode.isManualDownload)) {
+          _log.fine(
+            '[Automatic] deleting local copy of ${completeEpisode.title}',
+          );
+          await delete(completeEpisode);
+        }
+      }
+      getOfflineEpisodes();
     }
   }
 
@@ -94,9 +161,13 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
 
     List<Episode> episodes = [];
     for (final f in episodeDirectories) {
-      var episode = Episode.fromJson(jsonDecode(await f.readAsString()));
-      if (await episode.validOfflineFiles) {
-        episodes.add(episode);
+      try {
+        var episode = Episode.fromJson(jsonDecode(await f.readAsString()));
+        if (await episode.validOfflineFiles) {
+          episodes.add(episode);
+        }
+      } catch (e, s) {
+        _log.severe('failed to parse offline podcast', e, s);
       }
     }
 
@@ -163,7 +234,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
       emit(state.copyWith(ongoingDownloads: statuses));
 
       _log.fine('Creating data.json');
-      final directory = await e.episodeFolder;
+      final directory = await e.episodeFolder(createIfMissing: true);
 
       final File data = File(p.join(directory.path, EpisodeDownloads.data));
       await data.writeAsString(jsonEncode(e.toJson()));
@@ -197,7 +268,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
       await FileDownloader().enqueue(task);
 
       if (manualDownload) {
-        File manualFlag = File(p.join(directory.path, 'manual'));
+        File manualFlag = File(p.join(directory.path, e.manualDownload));
         await manualFlag.create();
       }
 
@@ -208,7 +279,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> {
   }
 
   Future<void> delete(Episode e) async {
-    final folder = await e.episodeFolder;
+    final folder = await e.episodeFolder(createIfMissing: true);
     await folder.delete(recursive: true);
     Map<String, DownloadProgress> statuses = Map.from(state.ongoingDownloads);
     statuses.remove(e.id.uuid);

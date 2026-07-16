@@ -4,18 +4,30 @@ import 'package:go_router/go_router.dart';
 import 'package:podku/episodes/views/screens/episodes.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/home/views/screens/home.dart';
+import 'package:podku/offline_episodes/views/screens/download_settings.dart';
 import 'package:podku/offline_episodes/views/screens/offline_episodes.dart';
 import 'package:podku/player/views/screens/player_wrapper.dart';
 import 'package:podku/podcasts/views/screens/podcast.dart';
 import 'package:podku/podcasts/views/screens/podcasts.dart';
 import 'package:podku/search/views/screens/search.dart';
+import 'package:podku/server/states/server.dart';
 import 'package:podku/server/views/screens/setup.dart';
+import 'package:podku/utils/router/go_route_refresh_stream.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-GoRouter router(String? serverUrl) => GoRouter(
+GoRouter router(ServerCubit serverCubit) => GoRouter(
   navigatorKey: navigatorKey,
-  initialLocation: serverUrl == null ? '/setup' : '/episodes',
+  refreshListenable: GoRouterRefreshStream(serverCubit.stream),
+  redirect: (context, state) {
+    final serverUrl = serverCubit.state.serverUrl;
+    final goingToSetup = state.matchedLocation == '/setup';
+
+    if (serverUrl == null && !goingToSetup) return '/setup';
+    if (serverUrl != null && goingToSetup) return '/episodes';
+    return null; // no redirect
+  },
+  initialLocation: '/episodes',
   routes: [
     GoRoute(
       path: '/setup',
@@ -33,6 +45,12 @@ GoRouter router(String? serverUrl) => GoRouter(
         GoRoute(
           path: '/offline',
           builder: (context, state) => OfflineEpisodesScreen(),
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => DownloadSettingsScreen(),
+            ),
+          ],
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {

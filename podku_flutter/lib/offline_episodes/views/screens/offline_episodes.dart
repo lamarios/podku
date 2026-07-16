@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:go_router/go_router.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/utils.dart';
@@ -15,6 +16,12 @@ class OfflineEpisodesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Downloads'),
+        actions: [
+          IconButton(
+            onPressed: () => context.push('/offline/settings'),
+            icon: Icon(Icons.settings),
+          ),
+        ],
       ),
       body: SafeArea(
         child: BlocBuilder<DownloadManagerCubit, DownloadManagerState>(
@@ -24,43 +31,46 @@ class OfflineEpisodesScreen extends StatelessWidget {
               padding: .symmetric(horizontal: pu2),
               child: Column(
                 children: [
-                state.offlineEpisodes.isEmpty ?
-                    Expanded(
-                      child: Center(
-                        child: Icon(
-                          Icons.download,
-                          size: 100,
-                          color: colors.onSurface.withValues(alpha: 0.2),
-                        ),
-                      ),
-                    )
-                    :  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.offlineEpisodes.length,
-                      itemBuilder: (context, index) {
-                        final episode = state.offlineEpisodes[index];
-
-                        return SwipeActionCell(
-                          key: Key(episode.id.uuid),
-                          trailingActions: [
-                            SwipeAction(
-                              content: SwipeActionButton(color: colors.errorContainer, icon: Icon(Icons.delete)),
-                              color: Colors.transparent,
-                              performsFirstActionWithFullSwipe: true,
-                              onTap: (handler) async {
-                                cubit.delete(episode);
-                                await handler(true);
-                              },
+                  state.offlineEpisodes.isEmpty
+                      ? Expanded(
+                          child: Center(
+                            child: Icon(
+                              Icons.download,
+                              size: 100,
+                              color: colors.onSurface.withValues(alpha: 0.2),
                             ),
-                          ],
-                          child: EpisodeInList(
-                            episode: episode,
-                            offline: true,
                           ),
-                        );
-                      },
-                    ),
-                  ),
+                        )
+                      : Expanded(
+                          child: ListView.builder(
+                            itemCount: state.offlineEpisodes.length,
+                            itemBuilder: (context, index) {
+                              final episode = state.offlineEpisodes[index];
+
+                              return SwipeActionCell(
+                                key: Key('offline-episode-${episode.id.uuid}'),
+                                trailingActions: [
+                                  SwipeAction(
+                                    content: SwipeActionButton(
+                                      color: colors.errorContainer,
+                                      icon: Icon(Icons.delete),
+                                    ),
+                                    color: Colors.transparent,
+                                    performsFirstActionWithFullSwipe: true,
+                                    onTap: (handler) async {
+                                      cubit.delete(episode);
+                                      await handler(false);
+                                    },
+                                  ),
+                                ],
+                                child: EpisodeInList(
+                                  episode: episode,
+                                  offline: true,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                 ],
               ),
             );
