@@ -31,16 +31,14 @@ pkgs.mkShell {
   echo "Setting up pre-commit hook"
   dart run tools/setup_git_hooks.dart
 
-  "Adding flutter submodule to path"
+  echo "Adding flutter submodule to path"
   export PATH="./submodules/flutter/bin:$PATH"
-
-  echo "creating useful aliases..."
 
 
   flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
 
-  echo -e "\nAll done 🎉 \nAvailable aliases:"
-
+  echo "Exporting android auto emulator libraries"
+  export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.libcxx pkgs.libcxxrt ]}:$LD_LIBRARY_PATH"
   ''+
           pkgs.lib.concatStrings (map (x: ''echo "${x.name}: ${x.description}";'') aliases);
 

@@ -5,6 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
+import 'package:podku/main.dart';
 import 'package:podku/podcasts/models/podcast.dart';
 import 'package:podku_client/podku_client.dart';
 
@@ -39,6 +40,42 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> skipToPrevious() {
     return rewind();
+  }
+
+  @override
+  Future<List<MediaItem>> getChildren(
+    String parentMediaId, [
+    Map<String, dynamic>? options,
+  ]) async {
+    List<MediaItem> items = [];
+    if (parentMediaId == AudioService.browsableRootId) {
+      final episodes = await client.episodes.getEpisodes(pageSize: 100);
+
+      for (final episode in episodes) {
+        items.add(
+          MediaItem(
+            id: episode.id.uuid,
+            title: episode.title,
+            artist: episode.podcast?.name,
+            duration: Duration(seconds: episode.durationSeconds ?? 1),
+            playable: true,
+            artUri: Uri.tryParse(episode.podcast?.artUrl ?? ''),
+          ),
+        );
+      }
+    }
+    return items; // no deeper nesting needed
+  }
+
+  @override
+  Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async {
+    final episode = await client.episodes.getEpisode(
+      UuidValue.fromString(mediaId),
+    );
+    if (episode != null) {
+     await  playEpisode(episode);
+     await play();
+    }
   }
 
   @override
