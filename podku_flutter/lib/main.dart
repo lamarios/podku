@@ -81,6 +81,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: _router,
+        debugShowCheckedModeBanner: false,
         darkTheme: ThemeData(
           colorScheme: darkColorScheme,
           appBarTheme: appBarTheme.copyWith(

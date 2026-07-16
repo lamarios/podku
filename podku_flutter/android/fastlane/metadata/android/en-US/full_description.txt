@@ -1,0 +1,13 @@
+Podku – Your Podcasts, Your Server
+Podku is a fast, lightweight client for your self-hosted Podku podcast aggregator. Built for people who want full control over their listening experience without sacrificing speed or simplicity.
+Connect to your own Podku server and enjoy:
+
+Instant playback with smooth, responsive controls
+Clean, distraction-free interface
+Background playback with full media notification support
+Quick episode browsing and search across your subscriptions
+Reliable syncing with your self-hosted backend
+
+No ads. No tracking. No third-party servers — just your podcasts, streamed directly from infrastructure you own.
+Podku is designed to stay out of your way: open the app, hit play, and listen. Simplicity and speed, every time.
+Requires a self-hosted Podku server. Not affiliated with any commercial podcast platform.

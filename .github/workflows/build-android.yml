@@ -66,12 +66,12 @@ jobs:
         run: |
           nix-shell --run "../submodules/flutter/bin/flutter build apk --split-per-abi" ../shell.nix
           nix-shell --run "../submodules/flutter/bin/flutter build appbundle" ../shell.nix
-      #   - name: Set up Ruby
-      #     if: startsWith(github.ref, 'refs/tags/')
-      #     uses: ruby/setup-ruby@v1
-      #     with:
-      #       ruby-version: '3.0'
-      #       working-directory: src/main/app/android
+      - name: Set up Ruby
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          working-directory: podku_flutter/android
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -91,13 +91,13 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
-  #    - name: Install dependencies
-  #      if: startsWith(github.ref, 'refs/tags/')
-  #      working-directory: src/main/app/android
-  #      run: |
-  #        bundle install
+      - name: Install dependencies
+        if: startsWith(github.ref, 'refs/tags/')
+        working-directory: podku_flutter/android
+        run: |
+          bundle install
 
-#      - name: Run Fastlane to release
-#        working-directory: src/main/app/android
-#        if: startsWith(github.ref, 'refs/tags/')
-#        run: bundle exec fastlane deploy
+      - name: Run Fastlane to release
+        working-directory: podku_flutter/android
+        if: startsWith(github.ref, 'refs/tags/')
+        run: bundle exec fastlane deploy
