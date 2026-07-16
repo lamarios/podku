@@ -127,7 +127,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void _updateProgress() {
     if (!state.loading && state.episode != null) {
-      if (!state.showBigPlayer || !state.showMiniPlayer) {
+      if (!state.showBigPlayer && !state.showMiniPlayer) {
         emit(state.copyWith(showBigPlayer: true));
       }
 
