@@ -26,11 +26,23 @@ part 'download_manager.freezed.dart';
 
 final _log = Logger('DownloadManagerCubit');
 
-class DownloadManagerCubit extends Cubit<DownloadManagerState> {
+class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindingObserver {
   DownloadManagerCubit(super.initialState) {
     if (!kIsWeb) {
+      WidgetsBinding.instance.addObserver(this);
       getOfflineEpisodes();
       initDownloadListener();
+      // The app may already be resumed by the time we register the observer,
+      // or lifecycleState may not have been set yet — in either case,
+      // trigger downloads on the first frame.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        startAutomaticDownloads();
+      });
+    }
+  }
+
+  void didChangeLifecycle(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
       startAutomaticDownloads();
     }
   }
