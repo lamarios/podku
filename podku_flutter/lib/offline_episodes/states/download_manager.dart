@@ -41,8 +41,9 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     }
   }
 
-  void didChangeLifecycle(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) {
+    if (appState == AppLifecycleState.resumed) {
       startAutomaticDownloads();
     }
   }
@@ -71,6 +72,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
       var downloadableEpisodes = podcast!.episodes!.take(episodesToDownload);
       for (final e in downloadableEpisodes) {
         final completeEpisode = e.copyWith(podcast: p);
+
         if (!await completeEpisode.validOfflineFiles) {
           _log.fine('[Automatic] downloading ${completeEpisode.title}');
           download(completeEpisode, manualDownload: false);
@@ -184,25 +186,14 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
         case TaskStatusUpdate():
           task = task.copyWith(status: update.status);
 
-          if (update.status == .complete) {
-            /*
-            Episode e = Episode(
-              id: UuidValue.fromString(task.id),
-              title: 'aaa',
-              explicit: false,
-              podcastId: Uuid().v4obj(),
-            );
-            var episodeDirectory = await e.episodeFolder;
-            File tempEpisode = File(
-              p.join((episodeDirectory).path, e.episodeTempFile),
-            );
-            File episode = File(p.join((episodeDirectory).path, e.episodeFile));
-
-            await tempEpisode.copy(episode.path);
-            await tempEpisode.delete();
-*/
-            getOfflineEpisodes();
+          switch(update.status){
+            case .complete:
+              getOfflineEpisodes();
+              break;
+            default:
+              break;
           }
+
 
           break;
 
@@ -255,12 +246,12 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
       await episode.writeAsBytes(episodeResponse.bodyBytes);
 */
       final task = DownloadTask(
+        taskId: e.id.uuid,
         url: e.audioProxyUrl,
         baseDirectory: BaseDirectory.applicationDocuments,
         directory: '${EpisodeDownloads.episodesFolder}/${e.id.uuid}',
         filename: e.episodeFile,
         updates: .statusAndProgress,
-        taskId: e.id.uuid,
         displayName: e.title,
       );
 
