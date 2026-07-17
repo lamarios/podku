@@ -16,7 +16,7 @@ let
 in
 pkgs.mkShell {
   buildInputs = with pkgs; builtins.concatLists [
-    [ flutter git http-server serverpod_cli ]
+    [ flutter git http-server serverpod_cli fastlane ]
   ];
 
   # What to run when the shell starts
