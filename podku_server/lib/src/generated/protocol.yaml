@@ -12,10 +12,13 @@ jwtRefresh:
 episodes:
   - getEpisodes:
   - getEpisode:
+  - startPlayback:
   - setProgress:
+  - playbackStream:
 podcast:
   - getPodcasts:
   - searchPodcasts:
   - subscribeToPodcast:
+  - parsePodcast:
   - unsubscribe:
   - getPodcast:

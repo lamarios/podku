@@ -17,29 +17,14 @@
                   <option name="pins">
                     <list>
                       <Pin>
-                        <option name="consoleUUID" value="42774095-a22b-4ad7-84e3-c2f777b20e40" />
+                        <option name="consoleUUID" value="678bd145-6183-476d-91ff-68ebefe91b47" />
                         <option name="contentType" value="ConsoleContent" />
                         <option name="grepCompositeModel">
                           <GrepCompositeModel>
                             <option name="models">
                               <list>
                                 <GrepModel>
-                                  <option name="expression" value="state" />
-                                </GrepModel>
-                              </list>
-                            </option>
-                          </GrepCompositeModel>
-                        </option>
-                      </Pin>
-                      <Pin>
-                        <option name="consoleUUID" value="8d47c3fd-1574-473f-8d62-82f462a024f6" />
-                        <option name="contentType" value="ConsoleContent" />
-                        <option name="grepCompositeModel">
-                          <GrepCompositeModel>
-                            <option name="models">
-                              <list>
-                                <GrepModel>
-                                  <option name="expression" value="Scrobbling" />
+                                  <option name="expression" value="PlayerCubit" />
                                 </GrepModel>
                               </list>
                             </option>
@@ -147,6 +132,37 @@
                               <list>
                                 <GrepModel>
                                   <option name="expression" value="[Automatic]" />
+                                </GrepModel>
+                              </list>
+                            </option>
+                          </GrepCompositeModel>
+                        </option>
+                      </Pin>
+                    </list>
+                  </option>
+                </Pins>
+              </value>
+            </entry>
+            <entry>
+              <key>
+                <RunConfigurationRef>
+                  <option name="icon" value="flutter.png)" />
+                  <option name="name" value="App (Pixel Tablet)" />
+                </RunConfigurationRef>
+              </key>
+              <value>
+                <Pins>
+                  <option name="pins">
+                    <list>
+                      <Pin>
+                        <option name="consoleUUID" value="fa960f9a-179a-47ab-b783-305fb4abe27b" />
+                        <option name="contentType" value="ConsoleContent" />
+                        <option name="grepCompositeModel">
+                          <GrepCompositeModel>
+                            <option name="models">
+                              <list>
+                                <GrepModel>
+                                  <option name="expression" value="retry" />
                                 </GrepModel>
                               </list>
                             </option>

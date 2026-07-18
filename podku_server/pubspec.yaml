@@ -12,6 +12,8 @@ dependencies:
   serverpod: 3.4.10
   serverpod_auth_idp_server: 3.4.10
   xml: 7.0.1
+  podku_shared:
+    path: ../podku_shared
 
 dev_dependencies:
   lints: '>=3.0.0 <7.0.0'

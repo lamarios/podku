@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DownloadProgress {
 
- String get id; TaskStatus get status; double get progress;
+ String get id; TaskStatus get status; double get progress; int get retries;
 /// Create a copy of DownloadProgress
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $DownloadProgressCopyWith<DownloadProgress> get copyWith => _$DownloadProgressCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadProgress&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.progress, progress) || other.progress == progress));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadProgress&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.retries, retries) || other.retries == retries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,status,progress);
+int get hashCode => Object.hash(runtimeType,id,status,progress,retries);
 
 @override
 String toString() {
-  return 'DownloadProgress(id: $id, status: $status, progress: $progress)';
+  return 'DownloadProgress(id: $id, status: $status, progress: $progress, retries: $retries)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $DownloadProgressCopyWith<$Res>  {
   factory $DownloadProgressCopyWith(DownloadProgress value, $Res Function(DownloadProgress) _then) = _$DownloadProgressCopyWithImpl;
 @useResult
 $Res call({
- String id, TaskStatus status, double progress
+ String id, TaskStatus status, double progress, int retries
 });
 
 
@@ -62,12 +62,13 @@ class _$DownloadProgressCopyWithImpl<$Res>
 
 /// Create a copy of DownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = null,Object? progress = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = null,Object? progress = null,Object? retries = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TaskStatus,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
-as double,
+as double,retries: null == retries ? _self.retries : retries // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -149,10 +150,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  TaskStatus status,  double progress)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  TaskStatus status,  double progress,  int retries)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DownloadProgress() when $default != null:
-return $default(_that.id,_that.status,_that.progress);case _:
+return $default(_that.id,_that.status,_that.progress,_that.retries);case _:
   return orElse();
 
 }
@@ -170,10 +171,10 @@ return $default(_that.id,_that.status,_that.progress);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  TaskStatus status,  double progress)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  TaskStatus status,  double progress,  int retries)  $default,) {final _that = this;
 switch (_that) {
 case _DownloadProgress():
-return $default(_that.id,_that.status,_that.progress);}
+return $default(_that.id,_that.status,_that.progress,_that.retries);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -187,10 +188,10 @@ return $default(_that.id,_that.status,_that.progress);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  TaskStatus status,  double progress)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  TaskStatus status,  double progress,  int retries)?  $default,) {final _that = this;
 switch (_that) {
 case _DownloadProgress() when $default != null:
-return $default(_that.id,_that.status,_that.progress);case _:
+return $default(_that.id,_that.status,_that.progress,_that.retries);case _:
   return null;
 
 }
@@ -202,12 +203,13 @@ return $default(_that.id,_that.status,_that.progress);case _:
 
 
 class _DownloadProgress implements DownloadProgress {
-  const _DownloadProgress({required this.id, required this.status, required this.progress});
+  const _DownloadProgress({required this.id, required this.status, required this.progress, this.retries = 0});
   
 
 @override final  String id;
 @override final  TaskStatus status;
 @override final  double progress;
+@override@JsonKey() final  int retries;
 
 /// Create a copy of DownloadProgress
 /// with the given fields replaced by the non-null parameter values.
@@ -219,16 +221,16 @@ _$DownloadProgressCopyWith<_DownloadProgress> get copyWith => __$DownloadProgres
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DownloadProgress&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.progress, progress) || other.progress == progress));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DownloadProgress&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.retries, retries) || other.retries == retries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,status,progress);
+int get hashCode => Object.hash(runtimeType,id,status,progress,retries);
 
 @override
 String toString() {
-  return 'DownloadProgress(id: $id, status: $status, progress: $progress)';
+  return 'DownloadProgress(id: $id, status: $status, progress: $progress, retries: $retries)';
 }
 
 
@@ -239,7 +241,7 @@ abstract mixin class _$DownloadProgressCopyWith<$Res> implements $DownloadProgre
   factory _$DownloadProgressCopyWith(_DownloadProgress value, $Res Function(_DownloadProgress) _then) = __$DownloadProgressCopyWithImpl;
 @override @useResult
 $Res call({
- String id, TaskStatus status, double progress
+ String id, TaskStatus status, double progress, int retries
 });
 
 
@@ -256,12 +258,13 @@ class __$DownloadProgressCopyWithImpl<$Res>
 
 /// Create a copy of DownloadProgress
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = null,Object? progress = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = null,Object? progress = null,Object? retries = null,}) {
   return _then(_DownloadProgress(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TaskStatus,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
-as double,
+as double,retries: null == retries ? _self.retries : retries // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

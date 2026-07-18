@@ -8,7 +8,8 @@ sealed class DownloadProgress with _$DownloadProgress {
   const factory DownloadProgress({
     required String id,
     required TaskStatus status,
-    required double progress
+    required double progress,
+    @Default(0) int retries
   }) = _DownloadProgress;
 
 }

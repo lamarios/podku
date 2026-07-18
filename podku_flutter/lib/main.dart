@@ -22,6 +22,7 @@ import 'package:podku_client/podku_client.dart';
 
 Client get client => getIt.get<ServerCubit>().state.client!;
 late final GoRouter _router;
+final sessionId = Uuid().v4obj();
 
 void main() async {
   Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
@@ -81,7 +82,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: _router,
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: kDebugMode,
         darkTheme: ThemeData(
           colorScheme: darkColorScheme,
           appBarTheme: appBarTheme.copyWith(

@@ -52,6 +52,8 @@ dependencies:
   path_provider: 2.1.6
   podku_client:
     path: ../podku_client
+  podku_shared:
+    path: ../podku_shared
   serverpod_auth_idp_flutter: 3.4.10
   serverpod_flutter: 3.4.10
   shared_preferences: 2.5.5

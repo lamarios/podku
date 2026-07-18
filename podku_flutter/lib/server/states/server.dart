@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:podku/main.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -17,6 +18,9 @@ final _log = Logger('ServerCubit');
 
 class ServerCubit extends Cubit<ServerState> {
   final TextEditingController controller = TextEditingController();
+  final StreamController<EpisodeProgress> playbackStream =
+      StreamController.broadcast();
+  StreamSubscription<EpisodeProgress>? _innerStream;
 
   ServerCubit(super.initialState) {
     init();
@@ -55,7 +59,7 @@ class ServerCubit extends Cubit<ServerState> {
         );
         return null;
       }
-    }else{
+    } else {
       return state.client;
     }
   }
@@ -81,8 +85,10 @@ class ServerCubit extends Cubit<ServerState> {
 
         emit(state.copyWith(client: client));
 
+        _subscribeToStream(client);
         return true;
       } else {
+        _disconnectFromStream();
         // if (!kIsWeb) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove("serverUrl");
@@ -98,9 +104,35 @@ class ServerCubit extends Cubit<ServerState> {
     }
   }
 
+  Future<void> _subscribeToStream(Client client) async {
+    _innerStream = client.episodes
+        .playbackStream(sessionId)
+        .listen(
+          (event) {
+            _log.fine('Received new stream event: $event');
+            playbackStream.add(event);
+          },
+        );
+
+    _innerStream?.onError(
+      (error) {
+        _log.severe('Disconnected from playback stream', error);
+        Future.delayed(
+          Duration(seconds: 5),
+          () => _subscribeToStream(client),
+        );
+      },
+    );
+  }
+
+  Future<void> _disconnectFromStream() async {
+    await _innerStream?.cancel();
+  }
+
   @override
   Future<void> close() {
     controller.dispose();
+    _disconnectFromStream();
     return super.close();
   }
 }

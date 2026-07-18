@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:serverpod/serverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:serverpod/serverpod.dart';
 
+@Deprecated('Using the reverse_proxy.dart file now so that websocket can also be proxied')
 class ApiRedirectRoute extends Route {
   ApiRedirectRoute()
     : super(
@@ -19,7 +19,6 @@ class ApiRedirectRoute extends Route {
       );
 
   // Headers that must not be blindly forwarded between hops.
-  static const _hopByHopHeaders = {'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'transfer-encoding', 'upgrade', 'content-length', 'host'};
   static final _client = http.Client();
 
   @override

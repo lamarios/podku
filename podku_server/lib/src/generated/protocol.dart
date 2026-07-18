@@ -16,12 +16,14 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i3;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
-import 'podcast/episode.dart' as _i5;
-import 'podcast/podcast.dart' as _i6;
-import 'podcast/search_result.dart' as _i7;
-import 'package:podku_server/src/generated/podcast/episode.dart' as _i8;
-import 'package:podku_server/src/generated/podcast/podcast.dart' as _i9;
-import 'package:podku_server/src/generated/podcast/search_result.dart' as _i10;
+import 'episodes/episode_progress.dart' as _i5;
+import 'podcast/episode.dart' as _i6;
+import 'podcast/podcast.dart' as _i7;
+import 'podcast/search_result.dart' as _i8;
+import 'package:podku_server/src/generated/podcast/episode.dart' as _i9;
+import 'package:podku_server/src/generated/podcast/podcast.dart' as _i10;
+import 'package:podku_server/src/generated/podcast/search_result.dart' as _i11;
+export 'episodes/episode_progress.dart';
 export 'podcast/episode.dart';
 export 'podcast/podcast.dart';
 export 'podcast/search_result.dart';
@@ -287,45 +289,51 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i5.Episode) {
-      return _i5.Episode.fromJson(data) as T;
+    if (t == _i5.EpisodeProgress) {
+      return _i5.EpisodeProgress.fromJson(data) as T;
     }
-    if (t == _i6.Podcast) {
-      return _i6.Podcast.fromJson(data) as T;
+    if (t == _i6.Episode) {
+      return _i6.Episode.fromJson(data) as T;
     }
-    if (t == _i7.SearchResult) {
-      return _i7.SearchResult.fromJson(data) as T;
+    if (t == _i7.Podcast) {
+      return _i7.Podcast.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.Episode?>()) {
-      return (data != null ? _i5.Episode.fromJson(data) : null) as T;
+    if (t == _i8.SearchResult) {
+      return _i8.SearchResult.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i6.Podcast?>()) {
-      return (data != null ? _i6.Podcast.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.EpisodeProgress?>()) {
+      return (data != null ? _i5.EpisodeProgress.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.SearchResult?>()) {
-      return (data != null ? _i7.SearchResult.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.Episode?>()) {
+      return (data != null ? _i6.Episode.fromJson(data) : null) as T;
     }
-    if (t == List<_i5.Episode>) {
-      return (data as List).map((e) => deserialize<_i5.Episode>(e)).toList()
+    if (t == _i1.getType<_i7.Podcast?>()) {
+      return (data != null ? _i7.Podcast.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.SearchResult?>()) {
+      return (data != null ? _i8.SearchResult.fromJson(data) : null) as T;
+    }
+    if (t == List<_i6.Episode>) {
+      return (data as List).map((e) => deserialize<_i6.Episode>(e)).toList()
           as T;
     }
-    if (t == _i1.getType<List<_i5.Episode>?>()) {
+    if (t == _i1.getType<List<_i6.Episode>?>()) {
       return (data != null
-              ? (data as List).map((e) => deserialize<_i5.Episode>(e)).toList()
+              ? (data as List).map((e) => deserialize<_i6.Episode>(e)).toList()
               : null)
           as T;
     }
-    if (t == List<_i8.Episode>) {
-      return (data as List).map((e) => deserialize<_i8.Episode>(e)).toList()
+    if (t == List<_i9.Episode>) {
+      return (data as List).map((e) => deserialize<_i9.Episode>(e)).toList()
           as T;
     }
-    if (t == List<_i9.Podcast>) {
-      return (data as List).map((e) => deserialize<_i9.Podcast>(e)).toList()
+    if (t == List<_i10.Podcast>) {
+      return (data as List).map((e) => deserialize<_i10.Podcast>(e)).toList()
           as T;
     }
-    if (t == List<_i10.SearchResult>) {
+    if (t == List<_i11.SearchResult>) {
       return (data as List)
-              .map((e) => deserialize<_i10.SearchResult>(e))
+              .map((e) => deserialize<_i11.SearchResult>(e))
               .toList()
           as T;
     }
@@ -343,9 +351,10 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i5.Episode => 'Episode',
-      _i6.Podcast => 'Podcast',
-      _i7.SearchResult => 'SearchResult',
+      _i5.EpisodeProgress => 'EpisodeProgress',
+      _i6.Episode => 'Episode',
+      _i7.Podcast => 'Podcast',
+      _i8.SearchResult => 'SearchResult',
       _ => null,
     };
   }
@@ -360,11 +369,13 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i5.Episode():
+      case _i5.EpisodeProgress():
+        return 'EpisodeProgress';
+      case _i6.Episode():
         return 'Episode';
-      case _i6.Podcast():
+      case _i7.Podcast():
         return 'Podcast';
-      case _i7.SearchResult():
+      case _i8.SearchResult():
         return 'SearchResult';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -388,14 +399,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'EpisodeProgress') {
+      return deserialize<_i5.EpisodeProgress>(data['data']);
+    }
     if (dataClassName == 'Episode') {
-      return deserialize<_i5.Episode>(data['data']);
+      return deserialize<_i6.Episode>(data['data']);
     }
     if (dataClassName == 'Podcast') {
-      return deserialize<_i6.Podcast>(data['data']);
+      return deserialize<_i7.Podcast>(data['data']);
     }
     if (dataClassName == 'SearchResult') {
-      return deserialize<_i7.SearchResult>(data['data']);
+      return deserialize<_i8.SearchResult>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -433,10 +447,10 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i5.Episode:
-        return _i5.Episode.t;
-      case _i6.Podcast:
-        return _i6.Podcast.t;
+      case _i6.Episode:
+        return _i6.Episode.t;
+      case _i7.Podcast:
+        return _i7.Podcast.t;
     }
     return null;
   }

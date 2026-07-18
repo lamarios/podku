@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:podku_server/src/api/redirect_router.dart';
+import 'package:podku_server/reverse_proxy.dart';
 import 'package:podku_server/src/podcast/podcast_audio_route.dart';
 import 'package:podku_server/src/podcast/podcast_route.dart';
 import 'package:serverpod/serverpod.dart';
@@ -27,8 +28,13 @@ void run(List<String> args) async {
     h.accessControlAllowHeaders = AccessControlAllowHeadersHeader.wildcard();
   });
   // Initialize Serverpod and connect it with your generated code.
-  final pod = Serverpod(args, Protocol(), Endpoints(), httpResponseHeaders: headers, httpOptionsResponseHeaders: headers);
-
+  final pod = Serverpod(
+    args,
+    Protocol(),
+    Endpoints(),
+    httpResponseHeaders: headers,
+    httpOptionsResponseHeaders: headers,
+  );
 
   // Initialize authentication services for the server.
   // Token managers will be used to validate and issue authentication keys,
@@ -53,11 +59,11 @@ void run(List<String> args) async {
   // pod.webServer.addRoute(RootRoute(), '/index.html');
   pod.webServer.addRoute(PodcastRoute(), '/podcasts/image');
   pod.webServer.addRoute(PodcastAudioRoute(), '/podcasts/audio');
-  pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
+  // pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
 
   // Serve all files in the web/static relative directory under /.
   // These are used by the default web page.
-/*
+  /*
   final root = Directory(Uri(path: 'web/').toFilePath());
   pod.webServer.addRoute(StaticRoute.directory(root));
 */
@@ -97,9 +103,24 @@ void run(List<String> args) async {
   // Start the server.
   await pod.start();
 
-
   // refresh podcasts job
-  await pod.futureCalls.callWithDelay(Duration(seconds: 10)).podcastRefresh.refreshPodcasts();
+  await pod.futureCalls
+      .callWithDelay(Duration(seconds: 10))
+      .podcastRefresh
+      .refreshPodcasts();
+
+  runZonedGuarded(
+    () async {
+      final server = await ServerSocket.bind(InternetAddress.anyIPv4, 8083);
+      print('TCP proxy listening on :8083');
+      await for (final client in server) {
+        reverseProxy(client);
+      }
+    },
+    (error, stack) {
+      print('Uncaught proxy error: $error\n$stack');
+    },
+  );
 }
 
 void _sendRegistrationCode(

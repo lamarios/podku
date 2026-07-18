@@ -1181,6 +1181,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  podku_shared:
+    dependency: transitive
+    description:
+      path: podku_shared
+      relative: true
+    source: path
+    version: "0.0.0"
   pointycastle:
     dependency: transitive
     description:

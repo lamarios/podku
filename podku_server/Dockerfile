@@ -52,6 +52,7 @@ COPY --from=build /app/podku_server/lib/src/generated/protocol.yaml lib/src/gene
 EXPOSE 8080
 EXPOSE 8081
 EXPOSE 8082
+EXPOSE 8083
 
 # Define the entrypoint command
 ENTRYPOINT ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role --apply-migrations

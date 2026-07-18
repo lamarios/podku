@@ -306,12 +306,42 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['id'],
                   ),
         ),
+        'startPlayback': _i1.MethodConnector(
+          name: 'startPlayback',
+          params: {
+            'episode': _i1.ParameterDescription(
+              name: 'episode',
+              type: _i1.getType<_i6.Episode>(),
+              nullable: false,
+            ),
+            'player': _i1.ParameterDescription(
+              name: 'player',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['episodes'] as _i4.EpisodesEndpoint).startPlayback(
+                    session,
+                    params['episode'],
+                    params['player'],
+                  ),
+        ),
         'setProgress': _i1.MethodConnector(
           name: 'setProgress',
           params: {
             'episode': _i1.ParameterDescription(
               name: 'episode',
               type: _i1.getType<_i6.Episode>(),
+              nullable: false,
+            ),
+            'player': _i1.ParameterDescription(
+              name: 'player',
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -323,6 +353,29 @@ class Endpoints extends _i1.EndpointDispatch {
                   (endpoints['episodes'] as _i4.EpisodesEndpoint).setProgress(
                     session,
                     params['episode'],
+                    params['player'],
+                  ),
+        ),
+        'playbackStream': _i1.MethodStreamConnector(
+          name: 'playbackStream',
+          params: {
+            'player': _i1.ParameterDescription(
+              name: 'player',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['episodes'] as _i4.EpisodesEndpoint)
+                  .playbackStream(
+                    session,
+                    params['player'],
                   ),
         ),
       },
@@ -375,6 +428,25 @@ class Endpoints extends _i1.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['podcast'] as _i5.PodcastEndpoint)
                   .subscribeToPodcast(
+                    session,
+                    params['result'],
+                  ),
+        ),
+        'parsePodcast': _i1.MethodConnector(
+          name: 'parsePodcast',
+          params: {
+            'result': _i1.ParameterDescription(
+              name: 'result',
+              type: _i1.getType<_i7.SearchResult>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['podcast'] as _i5.PodcastEndpoint).parsePodcast(
                     session,
                     params['result'],
                   ),

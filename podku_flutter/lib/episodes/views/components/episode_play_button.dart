@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:podku_client/podku_client.dart';
 import 'package:podku/player/states/player.dart';
+import 'package:podku/server/states/server.dart';
+import 'package:podku_client/podku_client.dart';
 
 const double _playedThreshold = 0.95;
 
@@ -35,11 +36,28 @@ class EpisodePlayButton extends StatelessWidget {
         return Stack(
           alignment: .center,
           children: [
+            Positioned.fill(child: Container(decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(100)),)),
             if (!offline)
-              CircularProgressIndicator(
-                value: playerProgress,
-                backgroundColor: colors.secondaryContainer,
-              ),
+              isEpisodePlaying
+                  ? CircularProgressIndicator(
+                      value: playerProgress,
+                      backgroundColor: colors.secondaryContainer,
+                    )
+                  : StreamBuilder<double>(
+                      stream: context
+                          .read<ServerCubit>()
+                          .playbackStream
+                          .stream
+                          .where(
+                            (e) => e.episodeId == episode.id && !e.newPlayback,
+                          )
+                          .map((e) => e.progress),
+                      initialData: episode.progress,
+                      builder: (context, snapshot) => CircularProgressIndicator(
+                        value: snapshot.data ?? episode.progress,
+                        backgroundColor: colors.secondaryContainer,
+                      ),
+                    ),
             IconButton(
               onPressed: () {
                 cubit.playEpisode(episode, offline: offline);

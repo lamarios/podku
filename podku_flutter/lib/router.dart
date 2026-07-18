@@ -10,9 +10,11 @@ import 'package:podku/player/views/screens/player_wrapper.dart';
 import 'package:podku/podcasts/views/screens/podcast.dart';
 import 'package:podku/podcasts/views/screens/podcasts.dart';
 import 'package:podku/search/views/screens/search.dart';
+import 'package:podku/search/views/screens/unsubbed_podcast.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/server/views/screens/setup.dart';
 import 'package:podku/utils/router/go_route_refresh_stream.dart';
+import 'package:podku_client/podku_client.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -41,6 +43,11 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
           builder: (context, state) => PodcastScreen(
             podcastId: state.pathParameters['podcastId'],
           ),
+        ),
+        GoRoute(
+          path: '/search/result',
+          builder: (context, state) =>
+              UnsubbedPodcastScreen(result: state.extra as SearchResult),
         ),
         GoRoute(
           path: '/offline',

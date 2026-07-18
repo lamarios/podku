@@ -26,9 +26,20 @@ part 'download_manager.freezed.dart';
 
 final _log = Logger('DownloadManagerCubit');
 
-class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindingObserver {
+class DownloadManagerCubit extends Cubit<DownloadManagerState>
+    with WidgetsBindingObserver {
   DownloadManagerCubit(super.initialState) {
+    setupDownloads();
+  }
+
+  Future<void> setupDownloads() async {
     if (!kIsWeb) {
+      final result = await FileDownloader().configure(
+        globalConfig: [(Config.holdingQueue, (1, 1, 1))],
+      );
+
+      _log.fine('Download setup results: $result');
+
       WidgetsBinding.instance.addObserver(this);
       getOfflineEpisodes();
       initDownloadListener();
@@ -173,27 +184,51 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     }
 
     _log.fine('found ${episodes.length} offline episodes');
+    episodes.sort(
+      (a, b) => b.pubDateMillis?.compareTo(a.pubDateMillis ?? 0) ?? 0,
+    );
     emit(state.copyWith(offlineEpisodes: episodes));
   }
 
   Future<void> updateDownloadStatus(TaskUpdate update) async {
     _log.fine('Download update: $update');
     Map<String, DownloadProgress> tasks = Map.from(state.ongoingDownloads);
-    var task = tasks[update.task.taskId];
+    var taskEntry = tasks.entries
+        .where((v) => v.value.id == update.task.taskId)
+        .firstOrNull;
+    var task = taskEntry?.value;
 
-    if (task != null) {
+    if (taskEntry != null && task != null) {
       switch (update) {
         case TaskStatusUpdate():
           task = task.copyWith(status: update.status);
 
-          switch(update.status){
+          switch (update.status) {
             case .complete:
               getOfflineEpisodes();
+              break;
+            case .failed:
+              tasks.remove(taskEntry.key);
+              await FileDownloader().cancel(update.task);
+              Future.delayed(
+                Duration(seconds: 5),
+                () async {
+                  _log.fine(
+                    'retrying downloading episode: ${taskEntry.key}, download task id ${task?.id}',
+                  );
+                  download(
+                    (await client.episodes.getEpisode(
+                      UuidValue.fromString(taskEntry.key),
+                    ))!,
+                    manualDownload: false,
+                    retries: task!.retries + 1,
+                  );
+                },
+              );
               break;
             default:
               break;
           }
-
 
           break;
 
@@ -201,25 +236,41 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
           task = task.copyWith(progress: update.progress);
           break;
       }
-      tasks[update.task.taskId] = task;
+      tasks[taskEntry.key] = task;
       emit(state.copyWith(ongoingDownloads: tasks));
     }
 
     // Map<String, DownloadProgress> progresses = map
   }
 
-  Future<void> download(Episode e, {required bool manualDownload}) async {
+  Future<void> download(
+    Episode e, {
+    required bool manualDownload,
+    int retries = 0,
+  }) async {
     if (state.downloadStatus.containsKey(e.id.uuid)) {
+      _log.fine(
+        "Download already queues: ${state.downloadStatus[e.id.uuid]?.status}",
+      );
+      return;
+    }
+
+    if (retries > 2) {
+      _log.fine(
+        'Too many retries to download episode ${e.id.uuid}, giving up...',
+      );
       return;
     }
 
     try {
+      final downloadTaskId = Uuid().v4();
       _log.fine('Downloading episode: ${e.title} (#{${e.id})');
       Map<String, DownloadProgress> statuses = Map.from(state.ongoingDownloads);
       statuses[e.id.uuid] = DownloadProgress(
-        id: e.id.uuid,
+        id: downloadTaskId,
         status: .enqueued,
         progress: 0,
+        retries: retries,
       );
       emit(state.copyWith(ongoingDownloads: statuses));
 
@@ -246,7 +297,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
       await episode.writeAsBytes(episodeResponse.bodyBytes);
 */
       final task = DownloadTask(
-        taskId: e.id.uuid,
+        taskId: downloadTaskId,
         url: e.audioProxyUrl,
         baseDirectory: BaseDirectory.applicationDocuments,
         directory: '${EpisodeDownloads.episodesFolder}/${e.id.uuid}',

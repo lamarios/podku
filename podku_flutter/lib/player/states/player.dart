@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -5,18 +7,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/audio_handler.dart';
+import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku_client/podku_client.dart';
+import 'package:podku_shared/podku_shared.dart';
 
 part 'player.freezed.dart';
+
+final _log = Logger('PlayerCubit');
 
 class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   late BreakPoint _currentBreakPoint;
 
   WidgetsBinding get widgetsBinding => WidgetsBinding.instance;
+
+  StreamSubscription<EpisodeProgress>? _streamSubscription;
 
   PlayerCubit(super.initialState) {
     /*
@@ -37,11 +46,19 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     _currentBreakPoint = BreakPoint.getFromSize(
       (view.physicalSize / view.devicePixelRatio).width,
     );
+
+    getIt
+        .get<ServerCubit>()
+        .playbackStream
+        .stream
+        .where((e) => e.newPlayback)
+        .listen(onNewPlayback);
   }
 
   @override
   Future<void> close() {
     widgetsBinding.removeObserver(this);
+    _streamSubscription?.cancel();
     return super.close();
   }
 
@@ -72,6 +89,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         return;
       }
 
+      _log.fine('Playing episode: $episode');
+
       emit(
         state.copyWith(
           loading: true,
@@ -79,9 +98,18 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           showBigPlayer: true,
         ),
       );
-      final backendEpisode = !kIsWeb && offline
+      var backendEpisode = !kIsWeb && offline
           ? episode
           : await client.episodes.getEpisode(episode.id);
+
+      // at this point we're probably trying to play an episode of a podcast we're not subscribed to
+      if (!offline && backendEpisode == null) {
+        _log.fine(
+          'Playing episode from podcast we\'re not subscribed to: $episode',
+        );
+        backendEpisode = episode;
+      }
+
       if (backendEpisode != null && episode.audioUrl != null) {
         episode = backendEpisode;
         emit(
@@ -96,10 +124,13 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
         await _player.playEpisode(episode);
         emit(state.copyWith(loading: false));
+        if (episode.podcast?.id.uuid != unsubbedPodcastUuid) {
+          await client.episodes.startPlayback(episode, sessionId);
+        }
         await _player.play();
       }
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      _log.severe('Failed to play episode', e, s);
     }
   }
 
@@ -127,7 +158,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void _updateProgress() {
-    if (!state.loading && state.episode != null) {
+    if (state.episode?.podcast?.id.uuid != unsubbedPodcastUuid &&
+        !state.loading &&
+        state.episode != null) {
       final progress = state.position.inSeconds / state.duration.inSeconds;
       EasyThrottle.throttle(
         'progress-update',
@@ -135,6 +168,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         () async {
           await client.episodes.setProgress(
             state.episode!.copyWith(progress: progress),
+            sessionId,
           );
         },
       );
@@ -178,11 +212,24 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       );
 
       if (episode != null) {
-        emit(state.copyWith(episode: episode, duration: Duration(seconds: episode.durationSeconds ?? 1)));
+        emit(
+          state.copyWith(
+            episode: episode,
+            duration: Duration(seconds: episode.durationSeconds ?? 1),
+          ),
+        );
       }
       if (!state.showBigPlayer && !state.showMiniPlayer) {
         emit(state.copyWith(showBigPlayer: true));
       }
+    }
+  }
+
+  /// when a client starts playing what we're playing we stop here
+  void onNewPlayback(EpisodeProgress event) {
+    _log.fine('Received new playback event: $event');
+    if (event.episodeId == state.episode?.id) {
+      stop();
     }
   }
 }

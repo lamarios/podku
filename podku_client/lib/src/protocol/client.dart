@@ -17,9 +17,11 @@ import 'dart:async' as _i3;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
 import 'package:podku_client/src/protocol/podcast/episode.dart' as _i5;
-import 'package:podku_client/src/protocol/podcast/podcast.dart' as _i6;
-import 'package:podku_client/src/protocol/podcast/search_result.dart' as _i7;
-import 'protocol.dart' as _i8;
+import 'package:podku_client/src/protocol/episodes/episode_progress.dart'
+    as _i6;
+import 'package:podku_client/src/protocol/podcast/podcast.dart' as _i7;
+import 'package:podku_client/src/protocol/podcast/search_result.dart' as _i8;
+import 'protocol.dart' as _i9;
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -268,11 +270,39 @@ class EndpointEpisodes extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<void> setProgress(_i5.Episode episode) =>
-      caller.callServerEndpoint<void>(
+  _i3.Future<void> startPlayback(
+    _i5.Episode episode,
+    _i2.UuidValue player,
+  ) => caller.callServerEndpoint<void>(
+    'episodes',
+    'startPlayback',
+    {
+      'episode': episode,
+      'player': player,
+    },
+  );
+
+  _i3.Future<void> setProgress(
+    _i5.Episode episode,
+    _i2.UuidValue player,
+  ) => caller.callServerEndpoint<void>(
+    'episodes',
+    'setProgress',
+    {
+      'episode': episode,
+      'player': player,
+    },
+  );
+
+  _i3.Stream<_i6.EpisodeProgress> playbackStream(_i2.UuidValue player) =>
+      caller.callStreamingServerEndpoint<
+        _i3.Stream<_i6.EpisodeProgress>,
+        _i6.EpisodeProgress
+      >(
         'episodes',
-        'setProgress',
-        {'episode': episode},
+        'playbackStream',
+        {'player': player},
+        {},
       );
 }
 
@@ -283,36 +313,43 @@ class EndpointPodcast extends _i2.EndpointRef {
   @override
   String get name => 'podcast';
 
-  _i3.Future<List<_i6.Podcast>> getPodcasts() =>
-      caller.callServerEndpoint<List<_i6.Podcast>>(
+  _i3.Future<List<_i7.Podcast>> getPodcasts() =>
+      caller.callServerEndpoint<List<_i7.Podcast>>(
         'podcast',
         'getPodcasts',
         {},
       );
 
-  _i3.Future<List<_i7.SearchResult>> searchPodcasts(String query) =>
-      caller.callServerEndpoint<List<_i7.SearchResult>>(
+  _i3.Future<List<_i8.SearchResult>> searchPodcasts(String query) =>
+      caller.callServerEndpoint<List<_i8.SearchResult>>(
         'podcast',
         'searchPodcasts',
         {'query': query},
       );
 
-  _i3.Future<void> subscribeToPodcast(_i7.SearchResult result) =>
-      caller.callServerEndpoint<void>(
+  _i3.Future<_i7.Podcast> subscribeToPodcast(_i8.SearchResult result) =>
+      caller.callServerEndpoint<_i7.Podcast>(
         'podcast',
         'subscribeToPodcast',
         {'result': result},
       );
 
-  _i3.Future<bool> unsubscribe(_i6.Podcast podcast) =>
+  _i3.Future<_i7.Podcast> parsePodcast(_i8.SearchResult result) =>
+      caller.callServerEndpoint<_i7.Podcast>(
+        'podcast',
+        'parsePodcast',
+        {'result': result},
+      );
+
+  _i3.Future<bool> unsubscribe(_i7.Podcast podcast) =>
       caller.callServerEndpoint<bool>(
         'podcast',
         'unsubscribe',
         {'podcast': podcast},
       );
 
-  _i3.Future<_i6.Podcast?> getPodcast(String podcastId) =>
-      caller.callServerEndpoint<_i6.Podcast?>(
+  _i3.Future<_i7.Podcast?> getPodcast(String podcastId) =>
+      caller.callServerEndpoint<_i7.Podcast?>(
         'podcast',
         'getPodcast',
         {'podcastId': podcastId},
@@ -350,7 +387,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i8.Protocol(),
+         _i9.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/states/episodes.dart';
+import 'package:podku/episodes/views/components/episode_in_grid.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 import 'package:podku/utils/views/components/swite_action_button.dart';
 
@@ -17,6 +19,7 @@ class EpisodeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = BreakPoint.get(context) == .mobile;
     final colors = Theme.of(context).colorScheme;
     return BlocProvider(
       create: (context) => EpisodeCubit(EpisodeState()),
@@ -47,81 +50,9 @@ class EpisodeScreen extends StatelessWidget {
                       onRefresh: () => cubit.getEpisodes(refresh: true),
                       child: Padding(
                         padding: .symmetric(horizontal: pu2),
-                        child: ListView.builder(
-                          itemCount:
-                              state.episodes.length +
-                              (state.episodes.isNotEmpty &&
-                                      state.episodes.length % 100 == 0
-                                  ? 1
-                                  : 0),
-                          itemBuilder: (context, index) {
-                            final hasMore = state.episodes.length % 100 == 0;
-                            final isLast = index >= state.episodes.length - 1;
-
-                            if (index < state.episodes.length) {
-                              final e = state.episodes[index];
-
-                              return Builder(
-                                builder: (context) {
-                                  final downloadStatus = kIsWeb
-                                      ? null
-                                      : context.select(
-                                          (DownloadManagerCubit c) =>
-                                              c.state.downloadStatus[e.id.uuid],
-                                        );
-                                  return SwipeActionCell(
-                                    key: Key(e.id.uuid),
-                                    trailingActions:
-                                        !kIsWeb &&
-                                            (downloadStatus == null || downloadStatus.status == .canceled  || downloadStatus.status == .failed)
-                                        ? [
-                                            SwipeAction(
-                                              content: SwipeActionButton(
-                                                color:
-                                                    colors.secondaryContainer,
-                                                icon: Icon(Icons.download),
-                                              ),
-                                              color: Colors.transparent,
-                                              onTap: (handler) async {
-                                                context
-                                                    .read<
-                                                      DownloadManagerCubit
-                                                    >()
-                                                    .download(
-                                                      e,
-                                                      manualDownload: true,
-                                                    );
-                                                await handler(false);
-                                              },
-                                            ),
-                                          ]
-                                        : null,
-                                    child: ConditionalWrap(
-                                      wrapIf: isLast && !hasMore,
-                                      wrapper: (child) => Padding(
-                                        padding: .only(bottom: 200),
-                                        child: child,
-                                      ),
-                                      child: EpisodeInList(
-                                        key: ValueKey(e.id.uuid),
-                                        episode: e,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            } else {
-                              return Padding(
-                                padding: .only(bottom: 200),
-                                child: TextButton(
-                                  child: Text('Load more'),
-                                  onPressed: () =>
-                                      context.read<EpisodeCubit>().loadMore(),
-                                ),
-                              );
-                            }
-                          },
-                        ),
+                        child: isMobile
+                            ? _EpisodeList(state: state, cubit: cubit)
+                            : _EpisodeGrid(state: state, cubit: cubit),
                       ),
                     ),
                   )
@@ -142,6 +73,193 @@ class EpisodeScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _EpisodeGrid extends StatelessWidget {
+  final EpisodeState state;
+  final EpisodeCubit cubit;
+
+  const _EpisodeGrid({required this.state, required this.cubit});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    final colors = Theme.of(context).colorScheme;
+
+    children.addAll(
+      state.episodes.map(
+        (e) {
+          return Builder(
+            builder: (context) {
+              final downloadStatus = kIsWeb
+                  ? null
+                  : context.select(
+                      (DownloadManagerCubit c) =>
+                          c.state.downloadStatus[e.id.uuid],
+                    );
+
+              final showDownloadButton =
+                  !kIsWeb &&
+                  (downloadStatus == null ||
+                      downloadStatus.status == .canceled ||
+                      downloadStatus.status == .failed);
+
+              return ConditionalWrap(
+                wrapIf: showDownloadButton,
+                wrapper: (child) => Stack(
+                  children: [
+                    child,
+                    Positioned(
+                      top: pu2,
+                      right: pu8,
+                      child: MenuAnchor(
+                        animated: true,
+                        menuChildren: [
+                          TextButton.icon(
+                            onPressed: () async {
+                              context.read<DownloadManagerCubit>().download(
+                                e,
+                                manualDownload: true,
+                              );
+                            },
+                            label: Text('Download'),
+                            icon: Icon(Icons.download),
+                          ),
+                        ],
+                        builder: (context, controller, child) {
+                          return IconButton(
+                            style: ButtonStyle(
+                              backgroundColor: .all(
+                                colors.surface.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            visualDensity: .compact,
+                            icon: Icon(
+                              Icons.more_vert,
+                              size: 17,
+                            ),
+                            onPressed: () => controller.isOpen
+                                ? controller.close()
+                                : controller.open(),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                child: EpisodeInGrid(
+                  key: Key(e.id.uuid),
+                  episode: e,
+                ),
+              );
+            },
+          );
+        },
+      ).toList(),
+    );
+
+    if (state.episodes.isNotEmpty && state.episodes.length % 100 == 0) {
+      children.add(
+        Center(
+          child: TextButton(
+            child: Text('Load more'),
+            onPressed: () => context.read<EpisodeCubit>().loadMore(),
+          ),
+        ),
+      );
+    }
+
+    return GridView.extent(
+      maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
+      mainAxisExtent: EpisodeInGrid.mainAxisExtent,
+      crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
+      mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
+      children: children,
+    );
+  }
+}
+
+class _EpisodeList extends StatelessWidget {
+  final EpisodeState state;
+  final EpisodeCubit cubit;
+
+  const _EpisodeList({required this.state, required this.cubit});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return ListView.builder(
+      itemCount:
+          state.episodes.length +
+          (state.episodes.isNotEmpty && state.episodes.length % 100 == 0
+              ? 1
+              : 0),
+      itemBuilder: (context, index) {
+        final hasMore = state.episodes.length % 100 == 0;
+        final isLast = index >= state.episodes.length - 1;
+
+        if (index < state.episodes.length) {
+          final e = state.episodes[index];
+
+          return Builder(
+            builder: (context) {
+              final downloadStatus = kIsWeb
+                  ? null
+                  : context.select(
+                      (DownloadManagerCubit c) =>
+                          c.state.downloadStatus[e.id.uuid],
+                    );
+              return SwipeActionCell(
+                key: Key(e.id.uuid),
+                trailingActions:
+                    !kIsWeb &&
+                        (downloadStatus == null ||
+                            downloadStatus.status == .canceled ||
+                            downloadStatus.status == .failed)
+                    ? [
+                        SwipeAction(
+                          content: SwipeActionButton(
+                            color: colors.secondaryContainer,
+                            icon: Icon(Icons.download),
+                          ),
+                          color: Colors.transparent,
+                          onTap: (handler) async {
+                            context.read<DownloadManagerCubit>().download(
+                              e,
+                              manualDownload: true,
+                            );
+                            await handler(false);
+                          },
+                        ),
+                      ]
+                    : null,
+                child: ConditionalWrap(
+                  wrapIf: isLast && !hasMore,
+                  wrapper: (child) => Padding(
+                    padding: .only(bottom: 200),
+                    child: child,
+                  ),
+                  child: EpisodeInList(
+                    key: ValueKey(e.id.uuid),
+                    episode: e,
+                  ),
+                ),
+              );
+            },
+          );
+        } else {
+          return Padding(
+            padding: .only(bottom: 200),
+            child: TextButton(
+              child: Text('Load more'),
+              onPressed: () => context.read<EpisodeCubit>().loadMore(),
+            ),
+          );
+        }
+      },
     );
   }
 }
