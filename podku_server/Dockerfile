@@ -8,6 +8,7 @@ FROM dart:3.11.0 AS build
 WORKDIR /app
 COPY pubspec.lock .
 COPY podku_server podku_server
+COPY podku_shared podku_shared
 RUN printf '%s\n' \
   'name: _' \
   'environment:' \
