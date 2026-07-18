@@ -9,7 +9,6 @@ sealed class DownloadProgress with _$DownloadProgress {
     required String id,
     required TaskStatus status,
     required double progress,
-    @Default(0) int retries
+    @Default(0) int retries,
   }) = _DownloadProgress;
-
 }

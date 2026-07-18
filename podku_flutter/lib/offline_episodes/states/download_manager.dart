@@ -26,17 +26,14 @@ part 'download_manager.freezed.dart';
 
 final _log = Logger('DownloadManagerCubit');
 
-class DownloadManagerCubit extends Cubit<DownloadManagerState>
-    with WidgetsBindingObserver {
+class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindingObserver {
   DownloadManagerCubit(super.initialState) {
     setupDownloads();
   }
 
   Future<void> setupDownloads() async {
     if (!kIsWeb) {
-      final result = await FileDownloader().configure(
-        globalConfig: [(Config.holdingQueue, (1, 1, 1))],
-      );
+      final result = await FileDownloader().configure(globalConfig: [(Config.holdingQueue, (1, 1, 1))]);
 
       _log.fine('Download setup results: $result');
 
@@ -96,11 +93,8 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
       var episodesToClean = podcast.episodes!.skip(episodesToDownload);
       for (final e in episodesToClean) {
         final completeEpisode = e.copyWith(podcast: p);
-        if ((await completeEpisode.validOfflineFiles) &&
-            !(await completeEpisode.isManualDownload)) {
-          _log.fine(
-            '[Automatic] deleting local copy of ${completeEpisode.title}',
-          );
+        if ((await completeEpisode.validOfflineFiles) && !(await completeEpisode.isManualDownload)) {
+          _log.fine('[Automatic] deleting local copy of ${completeEpisode.title}');
           await delete(completeEpisode);
         }
       }
@@ -119,9 +113,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
     final permissionType = PermissionType.notifications;
     var status = await FileDownloader().permissions.status(permissionType);
     if (status != PermissionStatus.granted) {
-      if (await FileDownloader().permissions.shouldShowRationale(
-        permissionType,
-      )) {
+      if (await FileDownloader().permissions.shouldShowRationale(permissionType)) {
         final context = navigatorKey.currentContext;
         _log.fine('has context for rationale: ${context != null}');
         if (context != null) {
@@ -129,15 +121,8 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
             context: context,
             builder: (_) => AlertDialog(
               title: const Text('Enable notifications'),
-              content: const Text(
-                'We need this to show podcast download progress',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('OK'),
-                ),
-              ],
+              content: const Text('We need this to show podcast download progress'),
+              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
             ),
           );
         }
@@ -153,9 +138,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
   Future<Directory> getEpisodeFolder() async {
     final downloads = await getApplicationDocumentsDirectory();
 
-    final episodeDirectory = Directory(
-      p.join(downloads.path, EpisodeDownloads.episodesFolder),
-    );
+    final episodeDirectory = Directory(p.join(downloads.path, EpisodeDownloads.episodesFolder));
 
     if (!(await episodeDirectory.exists())) {
       await episodeDirectory.create(recursive: true);
@@ -184,18 +167,14 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
     }
 
     _log.fine('found ${episodes.length} offline episodes');
-    episodes.sort(
-      (a, b) => b.pubDateMillis?.compareTo(a.pubDateMillis ?? 0) ?? 0,
-    );
+    episodes.sort((a, b) => b.pubDateMillis?.compareTo(a.pubDateMillis ?? 0) ?? 0);
     emit(state.copyWith(offlineEpisodes: episodes));
   }
 
   Future<void> updateDownloadStatus(TaskUpdate update) async {
     _log.fine('Download update: $update');
     Map<String, DownloadProgress> tasks = Map.from(state.ongoingDownloads);
-    var taskEntry = tasks.entries
-        .where((v) => v.value.id == update.task.taskId)
-        .firstOrNull;
+    var taskEntry = tasks.entries.where((v) => v.value.id == update.task.taskId).firstOrNull;
     var task = taskEntry?.value;
 
     if (taskEntry != null && task != null) {
@@ -210,21 +189,14 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
             case .failed:
               tasks.remove(taskEntry.key);
               await FileDownloader().cancel(update.task);
-              Future.delayed(
-                Duration(seconds: 5),
-                () async {
-                  _log.fine(
-                    'retrying downloading episode: ${taskEntry.key}, download task id ${task?.id}',
-                  );
-                  download(
-                    (await client.episodes.getEpisode(
-                      UuidValue.fromString(taskEntry.key),
-                    ))!,
-                    manualDownload: false,
-                    retries: task!.retries + 1,
-                  );
-                },
-              );
+              Future.delayed(Duration(seconds: 5), () async {
+                _log.fine('retrying downloading episode: ${taskEntry.key}, download task id ${task?.id}');
+                download(
+                  (await client.episodes.getEpisode(UuidValue.fromString(taskEntry.key)))!,
+                  manualDownload: false,
+                  retries: task!.retries + 1,
+                );
+              });
               break;
             default:
               break;
@@ -243,22 +215,14 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
     // Map<String, DownloadProgress> progresses = map
   }
 
-  Future<void> download(
-    Episode e, {
-    required bool manualDownload,
-    int retries = 0,
-  }) async {
+  Future<void> download(Episode e, {required bool manualDownload, int retries = 0}) async {
     if (state.downloadStatus.containsKey(e.id.uuid)) {
-      _log.fine(
-        "Download already queues: ${state.downloadStatus[e.id.uuid]?.status}",
-      );
+      _log.fine("Download already queues: ${state.downloadStatus[e.id.uuid]?.status}");
       return;
     }
 
     if (retries > 2) {
-      _log.fine(
-        'Too many retries to download episode ${e.id.uuid}, giving up...',
-      );
+      _log.fine('Too many retries to download episode ${e.id.uuid}, giving up...');
       return;
     }
 
@@ -266,12 +230,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState>
       final downloadTaskId = Uuid().v4();
       _log.fine('Downloading episode: ${e.title} (#{${e.id})');
       Map<String, DownloadProgress> statuses = Map.from(state.ongoingDownloads);
-      statuses[e.id.uuid] = DownloadProgress(
-        id: downloadTaskId,
-        status: .enqueued,
-        progress: 0,
-        retries: retries,
-      );
+      statuses[e.id.uuid] = DownloadProgress(id: downloadTaskId, status: .enqueued, progress: 0, retries: retries);
       emit(state.copyWith(ongoingDownloads: statuses));
 
       _log.fine('Creating data.json');
@@ -343,11 +302,7 @@ sealed class DownloadManagerState with _$DownloadManagerState {
   Map<String, DownloadProgress> get downloadStatus {
     Map<String, DownloadProgress> statuses = Map.from(ongoingDownloads);
     for (final e in offlineEpisodes) {
-      statuses[e.id.uuid] = DownloadProgress(
-        id: '',
-        status: .complete,
-        progress: 100,
-      );
+      statuses[e.id.uuid] = DownloadProgress(id: '', status: .complete, progress: 100);
     }
 
     return statuses;

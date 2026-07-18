@@ -10,11 +10,7 @@ class EpisodePlayButton extends StatelessWidget {
   final Episode episode;
   final bool offline;
 
-  const EpisodePlayButton({
-    super.key,
-    required this.episode,
-    required this.offline,
-  });
+  const EpisodePlayButton({super.key, required this.episode, required this.offline});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +19,7 @@ class EpisodePlayButton extends StatelessWidget {
       builder: (context) {
         var cubit = context.read<PlayerCubit>();
 
-        final playerEpisode = context.select(
-          (PlayerCubit c) => c.state.episode,
-        );
+        final playerEpisode = context.select((PlayerCubit c) => c.state.episode);
         final isEpisodePlaying = playerEpisode?.id == episode.id;
         final playerProgress = context.select(
           (PlayerCubit c) => isEpisodePlaying && c.state.loading == false
@@ -36,21 +30,20 @@ class EpisodePlayButton extends StatelessWidget {
         return Stack(
           alignment: .center,
           children: [
-            Positioned.fill(child: Container(decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(100)),)),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(100)),
+              ),
+            ),
             if (!offline)
               isEpisodePlaying
-                  ? CircularProgressIndicator(
-                      value: playerProgress,
-                      backgroundColor: colors.secondaryContainer,
-                    )
+                  ? CircularProgressIndicator(value: playerProgress, backgroundColor: colors.secondaryContainer)
                   : StreamBuilder<double>(
                       stream: context
                           .read<ServerCubit>()
                           .playbackStream
                           .stream
-                          .where(
-                            (e) => e.episodeId == episode.id && !e.newPlayback,
-                          )
+                          .where((e) => e.episodeId == episode.id && !e.newPlayback)
                           .map((e) => e.progress),
                       initialData: episode.progress,
                       builder: (context, snapshot) => CircularProgressIndicator(
@@ -68,9 +61,7 @@ class EpisodePlayButton extends StatelessWidget {
                   ? Colors.green
                   : null,
               icon: Icon(
-                !isEpisodePlaying && playerProgress > _playedThreshold
-                    ? Icons.check
-                    : Icons.play_arrow,
+                !isEpisodePlaying && playerProgress > _playedThreshold ? Icons.check : Icons.play_arrow,
                 size: 20,
               ),
               visualDensity: .compact,

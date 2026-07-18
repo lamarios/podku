@@ -30,11 +30,7 @@ class PodcastsScreen extends StatelessWidget {
                         children: state.subscriptions.map((p) => PodcastInGrid(key: ValueKey(p), podcast: p)).toList(),
                       )
                     : Center(
-                        child: Icon(
-                          Icons.podcasts_outlined,
-                          size: 100,
-                          color: colors.onSurface.withValues(alpha: 0.1),
-                        ),
+                        child: Icon(Icons.podcasts_outlined, size: 100, color: colors.onSurface.withValues(alpha: 0.1)),
                       ),
               ),
             ],

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class IntStepper extends StatelessWidget {
@@ -25,24 +24,16 @@ class IntStepper extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _StepButton(
-          icon: Icons.remove,
-          onTap: value > min && enabled ? () => onChanged(value - 1) : null,
-        ),
+        _StepButton(icon: Icons.remove, onTap: value > min && enabled ? () => onChanged(value - 1) : null),
         SizedBox(
           width: 40,
           child: Text(
             '$value',
             textAlign: TextAlign.center,
-            style: textTheme.titleMedium?.copyWith(
-              color: !enabled ? colors.outline : null,
-            ),
+            style: textTheme.titleMedium?.copyWith(color: !enabled ? colors.outline : null),
           ),
         ),
-        _StepButton(
-          icon: Icons.add,
-          onTap: value < max && enabled ? () => onChanged(value + 1) : null,
-        ),
+        _StepButton(icon: Icons.add, onTap: value < max && enabled ? () => onChanged(value + 1) : null),
       ],
     );
   }
@@ -57,9 +48,7 @@ class _StepButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null;
-    final color = enabled
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).disabledColor;
+    final color = enabled ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor;
 
     return IconButton(
       icon: Icon(icon, color: color),

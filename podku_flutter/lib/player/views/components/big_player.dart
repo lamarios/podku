@@ -24,17 +24,14 @@ class BigPlayer extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.secondaryContainer,
       appBar: AppBar(
-        leading: isMobile ? IconButton(
-          onPressed: () => context.read<PlayerCubit>().showPlayers(true, false),
-          icon: Icon(Icons.arrow_drop_down),
-        ) : null,
+        leading: isMobile
+            ? IconButton(
+                onPressed: () => context.read<PlayerCubit>().showPlayers(true, false),
+                icon: Icon(Icons.arrow_drop_down),
+              )
+            : null,
         backgroundColor: colors.secondaryContainer,
-        actions: [
-          IconButton(
-            onPressed: () => context.read<PlayerCubit>().stop(),
-            icon: Icon(Icons.close),
-          ),
-        ],
+        actions: [IconButton(onPressed: () => context.read<PlayerCubit>().stop(), icon: Icon(Icons.close))],
       ),
       body: Builder(
         builder: (context) {
@@ -45,13 +42,9 @@ class BigPlayer extends StatelessWidget {
             switchInCurve: Curves.easeInOutQuad,
             duration: animationDuration,
             child: episode == null
-                ? Center(
-                    child: Text('nothing is playing'),
-                  )
+                ? Center(child: Text('nothing is playing'))
                 : loading
-                ? Center(
-                    child: LoadingIndicator(),
-                  )
+                ? Center(child: LoadingIndicator())
                 : Column(
                     crossAxisAlignment: .stretch,
                     children: [
@@ -82,55 +75,34 @@ class BigPlayer extends StatelessWidget {
                           IconButton(
                             iconSize: 60,
                             onPressed: () => cubit.skip(-10),
-                            icon: Icon(
-                              Icons.fast_rewind,
-                              color: colors.onSecondaryContainer,
-                            ),
+                            icon: Icon(Icons.fast_rewind, color: colors.onSecondaryContainer),
                           ),
                           Gap(pu4),
-                          PlayPauseButton(
-                            size: 75,
-                          ),
+                          PlayPauseButton(size: 75),
                           Gap(pu4),
                           IconButton(
                             iconSize: 60,
                             onPressed: () => cubit.skip(30),
-                            icon: Icon(
-                              Icons.fast_forward,
-                              color: colors.onSecondaryContainer,
-                            ),
+                            icon: Icon(Icons.fast_forward, color: colors.onSecondaryContainer),
                           ),
                         ],
                       ),
                       Gap(pu4),
                       Padding(
                         padding: .symmetric(horizontal: pu6),
-                        child: ProgressBar(
-                          height: 10,
-                          scrobblingDot: true,
-                        ),
+                        child: ProgressBar(height: 10, scrobblingDot: true),
                       ),
                       Builder(
                         builder: (context) {
-                          final position = context.select(
-                            (PlayerCubit c) => c.state.position,
-                          );
-                          final duration = context.select(
-                            (PlayerCubit c) => c.state.duration,
-                          );
+                          final position = context.select((PlayerCubit c) => c.state.position);
+                          final duration = context.select((PlayerCubit c) => c.state.duration);
                           return Padding(
                             padding: .symmetric(horizontal: pu6),
                             child: Row(
                               mainAxisAlignment: .spaceBetween,
                               children: [
-                                Text(
-                                  printDuration(position),
-                                  style: textTheme.bodySmall,
-                                ),
-                                Text(
-                                  printDuration(duration),
-                                  style: textTheme.bodySmall,
-                                ),
+                                Text(printDuration(position), style: textTheme.bodySmall),
+                                Text(printDuration(duration), style: textTheme.bodySmall),
                               ],
                             ),
                           );
@@ -141,10 +113,7 @@ class BigPlayer extends StatelessWidget {
                         child: Container(
                           color: colors.surface,
                           child: SingleChildScrollView(
-                            child: Padding(
-                              padding: .all(pu4),
-                              child: HtmlWidget(episode.description ?? ''),
-                            ),
+                            child: Padding(padding: .all(pu4), child: HtmlWidget(episode.description ?? '')),
                           ),
                         ),
                       ),

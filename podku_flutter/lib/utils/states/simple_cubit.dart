@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class SimpleCubit<T> extends Cubit<T?> {
   SimpleCubit(super.initialState, {Future<T?>? getter}) {
     if (getter != null) {
@@ -12,7 +11,7 @@ class SimpleCubit<T> extends Cubit<T?> {
     emit(await getter);
   }
 
-  void set(T? value){
+  void set(T? value) {
     emit(value);
   }
 }

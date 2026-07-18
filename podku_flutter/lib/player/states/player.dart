@@ -43,16 +43,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     stream.map((event) => event.showBigPlayer).listen(handleBackButton);
     widgetsBinding.addObserver(this);
     var view = PlatformDispatcher.instance.views.first;
-    _currentBreakPoint = BreakPoint.getFromSize(
-      (view.physicalSize / view.devicePixelRatio).width,
-    );
+    _currentBreakPoint = BreakPoint.getFromSize((view.physicalSize / view.devicePixelRatio).width);
 
-    getIt
-        .get<ServerCubit>()
-        .playbackStream
-        .stream
-        .where((e) => e.newPlayback)
-        .listen(onNewPlayback);
+    getIt.get<ServerCubit>().playbackStream.stream.where((e) => e.newPlayback).listen(onNewPlayback);
   }
 
   @override
@@ -67,14 +60,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     final oldBreakPoint = _currentBreakPoint;
 
     var view = PlatformDispatcher.instance.views.first;
-    _currentBreakPoint = BreakPoint.getFromSize(
-      (view.physicalSize / view.devicePixelRatio).width,
-    );
+    _currentBreakPoint = BreakPoint.getFromSize((view.physicalSize / view.devicePixelRatio).width);
 
     // when we go from mobile to bigger, we need to switch to big player
-    if (oldBreakPoint != _currentBreakPoint &&
-        oldBreakPoint == .mobile &&
-        state.showMiniPlayer) {
+    if (oldBreakPoint != _currentBreakPoint && oldBreakPoint == .mobile && state.showMiniPlayer) {
       emit(state.copyWith(showBigPlayer: true, showMiniPlayer: false));
     }
 
@@ -91,22 +80,12 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
       _log.fine('Playing episode: $episode');
 
-      emit(
-        state.copyWith(
-          loading: true,
-          showMiniPlayer: false,
-          showBigPlayer: true,
-        ),
-      );
-      var backendEpisode = !kIsWeb && offline
-          ? episode
-          : await client.episodes.getEpisode(episode.id);
+      emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true));
+      var backendEpisode = !kIsWeb && offline ? episode : await client.episodes.getEpisode(episode.id);
 
       // at this point we're probably trying to play an episode of a podcast we're not subscribed to
       if (!offline && backendEpisode == null) {
-        _log.fine(
-          'Playing episode from podcast we\'re not subscribed to: $episode',
-        );
+        _log.fine('Playing episode from podcast we\'re not subscribed to: $episode');
         backendEpisode = episode;
       }
 
@@ -147,31 +126,16 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   Future<void> onStateChanged(PlaybackState event) async {
-    emit(
-      state.copyWith(
-        playing: event.playing,
-        position: event.position,
-        bufferPosition: event.bufferedPosition,
-      ),
-    );
+    emit(state.copyWith(playing: event.playing, position: event.position, bufferPosition: event.bufferedPosition));
     _updateProgress();
   }
 
   void _updateProgress() {
-    if (state.episode?.podcast?.id.uuid != unsubbedPodcastUuid &&
-        !state.loading &&
-        state.episode != null) {
+    if (state.episode?.podcast?.id.uuid != unsubbedPodcastUuid && !state.loading && state.episode != null) {
       final progress = state.position.inSeconds / state.duration.inSeconds;
-      EasyThrottle.throttle(
-        'progress-update',
-        Duration(seconds: 5),
-        () async {
-          await client.episodes.setProgress(
-            state.episode!.copyWith(progress: progress),
-            sessionId,
-          );
-        },
-      );
+      EasyThrottle.throttle('progress-update', Duration(seconds: 5), () async {
+        await client.episodes.setProgress(state.episode!.copyWith(progress: progress), sessionId);
+      });
     } else {}
   }
 
@@ -207,9 +171,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   Future<void> episodeChangedListener(MediaItem? event) async {
     if (state.episode == null && event != null) {
-      final episode = await client.episodes.getEpisode(
-        UuidValue.fromString(event.id),
-      );
+      final episode = await client.episodes.getEpisode(UuidValue.fromString(event.id));
 
       if (episode != null) {
         emit(

@@ -10,7 +10,7 @@ import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 
 class PlayerWrapper extends StatelessWidget {
-  static final double _bigPlayerWidth = BreakPoint.mobile.maxWidth *0.7;
+  static final double _bigPlayerWidth = BreakPoint.mobile.maxWidth * 0.7;
   final Widget child;
 
   const PlayerWrapper({super.key, required this.child});
@@ -28,9 +28,7 @@ class PlayerWrapper extends StatelessWidget {
             wrapIf: !isMobile,
             wrapper: (child) => Builder(
               builder: (context) {
-                final showBigPlayer = context.select(
-                  (PlayerCubit c) => c.state.showBigPlayer,
-                );
+                final showBigPlayer = context.select((PlayerCubit c) => c.state.showBigPlayer);
                 return SingleMotionBuilder(
                   motion: MaterialSpringMotion.expressiveSpatialDefault(),
                   value: showBigPlayer ? 1 : 0,
@@ -53,12 +51,8 @@ class PlayerWrapper extends StatelessWidget {
           if (isMobile)
             Builder(
               builder: (context) {
-                final showMiniPlayer = context.select(
-                  (PlayerCubit c) => c.state.showMiniPlayer,
-                );
-                final hasEpisode = context.select(
-                  (PlayerCubit c) => c.state.episode != null,
-                );
+                final showMiniPlayer = context.select((PlayerCubit c) => c.state.showMiniPlayer);
+                final hasEpisode = context.select((PlayerCubit c) => c.state.episode != null);
                 return SingleMotionBuilder(
                   motion: MaterialSpringMotion.expressiveSpatialDefault(),
                   value: showMiniPlayer ? 1 : 0,
@@ -70,15 +64,8 @@ class PlayerWrapper extends StatelessWidget {
                         : Positioned(
                             left: 0,
                             right: 0,
-                            bottom: lerpDouble(
-                              300,
-                              100,
-                              miniPlayerEffectiveValue,
-                            ),
-                            child: Opacity(
-                              opacity: value.clamp(0, 1),
-                              child: MiniPlayer(),
-                            ),
+                            bottom: lerpDouble(300, 100, miniPlayerEffectiveValue),
+                            child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
                           );
                   },
                 );
@@ -86,9 +73,7 @@ class PlayerWrapper extends StatelessWidget {
             ),
           Builder(
             builder: (context) {
-              final showBigPlayer = context.select(
-                (PlayerCubit c) => c.state.showBigPlayer,
-              );
+              final showBigPlayer = context.select((PlayerCubit c) => c.state.showBigPlayer);
               return SingleMotionBuilder(
                 motion: MaterialSpringMotion.expressiveSpatialDefault(),
                 value: showBigPlayer ? 1 : 0,
@@ -98,21 +83,14 @@ class PlayerWrapper extends StatelessWidget {
                       ? SizedBox.shrink()
                       : Positioned(
                           left: isMobile ? 0 : null,
-                          right: isMobile
-                              ? 0
-                              : lerpDouble(-_bigPlayerWidth, 0, value),
+                          right: isMobile ? 0 : lerpDouble(-_bigPlayerWidth, 0, value),
                           bottom: 0,
-                          top: isMobile
-                              ? lerpDouble(screenHeight, 0, value)
-                              : 0,
+                          top: isMobile ? lerpDouble(screenHeight, 0, value) : 0,
                           child: Opacity(
                             opacity: (value).clamp(0, 1),
                             child: ConditionalWrap(
                               wrapIf: !isMobile,
-                              wrapper: (child) => SizedBox(
-                                width: _bigPlayerWidth,
-                                child: child,
-                              ),
+                              wrapper: (child) => SizedBox(width: _bigPlayerWidth, child: child),
                               child: BigPlayer(),
                             ),
                           ),

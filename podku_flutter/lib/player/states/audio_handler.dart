@@ -45,10 +45,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<List<MediaItem>> getChildren(
-    String parentMediaId, [
-    Map<String, dynamic>? options,
-  ]) async {
+  Future<List<MediaItem>> getChildren(String parentMediaId, [Map<String, dynamic>? options]) async {
     final serverCubit = getIt.get<ServerCubit>();
     if ((await serverCubit.waitForClientToBeSet()) == null) {
       _log.fine('could not get a client');
@@ -79,8 +76,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
               // ...NOT_PLAYED
 
               // Completion percentage
-              'androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE':
-                  episode.progress,
+              'androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE': episode.progress,
               // double 0.0–1.0
             },
           ),
@@ -91,13 +87,8 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> playFromMediaId(
-    String mediaId, [
-    Map<String, dynamic>? extras,
-  ]) async {
-    final episode = await client.episodes.getEpisode(
-      UuidValue.fromString(mediaId),
-    );
+  Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async {
+    final episode = await client.episodes.getEpisode(UuidValue.fromString(mediaId));
     if (episode != null) {
       await playEpisode(episode);
       await play();
@@ -130,22 +121,15 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     var offlineFiles = kIsWeb ? [] : await episode.offlineFiles;
 
-    final offlineFile = offlineFiles
-        .where((s) => s.endsWith(episode.episodeFile))
-        .firstOrNull;
+    final offlineFile = offlineFiles.where((s) => s.endsWith(episode.episodeFile)).firstOrNull;
 
-    final imageFile = offlineFiles
-        .where((s) => s.endsWith(episode.imageFile))
-        .firstOrNull;
+    final imageFile = offlineFiles.where((s) => s.endsWith(episode.imageFile)).firstOrNull;
 
     var audioProxyUrl = episode.audioProxyUrl;
 
     final initialPosition = episode.durationSeconds == null
         ? Duration.zero
-        : Duration(
-            seconds: (episode.progress.clamp(0, 1) * episode.durationSeconds!)
-                .round(),
-          );
+        : Duration(seconds: (episode.progress.clamp(0, 1) * episode.durationSeconds!).round());
 
     if (offlineFile != null) {
       _log.fine('playing from offline file');
@@ -159,26 +143,16 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
       title: episode.title,
       artist: episode.podcast?.name,
       duration: Duration(seconds: episode.durationSeconds ?? 1),
-      artUri: imageFile != null
-          ? Uri.file(imageFile)
-          : Uri.tryParse(episode.podcast?.artUrl ?? ''),
+      artUri: imageFile != null ? Uri.file(imageFile) : Uri.tryParse(episode.podcast?.artUrl ?? ''),
     );
 
     mediaItem.add(item);
     playbackState.add(
       PlaybackState(
         queueIndex: 0,
-        controls: [
-          .pause,
-          .rewind,
-          .fastForward,
-        ],
+        controls: [.pause, .rewind, .fastForward],
         systemActions: {.seek, .seekBackward, .seekForward},
-        androidCompactActionIndices: [
-          0,
-          2,
-          1,
-        ],
+        androidCompactActionIndices: [0, 2, 1],
         processingState: .loading,
         updatePosition: Duration.zero,
         bufferedPosition: Duration.zero,

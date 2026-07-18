@@ -42,21 +42,17 @@ class MiniPlayer extends StatelessWidget {
                           builder: (context) {
                             final loading = context.select((PlayerCubit c) => c.state.loading);
                             return loading
-                                ? Center(
-                                    child: LoadingIndicator(),
-                                  )
+                                ? Center(child: LoadingIndicator())
                                 : Column(
                                     mainAxisAlignment: .center,
                                     crossAxisAlignment: .stretch,
                                     children: [
                                       Builder(
                                         builder: (context) {
-                                          final title = context.select((PlayerCubit c) => c.state.episode?.title ?? 'nothing is player');
-                                          return Text(
-                                            title,
-                                            overflow: .ellipsis,
-                                            maxLines: 2,
+                                          final title = context.select(
+                                            (PlayerCubit c) => c.state.episode?.title ?? 'nothing is player',
                                           );
+                                          return Text(title, overflow: .ellipsis, maxLines: 2);
                                         },
                                       ),
                                       Gap(pu2),

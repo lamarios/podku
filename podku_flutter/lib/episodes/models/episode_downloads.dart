@@ -11,9 +11,7 @@ extension EpisodeDownloads on Episode {
   Future<Directory> episodeFolder({bool createIfMissing = false}) async {
     final downloads = await getApplicationDocumentsDirectory();
 
-    final episodeDirectory = Directory(
-      p.join(downloads.path, episodesFolder, id.uuid),
-    );
+    final episodeDirectory = Directory(p.join(downloads.path, episodesFolder, id.uuid));
 
     if (createIfMissing && !(await episodeDirectory.exists())) {
       await episodeDirectory.create(recursive: true);
@@ -32,14 +30,11 @@ extension EpisodeDownloads on Episode {
     return f.listSync().map((f) => f.path).toList();
   }
 
-  String get episodeFile =>
-      'episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
+  String get episodeFile => 'episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
 
-  String get episodeTempFile =>
-      'tmp_episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
+  String get episodeTempFile => 'tmp_episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
 
-  String get imageFile =>
-      'image${p.extension(Uri.parse(podcast?.artworkUrl ?? '').path)}';
+  String get imageFile => 'image${p.extension(Uri.parse(podcast?.artworkUrl ?? '').path)}';
 
   String get manualDownload => 'manual';
 

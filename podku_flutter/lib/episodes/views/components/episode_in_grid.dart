@@ -8,7 +8,6 @@ import 'package:podku_client/podku_client.dart';
 
 const double _imageSize = 175;
 
-
 class EpisodeInGrid extends StatelessWidget {
   static const double mainAxisExtent = 300;
   static const double crossAxisExtent = 250;
@@ -19,12 +18,7 @@ class EpisodeInGrid extends StatelessWidget {
   final bool offline;
   final bool showPodcastImage;
 
-  const EpisodeInGrid({
-    super.key,
-    required this.episode,
-    this.offline = false,
-    this.showPodcastImage = true,
-  });
+  const EpisodeInGrid({super.key, required this.episode, this.offline = false, this.showPodcastImage = true});
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +45,7 @@ class EpisodeInGrid extends StatelessWidget {
                       : Container(
                           width: _imageSize,
                           height: _imageSize,
-                          decoration: BoxDecoration(
-                            borderRadius: .circular(pu4),
-                            color: colors.secondaryContainer,
-                          ),
+                          decoration: BoxDecoration(borderRadius: .circular(pu4), color: colors.secondaryContainer),
                           child: Center(
                             child: Icon(
                               Icons.podcasts,
@@ -71,10 +62,7 @@ class EpisodeInGrid extends StatelessWidget {
                       alignment: .bottomRight,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withValues(alpha: 0.7),
-                            Colors.transparent,
-                          ],
+                          colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
 
                           begin: .bottomCenter,
                           end: .topCenter,
@@ -82,10 +70,7 @@ class EpisodeInGrid extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: .only(right: pu2, bottom: pu2, top: pu6),
-                        child: EpisodePlayButton(
-                          episode: episode,
-                          offline: offline,
-                        ),
+                        child: EpisodePlayButton(episode: episode, offline: offline),
                       ),
                     ),
                   ),
@@ -102,11 +87,7 @@ class EpisodeInGrid extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: .stretch,
                 children: [
-                  Text(
-                    episode.title,
-                    maxLines: 2,
-                    overflow: .ellipsis,
-                  ),
+                  Text(episode.title, maxLines: 2, overflow: .ellipsis),
                   EpisodeSubTitle(episode: episode, offline: offline),
                 ],
               ),

@@ -13,12 +13,7 @@ class DownloadSettingsCubit extends Cubit<DownloadSettingsState> {
   }
 
   Future<void> init() async {
-    emit(
-      state.copyWith(
-        downloadAutomatically: await downloadAutomatically,
-        podcastEpisodes: await podcastEpisodes,
-      ),
-    );
+    emit(state.copyWith(downloadAutomatically: await downloadAutomatically, podcastEpisodes: await podcastEpisodes));
   }
 
   static Future<bool> get downloadAutomatically async {
@@ -46,8 +41,6 @@ class DownloadSettingsCubit extends Cubit<DownloadSettingsState> {
 
 @freezed
 sealed class DownloadSettingsState with _$DownloadSettingsState {
-  const factory DownloadSettingsState({
-    @Default(false) bool downloadAutomatically,
-    @Default(2) int podcastEpisodes,
-  }) = _DownloadSettingsState;
+  const factory DownloadSettingsState({@Default(false) bool downloadAutomatically, @Default(2) int podcastEpisodes}) =
+      _DownloadSettingsState;
 }

@@ -19,6 +19,9 @@ linter:
   rules:
     unawaited_futures: true
     avoid_print: true
+    sort_pub_dependencies: true
+    always_declare_return_types: true
+    always_use_package_imports: true
 
 analyzer:
   exclude:
@@ -38,4 +41,5 @@ analyzer:
 # https://dart.dev/guides/language/analysis-options
 
 formatter:
-  trailing_commas: preserve
+  page_width: 120
+  trailing_commas: automate

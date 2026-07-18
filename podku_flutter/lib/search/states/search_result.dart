@@ -11,24 +11,14 @@ class SearchResultCubit extends Cubit<SearchResultState> {
   final SearchResult result;
   final PlayerCubit playerCubit;
 
-  SearchResultCubit(
-    super.initialState, {
-    required this.result,
-    required this.playerCubit,
-  }) {
+  SearchResultCubit(super.initialState, {required this.result, required this.playerCubit}) {
     parseResult();
   }
 
   Future<void> subscribe() async {
     emit(state.copyWith(subscribing: true));
     final podcast = await client.podcast.subscribeToPodcast(result);
-    emit(
-      state.copyWith(
-        subscribing: false,
-        subscribed: true,
-        podcast: _formatPodcast(podcast),
-      ),
-    );
+    emit(state.copyWith(subscribing: false, subscribed: true, podcast: _formatPodcast(podcast)));
   }
 
   Future<void> unsubscribe() async {
@@ -36,16 +26,8 @@ class SearchResultCubit extends Cubit<SearchResultState> {
       emit(state.copyWith(subscribing: true));
       await client.podcast.unsubscribe(state.podcast!.copyWith(episodes: []));
       var podcastId = state.podcast?.id;
-      var podcast = state.podcast!.copyWith(
-        id: UuidValue.fromString(unsubbedPodcastUuid),
-      );
-      emit(
-        state.copyWith(
-          subscribing: false,
-          subscribed: false,
-          podcast: _formatPodcast(podcast),
-        ),
-      );
+      var podcast = state.podcast!.copyWith(id: UuidValue.fromString(unsubbedPodcastUuid));
+      emit(state.copyWith(subscribing: false, subscribed: false, podcast: _formatPodcast(podcast)));
       if (playerCubit.state.episode?.podcast?.id == podcastId) {
         playerCubit.stop();
       }
@@ -55,9 +37,7 @@ class SearchResultCubit extends Cubit<SearchResultState> {
   Podcast _formatPodcast(Podcast parsePodcast) {
     return parsePodcast.copyWith(
       episodes: (parsePodcast.episodes ?? [])
-          .map(
-            (e) => e.copyWith(podcast: parsePodcast.copyWith(episodes: [])),
-          )
+          .map((e) => e.copyWith(podcast: parsePodcast.copyWith(episodes: [])))
           .toList(),
     );
   }
@@ -74,13 +54,7 @@ class SearchResultCubit extends Cubit<SearchResultState> {
       parsePodcast = (await client.podcast.getPodcast(isSubscribed.id.uuid))!;
     }
 
-    emit(
-      state.copyWith(
-        podcast: _formatPodcast(parsePodcast),
-        loading: false,
-        subscribed: isSubscribed != null,
-      ),
-    );
+    emit(state.copyWith(podcast: _formatPodcast(parsePodcast), loading: false, subscribed: isSubscribed != null));
   }
 }
 

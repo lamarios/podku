@@ -9,9 +9,7 @@ class DownloadSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Download settings'),
-      ),
+      appBar: AppBar(title: Text('Download settings')),
       body: SafeArea(
         bottom: false,
         child: BlocProvider(

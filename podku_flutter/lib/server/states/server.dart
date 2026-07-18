@@ -18,8 +18,7 @@ final _log = Logger('ServerCubit');
 
 class ServerCubit extends Cubit<ServerState> {
   final TextEditingController controller = TextEditingController();
-  final StreamController<EpisodeProgress> playbackStream =
-      StreamController.broadcast();
+  final StreamController<EpisodeProgress> playbackStream = StreamController.broadcast();
   StreamSubscription<EpisodeProgress>? _innerStream;
 
   ServerCubit(super.initialState) {
@@ -47,16 +46,9 @@ class ServerCubit extends Cubit<ServerState> {
     if (state.client == null) {
       try {
         _log.fine('Waiting for client to be set');
-        return await stream
-            .map(
-              (event) => event.client,
-            )
-            .firstWhere((c) => c != null)
-            .timeout(Duration(seconds: 10));
+        return await stream.map((event) => event.client).firstWhere((c) => c != null).timeout(Duration(seconds: 10));
       } on TimeoutException {
-        _log.fine(
-          'app not ready yet, client is missing. stopping here...',
-        );
+        _log.fine('app not ready yet, client is missing. stopping here...');
         return null;
       }
     } else {
@@ -105,24 +97,15 @@ class ServerCubit extends Cubit<ServerState> {
   }
 
   Future<void> _subscribeToStream(Client client) async {
-    _innerStream = client.episodes
-        .playbackStream(sessionId)
-        .listen(
-          (event) {
-            _log.fine('Received new stream event: $event');
-            playbackStream.add(event);
-          },
-        );
+    _innerStream = client.episodes.playbackStream(sessionId).listen((event) {
+      _log.fine('Received new stream event: $event');
+      playbackStream.add(event);
+    });
 
-    _innerStream?.onError(
-      (error) {
-        _log.severe('Disconnected from playback stream', error);
-        Future.delayed(
-          Duration(seconds: 5),
-          () => _subscribeToStream(client),
-        );
-      },
-    );
+    _innerStream?.onError((error) {
+      _log.severe('Disconnected from playback stream', error);
+      Future.delayed(Duration(seconds: 5), () => _subscribeToStream(client));
+    });
   }
 
   Future<void> _disconnectFromStream() async {
@@ -139,11 +122,7 @@ class ServerCubit extends Cubit<ServerState> {
 
 @freezed
 sealed class ServerState with _$ServerState {
-  const factory ServerState({
-    String? serverUrl,
-    @Default(false) initialized,
-    Client? client,
-  }) = _ServerState;
+  const factory ServerState({String? serverUrl, @Default(false) initialized, Client? client}) = _ServerState;
 
   const ServerState._();
 

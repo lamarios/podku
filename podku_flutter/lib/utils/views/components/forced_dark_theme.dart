@@ -10,10 +10,7 @@ class ForcedDarkThemeBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        colorScheme: .fromSeed(
-          seedColor: appColor,
-          brightness: Brightness.dark,
-        ),
+        colorScheme: .fromSeed(seedColor: appColor, brightness: Brightness.dark),
       ),
       child: Builder(builder: (innerContext) => builder(innerContext)),
     );

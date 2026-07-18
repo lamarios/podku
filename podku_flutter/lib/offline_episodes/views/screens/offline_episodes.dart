@@ -19,12 +19,7 @@ class OfflineEpisodesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Downloads'),
-        actions: [
-          IconButton(
-            onPressed: () => context.push('/offline/settings'),
-            icon: Icon(Icons.settings),
-          ),
-        ],
+        actions: [IconButton(onPressed: () => context.push('/offline/settings'), icon: Icon(Icons.settings))],
       ),
       body: SafeArea(
         child: BlocBuilder<DownloadManagerCubit, DownloadManagerState>(
@@ -37,11 +32,7 @@ class OfflineEpisodesScreen extends StatelessWidget {
                   state.offlineEpisodes.isEmpty
                       ? Expanded(
                           child: Center(
-                            child: Icon(
-                              Icons.download,
-                              size: 100,
-                              color: colors.onSurface.withValues(alpha: 0.2),
-                            ),
+                            child: Icon(Icons.download, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
                           ),
                         )
                       : Expanded(
@@ -49,13 +40,10 @@ class OfflineEpisodesScreen extends StatelessWidget {
                               ? ListView.builder(
                                   itemCount: state.offlineEpisodes.length,
                                   itemBuilder: (context, index) {
-                                    final episode =
-                                        state.offlineEpisodes[index];
+                                    final episode = state.offlineEpisodes[index];
 
                                     return SwipeActionCell(
-                                      key: Key(
-                                        'offline-episode-${episode.id.uuid}',
-                                      ),
+                                      key: Key('offline-episode-${episode.id.uuid}'),
                                       trailingActions: [
                                         SwipeAction(
                                           content: SwipeActionButton(
@@ -63,98 +51,59 @@ class OfflineEpisodesScreen extends StatelessWidget {
                                             icon: Icon(Icons.delete),
                                           ),
                                           color: Colors.transparent,
-                                          performsFirstActionWithFullSwipe:
-                                              true,
+                                          performsFirstActionWithFullSwipe: true,
                                           onTap: (handler) async {
                                             cubit.delete(episode);
                                             await handler(false);
                                           },
                                         ),
                                       ],
-                                      child: EpisodeInList(
-                                        episode: episode,
-                                        offline: true,
-                                      ),
+                                      child: EpisodeInList(episode: episode, offline: true),
                                     );
                                   },
                                 )
                               : GridView.extent(
-                                  maxCrossAxisExtent:
-                                      EpisodeInGrid.crossAxisExtent,
+                                  maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
                                   mainAxisExtent: EpisodeInGrid.mainAxisExtent,
-                                  crossAxisSpacing:
-                                      EpisodeInGrid.crossAxisSpacing,
-                                  mainAxisSpacing:
-                                      EpisodeInGrid.mainAxisSpacing,
-                                  children:
-                                      state.offlineEpisodes
-                                          .map(
-                                            (e) => Stack(
-                                              children: [
-                                                EpisodeInGrid(
-                                                  episode: e,
-                                                  offline: true,
-                                                ),
+                                  crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
+                                  mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
+                                  children: state.offlineEpisodes
+                                      .map(
+                                        (e) => Stack(
+                                          children: [
+                                            EpisodeInGrid(episode: e, offline: true),
 
-                                                Positioned(
-                                                  top: pu2,
-                                                  right: pu8,
-                                                  child: MenuAnchor(
-                                                    animated: true,
-                                                    menuChildren: [
-                                                      TextButton.icon(
-                                                        onPressed: () async {
-                                                          context
-                                                              .read<
-                                                                DownloadManagerCubit
-                                                              >()
-                                                              .delete(e);
-                                                        },
-                                                        label: Text(
-                                                          'Delete downloaded file',
-                                                        ),
-                                                        icon: Icon(
-                                                          Icons.delete,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                    builder:
-                                                        (
-                                                          context,
-                                                          controller,
-                                                          child,
-                                                        ) {
-                                                          return IconButton(
-                                                            style: ButtonStyle(
-                                                              backgroundColor: .all(
-                                                                colors.surface
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.5,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            visualDensity:
-                                                                .compact,
-                                                            icon: Icon(
-                                                              Icons.more_vert,
-                                                              size: 17,
-                                                            ),
-                                                            onPressed: () =>
-                                                                controller
-                                                                    .isOpen
-                                                                ? controller
-                                                                      .close()
-                                                                : controller
-                                                                      .open(),
-                                                          );
-                                                        },
+                                            Positioned(
+                                              top: pu2,
+                                              right: pu8,
+                                              child: MenuAnchor(
+                                                animated: true,
+                                                menuChildren: [
+                                                  TextButton.icon(
+                                                    onPressed: () async {
+                                                      context.read<DownloadManagerCubit>().delete(e);
+                                                    },
+                                                    label: Text('Delete downloaded file'),
+                                                    icon: Icon(Icons.delete),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                                builder: (context, controller, child) {
+                                                  return IconButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor: .all(colors.surface.withValues(alpha: 0.5)),
+                                                    ),
+                                                    visualDensity: .compact,
+                                                    icon: Icon(Icons.more_vert, size: 17),
+                                                    onPressed: () =>
+                                                        controller.isOpen ? controller.close() : controller.open(),
+                                                  );
+                                                },
+                                              ),
                                             ),
-                                          )
-                                          .toList(),
+                                          ],
+                                        ),
+                                      )
+                                      .toList(),
                                 ),
                         ),
                 ],

@@ -22,20 +22,12 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isMobile = BreakPoint.get(context) == .mobile;
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => PodcastsCubit(PodcastState()),
-        ),
-      ],
+      providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
       child: Scaffold(
         appBar: AppBar(
           title: Text(_titles[navigationShell.currentIndex]),
           actions: [
-            if (!kIsWeb)
-              IconButton(
-                onPressed: () => context.push('/offline'),
-                icon: Icon(Icons.download),
-              ),
+            if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
             if (!kIsWeb || kDebugMode)
               IconButton(
                 onPressed: () async {
@@ -52,9 +44,7 @@ class HomeScreen extends StatelessWidget {
           builder: (context, state) {
             return SafeArea(
               child: state.client == null
-                  ? Center(
-                      child: LoadingIndicator(),
-                    )
+                  ? Center(child: LoadingIndicator())
                   : ConditionalWrap(
                       wrapIf: !isMobile,
                       wrapper: (child) => Row(
@@ -63,18 +53,9 @@ class HomeScreen extends StatelessWidget {
                           NavigationRail(
                             extended: true,
                             destinations: [
-                              NavigationRailDestination(
-                                icon: Icon(Icons.playlist_play),
-                                label: Text('Episodes'),
-                              ),
-                              NavigationRailDestination(
-                                icon: Icon(Icons.podcasts),
-                                label: Text('Podcasts'),
-                              ),
-                              NavigationRailDestination(
-                                icon: Icon(Icons.search),
-                                label: Text('Search'),
-                              ),
+                              NavigationRailDestination(icon: Icon(Icons.playlist_play), label: Text('Episodes')),
+                              NavigationRailDestination(icon: Icon(Icons.podcasts), label: Text('Podcasts')),
+                              NavigationRailDestination(icon: Icon(Icons.search), label: Text('Search')),
                             ],
                             selectedIndex: navigationShell.currentIndex,
                             onDestinationSelected: (value) {
@@ -87,10 +68,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: .symmetric(horizontal: pu2),
-                        child: KeyedSubtree(
-                          key: ValueKey(navigationShell.currentIndex),
-                          child: navigationShell,
-                        ),
+                        child: KeyedSubtree(key: ValueKey(navigationShell.currentIndex), child: navigationShell),
                       ),
                     ),
             );
@@ -100,18 +78,9 @@ class HomeScreen extends StatelessWidget {
             ? NavigationBar(
                 selectedIndex: navigationShell.currentIndex,
                 destinations: [
-                  NavigationDestination(
-                    icon: Icon(Icons.playlist_play),
-                    label: 'Episodes',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.podcasts),
-                    label: 'Podcasts',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.search),
-                    label: 'Search',
-                  ),
+                  NavigationDestination(icon: Icon(Icons.playlist_play), label: 'Episodes'),
+                  NavigationDestination(icon: Icon(Icons.podcasts), label: 'Podcasts'),
+                  NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
                 ],
                 onDestinationSelected: (value) {
                   navigationShell.goBranch(value);

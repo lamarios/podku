@@ -46,8 +46,10 @@ class ProgressBar extends StatelessWidget {
                   return ConditionalWrap(
                     wrapIf: scrobblingDot,
                     wrapper: (child) => GestureDetector(
-                      onHorizontalDragStart: (details) => scrobblingCubit.startDragging(playerCubit, details, constraints),
-                      onHorizontalDragUpdate: (details) => scrobblingCubit.dragUpdate(playerCubit, details, constraints),
+                      onHorizontalDragStart: (details) =>
+                          scrobblingCubit.startDragging(playerCubit, details, constraints),
+                      onHorizontalDragUpdate: (details) =>
+                          scrobblingCubit.dragUpdate(playerCubit, details, constraints),
                       onHorizontalDragEnd: (details) => scrobblingCubit.dragEnd(playerCubit, details, constraints),
                       dragStartBehavior: .down,
                       behavior: .translucent,
@@ -62,7 +64,10 @@ class ProgressBar extends StatelessWidget {
                           widthFactor: bufferPosition.inSeconds / totalDurationAdjusted,
                           duration: animationDuration,
                           child: Container(
-                            decoration: BoxDecoration(borderRadius: .circular(height), color: colors.secondaryContainer.withValues(alpha: 0.8)),
+                            decoration: BoxDecoration(
+                              borderRadius: .circular(height),
+                              color: colors.secondaryContainer.withValues(alpha: 0.8),
+                            ),
                           ),
                         ),
                         AnimatedFractionallySizedBox(
@@ -70,12 +75,17 @@ class ProgressBar extends StatelessWidget {
                           heightFactor: 1,
                           duration: animationDuration,
                           child: Container(
-                            decoration: BoxDecoration(borderRadius: .circular(height), color: colors.onSecondaryContainer),
+                            decoration: BoxDecoration(
+                              borderRadius: .circular(height),
+                              color: colors.onSecondaryContainer,
+                            ),
                           ),
                         ),
                         if (scrobblingDot)
                           Positioned(
-                            left: (scrobblingState.holdingPosition ?? (constraints.maxWidth * progress)) - (scrobbleSize / 2),
+                            left:
+                                (scrobblingState.holdingPosition ?? (constraints.maxWidth * progress)) -
+                                (scrobbleSize / 2),
                             child: GestureDetector(
                               child: Container(
                                 height: scrobbleSize,
@@ -95,7 +105,10 @@ class ProgressBar extends StatelessWidget {
                               value: scrobblingState.holdingPosition != null ? 1 : 0,
                               builder: (context, value, child) => Opacity(
                                 opacity: value.clamp(0, 1),
-                                child: Transform.translate(offset: Offset(0, lerpDouble(20, 0, value) ?? 1), child: child),
+                                child: Transform.translate(
+                                  offset: Offset(0, lerpDouble(20, 0, value) ?? 1),
+                                  child: child,
+                                ),
                               ),
                               child: scrobblingState.holdingPosition == null
                                   ? SizedBox.shrink()
@@ -104,7 +117,16 @@ class ProgressBar extends StatelessWidget {
                                       height: 20,
                                       alignment: .center,
                                       decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(pu)),
-                                      child: Text(printDuration(Duration(seconds: (((scrobblingState.holdingPosition ?? 0) / constraints.maxWidth) * totalDuration.inSeconds).round()))),
+                                      child: Text(
+                                        printDuration(
+                                          Duration(
+                                            seconds:
+                                                (((scrobblingState.holdingPosition ?? 0) / constraints.maxWidth) *
+                                                        totalDuration.inSeconds)
+                                                    .round(),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                             ),
                           ),

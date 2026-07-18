@@ -58,40 +58,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBarTheme = AppBarThemeData(
-      scrolledUnderElevation: 0,
-      surfaceTintColor: Colors.transparent,
-    );
-    ColorScheme darkColorScheme = .fromSeed(
-      seedColor: appColor,
-      brightness: Brightness.dark,
-    );
-    ColorScheme lightColorScheme = .fromSeed(
-      seedColor: appColor,
-    );
+    final appBarTheme = AppBarThemeData(scrolledUnderElevation: 0, surfaceTintColor: Colors.transparent);
+    ColorScheme darkColorScheme = .fromSeed(seedColor: appColor, brightness: Brightness.dark);
+    ColorScheme lightColorScheme = .fromSeed(seedColor: appColor);
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => getIt.get<ServerCubit>()),
-        BlocProvider(
-          create: (context) => PlayerCubit(PlayerState()),
-        ),
-        if (!kIsWeb)
-          BlocProvider(
-            create: (context) => getIt.get<DownloadManagerCubit>(),
-          ),
+        BlocProvider(create: (context) => PlayerCubit(PlayerState())),
+        if (!kIsWeb) BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
         debugShowCheckedModeBanner: kDebugMode,
         darkTheme: ThemeData(
           colorScheme: darkColorScheme,
-          appBarTheme: appBarTheme.copyWith(
-            backgroundColor: darkColorScheme.surface,
-          ),
+          appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
         ),
-        themeMode: MediaQuery.platformBrightnessOf(context) == .dark
-            ? .dark
-            : .light,
+        themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
         theme: ThemeData(
           // This is the theme of your application.
           //
@@ -109,9 +92,7 @@ class MyApp extends StatelessWidget {
           // This works for code too, not just values: Most code changes can be
           // tested with just a hot reload.
           colorScheme: lightColorScheme,
-          appBarTheme: appBarTheme.copyWith(
-            backgroundColor: lightColorScheme.surface,
-          ),
+          appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
         ),
       ),
     );

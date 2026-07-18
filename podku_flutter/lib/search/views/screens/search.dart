@@ -20,25 +20,30 @@ class SearchScreen extends StatelessWidget {
           return Column(
             crossAxisAlignment: .stretch,
             children: [
-              TextField(controller: cubit.searchController, decoration: InputDecoration(
-                  icon: Icon(Icons.search),
-                  hintText: 'Search podcasts'),),
-              if(state.results.isNotEmpty)
+              TextField(
+                controller: cubit.searchController,
+                decoration: InputDecoration(icon: Icon(Icons.search), hintText: 'Search podcasts'),
+              ),
+              if (state.results.isNotEmpty)
                 Expanded(
-                child: ListView.builder(
-                  itemCount: state.results.length,
-                  padding: EdgeInsets.all(pu2),
+                  child: ListView.builder(
+                    itemCount: state.results.length,
+                    padding: EdgeInsets.all(pu2),
 
-                  itemBuilder: (context, index) {
-                    final r = state.results[index];
-                    return Padding(
-                      key: ValueKey(r),
-                      padding: .only(bottom: pu2),
-                      child: SearchResultView(result: r, subscribed: subscriptions.contains(r.feedUrl)),
-                    );
-                  },
+                    itemBuilder: (context, index) {
+                      final r = state.results[index];
+                      return Padding(
+                        key: ValueKey(r),
+                        padding: .only(bottom: pu2),
+                        child: SearchResultView(result: r, subscribed: subscriptions.contains(r.feedUrl)),
+                      );
+                    },
+                  ),
+                )
+              else
+                Expanded(
+                  child: Center(child: Icon(Icons.search, size: 100, color: colors.onSurface.withValues(alpha: 0.1))),
                 ),
-              )else Expanded(child: Center(child: Icon(Icons.search, size:100, color: colors.onSurface.withValues(alpha: 0.1)))),
             ],
           );
         },

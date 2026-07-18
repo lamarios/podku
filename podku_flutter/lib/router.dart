@@ -31,33 +31,22 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
   },
   initialLocation: '/episodes',
   routes: [
-    GoRoute(
-      path: '/setup',
-      builder: (context, state) => ServerSetupScreen(),
-    ),
+    GoRoute(path: '/setup', builder: (context, state) => ServerSetupScreen()),
     ShellRoute(
       builder: (context, state, child) => PlayerWrapper(child: child),
       routes: [
         GoRoute(
           path: '/podcast/:podcastId',
-          builder: (context, state) => PodcastScreen(
-            podcastId: state.pathParameters['podcastId'],
-          ),
+          builder: (context, state) => PodcastScreen(podcastId: state.pathParameters['podcastId']),
         ),
         GoRoute(
           path: '/search/result',
-          builder: (context, state) =>
-              UnsubbedPodcastScreen(result: state.extra as SearchResult),
+          builder: (context, state) => UnsubbedPodcastScreen(result: state.extra as SearchResult),
         ),
         GoRoute(
           path: '/offline',
           builder: (context, state) => OfflineEpisodesScreen(),
-          routes: [
-            GoRoute(
-              path: '/settings',
-              builder: (context, state) => DownloadSettingsScreen(),
-            ),
-          ],
+          routes: [GoRoute(path: '/settings', builder: (context, state) => DownloadSettingsScreen())],
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
@@ -68,31 +57,13 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
           },
           branches: [
             StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  name: 'Episodes',
-                  path: '/episodes',
-                  builder: (context, state) => EpisodeScreen(),
-                ),
-              ],
+              routes: [GoRoute(name: 'Episodes', path: '/episodes', builder: (context, state) => EpisodeScreen())],
             ),
             StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  name: 'Podcasts',
-                  path: '/podcasts',
-                  builder: (context, state) => PodcastsScreen(),
-                ),
-              ],
+              routes: [GoRoute(name: 'Podcasts', path: '/podcasts', builder: (context, state) => PodcastsScreen())],
             ),
             StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  name: 'Search',
-                  path: '/search',
-                  builder: (context, state) => SearchScreen(),
-                ),
-              ],
+              routes: [GoRoute(name: 'Search', path: '/search', builder: (context, state) => SearchScreen())],
             ),
           ],
         ),

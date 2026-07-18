@@ -5,24 +5,20 @@ import 'package:podku_client/podku_client.dart';
 
 part 'podcast.freezed.dart';
 
-class PodcastCubit extends Cubit<PodcastState>{
+class PodcastCubit extends Cubit<PodcastState> {
   final String podcastId;
 
-  PodcastCubit(super.initialState, {required this.podcastId}){
+  PodcastCubit(super.initialState, {required this.podcastId}) {
     getPodcast();
   }
 
-
   Future<void> getPodcast() async {
-   final podcast = await client.podcast.getPodcast(podcastId);
-   emit(state.copyWith(podcast: podcast, loading: false));
+    final podcast = await client.podcast.getPodcast(podcastId);
+    emit(state.copyWith(podcast: podcast, loading: false));
   }
 }
 
 @freezed
 sealed class PodcastState with _$PodcastState {
-  const factory PodcastState({
-    Podcast? podcast,
-    @Default(true) bool loading,
-  }) = _PodcastState;
+  const factory PodcastState({Podcast? podcast, @Default(true) bool loading}) = _PodcastState;
 }

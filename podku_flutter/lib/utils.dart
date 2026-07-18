@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:get_it/get_it.dart';
 
 const double pu = 4;
-const double pu2 = pu*2;
-const double pu3 = pu*3;
-const double pu4 = pu*4;
-const double pu5 = pu*5;
-const double pu6 = pu*6;
-const double pu7 = pu*7;
-const double pu8 = pu*8;
+const double pu2 = pu * 2;
+const double pu3 = pu * 3;
+const double pu4 = pu * 4;
+const double pu5 = pu * 5;
+const double pu6 = pu * 6;
+const double pu7 = pu * 7;
+const double pu8 = pu * 8;
 
 const animationDuration = Duration(milliseconds: 250);
 

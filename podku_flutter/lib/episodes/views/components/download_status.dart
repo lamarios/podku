@@ -20,9 +20,7 @@ class EpisodeDownloadStatus extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     return Builder(
       builder: (context) {
-        final download = context.select(
-          (DownloadManagerCubit c) => c.state.downloadStatus[episode.id.uuid],
-        );
+        final download = context.select((DownloadManagerCubit c) => c.state.downloadStatus[episode.id.uuid]);
 
         _log.fine('download status for ${episode.title}: ${download?.status}');
         if (download == null) {
@@ -30,11 +28,7 @@ class EpisodeDownloadStatus extends StatelessWidget {
         }
 
         return switch (download.status) {
-          .enqueued => Icon(
-            Icons.download,
-            size: _iconHeight,
-            color: colors.outline,
-          ),
+          .enqueued => Icon(Icons.download, size: _iconHeight, color: colors.outline),
           .running => Row(
             children: [
               SizedBox(
@@ -48,11 +42,7 @@ class EpisodeDownloadStatus extends StatelessWidget {
                     value: value,
                     strokeWidth: 2,
                     backgroundColor: colors.outline.withValues(alpha: 0.2),
-                    color: Color.lerp(
-                      colors.outline,
-                      Colors.green,
-                      download.progress,
-                    ),
+                    color: Color.lerp(colors.outline, Colors.green, download.progress),
                   ),
                 ),
               ),
@@ -63,11 +53,7 @@ class EpisodeDownloadStatus extends StatelessWidget {
               ),
             ],
           ),
-          .complete => Icon(
-            Icons.download,
-            size: _iconHeight,
-            color: Colors.green,
-          ),
+          .complete => Icon(Icons.download, size: _iconHeight, color: Colors.green),
           _ => SizedBox.shrink(),
         };
       },

@@ -15,30 +15,22 @@ class SearchResultView extends StatelessWidget {
   final SearchResult result;
   final bool subscribed;
 
-  const SearchResultView({
-    super.key,
-    required this.result,
-    required this.subscribed,
-  });
+  const SearchResultView({super.key, required this.result, required this.subscribed});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push('/search/result', extra: result).then(
-        (value) async {
+      onTap: () => context.push('/search/result', extra: result).then((value) async {
+        if (context.mounted) {
+          await context.read<PodcastsCubit>().getPodcasts();
           if (context.mounted) {
-            await context.read<PodcastsCubit>().getPodcasts();
-            if (context.mounted) {
-              await context.read<SearchCubit>().search();
-            }
+            await context.read<SearchCubit>().search();
           }
-        },
-      ),
+        }
+      }),
       child: Builder(
         builder: (context) {
-          bool isBeingSubscribedTo = context.select(
-            (PodcastsCubit c) => c.state.subscribingTo == result,
-          );
+          bool isBeingSubscribedTo = context.select((PodcastsCubit c) => c.state.subscribingTo == result);
 
           return Row(
             children: [
@@ -55,27 +47,16 @@ class SearchResultView extends StatelessWidget {
                 borderRadius: pu4,
               ),
               Gap(pu2),
-              Expanded(
-                child: Text(
-                  result.collectionName ?? result.trackName ?? '',
-                  maxLines: 2,
-                  overflow: .ellipsis,
-                ),
-              ),
+              Expanded(child: Text(result.collectionName ?? result.trackName ?? '', maxLines: 2, overflow: .ellipsis)),
               isBeingSubscribedTo
                   ? SizedBox(width: 20, height: 20, child: LoadingIndicator())
                   : !subscribed
                   ? TextButton.icon(
-                      onPressed: () =>
-                          context.read<PodcastsCubit>().subscribe(result),
+                      onPressed: () => context.read<PodcastsCubit>().subscribe(result),
                       label: Text('Subscribe'),
                       icon: Icon(Icons.check_box_outline_blank),
                     )
-                  : TextButton.icon(
-                      onPressed: null,
-                      label: Text('Subscribed'),
-                      icon: Icon(Icons.check_box_outlined),
-                    ),
+                  : TextButton.icon(onPressed: null, label: Text('Subscribed'), icon: Icon(Icons.check_box_outlined)),
             ],
           );
         },

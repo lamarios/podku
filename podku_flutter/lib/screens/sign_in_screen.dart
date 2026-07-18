@@ -41,16 +41,10 @@ class _SignInScreenState extends State<SignInScreen> {
             child: SignInWidget(
               client: client,
               onAuthenticated: () {
-                context.showSnackBar(
-                  message: 'User authenticated.',
-                  backgroundColor: Colors.green,
-                );
+                context.showSnackBar(message: 'User authenticated.', backgroundColor: Colors.green);
               },
               onError: (error) {
-                context.showSnackBar(
-                  message: 'Authentication failed: $error',
-                  backgroundColor: Colors.red,
-                );
+                context.showSnackBar(message: 'Authentication failed: $error', backgroundColor: Colors.red);
               },
             ),
           );
@@ -58,16 +52,9 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 extension on BuildContext {
-  void showSnackBar({
-    required String message,
-    Color? backgroundColor,
-  }) {
+  void showSnackBar({required String message, Color? backgroundColor}) {
     ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: backgroundColor,
-        duration: const Duration(seconds: 5),
-      ),
+      SnackBar(content: Text(message), backgroundColor: backgroundColor, duration: const Duration(seconds: 5)),
     );
   }
 }

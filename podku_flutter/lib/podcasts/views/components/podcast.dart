@@ -16,21 +16,14 @@ class PodcastInGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push('/podcast/${podcast.id.toString()}').then(
-        (value) {
-          if (context.mounted) {
-            context.read<PodcastsCubit>().getPodcasts();
-          }
-        },
-      ),
+      onTap: () => context.push('/podcast/${podcast.id.toString()}').then((value) {
+        if (context.mounted) {
+          context.read<PodcastsCubit>().getPodcasts();
+        }
+      }),
       child: Column(
         children: [
-          PodcastImage(
-            podcast: podcast,
-            width: _imageSize,
-            height: _imageSize,
-            borderRadius: pu4,
-          ),
+          PodcastImage(podcast: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
           Text(podcast.name),
         ],
       ),

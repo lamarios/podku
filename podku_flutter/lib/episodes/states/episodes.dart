@@ -17,19 +17,11 @@ class EpisodeCubit extends Cubit<EpisodeState> {
 
     final episodes = await client.episodes.getEpisodes(
       after: refresh ? DateTime.now().millisecondsSinceEpoch : state.cursor,
-      pageSize: refresh && state.episodes.isNotEmpty
-          ? state.episodes.length
-          : _pageSize,
+      pageSize: refresh && state.episodes.isNotEmpty ? state.episodes.length : _pageSize,
     );
 
     if (!isClosed) {
-      emit(
-        state.copyWith(
-          episodes: episodes,
-          cursor: episodes.lastOrNull?.pubDateMillis,
-          loading: false,
-        ),
-      );
+      emit(state.copyWith(episodes: episodes, cursor: episodes.lastOrNull?.pubDateMillis, loading: false));
     }
   }
 
@@ -38,29 +30,15 @@ class EpisodeCubit extends Cubit<EpisodeState> {
       emit(state.copyWith(loading: true));
       final episodes = List<Episode>.from(state.episodes);
 
-      episodes.addAll(
-        await client.episodes.getEpisodes(
-          after: state.cursor,
-          pageSize: _pageSize,
-        ),
-      );
+      episodes.addAll(await client.episodes.getEpisodes(after: state.cursor, pageSize: _pageSize));
 
-      emit(
-        state.copyWith(
-          episodes: episodes,
-          loading: false,
-          cursor: episodes.lastOrNull?.pubDateMillis,
-        ),
-      );
+      emit(state.copyWith(episodes: episodes, loading: false, cursor: episodes.lastOrNull?.pubDateMillis));
     }
   }
 }
 
 @freezed
 sealed class EpisodeState with _$EpisodeState {
-  const factory EpisodeState({
-    @Default(false) bool loading,
-    @Default([]) List<Episode> episodes,
-    int? cursor,
-  }) = _EpisodeState;
+  const factory EpisodeState({@Default(false) bool loading, @Default([]) List<Episode> episodes, int? cursor}) =
+      _EpisodeState;
 }

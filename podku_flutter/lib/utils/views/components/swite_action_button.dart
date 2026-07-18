@@ -12,10 +12,7 @@ class SwipeActionButton extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: .circular(50),
-        ),
+        decoration: BoxDecoration(color: color, borderRadius: .circular(50)),
         padding: .all(pu2),
         child: icon,
       ),

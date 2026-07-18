@@ -26,15 +26,11 @@ class PodcastScreen extends StatelessWidget {
 
     return podcastId != null
         ? BlocProvider(
-            create: (context) =>
-                PodcastCubit(PodcastState(), podcastId: podcastId!),
+            create: (context) => PodcastCubit(PodcastState(), podcastId: podcastId!),
             child: BlocBuilder<PodcastCubit, PodcastState>(
               builder: (context, state) {
                 return Scaffold(
-                  appBar: AppBar(
-                    title: Text(state.podcast?.name ?? ''),
-                    backgroundColor: colors.secondaryContainer,
-                  ),
+                  appBar: AppBar(title: Text(state.podcast?.name ?? ''), backgroundColor: colors.secondaryContainer),
                   backgroundColor: colors.secondaryContainer,
                   body: SafeArea(
                     bottom: false,
@@ -55,11 +51,7 @@ class PodcastScreen extends StatelessWidget {
                                 Gap(pu2),
                                 Padding(
                                   padding: .symmetric(horizontal: pu2),
-                                  child: Text(
-                                    state.podcast!.description!,
-                                    maxLines: 5,
-                                    overflow: .ellipsis,
-                                  ),
+                                  child: Text(state.podcast!.description!, maxLines: 5, overflow: .ellipsis),
                                 ),
                               ],
                               Gap(pu2),
@@ -71,13 +63,9 @@ class PodcastScreen extends StatelessWidget {
                                     TextButton.icon(
                                       onPressed: () async {
                                         if (state.podcast != null) {
-                                          final unsubscribed = await client
-                                              .podcast
-                                              .unsubscribe(
-                                                state.podcast!.copyWith(
-                                                  episodes: [],
-                                                ),
-                                              );
+                                          final unsubscribed = await client.podcast.unsubscribe(
+                                            state.podcast!.copyWith(episodes: []),
+                                          );
                                           if (unsubscribed && context.mounted) {
                                             context.pop();
                                           }
@@ -85,14 +73,9 @@ class PodcastScreen extends StatelessWidget {
                                       },
                                       label: Text(
                                         'Unsubscribe',
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          color: colors.error,
-                                        ),
+                                        style: textTheme.bodyMedium!.copyWith(color: colors.error),
                                       ),
-                                      icon: Icon(
-                                        Icons.block,
-                                        color: colors.error,
-                                      ),
+                                      icon: Icon(Icons.block, color: colors.error),
                                     ),
                                   ],
                                 ),
@@ -100,63 +83,31 @@ class PodcastScreen extends StatelessWidget {
                               Gap(pu2),
                               Padding(
                                 padding: .symmetric(horizontal: pu2),
-                                child: Text(
-                                  'Episodes',
-                                  style: textTheme.titleMedium,
-                                ),
+                                child: Text('Episodes', style: textTheme.titleMedium),
                               ),
                               Gap(pu2),
                               if (state.podcast?.episodes != null)
                                 Expanded(
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      color: colors.surface,
-                                    ),
-                                    padding: .only(
-                                      left: pu4,
-                                      right: pu4,
-                                      top: pu4,
-                                    ),
+                                    decoration: BoxDecoration(color: colors.surface),
+                                    padding: .only(left: pu4, right: pu4, top: pu4),
                                     child: isMobile
                                         ? ListView.builder(
-                                            itemCount:
-                                                state.podcast!.episodes!.length,
-                                            itemBuilder: (context, index) =>
-                                                ConditionalWrap(
-                                                  wrapIf:
-                                                      index ==
-                                                      state
-                                                              .podcast!
-                                                              .episodes!
-                                                              .length -
-                                                          1,
-                                                  wrapper: (child) => Padding(
-                                                    padding: .only(bottom: 200),
-                                                    child: child,
-                                                  ),
-                                                  child: EpisodeInList(
-                                                    episode: state
-                                                        .podcast!
-                                                        .episodes![index],
-                                                  ),
-                                                ),
+                                            itemCount: state.podcast!.episodes!.length,
+                                            itemBuilder: (context, index) => ConditionalWrap(
+                                              wrapIf: index == state.podcast!.episodes!.length - 1,
+                                              wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
+                                              child: EpisodeInList(episode: state.podcast!.episodes![index]),
+                                            ),
                                           )
                                         : GridView.extent(
-                                            maxCrossAxisExtent:
-                                                EpisodeInGrid.crossAxisExtent,
-                                            mainAxisExtent:
-                                                EpisodeInGrid.mainAxisExtent,
-                                            crossAxisSpacing:
-                                                EpisodeInGrid.crossAxisSpacing,
-                                            mainAxisSpacing:
-                                                EpisodeInGrid.mainAxisSpacing,
+                                            maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
+                                            mainAxisExtent: EpisodeInGrid.mainAxisExtent,
+                                            crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
+                                            mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
                                             children:
                                                 state.podcast?.episodes
-                                                    ?.map(
-                                                      (e) => EpisodeInGrid(
-                                                        episode: e,
-                                                      ),
-                                                    )
+                                                    ?.map((e) => EpisodeInGrid(episode: e))
                                                     .toList() ??
                                                 [],
                                           ),
