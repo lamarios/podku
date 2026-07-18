@@ -12,20 +12,29 @@ void reverseProxy(Socket client) {
   Socket? backend;
   var closed = false;
 
-  void closeAll() {
+  Future<void> closeAll({bool graceful = false}) async {
     if (closed) return;
     closed = true;
-    sub.cancel();
-    try {
-      client.destroy();
-    } catch (_) {}
+    await sub.cancel();
+    if (graceful) {
+      try {
+        await client.flush();
+      } catch (_) {}
+      try {
+        await client.close();
+      } catch (_) {}
+    } else {
+      try {
+        client.destroy();
+      } catch (_) {}
+    }
     try {
       backend?.destroy();
     } catch (_) {}
   }
 
   sub = client.listen(
-    (chunk) async {
+        (chunk) async {
       try {
         if (backend != null) {
           backend!.add(chunk);
@@ -33,49 +42,41 @@ void reverseProxy(Socket client) {
         }
         buffer.addAll(chunk);
         final headerEnd = _findHeaderEnd(buffer);
-        if (headerEnd == -1) return; // keep buffering (add a size cap in prod)
+        if (headerEnd == -1) return;
         final headerText = utf8.decode(buffer.sublist(0, headerEnd));
         final lines = headerText.split('\r\n');
         final requestLine = lines.first;
-        final parts = requestLine.split(' '); // METHOD PATH HTTP/1.1
+        final parts = requestLine.split(' ');
         final path = parts.length > 1 ? parts[1] : '/';
         final isApi = path.startsWith('/api');
-        final targetPort = (isApi || path.startsWith('/v1/websocket'))
-            ? _apiPort
-            : _webPort;
+        final isWs = path.startsWith('/v1/websocket');
+        final targetPort = (isApi || isWs) ? _apiPort : _webPort;
 
         backend = await Socket.connect('localhost', targetPort);
 
-        // Rewrite the path only when forwarding to the API backend and
-        // the /api prefix is present — strip it, same as remainingPath did.
-        final strippedPath = path == '/api'
-            ? '/'
-            : path.replaceFirst('/api', '');
-        final outHeaderText = isApi
-            ? _forceConnectionClose(
-                headerText.replaceFirst(
-                  requestLine,
-                  requestLine.replaceFirst(path, strippedPath),
-                ),
-              )
-            : path.startsWith('/v1/websocket')
-            ? headerText // leave upgrade headers untouched
-            : _forceConnectionClose(headerText);
+        final strippedPath =
+        path == '/api' ? '/' : path.replaceFirst('/api', '');
+        var outHeaderText = isApi
+            ? headerText.replaceFirst(
+          requestLine,
+          requestLine.replaceFirst(path, strippedPath),
+        )
+            : headerText;
+        if (!isWs) outHeaderText = _forceConnectionClose(outHeaderText);
 
-        final restAfterHeaders = buffer.sublist(
-          headerEnd,
-        ); // includes \r\n\r\n + any body bytes already read
+        final restAfterHeaders = buffer.sublist(headerEnd);
         backend!.add(utf8.encode(outHeaderText));
         backend!.add(restAfterHeaders);
+
         backend!.listen(
-          (data) {
+              (data) {
             try {
               client.add(data);
             } catch (_) {
               closeAll();
             }
           },
-          onDone: closeAll,
+          onDone: () => closeAll(graceful: true), // flush before closing
           onError: (_) => closeAll(),
           cancelOnError: true,
         );
@@ -83,10 +84,18 @@ void reverseProxy(Socket client) {
         closeAll();
       }
     },
-    onDone: closeAll,
+    onDone: () => closeAll(graceful: true),
     onError: (_) => closeAll(),
     cancelOnError: true,
   );
+}
+
+String _forceConnectionClose(String headerText) {
+  final lines = headerText.split('\r\n');
+  final filtered =
+  lines.where((l) => !l.toLowerCase().startsWith('connection:')).toList();
+  filtered.add('Connection: close');
+  return filtered.join('\r\n');
 }
 
 int _findHeaderEnd(List<int> bytes) {
@@ -100,13 +109,4 @@ int _findHeaderEnd(List<int> bytes) {
     }
   }
   return -1;
-}
-
-String _forceConnectionClose(String headerText) {
-  final lines = headerText.split('\r\n');
-  final filtered = lines
-      .where((l) => !l.toLowerCase().startsWith('connection:'))
-      .toList();
-  filtered.add('Connection: close');
-  return filtered.join('\r\n');
 }
