@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:podku_client/podku_client.dart';
 import 'package:podku/main.dart';
+import 'package:podku_client/podku_client.dart';
 
 part 'episodes.freezed.dart';
 
@@ -34,6 +34,16 @@ class EpisodeCubit extends Cubit<EpisodeState> {
 
       emit(state.copyWith(episodes: episodes, loading: false, cursor: episodes.lastOrNull?.pubDateMillis));
     }
+  }
+
+  Future<void> markEpisodeAsPlayed(Episode episode) async {
+    List<Episode> episodes = List.from(state.episodes);
+    final index = episodes.indexOf(episode);
+    if (index != -1) {
+      episodes[index] = episode.copyWith(progress: 1);
+    }
+    emit(state.copyWith(episodes: episodes));
+    await client.episodes.setProgress(episode.copyWith(progress: 1), sessionId);
   }
 }
 

@@ -9,7 +9,7 @@ import 'package:podku_client/podku_client.dart';
 const double _imageSize = 175;
 
 class EpisodeInGrid extends StatelessWidget {
-  static const double mainAxisExtent = 300;
+  static const double mainAxisExtent = 250;
   static const double crossAxisExtent = 250;
   static const double crossAxisSpacing = pu4;
   static const double mainAxisSpacing = pu3;

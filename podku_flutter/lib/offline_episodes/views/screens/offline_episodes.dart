@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
@@ -79,12 +80,17 @@ class OfflineEpisodesScreen extends StatelessWidget {
                                               child: MenuAnchor(
                                                 animated: true,
                                                 menuChildren: [
-                                                  TextButton.icon(
+                                                  MenuItemButton(
                                                     onPressed: () async {
                                                       context.read<DownloadManagerCubit>().delete(e);
                                                     },
-                                                    label: Text('Delete downloaded file'),
-                                                    icon: Icon(Icons.delete),
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.delete),
+                                                        Gap(pu),
+                                                        Text('Delete downloaded file'),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                                 builder: (context, controller, child) {

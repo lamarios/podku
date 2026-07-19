@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -132,9 +133,14 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void _updateProgress() {
     if (state.episode?.podcast?.id.uuid != unsubbedPodcastUuid && !state.loading && state.episode != null) {
+      final episode = state.episode!;
       final progress = state.position.inSeconds / state.duration.inSeconds;
-      EasyThrottle.throttle('progress-update', Duration(seconds: 5), () async {
-        await client.episodes.setProgress(state.episode!.copyWith(progress: progress), sessionId);
+      EasyThrottle.throttle('progress-update-${state.episode?.id}', Duration(seconds: 5), () async {
+        await client.episodes.setProgress(episode.copyWith(progress: progress), sessionId);
+      });
+      // we do this so that whenever the episode stops playing, we save one last time
+      EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
+        await client.episodes.setProgress(episode.copyWith(progress: progress), sessionId);
       });
     } else {}
   }
@@ -193,6 +199,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     if (event.episodeId == state.episode?.id) {
       stop();
     }
+  }
+
+  void setSpeed(double speed) {
+    _player.setSpeed(speed);
   }
 }
 

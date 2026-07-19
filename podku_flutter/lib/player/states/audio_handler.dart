@@ -158,7 +158,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
         bufferedPosition: Duration.zero,
 
         playing: true,
-        speed: 1,
+        speed: playbackState.value.speed,
       ),
     );
   }
@@ -189,5 +189,11 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     EasyThrottle.throttle('player-update-position', Duration(seconds: 1), () {
       playbackState.add(playbackState.value.copyWith(updatePosition: event));
     });
+  }
+
+  @override
+  Future<void> setSpeed(double speed) async {
+    _player.setSpeed(speed);
+    playbackState.add(playbackState.value.copyWith(speed: speed));
   }
 }

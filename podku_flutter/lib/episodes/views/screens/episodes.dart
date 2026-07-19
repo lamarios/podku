@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
@@ -84,6 +85,7 @@ class _EpisodeGrid extends StatelessWidget {
     children.addAll(
       state.episodes.map((e) {
         return Builder(
+          key: ValueKey(e),
           builder: (context) {
             final downloadStatus = kIsWeb
                 ? null
@@ -93,38 +95,40 @@ class _EpisodeGrid extends StatelessWidget {
                 !kIsWeb &&
                 (downloadStatus == null || downloadStatus.status == .canceled || downloadStatus.status == .failed);
 
-            return ConditionalWrap(
-              wrapIf: showDownloadButton,
-              wrapper: (child) => Stack(
-                children: [
-                  child,
-                  Positioned(
-                    top: pu2,
-                    right: pu8,
-                    child: MenuAnchor(
-                      animated: true,
-                      menuChildren: [
-                        TextButton.icon(
+            return Stack(
+              children: [
+                EpisodeInGrid(episode: e),
+                Positioned(
+                  top: pu2,
+                  right: pu8,
+                  child: MenuAnchor(
+                    animated: true,
+                    menuChildren: [
+                      if (showDownloadButton)
+                        MenuItemButton(
                           onPressed: () async {
                             context.read<DownloadManagerCubit>().download(e, manualDownload: true);
                           },
-                          label: Text('Download'),
-                          icon: Icon(Icons.download),
+                          child: Row(children: [Icon(Icons.download), Gap(pu), Text('Download')]),
                         ),
-                      ],
-                      builder: (context, controller, child) {
-                        return IconButton(
-                          style: ButtonStyle(backgroundColor: .all(colors.surface.withValues(alpha: 0.5))),
-                          visualDensity: .compact,
-                          icon: Icon(Icons.more_vert, size: 17),
-                          onPressed: () => controller.isOpen ? controller.close() : controller.open(),
-                        );
-                      },
-                    ),
+                      MenuItemButton(
+                        onPressed: () async {
+                          cubit.markEpisodeAsPlayed(e);
+                        },
+                        child: Row(children: [Icon(Icons.check), Gap(pu), Text('Mark as played')]),
+                      ),
+                    ],
+                    builder: (context, controller, child) {
+                      return IconButton(
+                        style: ButtonStyle(backgroundColor: .all(colors.surface.withValues(alpha: 0.5))),
+                        visualDensity: .compact,
+                        icon: Icon(Icons.more_vert, size: 17),
+                        onPressed: () => controller.isOpen ? controller.close() : controller.open(),
+                      );
+                    },
                   ),
-                ],
-              ),
-              child: EpisodeInGrid(key: Key(e.id.uuid), episode: e),
+                ),
+              ],
             );
           },
         );
@@ -174,23 +178,29 @@ class _EpisodeList extends StatelessWidget {
                   ? null
                   : context.select((DownloadManagerCubit c) => c.state.downloadStatus[e.id.uuid]);
               return SwipeActionCell(
-                key: Key(e.id.uuid),
-                trailingActions:
-                    !kIsWeb &&
-                        (downloadStatus == null ||
-                            downloadStatus.status == .canceled ||
-                            downloadStatus.status == .failed)
-                    ? [
-                        SwipeAction(
-                          content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
-                          color: Colors.transparent,
-                          onTap: (handler) async {
-                            context.read<DownloadManagerCubit>().download(e, manualDownload: true);
-                            await handler(false);
-                          },
-                        ),
-                      ]
-                    : null,
+                key: ValueKey(e),
+                trailingActions: [
+                  if (!kIsWeb &&
+                      (downloadStatus == null ||
+                          downloadStatus.status == .canceled ||
+                          downloadStatus.status == .failed))
+                    SwipeAction(
+                      content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
+                      color: Colors.transparent,
+                      onTap: (handler) async {
+                        context.read<DownloadManagerCubit>().download(e, manualDownload: true);
+                        await handler(false);
+                      },
+                    ),
+                  SwipeAction(
+                    content: SwipeActionButton(color: colors.primaryContainer, icon: Icon(Icons.check)),
+                    color: Colors.transparent,
+                    onTap: (handler) async {
+                      await cubit.markEpisodeAsPlayed(e);
+                      await handler(false);
+                    },
+                  ),
+                ],
                 child: ConditionalWrap(
                   wrapIf: isLast && !hasMore,
                   wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),

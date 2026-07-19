@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/server/states/server.dart';
+import 'package:podku/utils/dialogs.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 
@@ -31,9 +33,21 @@ class HomeScreen extends StatelessWidget {
             if (!kIsWeb || kDebugMode)
               IconButton(
                 onPressed: () async {
-                  await getIt.get<ServerCubit>().setServerUrl(null);
-                  if (context.mounted) {
-                    context.go('/setup');
+                  if (await okCancelDialog(
+                        context,
+                        title: 'Logging out',
+                        content: Text(
+                          'Logging out of the server will delete all the locally downloaded podcast episodes',
+                        ),
+                      ) ??
+                      false) {
+                    await getIt.get<ServerCubit>().setServerUrl(null);
+                    if (context.mounted) {
+                      await context.read<DownloadManagerCubit>().deleteAllEpisodes();
+                      if (context.mounted) {
+                        context.go('/setup');
+                      }
+                    }
                   }
                 },
                 icon: Icon(Icons.logout),

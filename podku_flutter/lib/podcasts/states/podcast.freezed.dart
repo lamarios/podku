@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PodcastState {
 
- Podcast? get podcast; bool get loading;
+ Podcast? get podcast; bool get loading; bool get subscribing;
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PodcastStateCopyWith<PodcastState> get copyWith => _$PodcastStateCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastState&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.loading, loading) || other.loading == loading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastState&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.subscribing, subscribing) || other.subscribing == subscribing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,podcast,loading);
+int get hashCode => Object.hash(runtimeType,podcast,loading,subscribing);
 
 @override
 String toString() {
-  return 'PodcastState(podcast: $podcast, loading: $loading)';
+  return 'PodcastState(podcast: $podcast, loading: $loading, subscribing: $subscribing)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PodcastStateCopyWith<$Res>  {
   factory $PodcastStateCopyWith(PodcastState value, $Res Function(PodcastState) _then) = _$PodcastStateCopyWithImpl;
 @useResult
 $Res call({
- Podcast? podcast, bool loading
+ Podcast? podcast, bool loading, bool subscribing
 });
 
 
@@ -62,10 +62,11 @@ class _$PodcastStateCopyWithImpl<$Res>
 
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? podcast = freezed,Object? loading = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? podcast = freezed,Object? loading = null,Object? subscribing = null,}) {
   return _then(_self.copyWith(
 podcast: freezed == podcast ? _self.podcast : podcast // ignore: cast_nullable_to_non_nullable
 as Podcast?,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
+as bool,subscribing: null == subscribing ? _self.subscribing : subscribing // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -148,10 +149,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Podcast? podcast,  bool loading)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Podcast? podcast,  bool loading,  bool subscribing)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PodcastState() when $default != null:
-return $default(_that.podcast,_that.loading);case _:
+return $default(_that.podcast,_that.loading,_that.subscribing);case _:
   return orElse();
 
 }
@@ -169,10 +170,10 @@ return $default(_that.podcast,_that.loading);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Podcast? podcast,  bool loading)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Podcast? podcast,  bool loading,  bool subscribing)  $default,) {final _that = this;
 switch (_that) {
 case _PodcastState():
-return $default(_that.podcast,_that.loading);}
+return $default(_that.podcast,_that.loading,_that.subscribing);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +187,10 @@ return $default(_that.podcast,_that.loading);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Podcast? podcast,  bool loading)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Podcast? podcast,  bool loading,  bool subscribing)?  $default,) {final _that = this;
 switch (_that) {
 case _PodcastState() when $default != null:
-return $default(_that.podcast,_that.loading);case _:
+return $default(_that.podcast,_that.loading,_that.subscribing);case _:
   return null;
 
 }
@@ -200,12 +201,13 @@ return $default(_that.podcast,_that.loading);case _:
 /// @nodoc
 
 
-class _PodcastState implements PodcastState {
-  const _PodcastState({this.podcast, this.loading = true});
+class _PodcastState extends PodcastState {
+  const _PodcastState({this.podcast, this.loading = true, this.subscribing = false}): super._();
   
 
 @override final  Podcast? podcast;
 @override@JsonKey() final  bool loading;
+@override@JsonKey() final  bool subscribing;
 
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
@@ -217,16 +219,16 @@ _$PodcastStateCopyWith<_PodcastState> get copyWith => __$PodcastStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastState&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.loading, loading) || other.loading == loading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastState&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.subscribing, subscribing) || other.subscribing == subscribing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,podcast,loading);
+int get hashCode => Object.hash(runtimeType,podcast,loading,subscribing);
 
 @override
 String toString() {
-  return 'PodcastState(podcast: $podcast, loading: $loading)';
+  return 'PodcastState(podcast: $podcast, loading: $loading, subscribing: $subscribing)';
 }
 
 
@@ -237,7 +239,7 @@ abstract mixin class _$PodcastStateCopyWith<$Res> implements $PodcastStateCopyWi
   factory _$PodcastStateCopyWith(_PodcastState value, $Res Function(_PodcastState) _then) = __$PodcastStateCopyWithImpl;
 @override @useResult
 $Res call({
- Podcast? podcast, bool loading
+ Podcast? podcast, bool loading, bool subscribing
 });
 
 
@@ -254,10 +256,11 @@ class __$PodcastStateCopyWithImpl<$Res>
 
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? podcast = freezed,Object? loading = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? podcast = freezed,Object? loading = null,Object? subscribing = null,}) {
   return _then(_PodcastState(
 podcast: freezed == podcast ? _self.podcast : podcast // ignore: cast_nullable_to_non_nullable
 as Podcast?,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
+as bool,subscribing: null == subscribing ? _self.subscribing : subscribing // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

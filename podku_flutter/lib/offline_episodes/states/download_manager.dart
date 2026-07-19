@@ -288,6 +288,12 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     episodes.remove(e);
     emit(state.copyWith(offlineEpisodes: episodes, ongoingDownloads: statuses));
   }
+
+  Future<void> deleteAllEpisodes() async {
+    for (var element in state.offlineEpisodes) {
+      await delete(element);
+    }
+  }
 }
 
 @freezed

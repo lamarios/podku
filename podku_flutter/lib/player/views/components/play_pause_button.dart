@@ -15,9 +15,9 @@ class PlayPauseButton extends StatelessWidget {
       builder: (context) {
         final cubit = context.read<PlayerCubit>();
         final playing = context.select((PlayerCubit c) => c.state.playing);
-        return InkWell(
-          onTap: () => cubit.playPause(),
-          child: SingleMotionBuilder(
+        return IconButton(
+          onPressed: () => cubit.playPause(),
+          icon: SingleMotionBuilder(
             value: playing ? 1 : 0,
             from: 0,
             motion: MaterialSpringMotion.expressiveEffectsDefault(),
