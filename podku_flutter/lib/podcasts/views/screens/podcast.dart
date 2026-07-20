@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -7,6 +9,7 @@ import 'package:podku/episodes/views/components/episode_in_grid.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/states/podcast.dart';
+import 'package:podku/podcasts/states/podcast_image_color.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -25,65 +28,109 @@ class PodcastScreen extends StatelessWidget {
 
     final isMobile = BreakPoint.get(context) == .mobile;
 
+    var podcastCubit = PodcastCubit(
+      PodcastState(),
+      podcastId: podcastId,
+      searchResult: searchResult,
+      playerCubit: context.read<PlayerCubit>(),
+    );
+
+    var brightnessOf = Theme.brightnessOf(context);
     return podcastId != null || searchResult != null
-        ? BlocProvider(
-            create: (context) => PodcastCubit(
-              PodcastState(),
-              podcastId: podcastId,
-              searchResult: searchResult,
-              playerCubit: context.read<PlayerCubit>(),
-            ),
-            child: BlocBuilder<PodcastCubit, PodcastState>(
+        ? MultiBlocProvider(
+            key: ValueKey(brightnessOf),
+            providers: [
+              BlocProvider(
+                create: (context) {
+                  return podcastCubit;
+                },
+              ),
+              BlocProvider(
+                create: (context) => PodcastImageColorCubit(
+                  PodcastImageColorState(scaffoldColor: colors.secondaryContainer, colorScheme: colors),
+                  podcast: podcastCubit.state.podcast,
+                  surfaceColor: colors.surface,
+                  brightness: brightnessOf,
+                  fallBackColorScheme: colors,
+                ),
+              ),
+            ],
+            child: BlocConsumer<PodcastCubit, PodcastState>(
+              listener: (context, state) => context.read<PodcastImageColorCubit>().setPodcast(state.podcast),
+              listenWhen: (previous, current) => previous.podcast != current.podcast,
               builder: (context, state) {
-                return Scaffold(
-                  appBar: AppBar(title: Text(state.podcast?.name ?? ''), backgroundColor: colors.secondaryContainer),
-                  backgroundColor: colors.secondaryContainer,
-                  body: SafeArea(
-                    bottom: false,
-                    child: state.loading || state.podcast == null
-                        ? Center(child: LoadingIndicator())
-                        : Column(
-                            children: [
-                              _PodcastHeader(
-                                podcast: state.podcast!,
-                                subscribing: state.subscribing,
-                                subscribed: state.subscribed,
-                              ),
-                              Gap(pu2),
-                              if (state.podcast?.episodes != null)
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(color: colors.surface),
-                                    padding: .only(left: pu4, right: pu4, top: pu4),
-                                    child: isMobile
-                                        ? ListView.builder(
-                                            itemCount: state.podcast!.episodes!.length,
-                                            itemBuilder: (context, index) => ConditionalWrap(
-                                              wrapIf: index == state.podcast!.episodes!.length - 1,
-                                              wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
-                                              child: EpisodeInList(
-                                                episode: state.podcast!.episodes![index],
-                                                offline: !state.subscribed,
-                                                // we set that as we're not going to track progress on unsubbed podcast episodes
-                                                showPodcastImage: false,
+                final scaffoldColor = context.select((PodcastImageColorCubit c) => c.state.scaffoldColor);
+                final colorScheme = context.select((PodcastImageColorCubit c) => c.state.colorScheme);
+                final podcastColorCubit = context.read<PodcastImageColorCubit>();
+
+                return AnimatedTheme(
+                  duration: animationDuration,
+                  data: Theme.of(context).copyWith(colorScheme: colorScheme),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 250),
+                    color: scaffoldColor,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: Text(state.podcast?.name ?? ''),
+                        backgroundColor: Colors.transparent,
+                        surfaceTintColor: Colors.red,
+                      ),
+                      backgroundColor: Colors.transparent,
+                      body: SafeArea(
+                        bottom: false,
+                        child: state.loading || state.podcast == null
+                            ? Center(child: LoadingIndicator())
+                            : CustomScrollView(
+                                controller: podcastColorCubit.scrollController,
+                                slivers: [
+                                  SliverPersistentHeader(
+                                    pinned: true,
+                                    delegate: _PodcastHeader(
+                                      podcast: state.podcast!,
+                                      subscribing: state.subscribing,
+                                      subscribed: state.subscribed,
+                                      maxExtent: isMobile ? 450 : 225,
+                                    ),
+                                  ),
+                                  if (state.podcast?.episodes != null)
+                                    DecoratedSliver(
+                                      decoration: BoxDecoration(color: colors.surface),
+                                      sliver: isMobile
+                                          ? SliverList.builder(
+                                              itemCount: state.podcast!.episodes!.length,
+                                              itemBuilder: (context, index) => ConditionalWrap(
+                                                wrapIf: index == state.podcast!.episodes!.length - 1,
+                                                wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
+                                                child: EpisodeInList(
+                                                  episode: state.podcast!.episodes![index],
+                                                  offline: !state.subscribed,
+                                                  // we set that as we're not going to track progress on unsubbed podcast episodes
+                                                  showPodcastImage: false,
+                                                ),
+                                              ),
+                                            )
+                                          : SliverPadding(
+                                              padding: .only(top: pu4),
+                                              sliver: SliverGrid.extent(
+                                                maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
+                                                childAspectRatio:
+                                                    (EpisodeInGrid.crossAxisExtent * 0.8) /
+                                                    EpisodeInGrid.crossAxisExtent,
+                                                // mainAxisExtent: EpisodeInGrid.mainAxisExtent,
+                                                crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
+                                                mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
+                                                children:
+                                                    state.podcast?.episodes
+                                                        ?.map((e) => EpisodeInGrid(episode: e, showPodcastImage: false))
+                                                        .toList() ??
+                                                    [],
                                               ),
                                             ),
-                                          )
-                                        : GridView.extent(
-                                            maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
-                                            mainAxisExtent: EpisodeInGrid.mainAxisExtent,
-                                            crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
-                                            mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
-                                            children:
-                                                state.podcast?.episodes
-                                                    ?.map((e) => EpisodeInGrid(episode: e, showPodcastImage: false))
-                                                    .toList() ??
-                                                [],
-                                          ),
-                                  ),
-                                ),
-                            ],
-                          ),
+                                    ),
+                                ],
+                              ),
+                      ),
+                    ),
                   ),
                 );
               },
@@ -93,50 +140,67 @@ class PodcastScreen extends StatelessWidget {
   }
 }
 
-class _PodcastHeader extends StatelessWidget {
+class _PodcastHeader extends SliverPersistentHeaderDelegate {
   final Podcast podcast;
   final bool subscribing;
   final bool subscribed;
+  @override
+  final double maxExtent;
+  static const double _minImageSize = 0;
 
-  const _PodcastHeader({required this.podcast, required this.subscribing, required this.subscribed});
+  const _PodcastHeader({
+    required this.podcast,
+    required this.subscribing,
+    required this.subscribed,
+    required this.maxExtent,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // t goes 0 -> 1 as the header collapses
     final isMobile = BreakPoint.get(context) == .mobile;
-
+    final t = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
+    final imageSize = lerpDouble(isMobile ? 200 : 150, _minImageSize, (t * 1).clamp(0, 1))!;
+    final opacity = (1 - t * 1.25).clamp(0.0, 1.0); // fades out in the first half
     if (isMobile) {
-      return Column(
-        children: [
-          Center(
-            child: PodcastImage(podcast: podcast, width: 200, height: 200, borderRadius: pu4),
-          ),
-          if (podcast.description != null) ...[
-            Gap(pu2),
-            Padding(
-              padding: .symmetric(horizontal: pu2),
-              child: Text(podcast.description!, maxLines: 5, overflow: .ellipsis),
+      return Opacity(
+        opacity: opacity,
+        child: Column(
+          children: [
+            Center(
+              child: PodcastImage(podcast: podcast, width: imageSize, height: imageSize, borderRadius: pu4),
             ),
+            if (podcast.description != null) ...[
+              Gap(pu2),
+              Expanded(
+                child: Padding(
+                  padding: .symmetric(horizontal: pu2),
+                  child: SingleChildScrollView(child: HtmlWidget(podcast.description!)),
+                ),
+              ),
+            ],
+            if (t < 0.05) ...[
+              Gap(pu2),
+              _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
+            ],
           ],
-          Gap(pu2),
-          _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
-        ],
+        ),
       );
     } else {
-      return Column(
-        children: [
-          Row(
-            mainAxisAlignment: .start,
-            crossAxisAlignment: .start,
-            children: [
-              Gap(pu4),
-              Center(
-                child: PodcastImage(podcast: podcast, width: 150, height: 150, borderRadius: pu4),
-              ),
-
-              Gap(pu4),
-              Expanded(
-                child: SizedBox(
-                  height: 150,
+      return Opacity(
+        opacity: opacity,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: .start,
+              crossAxisAlignment: .start,
+              children: [
+                Gap(pu4),
+                Center(
+                  child: PodcastImage(podcast: podcast, width: imageSize, height: imageSize, borderRadius: pu4),
+                ),
+                Gap(pu4),
+                Expanded(
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: .stretch,
@@ -152,14 +216,24 @@ class _PodcastHeader extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ],
+            ),
+            if (t < 0.05) ...[
+              Gap(pu2),
+              _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
             ],
-          ),
-          Gap(pu2),
-          _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
-        ],
+          ],
+        ),
       );
     }
+  }
+
+  @override
+  double get minExtent => 0;
+
+  @override
+  bool shouldRebuild(covariant _PodcastHeader oldDelegate) {
+    return oldDelegate.podcast != podcast;
   }
 }
 

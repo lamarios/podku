@@ -79,29 +79,14 @@
                   <option name="pins">
                     <list>
                       <Pin>
-                        <option name="consoleUUID" value="64819f66-7a2e-49e8-96b0-b7cc31d3fc99" />
+                        <option name="consoleUUID" value="055c7fe5-d740-4eac-a5ff-a5137c4dae03" />
                         <option name="contentType" value="ConsoleContent" />
                         <option name="grepCompositeModel">
                           <GrepCompositeModel>
                             <option name="models">
                               <list>
                                 <GrepModel>
-                                  <option name="expression" value="[Automatic]" />
-                                </GrepModel>
-                              </list>
-                            </option>
-                          </GrepCompositeModel>
-                        </option>
-                      </Pin>
-                      <Pin>
-                        <option name="consoleUUID" value="168937e2-46ec-49ae-8c20-8d8227372b34" />
-                        <option name="contentType" value="ConsoleContent" />
-                        <option name="grepCompositeModel">
-                          <GrepCompositeModel>
-                            <option name="models">
-                              <list>
-                                <GrepModel>
-                                  <option name="expression" value="" />
+                                  <option name="expression" value="found podcast" />
                                 </GrepModel>
                               </list>
                             </option>

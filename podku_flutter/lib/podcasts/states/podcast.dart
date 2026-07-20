@@ -59,6 +59,8 @@ class PodcastCubit extends Cubit<PodcastState> {
     }
   }
 
+  Future<void> generateColor() async {}
+
   Podcast _formatPodcast(Podcast parsePodcast) {
     return parsePodcast.copyWith(
       episodes: (parsePodcast.episodes ?? [])

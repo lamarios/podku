@@ -12,7 +12,6 @@ import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
-import 'package:podku/utils/views/components/conditional_wrap.dart';
 import 'package:podku/utils/views/components/swite_action_button.dart';
 
 class EpisodeScreen extends StatelessWidget {
@@ -166,9 +165,6 @@ class _EpisodeList extends StatelessWidget {
     return ListView.builder(
       itemCount: state.episodes.length + (state.episodes.isNotEmpty && state.episodes.length % 100 == 0 ? 1 : 0),
       itemBuilder: (context, index) {
-        final hasMore = state.episodes.length % 100 == 0;
-        final isLast = index >= state.episodes.length - 1;
-
         if (index < state.episodes.length) {
           final e = state.episodes[index];
 
@@ -201,19 +197,12 @@ class _EpisodeList extends StatelessWidget {
                     },
                   ),
                 ],
-                child: ConditionalWrap(
-                  wrapIf: isLast && !hasMore,
-                  wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
-                  child: EpisodeInList(key: ValueKey(e.id.uuid), episode: e),
-                ),
+                child: EpisodeInList(key: ValueKey(e.id.uuid), episode: e),
               );
             },
           );
         } else {
-          return Padding(
-            padding: .only(bottom: 200),
-            child: TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodeCubit>().loadMore()),
-          );
+          return TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodeCubit>().loadMore());
         }
       },
     );
