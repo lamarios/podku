@@ -21,6 +21,7 @@ pkgs.mkShell {
            gst_all_1.gst-plugins-base
            gst_all_1.gst-plugins-good
            gst_all_1.gst-plugins-bad
+           gtk3
      ]
   ];
 
@@ -44,7 +45,7 @@ pkgs.mkShell {
 
   echo "Exporting android auto emulator libraries"
    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.libcxx pkgs.libcxxrt pkgs.gtk3 pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gstreamermm pkgs.libunwind ]}:$LD_LIBRARY_PATH"
-    export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" [ pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gst-plugins-base pkgs.libunwind ]}:$PKG_CONFIG_PATH"
+    export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" [ pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gst-plugins-base pkgs.libunwind pkgs.gtk3 ]}:$PKG_CONFIG_PATH"
 
   ''+
           pkgs.lib.concatStrings (map (x: ''echo "${x.name}: ${x.description}";'') aliases);
