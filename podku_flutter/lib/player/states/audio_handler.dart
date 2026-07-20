@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
@@ -20,13 +20,14 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   void init() {
-    _player.playerStateStream.listen(updatePlayerState);
-    _player.bufferedPositionStream.listen(updateBuffering);
-    _player.positionStream.listen(updatePosition);
+    _player.onPlayerStateChanged.listen(updatePlayerState);
+    // _player.bufferedPositionStream.listen(updateBuffering);
+    _player.onPositionChanged.listen(updatePosition);
+    _player.setReleaseMode(.stop);
   }
 
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() => _player.resume();
 
   @override
   Future<void> pause() => _player.pause();
@@ -103,7 +104,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> fastForward() async {
-    var position = _player.position + Duration(seconds: 30);
+    var position = (await _player.getCurrentPosition() ?? Duration.zero) + Duration(seconds: 30);
     _player.seek(position);
 
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
@@ -111,7 +112,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> rewind() async {
-    var position = _player.position + Duration(seconds: -10);
+    var position = (await _player.getCurrentPosition() ?? Duration(seconds: 10)) + Duration(seconds: -10);
     _player.seek(position);
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }
@@ -133,11 +134,14 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     if (offlineFile != null) {
       _log.fine('playing from offline file');
-      await _player.setFilePath(offlineFile, initialPosition: initialPosition);
+      await _player.setSourceDeviceFile(offlineFile);
     } else {
       _log.fine('playing online');
-      await _player.setUrl(audioProxyUrl, initialPosition: initialPosition);
+      await _player.setSourceUrl(audioProxyUrl);
     }
+
+    await _player.seek(initialPosition);
+
     final item = MediaItem(
       id: episode.id.uuid,
       title: episode.title,
@@ -164,15 +168,21 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   void updatePlayerState(PlayerState event) {
-    print('new player state: ${event.processingState}');
+    print('new player state: ${event}');
     var newState = playbackState.value.copyWith(
-      playing: event.playing,
-      processingState: switch (event.processingState) {
+      playing: switch (event) {
+        .playing => true,
+        .paused || .stopped => false,
+        _ => playbackState.value.playing,
+      },
+      processingState: switch (event) {
         .completed => .completed,
-        .loading => .loading,
-        .ready => .ready,
-        .buffering => .buffering,
-        .idle => .idle,
+        .disposed => .completed,
+
+        // .ready => .ready,
+        // .buffering => .buffering,
+        // .idle => .idle,
+        _ => playbackState.value.processingState,
       },
     );
 
@@ -193,7 +203,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> setSpeed(double speed) async {
-    _player.setSpeed(speed);
+    _player.setPlaybackRate(speed);
     playbackState.add(playbackState.value.copyWith(speed: speed));
   }
 }

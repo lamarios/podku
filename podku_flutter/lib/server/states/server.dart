@@ -7,7 +7,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/main.dart';
 import 'package:podku_client/podku_client.dart';
-import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,11 +68,7 @@ class ServerCubit extends Cubit<ServerState> {
         await prefs.setString("serverUrl", serverUrl);
         // }
 
-        final client = Client(state.apiUrl)
-          ..connectivityMonitor = FlutterConnectivityMonitor()
-          ..authSessionManager = FlutterAuthSessionManager();
-
-        await client.auth.initialize();
+        final client = Client(state.apiUrl)..connectivityMonitor = FlutterConnectivityMonitor();
 
         emit(state.copyWith(client: client));
 

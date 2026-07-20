@@ -16,7 +16,12 @@ let
 in
 pkgs.mkShell {
   buildInputs = with pkgs; builtins.concatLists [
-    [ flutter git http-server serverpod_cli fastlane ]
+    [ flutter git http-server serverpod_cli fastlane gst_all_1.gstreamer
+      gst_all_1.gstreamer
+           gst_all_1.gst-plugins-base
+           gst_all_1.gst-plugins-good
+           gst_all_1.gst-plugins-bad
+     ]
   ];
 
   # What to run when the shell starts
@@ -38,7 +43,9 @@ pkgs.mkShell {
   flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
 
   echo "Exporting android auto emulator libraries"
-  export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.libcxx pkgs.libcxxrt ]}:$LD_LIBRARY_PATH"
+   export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.libcxx pkgs.libcxxrt pkgs.gtk3 pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gstreamermm pkgs.libunwind ]}:$LD_LIBRARY_PATH"
+    export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" [ pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gst-plugins-base pkgs.libunwind ]}:$PKG_CONFIG_PATH"
+
   ''+
           pkgs.lib.concatStrings (map (x: ''echo "${x.name}: ${x.description}";'') aliases);
 

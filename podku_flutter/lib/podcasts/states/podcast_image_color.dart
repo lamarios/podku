@@ -41,11 +41,13 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
   }
 
   void _onScroll() {
-    final offset = scrollController.offset;
-    final t = ((offset - _fadeStart) / (_fadeEnd - _fadeStart)).clamp(0.0, 1.0);
-    final newColor = Color.lerp(state.colorScheme.secondaryContainer, surfaceColor, t)!;
-    if (newColor != state.scaffoldColor) {
-      emit(state.copyWith(scaffoldColor: newColor));
+    if (scrollController.hasClients) {
+      final offset = scrollController.offset;
+      final t = ((offset - _fadeStart) / (_fadeEnd - _fadeStart)).clamp(0.0, 1.0);
+      final newColor = Color.lerp(state.colorScheme.secondaryContainer, surfaceColor, t)!;
+      if (newColor != state.scaffoldColor) {
+        emit(state.copyWith(scaffoldColor: newColor));
+      }
     }
   }
 
