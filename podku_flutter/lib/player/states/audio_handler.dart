@@ -6,10 +6,18 @@ import 'package:logging/logging.dart';
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/main.dart';
+import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/podcasts/models/podcast.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/android_file_provider.dart';
 import 'package:podku_client/podku_client.dart';
+
+const _autoMain = 'main';
+const _autoEpisodes = 'episodes';
+const _autoPodcast = 'podcast-';
+const _autoOfflineList = 'offline';
+const _autoOffline = 'offline-';
 
 class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   static final _log = Logger('PodkuAudioHandler');
@@ -27,13 +35,22 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> play() => _player.resume();
+  Future<void> play() async {
+    _log.fine('play');
+    _player.resume();
+  }
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() async {
+    _log.fine('Pause');
+    _player.pause();
+  }
 
   @override
-  Future<void> stop() => _player.stop();
+  Future<void> stop() async {
+    _log.fine('stop');
+    _player.stop();
+  }
 
   @override
   Future<void> skipToNext() {
@@ -47,6 +64,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<List<MediaItem>> getChildren(String parentMediaId, [Map<String, dynamic>? options]) async {
+    _log.fine('Getting android auto children for parent: $parentMediaId');
     final serverCubit = getIt.get<ServerCubit>();
     if ((await serverCubit.waitForClientToBeSet()) == null) {
       _log.fine('could not get a client');
@@ -55,41 +73,135 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     List<MediaItem> items = [];
     if (parentMediaId == AudioService.browsableRootId) {
+      items.add(
+        MediaItem(
+          id: _autoMain,
+          title: 'Podku',
+          playable: false,
+          extras: {
+            'android.media.browse.CONTENT_STYLE_BROWSABLE_HINT': 2, // grid
+            'android.media.browse.CONTENT_STYLE_PLAYABLE_HINT': 1, // list
+          },
+        ),
+      );
+    } else if (parentMediaId == _autoMain) {
+      items.add(
+        MediaItem(
+          id: _autoEpisodes,
+          title: 'Latest',
+          playable: false,
+          artUri: Uri.parse('android.resource://com.github.lamarios.podku/mipmap/ic_launcher'),
+          extras: {
+            'android.media.browse.CONTENT_STYLE_BROWSABLE_HINT': 2, // grid
+            'android.media.browse.CONTENT_STYLE_PLAYABLE_HINT': 1, // list
+          },
+        ),
+      );
+
+      items.add(
+        MediaItem(
+          id: _autoOfflineList,
+          title: 'Downloaded',
+          playable: false,
+          artUri: Uri.parse('android.resource://com.github.lamarios.podku/mipmap/ic_launcher'),
+          extras: {
+            'android.media.browse.CONTENT_STYLE_BROWSABLE_HINT': 2, // grid
+            'android.media.browse.CONTENT_STYLE_PLAYABLE_HINT': 1, // list
+          },
+        ),
+      );
+      try {
+        final podcasts = await client.podcast.getPodcasts();
+        for (final p in podcasts) {
+          items.add(
+            MediaItem(
+              id: '$_autoPodcast${p.id.uuid}',
+              title: p.name,
+              playable: false,
+              artUri: p.artUri,
+              extras: {
+                'android.media.browse.CONTENT_STYLE_BROWSABLE_HINT': 2, // grid
+                'android.media.browse.CONTENT_STYLE_PLAYABLE_HINT': 1, // list
+              },
+            ),
+          );
+        }
+      } catch (e) {
+        _log.fine('Could not get podcasts, it is probably ok');
+      }
+    } else if (parentMediaId == _autoEpisodes) {
       final episodes = await client.episodes.getEpisodes(pageSize: 100);
 
       for (final episode in episodes) {
-        items.add(
-          MediaItem(
-            id: episode.id.uuid,
-            title: episode.title,
-            artist: episode.podcast?.name,
-            duration: Duration(seconds: episode.durationSeconds ?? 1),
-            playable: true,
-            artUri: Uri.tryParse(episode.podcast?.artUrl ?? ''),
+        items.add(_episodeForAndroidAuto(episode));
+      }
+    } else if (parentMediaId.startsWith(_autoPodcast)) {
+      final podcast = await client.podcast.getPodcast(parentMediaId.replaceFirst(_autoPodcast, ''));
 
-            extras: {
-              // Completion status — key AND value are different from what I said earlier
-              'android.media.extra.PLAYBACK_STATUS': episode.progress > 0.95
-                  ? 2 // DESCRIPTION_EXTRAS_VALUE_COMPLETION_STATUS_FULLY_PLAYED
-                  : episode.progress > 0
-                  ? 1 // ...PARTIALLY_PLAYED
-                  : 0,
-              // ...NOT_PLAYED
-
-              // Completion percentage
-              'androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE': episode.progress,
-              // double 0.0–1.0
-            },
-          ),
+      if (podcast != null) {
+        items.addAll(
+          podcast.episodes?.map((e) => _episodeForAndroidAuto(e.copyWith(podcast: podcast.copyWith(episodes: [])))) ??
+              [],
         );
+      }
+    } else if (parentMediaId.startsWith(_autoOfflineList)) {
+      final episodes = getIt.get<DownloadManagerCubit>().state.offlineEpisodes;
+
+      for (final e in episodes) {
+        var imageFile = await e.offlineFiles.then((value) => value.where((n) => n.endsWith(e.imageFile)).firstOrNull);
+
+        final artUri = imageFile == null
+            ? e.podcast?.artUri
+            : await AndroidFileProvider.getContentUriForFile(imageFile);
+
+        _log.fine('file uri: $artUri');
+        final media = _episodeForAndroidAuto(e).copyWith(id: '$_autoOffline${e.id.uuid}', artUri: artUri);
+
+        items.add(media);
       }
     }
     return items; // no deeper nesting needed
   }
 
+  MediaItem _episodeForAndroidAuto(Episode episode) {
+    return MediaItem(
+      id: episode.id.uuid,
+      title: episode.title,
+      artist: episode.podcast?.name,
+      duration: Duration(seconds: episode.durationSeconds ?? 1),
+      playable: true,
+      artUri: Uri.tryParse(episode.podcast?.artUrl ?? ''),
+
+      extras: {
+        // Completion status — key AND value are different from what I said earlier
+        'android.media.extra.PLAYBACK_STATUS': episode.progress > 0.95
+            ? 2 // DESCRIPTION_EXTRAS_VALUE_COMPLETION_STATUS_FULLY_PLAYED
+            : episode.progress > 0
+            ? 1 // ...PARTIALLY_PLAYED
+            : 0,
+        // ...NOT_PLAYED
+
+        // Completion percentage
+        'androidx.media.MediaItem.Extras.COMPLETION_PERCENTAGE': episode.progress,
+        // double 0.0–1.0
+      },
+    );
+  }
+
   @override
   Future<void> playFromMediaId(String mediaId, [Map<String, dynamic>? extras]) async {
-    final episode = await client.episodes.getEpisode(UuidValue.fromString(mediaId));
+    _log.fine("playing from mediaId: $mediaId");
+    final Episode? episode;
+    if (mediaId.startsWith(_autoOffline)) {
+      episode = getIt
+          .get<DownloadManagerCubit>()
+          .state
+          .offlineEpisodes
+          .where((element) => element.id.uuid == mediaId.replaceFirst(_autoOffline, ''))
+          .firstOrNull;
+    } else {
+      episode = await client.episodes.getEpisode(UuidValue.fromString(mediaId));
+    }
     if (episode != null) {
       await playEpisode(episode);
       await play();
@@ -124,7 +236,11 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     final offlineFile = offlineFiles.where((s) => s.endsWith(episode.episodeFile)).firstOrNull;
 
-    final imageFile = offlineFiles.where((s) => s.endsWith(episode.imageFile)).firstOrNull;
+    var imageFile = offlineFiles.where((n) => n.endsWith(episode.imageFile)).firstOrNull;
+
+    final artUri = imageFile == null
+        ? episode.podcast?.artUri
+        : await AndroidFileProvider.getContentUriForFile(imageFile);
 
     var audioProxyUrl = episode.audioProxyUrl;
 
@@ -147,7 +263,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
       title: episode.title,
       artist: episode.podcast?.name,
       duration: Duration(seconds: episode.durationSeconds ?? 1),
-      artUri: imageFile != null ? Uri.file(imageFile) : Uri.tryParse(episode.podcast?.artUrl ?? ''),
+      artUri: artUri,
     );
 
     mediaItem.add(item);
@@ -161,7 +277,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
         updatePosition: Duration.zero,
         bufferedPosition: Duration.zero,
 
-        playing: true,
+        playing: false,
         speed: playbackState.value.speed,
       ),
     );
@@ -169,16 +285,19 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   void updatePlayerState(PlayerState event) {
     print('new player state: ${event}');
+    var playing = switch (event) {
+      .playing => true,
+      .paused || .stopped => false,
+      _ => playbackState.value.playing,
+    };
     var newState = playbackState.value.copyWith(
-      playing: switch (event) {
-        .playing => true,
-        .paused || .stopped => false,
-        _ => playbackState.value.playing,
-      },
+      playing: playing,
+      controls: [playing ? .pause : .play, .rewind, .fastForward],
       processingState: switch (event) {
+        .playing => .ready,
+        .paused => .ready,
         .completed => .completed,
         .disposed => .completed,
-
         // .ready => .ready,
         // .buffering => .buffering,
         // .idle => .idle,

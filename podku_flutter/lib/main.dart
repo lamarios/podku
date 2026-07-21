@@ -38,6 +38,10 @@ void main() async {
       androidNotificationChannelId: 'com.github.lamarios.podku.audio',
       androidNotificationChannelName: 'Podku podcast',
       androidNotificationIcon: 'mipmap/ic_launcher',
+      androidBrowsableRootExtras: {
+        'android.media.browse.CONTENT_STYLE_BROWSABLE_HINT': 2, // grid
+        'android.media.browse.CONTENT_STYLE_PLAYABLE_HINT': 1, // list
+      },
     ),
   );
   getIt.registerSingleton(audioHandler);

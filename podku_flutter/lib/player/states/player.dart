@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/main.dart';
+import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
@@ -176,8 +177,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   Future<void> episodeChangedListener(MediaItem? event) async {
-    if (state.episode == null && event != null) {
-      final episode = await client.episodes.getEpisode(UuidValue.fromString(event.id));
+    if (event != null) {
+      var uuidValue = UuidValue.fromString(event.id);
+      final episode =
+          getIt.get<DownloadManagerCubit>().state.offlineEpisodes.where((e) => e.id == uuidValue).firstOrNull ??
+          await client.episodes.getEpisode(uuidValue);
 
       if (episode != null) {
         emit(

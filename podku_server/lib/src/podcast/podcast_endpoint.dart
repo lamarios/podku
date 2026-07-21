@@ -7,24 +7,15 @@ import '../generated/protocol.dart';
 
 class PodcastEndpoint extends Endpoint {
   Future<List<Podcast>> getPodcasts(Session session) async {
-    return Podcast.db.find(session);
+    return Podcast.db.find(session, orderBy: (p0) => p0.name);
   }
 
-  Future<List<SearchResult>> searchPodcasts(
-    Session session,
-    String query,
-  ) async {
+  Future<List<SearchResult>> searchPodcasts(Session session, String query) async {
     return await ItunesPodcastSearch().search(query);
   }
 
-  Future<Podcast> subscribeToPodcast(
-    Session session,
-    SearchResult result,
-  ) async {
-    final alreadySubbed = await Podcast.db.find(
-      session,
-      where: (p) => p.url.equals(result.feedUrl),
-    );
+  Future<Podcast> subscribeToPodcast(Session session, SearchResult result) async {
+    final alreadySubbed = await Podcast.db.find(session, where: (p) => p.url.equals(result.feedUrl));
     if (result.feedUrl != null && alreadySubbed.isEmpty) {
       var podcast = Podcast(
         url: result.feedUrl!,
@@ -70,12 +61,7 @@ class PodcastEndpoint extends Endpoint {
     var podcast = await Podcast.db.findById(
       session,
       UuidValue.fromString(podcastId),
-      include: Podcast.include(
-        episodes: Episode.includeList(
-          orderBy: (p0) => p0.pubDateMillis,
-          orderDescending: true,
-        ),
-      ),
+      include: Podcast.include(episodes: Episode.includeList(orderBy: (p0) => p0.pubDateMillis, orderDescending: true)),
     );
     return podcast;
   }
