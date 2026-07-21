@@ -14,7 +14,6 @@ part 'podcast_image_color.freezed.dart';
 final _log = Logger('PodcastImageColorCubit');
 
 class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
-  final Color surfaceColor;
   final Podcast? podcast;
   final Brightness brightness;
   final ColorScheme fallBackColorScheme;
@@ -26,7 +25,6 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
 
   PodcastImageColorCubit(
     super.initialState, {
-    required this.surfaceColor,
     this.podcast,
     required this.brightness,
     required this.fallBackColorScheme,
@@ -44,7 +42,7 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
     if (scrollController.hasClients) {
       final offset = scrollController.offset;
       final t = ((offset - _fadeStart) / (_fadeEnd - _fadeStart)).clamp(0.0, 1.0);
-      final newColor = Color.lerp(state.colorScheme.secondaryContainer, surfaceColor, t)!;
+      final newColor = Color.lerp(state.colorScheme.secondaryContainer, state.colorScheme.surface, t)!;
       if (newColor != state.scaffoldColor) {
         emit(state.copyWith(scaffoldColor: newColor));
       }

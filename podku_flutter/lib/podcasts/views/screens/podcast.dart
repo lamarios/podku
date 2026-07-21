@@ -49,7 +49,6 @@ class PodcastScreen extends StatelessWidget {
                 create: (context) => PodcastImageColorCubit(
                   PodcastImageColorState(scaffoldColor: colors.secondaryContainer, colorScheme: colors),
                   podcast: podcastCubit.state.podcast,
-                  surfaceColor: colors.surface,
                   brightness: brightnessOf,
                   fallBackColorScheme: colors,
                 ),
@@ -63,6 +62,7 @@ class PodcastScreen extends StatelessWidget {
                 final colorScheme = context.select((PodcastImageColorCubit c) => c.state.colorScheme);
                 final podcastColorCubit = context.read<PodcastImageColorCubit>();
 
+                var isLoading = state.loading || state.podcast == null;
                 return AnimatedTheme(
                   duration: animationDuration,
                   data: Theme.of(context).copyWith(colorScheme: colorScheme),
@@ -78,57 +78,60 @@ class PodcastScreen extends StatelessWidget {
                       backgroundColor: Colors.transparent,
                       body: SafeArea(
                         bottom: false,
-                        child: state.loading || state.podcast == null
-                            ? Center(child: LoadingIndicator())
-                            : CustomScrollView(
-                                controller: podcastColorCubit.scrollController,
-                                slivers: [
-                                  SliverPersistentHeader(
-                                    pinned: true,
-                                    delegate: _PodcastHeader(
-                                      podcast: state.podcast!,
-                                      subscribing: state.subscribing,
-                                      subscribed: state.subscribed,
-                                      maxExtent: isMobile ? 450 : 225,
-                                    ),
-                                  ),
-                                  if (state.podcast?.episodes != null)
-                                    DecoratedSliver(
-                                      decoration: BoxDecoration(color: colors.surface),
-                                      sliver: isMobile
-                                          ? SliverList.builder(
-                                              itemCount: state.podcast!.episodes!.length,
-                                              itemBuilder: (context, index) => ConditionalWrap(
-                                                wrapIf: index == state.podcast!.episodes!.length - 1,
-                                                wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
-                                                child: EpisodeInList(
-                                                  episode: state.podcast!.episodes![index],
-                                                  offline: !state.subscribed,
-                                                  // we set that as we're not going to track progress on unsubbed podcast episodes
-                                                  showPodcastImage: false,
-                                                ),
-                                              ),
-                                            )
-                                          : SliverPadding(
-                                              padding: .only(top: pu4),
-                                              sliver: SliverGrid.extent(
-                                                maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
-                                                childAspectRatio:
-                                                    (EpisodeInGrid.crossAxisExtent * 0.8) /
-                                                    EpisodeInGrid.crossAxisExtent,
-                                                // mainAxisExtent: EpisodeInGrid.mainAxisExtent,
-                                                crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
-                                                mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
-                                                children:
-                                                    state.podcast?.episodes
-                                                        ?.map((e) => EpisodeInGrid(episode: e, showPodcastImage: false))
-                                                        .toList() ??
-                                                    [],
-                                              ),
-                                            ),
-                                    ),
-                                ],
+                        child: CustomScrollView(
+                          controller: podcastColorCubit.scrollController,
+                          shrinkWrap: isLoading,
+                          physics: isLoading ? NeverScrollableScrollPhysics() : null,
+                          slivers: [
+                            if (isLoading)
+                              SliverFillRemaining(hasScrollBody: false, child: Center(child: LoadingIndicator())),
+                            if (state.podcast != null) ...[
+                              SliverPersistentHeader(
+                                pinned: true,
+                                delegate: _PodcastHeader(
+                                  podcast: state.podcast!,
+                                  subscribing: state.subscribing,
+                                  subscribed: state.subscribed,
+                                  maxExtent: isMobile ? 450 : 225,
+                                ),
                               ),
+                              if (state.podcast?.episodes != null)
+                                DecoratedSliver(
+                                  decoration: BoxDecoration(color: colors.surface),
+                                  sliver: isMobile
+                                      ? SliverList.builder(
+                                          itemCount: state.podcast!.episodes!.length,
+                                          itemBuilder: (context, index) => ConditionalWrap(
+                                            wrapIf: index == state.podcast!.episodes!.length - 1,
+                                            wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
+                                            child: EpisodeInList(
+                                              episode: state.podcast!.episodes![index],
+                                              offline: !state.subscribed,
+                                              // we set that as we're not going to track progress on unsubbed podcast episodes
+                                              showPodcastImage: false,
+                                            ),
+                                          ),
+                                        )
+                                      : SliverPadding(
+                                          padding: .only(top: pu4),
+                                          sliver: SliverGrid.extent(
+                                            maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
+                                            childAspectRatio:
+                                                (EpisodeInGrid.crossAxisExtent * 0.8) / EpisodeInGrid.crossAxisExtent,
+                                            // mainAxisExtent: EpisodeInGrid.mainAxisExtent,
+                                            crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
+                                            mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
+                                            children:
+                                                state.podcast?.episodes
+                                                    ?.map((e) => EpisodeInGrid(episode: e, showPodcastImage: false))
+                                                    .toList() ??
+                                                [],
+                                          ),
+                                        ),
+                                ),
+                            ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

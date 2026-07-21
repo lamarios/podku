@@ -1,11 +1,12 @@
 // Generate palette from an image
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator_master/palette_generator_master.dart';
 
 Future<Color?> generatePalette(String imageUrl) async {
   // Load your image
-  final ImageProvider imageProvider = NetworkImage(imageUrl);
+  final ImageProvider imageProvider = CachedNetworkImageProvider(imageUrl);
 
   // Generate palette
   final PaletteGeneratorMaster paletteGenerator = await PaletteGeneratorMaster.fromImageProvider(

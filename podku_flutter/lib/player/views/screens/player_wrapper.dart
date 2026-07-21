@@ -25,7 +25,6 @@ class PlayerWrapper extends StatelessWidget {
     return BlocProvider(
       create: (context) => PodcastImageColorCubit(
         PodcastImageColorState(colorScheme: colors, scaffoldColor: colors.secondaryContainer),
-        surfaceColor: colors.surface,
         brightness: brightness,
         fallBackColorScheme: colors,
       ),
