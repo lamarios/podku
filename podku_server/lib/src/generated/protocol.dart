@@ -12,17 +12,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i3;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i4;
-import 'episodes/episode_progress.dart' as _i5;
-import 'podcast/episode.dart' as _i6;
-import 'podcast/podcast.dart' as _i7;
-import 'podcast/search_result.dart' as _i8;
-import 'package:podku_server/src/generated/podcast/episode.dart' as _i9;
-import 'package:podku_server/src/generated/podcast/podcast.dart' as _i10;
-import 'package:podku_server/src/generated/podcast/search_result.dart' as _i11;
+import 'episodes/episode_progress.dart' as _i3;
+import 'podcast/episode.dart' as _i4;
+import 'podcast/podcast.dart' as _i5;
+import 'podcast/search_result.dart' as _i6;
+import 'package:podku_server/src/generated/podcast/episode.dart' as _i7;
+import 'package:podku_server/src/generated/podcast/podcast.dart' as _i8;
+import 'package:podku_server/src/generated/podcast/search_result.dart' as _i9;
 export 'episodes/episode_progress.dart';
 export 'podcast/episode.dart';
 export 'podcast/podcast.dart';
@@ -257,8 +253,6 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    ..._i3.Protocol.targetTableDefinitions,
-    ..._i4.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
   ];
 
@@ -289,60 +283,54 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i5.EpisodeProgress) {
-      return _i5.EpisodeProgress.fromJson(data) as T;
+    if (t == _i3.EpisodeProgress) {
+      return _i3.EpisodeProgress.fromJson(data) as T;
     }
-    if (t == _i6.Episode) {
-      return _i6.Episode.fromJson(data) as T;
+    if (t == _i4.Episode) {
+      return _i4.Episode.fromJson(data) as T;
     }
-    if (t == _i7.Podcast) {
-      return _i7.Podcast.fromJson(data) as T;
+    if (t == _i5.Podcast) {
+      return _i5.Podcast.fromJson(data) as T;
     }
-    if (t == _i8.SearchResult) {
-      return _i8.SearchResult.fromJson(data) as T;
+    if (t == _i6.SearchResult) {
+      return _i6.SearchResult.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.EpisodeProgress?>()) {
-      return (data != null ? _i5.EpisodeProgress.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i3.EpisodeProgress?>()) {
+      return (data != null ? _i3.EpisodeProgress.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Episode?>()) {
-      return (data != null ? _i6.Episode.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.Episode?>()) {
+      return (data != null ? _i4.Episode.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Podcast?>()) {
-      return (data != null ? _i7.Podcast.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.Podcast?>()) {
+      return (data != null ? _i5.Podcast.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.SearchResult?>()) {
-      return (data != null ? _i8.SearchResult.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.SearchResult?>()) {
+      return (data != null ? _i6.SearchResult.fromJson(data) : null) as T;
     }
-    if (t == List<_i6.Episode>) {
-      return (data as List).map((e) => deserialize<_i6.Episode>(e)).toList()
+    if (t == List<_i4.Episode>) {
+      return (data as List).map((e) => deserialize<_i4.Episode>(e)).toList()
           as T;
     }
-    if (t == _i1.getType<List<_i6.Episode>?>()) {
+    if (t == _i1.getType<List<_i4.Episode>?>()) {
       return (data != null
-              ? (data as List).map((e) => deserialize<_i6.Episode>(e)).toList()
+              ? (data as List).map((e) => deserialize<_i4.Episode>(e)).toList()
               : null)
           as T;
     }
-    if (t == List<_i9.Episode>) {
-      return (data as List).map((e) => deserialize<_i9.Episode>(e)).toList()
+    if (t == List<_i7.Episode>) {
+      return (data as List).map((e) => deserialize<_i7.Episode>(e)).toList()
           as T;
     }
-    if (t == List<_i10.Podcast>) {
-      return (data as List).map((e) => deserialize<_i10.Podcast>(e)).toList()
+    if (t == List<_i8.Podcast>) {
+      return (data as List).map((e) => deserialize<_i8.Podcast>(e)).toList()
           as T;
     }
-    if (t == List<_i11.SearchResult>) {
+    if (t == List<_i9.SearchResult>) {
       return (data as List)
-              .map((e) => deserialize<_i11.SearchResult>(e))
+              .map((e) => deserialize<_i9.SearchResult>(e))
               .toList()
           as T;
     }
-    try {
-      return _i3.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
-    try {
-      return _i4.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _i2.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
@@ -351,10 +339,10 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i5.EpisodeProgress => 'EpisodeProgress',
-      _i6.Episode => 'Episode',
-      _i7.Podcast => 'Podcast',
-      _i8.SearchResult => 'SearchResult',
+      _i3.EpisodeProgress => 'EpisodeProgress',
+      _i4.Episode => 'Episode',
+      _i5.Podcast => 'Podcast',
+      _i6.SearchResult => 'SearchResult',
       _ => null,
     };
   }
@@ -369,26 +357,18 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i5.EpisodeProgress():
+      case _i3.EpisodeProgress():
         return 'EpisodeProgress';
-      case _i6.Episode():
+      case _i4.Episode():
         return 'Episode';
-      case _i7.Podcast():
+      case _i5.Podcast():
         return 'Podcast';
-      case _i8.SearchResult():
+      case _i6.SearchResult():
         return 'SearchResult';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod.$className';
-    }
-    className = _i3.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return 'serverpod_auth_idp.$className';
-    }
-    className = _i4.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return 'serverpod_auth_core.$className';
     }
     return null;
   }
@@ -400,28 +380,20 @@ class Protocol extends _i1.SerializationManagerServer {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'EpisodeProgress') {
-      return deserialize<_i5.EpisodeProgress>(data['data']);
+      return deserialize<_i3.EpisodeProgress>(data['data']);
     }
     if (dataClassName == 'Episode') {
-      return deserialize<_i6.Episode>(data['data']);
+      return deserialize<_i4.Episode>(data['data']);
     }
     if (dataClassName == 'Podcast') {
-      return deserialize<_i7.Podcast>(data['data']);
+      return deserialize<_i5.Podcast>(data['data']);
     }
     if (dataClassName == 'SearchResult') {
-      return deserialize<_i8.SearchResult>(data['data']);
+      return deserialize<_i6.SearchResult>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
       return _i2.Protocol().deserializeByClassName(data);
-    }
-    if (dataClassName.startsWith('serverpod_auth_idp.')) {
-      data['className'] = dataClassName.substring(19);
-      return _i3.Protocol().deserializeByClassName(data);
-    }
-    if (dataClassName.startsWith('serverpod_auth_core.')) {
-      data['className'] = dataClassName.substring(20);
-      return _i4.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -429,28 +401,16 @@ class Protocol extends _i1.SerializationManagerServer {
   @override
   _i1.Table? getTableForType(Type t) {
     {
-      var table = _i3.Protocol().getTableForType(t);
-      if (table != null) {
-        return table;
-      }
-    }
-    {
-      var table = _i4.Protocol().getTableForType(t);
-      if (table != null) {
-        return table;
-      }
-    }
-    {
       var table = _i2.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     switch (t) {
-      case _i6.Episode:
-        return _i6.Episode.t;
-      case _i7.Podcast:
-        return _i7.Podcast.t;
+      case _i4.Episode:
+        return _i4.Episode.t;
+      case _i5.Podcast:
+        return _i5.Podcast.t;
     }
     return null;
   }
@@ -472,10 +432,7 @@ class Protocol extends _i1.SerializationManagerServer {
       return null;
     }
     try {
-      return _i3.Protocol().mapRecordToJson(record);
-    } catch (_) {}
-    try {
-      return _i4.Protocol().mapRecordToJson(record);
+      return _i2.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

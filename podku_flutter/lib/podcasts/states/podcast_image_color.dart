@@ -20,8 +20,7 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
 
   final ScrollController scrollController = ScrollController();
 
-  static const double _fadeStart = 0;
-  static const double _fadeEnd = 100; // fully opaque by this offset
+  static const double _fadeEnd = 225; // fully opaque by this offset
 
   PodcastImageColorCubit(
     super.initialState, {
@@ -41,7 +40,8 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
   void _onScroll() {
     if (scrollController.hasClients) {
       final offset = scrollController.offset;
-      final t = ((offset - _fadeStart) / (_fadeEnd - _fadeStart)).clamp(0.0, 1.0);
+      final t = ((offset) / (_fadeEnd)).clamp(0.0, 1.0);
+      _log.fine('scaffold lerp position: $t');
       final newColor = Color.lerp(state.colorScheme.secondaryContainer, state.colorScheme.surface, t)!;
       if (newColor != state.scaffoldColor) {
         emit(state.copyWith(scaffoldColor: newColor));
@@ -55,12 +55,12 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
       _log.fine('found podcast image $podcastColor');
       if (podcastColor != null) {
         final colorScheme = ColorScheme.fromSeed(seedColor: podcastColor, brightness: brightness);
-        emit(state.copyWith(colorScheme: colorScheme));
+        emit(state.copyWith(colorScheme: colorScheme, initialized: true));
       } else {
-        emit(state.copyWith(colorScheme: fallBackColorScheme));
+        emit(state.copyWith(colorScheme: fallBackColorScheme, initialized: true));
       }
     } else {
-      emit(state.copyWith(colorScheme: fallBackColorScheme));
+      emit(state.copyWith(colorScheme: fallBackColorScheme, initialized: true));
     }
 
     _onScroll();
@@ -69,6 +69,9 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
 
 @freezed
 sealed class PodcastImageColorState with _$PodcastImageColorState {
-  const factory PodcastImageColorState({required Color scaffoldColor, required ColorScheme colorScheme}) =
-      _PodcastImageColorState;
+  const factory PodcastImageColorState({
+    required Color scaffoldColor,
+    required ColorScheme colorScheme,
+    @Default(false) bool initialized,
+  }) = _PodcastImageColorState;
 }

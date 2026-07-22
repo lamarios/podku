@@ -11,253 +11,31 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../auth/email_idp_endpoint.dart' as _i2;
-import '../auth/jwt_refresh_endpoint.dart' as _i3;
-import '../episodes/episodes_endoint.dart' as _i4;
-import '../podcast/podcast_endpoint.dart' as _i5;
-import 'package:podku_server/src/generated/podcast/episode.dart' as _i6;
-import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
-import 'package:podku_server/src/generated/podcast/podcast.dart' as _i8;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i9;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i10;
-import 'package:podku_server/src/generated/future_calls.dart' as _i11;
+import '../episodes/episodes_endoint.dart' as _i2;
+import '../podcast/podcast_endpoint.dart' as _i3;
+import 'package:podku_server/src/generated/podcast/episode.dart' as _i4;
+import 'package:podku_server/src/generated/podcast/search_result.dart' as _i5;
+import 'package:podku_server/src/generated/podcast/podcast.dart' as _i6;
+import 'package:podku_server/src/generated/future_calls.dart' as _i7;
 export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'emailIdp': _i2.EmailIdpEndpoint()
-        ..initialize(
-          server,
-          'emailIdp',
-          null,
-        ),
-      'jwtRefresh': _i3.JwtRefreshEndpoint()
-        ..initialize(
-          server,
-          'jwtRefresh',
-          null,
-        ),
-      'episodes': _i4.EpisodesEndpoint()
+      'episodes': _i2.EpisodesEndpoint()
         ..initialize(
           server,
           'episodes',
           null,
         ),
-      'podcast': _i5.PodcastEndpoint()
+      'podcast': _i3.PodcastEndpoint()
         ..initialize(
           server,
           'podcast',
           null,
         ),
     };
-    connectors['emailIdp'] = _i1.EndpointConnector(
-      name: 'emailIdp',
-      endpoint: endpoints['emailIdp']!,
-      methodConnectors: {
-        'login': _i1.MethodConnector(
-          name: 'login',
-          params: {
-            'email': _i1.ParameterDescription(
-              name: 'email',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'password': _i1.ParameterDescription(
-              name: 'password',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint).login(
-                session,
-                email: params['email'],
-                password: params['password'],
-              ),
-        ),
-        'startRegistration': _i1.MethodConnector(
-          name: 'startRegistration',
-          params: {
-            'email': _i1.ParameterDescription(
-              name: 'email',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .startRegistration(
-                    session,
-                    email: params['email'],
-                  ),
-        ),
-        'verifyRegistrationCode': _i1.MethodConnector(
-          name: 'verifyRegistrationCode',
-          params: {
-            'accountRequestId': _i1.ParameterDescription(
-              name: 'accountRequestId',
-              type: _i1.getType<_i1.UuidValue>(),
-              nullable: false,
-            ),
-            'verificationCode': _i1.ParameterDescription(
-              name: 'verificationCode',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .verifyRegistrationCode(
-                    session,
-                    accountRequestId: params['accountRequestId'],
-                    verificationCode: params['verificationCode'],
-                  ),
-        ),
-        'finishRegistration': _i1.MethodConnector(
-          name: 'finishRegistration',
-          params: {
-            'registrationToken': _i1.ParameterDescription(
-              name: 'registrationToken',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'password': _i1.ParameterDescription(
-              name: 'password',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .finishRegistration(
-                    session,
-                    registrationToken: params['registrationToken'],
-                    password: params['password'],
-                  ),
-        ),
-        'startPasswordReset': _i1.MethodConnector(
-          name: 'startPasswordReset',
-          params: {
-            'email': _i1.ParameterDescription(
-              name: 'email',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .startPasswordReset(
-                    session,
-                    email: params['email'],
-                  ),
-        ),
-        'verifyPasswordResetCode': _i1.MethodConnector(
-          name: 'verifyPasswordResetCode',
-          params: {
-            'passwordResetRequestId': _i1.ParameterDescription(
-              name: 'passwordResetRequestId',
-              type: _i1.getType<_i1.UuidValue>(),
-              nullable: false,
-            ),
-            'verificationCode': _i1.ParameterDescription(
-              name: 'verificationCode',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .verifyPasswordResetCode(
-                    session,
-                    passwordResetRequestId: params['passwordResetRequestId'],
-                    verificationCode: params['verificationCode'],
-                  ),
-        ),
-        'finishPasswordReset': _i1.MethodConnector(
-          name: 'finishPasswordReset',
-          params: {
-            'finishPasswordResetToken': _i1.ParameterDescription(
-              name: 'finishPasswordResetToken',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'newPassword': _i1.ParameterDescription(
-              name: 'newPassword',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .finishPasswordReset(
-                    session,
-                    finishPasswordResetToken:
-                        params['finishPasswordResetToken'],
-                    newPassword: params['newPassword'],
-                  ),
-        ),
-        'hasAccount': _i1.MethodConnector(
-          name: 'hasAccount',
-          params: {},
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _i2.EmailIdpEndpoint)
-                  .hasAccount(session),
-        ),
-      },
-    );
-    connectors['jwtRefresh'] = _i1.EndpointConnector(
-      name: 'jwtRefresh',
-      endpoint: endpoints['jwtRefresh']!,
-      methodConnectors: {
-        'refreshAccessToken': _i1.MethodConnector(
-          name: 'refreshAccessToken',
-          params: {
-            'refreshToken': _i1.ParameterDescription(
-              name: 'refreshToken',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['jwtRefresh'] as _i3.JwtRefreshEndpoint)
-                  .refreshAccessToken(
-                    session,
-                    refreshToken: params['refreshToken'],
-                  ),
-        ),
-      },
-    );
     connectors['episodes'] = _i1.EndpointConnector(
       name: 'episodes',
       endpoint: endpoints['episodes']!,
@@ -281,7 +59,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['episodes'] as _i4.EpisodesEndpoint).getEpisodes(
+                  (endpoints['episodes'] as _i2.EpisodesEndpoint).getEpisodes(
                     session,
                     after: params['after'],
                     pageSize: params['pageSize'],
@@ -301,7 +79,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['episodes'] as _i4.EpisodesEndpoint).getEpisode(
+                  (endpoints['episodes'] as _i2.EpisodesEndpoint).getEpisode(
                     session,
                     params['id'],
                   ),
@@ -311,7 +89,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'episode': _i1.ParameterDescription(
               name: 'episode',
-              type: _i1.getType<_i6.Episode>(),
+              type: _i1.getType<_i4.Episode>(),
               nullable: false,
             ),
             'player': _i1.ParameterDescription(
@@ -325,7 +103,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['episodes'] as _i4.EpisodesEndpoint).startPlayback(
+                  (endpoints['episodes'] as _i2.EpisodesEndpoint).startPlayback(
                     session,
                     params['episode'],
                     params['player'],
@@ -336,7 +114,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'episode': _i1.ParameterDescription(
               name: 'episode',
-              type: _i1.getType<_i6.Episode>(),
+              type: _i1.getType<_i4.Episode>(),
               nullable: false,
             ),
             'player': _i1.ParameterDescription(
@@ -350,7 +128,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['episodes'] as _i4.EpisodesEndpoint).setProgress(
+                  (endpoints['episodes'] as _i2.EpisodesEndpoint).setProgress(
                     session,
                     params['episode'],
                     params['player'],
@@ -372,7 +150,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
                 Map<String, Stream> streamParams,
-              ) => (endpoints['episodes'] as _i4.EpisodesEndpoint)
+              ) => (endpoints['episodes'] as _i2.EpisodesEndpoint)
                   .playbackStream(
                     session,
                     params['player'],
@@ -391,7 +169,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['podcast'] as _i5.PodcastEndpoint)
+              ) async => (endpoints['podcast'] as _i3.PodcastEndpoint)
                   .getPodcasts(session),
         ),
         'searchPodcasts': _i1.MethodConnector(
@@ -408,7 +186,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['podcast'] as _i5.PodcastEndpoint).searchPodcasts(
+                  (endpoints['podcast'] as _i3.PodcastEndpoint).searchPodcasts(
                     session,
                     params['query'],
                   ),
@@ -418,7 +196,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'result': _i1.ParameterDescription(
               name: 'result',
-              type: _i1.getType<_i7.SearchResult>(),
+              type: _i1.getType<_i5.SearchResult>(),
               nullable: false,
             ),
           },
@@ -426,7 +204,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['podcast'] as _i5.PodcastEndpoint)
+              ) async => (endpoints['podcast'] as _i3.PodcastEndpoint)
                   .subscribeToPodcast(
                     session,
                     params['result'],
@@ -437,7 +215,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'result': _i1.ParameterDescription(
               name: 'result',
-              type: _i1.getType<_i7.SearchResult>(),
+              type: _i1.getType<_i5.SearchResult>(),
               nullable: false,
             ),
           },
@@ -446,7 +224,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['podcast'] as _i5.PodcastEndpoint).parsePodcast(
+                  (endpoints['podcast'] as _i3.PodcastEndpoint).parsePodcast(
                     session,
                     params['result'],
                   ),
@@ -456,7 +234,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'podcast': _i1.ParameterDescription(
               name: 'podcast',
-              type: _i1.getType<_i8.Podcast>(),
+              type: _i1.getType<_i6.Podcast>(),
               nullable: false,
             ),
           },
@@ -465,7 +243,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['podcast'] as _i5.PodcastEndpoint).unsubscribe(
+                  (endpoints['podcast'] as _i3.PodcastEndpoint).unsubscribe(
                     session,
                     params['podcast'],
                   ),
@@ -484,21 +262,17 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['podcast'] as _i5.PodcastEndpoint).getPodcast(
+                  (endpoints['podcast'] as _i3.PodcastEndpoint).getPodcast(
                     session,
                     params['podcastId'],
                   ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i9.Endpoints()
-      ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i10.Endpoints()
-      ..initializeEndpoints(server);
   }
 
   @override
   _i1.FutureCallDispatch? get futureCalls {
-    return _i11.FutureCalls();
+    return _i7.FutureCalls();
   }
 }

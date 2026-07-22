@@ -1,29 +1,37 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:http/http.dart' as http;
+import 'package:podku_server/src/utils/caching.dart';
 import 'package:serverpod/serverpod.dart';
 
 class PodcastRoute extends Route {
-  PodcastRoute() : super(methods: {Method.get});
+  late final UrlFileCache cache;
+
+  PodcastRoute() : super(methods: {Method.get}) {
+    final cacheDir = Directory('./cache');
+    if (!cacheDir.existsSync()) {
+      cacheDir.createSync(recursive: true);
+    }
+    cache = UrlFileCache(cacheDir);
+  }
 
   @override
   Future<Result> handleCall(Session session, Request request) async {
     if (request.method == Method.get) {
-        final artUrl = request.queryParameters.raw['art'];
+      final artUrl = request.queryParameters.raw['art'];
 
-      if (artUrl== null) {
+      if (artUrl == null) {
         return Response.notFound();
       }
 
-      final response = await http.get(Uri.parse(artUrl));
+      final file = await cache.getFile(artUrl, maxAge: Duration(days: 30));
 
-      var bodyBytes = response.bodyBytes;
+      var bodyBytes = await file.readAsBytes();
 
       return Response.ok(
         body: Body.fromData(bodyBytes),
         headers: Headers.build((h) {
           h.accessControlAllowOrigin = AccessControlAllowOriginHeader.wildcard();
-          // copy over whatever downstream headers you're already forwarding here too
         }),
       );
     }

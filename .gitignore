@@ -5,3 +5,4 @@
 # Pubspec overrides
 pubspec_overrides.yaml
 /podku_server/web/*
+/podku_server/cache/

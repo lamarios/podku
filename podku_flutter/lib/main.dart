@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/player/states/player.dart';
@@ -75,6 +76,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         routerConfig: _router,
         debugShowCheckedModeBanner: kDebugMode,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         darkTheme: ThemeData(
           colorScheme: darkColorScheme,
           appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_settings.dart';
 import 'package:podku/utils/views/components/int_stepper.dart';
 
@@ -8,8 +9,9 @@ class DownloadSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locals = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text('Download settings')),
+      appBar: AppBar(title: Text(locals.downloadSettings)),
       body: SafeArea(
         bottom: false,
         child: BlocProvider(
@@ -24,16 +26,14 @@ class DownloadSettingsScreen extends StatelessWidget {
                   SwitchListTile.adaptive(
                     dense: true,
                     visualDensity: .compact,
-                    title: Text('Download podcast episodes automatically'),
-                    subtitle: Text(
-                      'Keep the ${state.podcastEpisodes} newest episodes for each podcast, will clear the rest.',
-                    ),
+                    title: Text(locals.automaticDownload),
+                    subtitle: Text(locals.automaticDownloadExplanation(state.podcastEpisodes)),
                     value: state.downloadAutomatically,
                     onChanged: (value) => cubit.setDownloadAutomatically(value),
                   ),
                   ListTile(
                     enabled: state.downloadAutomatically,
-                    title: Text('Episodes per podcast to keep'),
+                    title: Text(locals.episodesToKeepPerPodcast),
                     trailing: IntStepper(
                       enabled: state.downloadAutomatically,
                       value: state.podcastEpisodes,

@@ -3,8 +3,6 @@
 
 # Build stage
 FROM dart:3.11.0 AS build
-
-# Create a minimal workspace that preserves locked server dependency versions.
 WORKDIR /app
 COPY pubspec.lock .
 COPY podku_server podku_server
@@ -17,43 +15,40 @@ RUN printf '%s\n' \
   '  - podku_server' \
   > pubspec.yaml
 RUN dart pub get
-
-# Compile the server executable.
 WORKDIR /app/podku_server
 RUN dart compile exe bin/main.dart -o bin/server
-
-# Add a fallback for the copy of possibly missing directories.
 RUN mkdir -p config web migrations
+
+# Caddy stage
+FROM caddy:2-alpine AS caddy
 
 # Final stage
 FROM alpine:latest
 WORKDIR /app
 
-# Environment variables
 ENV runmode=production
 ENV serverid=default
 ENV logging=normal
 ENV role=monolith
 
-# Copy runtime dependencies
+RUN apk add --no-cache ca-certificates
+
+COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
+COPY --from=build /app/podku_server/docker/CaddyFile /etc/caddy/Caddyfile
+
 COPY --from=build /runtime/ /
-
-# Copy compiled server executable
 COPY --from=build /app/podku_server/bin/server server
-
-# Copy configuration files and resources
 COPY --from=build /app/podku_server/config/ config/
 COPY --from=build /app/podku_server/web/ web/
 COPY --from=build /app/podku_server/migrations/ migrations/
-
-# This file is required to enable the endpoint log filter in Insights.
 COPY --from=build /app/podku_server/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
 
-# Expose ports
+COPY --from=build /app/podku_server/docker/entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+
 EXPOSE 8080
-EXPOSE 8081
 EXPOSE 8082
 EXPOSE 8083
+EXPOSE 8084
 
-# Define the entrypoint command
-ENTRYPOINT ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role --apply-migrations
+ENTRYPOINT ["./entrypoint.sh"]

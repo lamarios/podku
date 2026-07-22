@@ -10,6 +10,7 @@ const double pu5 = pu * 5;
 const double pu6 = pu * 6;
 const double pu7 = pu * 7;
 const double pu8 = pu * 8;
+const double pu16 = pu * 16;
 
 const animationDuration = Duration(milliseconds: 250);
 

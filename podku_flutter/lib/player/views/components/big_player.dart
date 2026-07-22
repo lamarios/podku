@@ -44,9 +44,9 @@ class BigPlayer extends StatelessWidget {
                       leading: isMobile
                           ? IconButton(
                               onPressed: () => context.read<PlayerCubit>().showPlayers(true, false),
-                              icon: Icon(Icons.arrow_drop_down),
+                              icon: Icon(Icons.keyboard_arrow_down),
                             )
-                          : null,
+                          : SizedBox.shrink(),
                       backgroundColor: Colors.transparent,
                       actions: [
                         IconButton(onPressed: () => context.read<PlayerCubit>().stop(), icon: Icon(Icons.close)),
@@ -115,15 +115,16 @@ class BigPlayer extends StatelessWidget {
                                         ),
                                         Gap(pu4),
                                         Padding(
-                                          padding: .symmetric(horizontal: pu6),
-                                          child: ProgressBar(height: 10, scrobblingDot: true),
+                                          padding: .symmetric(horizontal: pu16),
+                                          child: ProgressBar(height: pu3, scrobblingDot: true),
                                         ),
+                                        Gap(pu),
                                         Builder(
                                           builder: (context) {
                                             final position = context.select((PlayerCubit c) => c.state.position);
                                             final duration = context.select((PlayerCubit c) => c.state.duration);
                                             return Padding(
-                                              padding: .symmetric(horizontal: pu6),
+                                              padding: .symmetric(horizontal: pu16),
                                               child: Row(
                                                 mainAxisAlignment: .spaceBetween,
                                                 children: [

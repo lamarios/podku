@@ -12,40 +12,40 @@ part of 'episodes.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$EpisodeState {
+mixin _$EpisodesState {
 
- bool get loading; List<Episode> get episodes; int? get cursor;
-/// Create a copy of EpisodeState
+ bool get loading; List<Episode> get episodes; int? get cursor; dynamic get error; StackTrace? get stackTrace;
+/// Create a copy of EpisodesState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$EpisodeStateCopyWith<EpisodeState> get copyWith => _$EpisodeStateCopyWithImpl<EpisodeState>(this as EpisodeState, _$identity);
+$EpisodesStateCopyWith<EpisodesState> get copyWith => _$EpisodesStateCopyWithImpl<EpisodesState>(this as EpisodesState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EpisodeState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.episodes, episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EpisodesState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.episodes, episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(episodes),cursor);
+int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(episodes),cursor,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'EpisodeState(loading: $loading, episodes: $episodes, cursor: $cursor)';
+  return 'EpisodesState(loading: $loading, episodes: $episodes, cursor: $cursor, error: $error, stackTrace: $stackTrace)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $EpisodeStateCopyWith<$Res>  {
-  factory $EpisodeStateCopyWith(EpisodeState value, $Res Function(EpisodeState) _then) = _$EpisodeStateCopyWithImpl;
+abstract mixin class $EpisodesStateCopyWith<$Res>  {
+  factory $EpisodesStateCopyWith(EpisodesState value, $Res Function(EpisodesState) _then) = _$EpisodesStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, List<Episode> episodes, int? cursor
+ bool loading, List<Episode> episodes, int? cursor, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -53,29 +53,31 @@ $Res call({
 
 }
 /// @nodoc
-class _$EpisodeStateCopyWithImpl<$Res>
-    implements $EpisodeStateCopyWith<$Res> {
-  _$EpisodeStateCopyWithImpl(this._self, this._then);
+class _$EpisodesStateCopyWithImpl<$Res>
+    implements $EpisodesStateCopyWith<$Res> {
+  _$EpisodesStateCopyWithImpl(this._self, this._then);
 
-  final EpisodeState _self;
-  final $Res Function(EpisodeState) _then;
+  final EpisodesState _self;
+  final $Res Function(EpisodesState) _then;
 
-/// Create a copy of EpisodeState
+/// Create a copy of EpisodesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? episodes = null,Object? cursor = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? episodes = null,Object? cursor = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_self.copyWith(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episodes: null == episodes ? _self.episodes : episodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace?,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [EpisodeState].
-extension EpisodeStatePatterns on EpisodeState {
+/// Adds pattern-matching-related methods to [EpisodesState].
+extension EpisodesStatePatterns on EpisodesState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -88,10 +90,10 @@ extension EpisodeStatePatterns on EpisodeState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EpisodeState value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EpisodesState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _EpisodeState() when $default != null:
+case _EpisodesState() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -110,10 +112,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EpisodeState value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EpisodesState value)  $default,){
 final _that = this;
 switch (_that) {
-case _EpisodeState():
+case _EpisodesState():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -128,10 +130,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EpisodeState value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EpisodesState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _EpisodeState() when $default != null:
+case _EpisodesState() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -149,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  List<Episode> episodes,  int? cursor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  List<Episode> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _EpisodeState() when $default != null:
-return $default(_that.loading,_that.episodes,_that.cursor);case _:
+case _EpisodesState() when $default != null:
+return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stackTrace);case _:
   return orElse();
 
 }
@@ -170,10 +172,10 @@ return $default(_that.loading,_that.episodes,_that.cursor);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  List<Episode> episodes,  int? cursor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  List<Episode> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
 switch (_that) {
-case _EpisodeState():
-return $default(_that.loading,_that.episodes,_that.cursor);}
+case _EpisodesState():
+return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stackTrace);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -187,10 +189,10 @@ return $default(_that.loading,_that.episodes,_that.cursor);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  List<Episode> episodes,  int? cursor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  List<Episode> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
 switch (_that) {
-case _EpisodeState() when $default != null:
-return $default(_that.loading,_that.episodes,_that.cursor);case _:
+case _EpisodesState() when $default != null:
+return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stackTrace);case _:
   return null;
 
 }
@@ -201,8 +203,8 @@ return $default(_that.loading,_that.episodes,_that.cursor);case _:
 /// @nodoc
 
 
-class _EpisodeState implements EpisodeState {
-  const _EpisodeState({this.loading = false, final  List<Episode> episodes = const [], this.cursor}): _episodes = episodes;
+class _EpisodesState implements EpisodesState, WithError {
+  const _EpisodesState({this.loading = false, final  List<Episode> episodes = const [], this.cursor, this.error, this.stackTrace}): _episodes = episodes;
   
 
 @override@JsonKey() final  bool loading;
@@ -214,38 +216,40 @@ class _EpisodeState implements EpisodeState {
 }
 
 @override final  int? cursor;
+@override final  dynamic error;
+@override final  StackTrace? stackTrace;
 
-/// Create a copy of EpisodeState
+/// Create a copy of EpisodesState
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$EpisodeStateCopyWith<_EpisodeState> get copyWith => __$EpisodeStateCopyWithImpl<_EpisodeState>(this, _$identity);
+_$EpisodesStateCopyWith<_EpisodesState> get copyWith => __$EpisodesStateCopyWithImpl<_EpisodesState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EpisodeState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other._episodes, _episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EpisodesState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other._episodes, _episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(_episodes),cursor);
+int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(_episodes),cursor,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'EpisodeState(loading: $loading, episodes: $episodes, cursor: $cursor)';
+  return 'EpisodesState(loading: $loading, episodes: $episodes, cursor: $cursor, error: $error, stackTrace: $stackTrace)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$EpisodeStateCopyWith<$Res> implements $EpisodeStateCopyWith<$Res> {
-  factory _$EpisodeStateCopyWith(_EpisodeState value, $Res Function(_EpisodeState) _then) = __$EpisodeStateCopyWithImpl;
+abstract mixin class _$EpisodesStateCopyWith<$Res> implements $EpisodesStateCopyWith<$Res> {
+  factory _$EpisodesStateCopyWith(_EpisodesState value, $Res Function(_EpisodesState) _then) = __$EpisodesStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, List<Episode> episodes, int? cursor
+ bool loading, List<Episode> episodes, int? cursor, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -253,21 +257,23 @@ $Res call({
 
 }
 /// @nodoc
-class __$EpisodeStateCopyWithImpl<$Res>
-    implements _$EpisodeStateCopyWith<$Res> {
-  __$EpisodeStateCopyWithImpl(this._self, this._then);
+class __$EpisodesStateCopyWithImpl<$Res>
+    implements _$EpisodesStateCopyWith<$Res> {
+  __$EpisodesStateCopyWithImpl(this._self, this._then);
 
-  final _EpisodeState _self;
-  final $Res Function(_EpisodeState) _then;
+  final _EpisodesState _self;
+  final $Res Function(_EpisodesState) _then;
 
-/// Create a copy of EpisodeState
+/// Create a copy of EpisodesState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? episodes = null,Object? cursor = freezed,}) {
-  return _then(_EpisodeState(
+@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? episodes = null,Object? cursor = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
+  return _then(_EpisodesState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episodes: null == episodes ? _self._episodes : episodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace?,
   ));
 }
 

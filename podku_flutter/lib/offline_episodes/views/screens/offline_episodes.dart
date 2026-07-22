@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
+import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -17,9 +18,10 @@ class OfflineEpisodesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final isMobile = BreakPoint.get(context) == .mobile;
+    final locals = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Downloads'),
+        title: Text(locals.downloads),
         actions: [IconButton(onPressed: () => context.push('/offline/settings'), icon: Icon(Icons.settings))],
       ),
       body: SafeArea(

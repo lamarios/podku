@@ -50,7 +50,9 @@ class ProgressBar extends StatelessWidget {
                           scrobblingCubit.startDragging(playerCubit, details, constraints),
                       onHorizontalDragUpdate: (details) =>
                           scrobblingCubit.dragUpdate(playerCubit, details, constraints),
-                      onHorizontalDragEnd: (details) => scrobblingCubit.dragEnd(playerCubit, details, constraints),
+                      onHorizontalDragEnd: (details) =>
+                          scrobblingCubit.dragEnd(playerCubit, details.localPosition, constraints),
+                      onTapUp: (details) => scrobblingCubit.dragEnd(playerCubit, details.localPosition, constraints),
                       dragStartBehavior: .down,
                       behavior: .translucent,
                       child: child,

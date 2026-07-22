@@ -2,13 +2,6 @@
   <library name="Dart Packages" type="DartPackagesLibraryType">
     <properties>
       <option name="packageNameToDirsMap">
-        <entry key="_discoveryapis_commons">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_discoveryapis_commons-1.0.7/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="_fe_analyzer_shared">
           <value>
             <list>
@@ -23,24 +16,10 @@
             </list>
           </value>
         </entry>
-        <entry key="archive">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/archive-4.0.9/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="args">
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/args-2.7.0/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="asn1lib">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/asn1lib-1.6.5/lib" />
             </list>
           </value>
         </entry>
@@ -226,13 +205,6 @@
             </list>
           </value>
         </entry>
-        <entry key="cbor">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/cbor-6.5.1/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="characters">
           <value>
             <list>
@@ -338,13 +310,6 @@
             </list>
           </value>
         </entry>
-        <entry key="dart_jsonwebtoken">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/dart_jsonwebtoken-3.4.1/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="dart_style">
           <value>
             <list>
@@ -363,13 +328,6 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/easy_debounce-2.0.3/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="email_validator">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/email_validator-3.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -447,6 +405,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_lints-6.0.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_localizations">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/submodules/flutter/packages/flutter_localizations/lib" />
             </list>
           </value>
         </entry>
@@ -632,45 +597,10 @@
             </list>
           </value>
         </entry>
-        <entry key="google_cloud">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/google_cloud-0.5.0/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="google_identity_services_web">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/google_identity_services_web-0.3.3+1/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="googleapis">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/googleapis-16.0.0/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="googleapis_auth">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/googleapis_auth-2.3.2/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="graphs">
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/graphs-2.3.2/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="hex">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/hex-0.2.0/lib" />
             </list>
           </value>
         </entry>
@@ -709,17 +639,10 @@
             </list>
           </value>
         </entry>
-        <entry key="image">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/image-4.9.1/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="intl">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.3/lib" />
             </list>
           </value>
         </entry>
@@ -933,13 +856,6 @@
             </list>
           </value>
         </entry>
-        <entry key="passkeys_server">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/passkeys_server-1.0.0/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="path">
           <value>
             <list>
@@ -1017,24 +933,10 @@
             </list>
           </value>
         </entry>
-        <entry key="pointycastle">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/pointycastle-4.0.0/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="pool">
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/pool-1.5.2/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="posix">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/posix-6.5.0/lib" />
             </list>
           </value>
         </entry>
@@ -1129,24 +1031,10 @@
             </list>
           </value>
         </entry>
-        <entry key="serverpod_auth_core_server">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_core_server-3.4.10/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="serverpod_auth_idp_client">
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_idp_client-3.4.10/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="serverpod_auth_idp_server">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_idp_server-3.4.10/lib" />
             </list>
           </value>
         </entry>
@@ -1266,13 +1154,6 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/shelf_web_socket-3.0.0/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="sign_in_with_apple_server">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/sign_in_with_apple_server-1.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -1671,12 +1552,9 @@
       </option>
     </properties>
     <CLASSES>
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/_discoveryapis_commons-1.0.7/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-96.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-10.2.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/archive-4.0.9/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/args-2.7.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/asn1lib-1.6.5/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/async-2.13.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audio_service-0.18.19/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audio_service_platform_interface-0.1.3/lib" />
@@ -1703,7 +1581,6 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cached_network_image-3.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cached_network_image_platform_interface-4.1.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cached_network_image_web-1.3.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cbor-6.5.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/characters-1.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/charcode-1.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/checked_yaml-2.0.4/lib" />
@@ -1719,11 +1596,9 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/crypto-3.0.7/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/csslib-1.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.9/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/dart_jsonwebtoken-3.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/dart_style-3.1.7/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/dbus-0.7.13/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/easy_debounce-2.0.3/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/email_validator-3.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/equatable-2.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/fake_async-1.3.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/ffi-2.2.0/lib" />
@@ -1758,19 +1633,13 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/get_it-9.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/glob-2.1.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/go_router-17.3.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/google_cloud-0.5.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/google_identity_services_web-0.3.3+1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/googleapis-16.0.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/googleapis_auth-2.3.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/graphs-2.3.2/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/hex-0.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/hooks-2.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/html-0.15.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http-1.6.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_multi_server-3.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_parser-4.1.2/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/image-4.9.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/io-1.0.5/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni_flutter-1.0.1/lib" />
@@ -1801,7 +1670,6 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-10.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-4.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/palette_generator_master-1.1.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/passkeys_server-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path-1.9.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_parsing-1.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider-2.1.6/lib" />
@@ -1813,9 +1681,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/petitparser-7.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/platform-3.1.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.8/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pointycastle-4.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pool-1.5.2/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/posix-6.5.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/postgres-3.5.12/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/provider-6.1.5+1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pub_semver-2.2.0/lib" />
@@ -1829,9 +1695,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/rxdart-0.28.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod-3.4.10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_core_client-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_core_server-3.4.10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_idp_client-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_idp_server-3.4.10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_client-3.4.10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_flutter-3.4.10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_lints-3.4.10/lib" />
@@ -1849,7 +1713,6 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shelf_packages_handler-3.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shelf_static-1.1.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shelf_web_socket-3.0.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/sign_in_with_apple_server-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/source_gen-4.2.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/source_map_stack_trace-2.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/source_maps-0.10.13/lib" />
@@ -1907,6 +1770,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/yaml-3.1.3/lib" />
       <root url="file://$PROJECT_DIR$/submodules/flutter/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter/lib" />
+      <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter_localizations/lib" />
       <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter_test/lib" />
       <root url="file://$PROJECT_DIR$/submodules/flutter/packages/flutter_web_plugins/lib" />
     </CLASSES>

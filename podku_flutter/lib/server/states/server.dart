@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/main.dart';
+import 'package:podku/utils/models/with_error.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,9 @@ class ServerCubit extends Cubit<ServerState> {
     } else {
       final prefs = await SharedPreferences.getInstance();
       serverUrl = prefs.getString("serverUrl");
+      if (serverUrl != null) {
+        emit(state.copyWith(serverUrl: serverUrl));
+      }
     }
 
     await setServerUrl(serverUrl);
@@ -56,8 +60,8 @@ class ServerCubit extends Cubit<ServerState> {
   }
 
   Future<bool> setServerUrl(String? serverUrl) async {
+    emit(state.copyWith(loading: true));
     try {
-      emit(state.copyWith(serverUrl: serverUrl));
       if (serverUrl != null && _urlRegex.hasMatch(serverUrl)) {
         if (serverUrl.endsWith('/')) {
           serverUrl = serverUrl.substring(0, serverUrl.length - 1);
@@ -68,18 +72,25 @@ class ServerCubit extends Cubit<ServerState> {
         await prefs.setString("serverUrl", serverUrl);
         // }
 
-        final client = Client(state.apiUrl)..connectivityMonitor = FlutterConnectivityMonitor();
+        final client = Client('$serverUrl/api')..connectivityMonitor = FlutterConnectivityMonitor();
 
-        emit(state.copyWith(client: client));
+        try {
+          await client.podcast.getPodcasts();
 
-        _subscribeToStream(client);
-        return true;
+          emit(state.copyWith(client: client, serverUrl: serverUrl, initialized: true));
+          _subscribeToStream(client);
+          return true;
+        } catch (e, s) {
+          _log.fine("could not connect to server $serverUrl", e);
+          emit(state.copyWith(error: e, stackTrace: s, serverUrl: null, initialized: false));
+          return false;
+        }
       } else {
         _disconnectFromStream();
         // if (!kIsWeb) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove("serverUrl");
-        emit(state.copyWith(client: null));
+        emit(state.copyWith(client: null, serverUrl: null, initialized: false));
         // }
         return false;
       }
@@ -87,7 +98,7 @@ class ServerCubit extends Cubit<ServerState> {
       print(e);
       return false;
     } finally {
-      emit(state.copyWith(initialized: true));
+      emit(state.copyWith(loading: false));
     }
   }
 
@@ -116,8 +127,16 @@ class ServerCubit extends Cubit<ServerState> {
 }
 
 @freezed
-sealed class ServerState with _$ServerState {
-  const factory ServerState({String? serverUrl, @Default(false) initialized, Client? client}) = _ServerState;
+sealed class ServerState with _$ServerState implements WithError {
+  @Implements<WithError>()
+  const factory ServerState({
+    String? serverUrl,
+    @Default(false) initialized,
+    Client? client,
+    StackTrace? stackTrace,
+    @Default(false) bool loading,
+    dynamic error,
+  }) = _ServerState;
 
   const ServerState._();
 

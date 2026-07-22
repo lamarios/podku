@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
@@ -9,12 +11,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as p;
+import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/main.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/models/with_error.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:podku_shared/podku_shared.dart';
 
@@ -112,6 +117,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       }
     } catch (e, s) {
       _log.severe('Failed to play episode', e, s);
+      emit(state.copyWith(error: e, stackTrace: s));
     }
   }
 
@@ -137,13 +143,34 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       final episode = state.episode!;
       final progress = state.position.inSeconds / state.duration.inSeconds;
       EasyThrottle.throttle('progress-update-${state.episode?.id}', Duration(seconds: 5), () async {
-        await client.episodes.setProgress(episode.copyWith(progress: progress), sessionId);
+        await _updateProgressInner(episode, progress);
       });
       // we do this so that whenever the episode stops playing, we save one last time
       EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
-        await client.episodes.setProgress(episode.copyWith(progress: progress), sessionId);
+        await _updateProgressInner(episode, progress);
+        await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
       });
     } else {}
+  }
+
+  Future<void> _updateProgressInner(Episode episode, double progress) async {
+    episode = episode.copyWith(progress: progress.clamp(0, 1));
+    try {
+      await client.episodes.setProgress(episode, sessionId);
+    } catch (e) {
+      _log.warning("Could not update episode progress", e);
+    }
+
+    try {
+      if (await episode.validOfflineFiles) {
+        final directory = await episode.episodeFolder(createIfMissing: true);
+
+        final File data = File(p.join(directory.path, EpisodeDownloads.data));
+        await data.writeAsString(jsonEncode(episode.toJson()));
+      }
+    } catch (e) {
+      _log.warning('Failed to update progress on downloaded podcast', e);
+    }
   }
 
   bool backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -211,7 +238,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 }
 
 @freezed
-sealed class PlayerState with _$PlayerState {
+sealed class PlayerState with _$PlayerState implements WithError {
+  @Implements<WithError>()
   const factory PlayerState({
     @Default(false) bool loading,
     Episode? episode,
@@ -221,5 +249,7 @@ sealed class PlayerState with _$PlayerState {
     @Default(false) bool playing,
     @Default(false) bool showMiniPlayer,
     @Default(false) bool showBigPlayer,
+    dynamic error,
+    StackTrace? stackTrace,
   }) = _PlayerState;
 }

@@ -12,6 +12,7 @@ import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/views/components/error_listener.dart';
 import 'package:podku/utils/views/components/swite_action_button.dart';
 
 class EpisodeScreen extends StatelessWidget {
@@ -22,46 +23,48 @@ class EpisodeScreen extends StatelessWidget {
     final isMobile = BreakPoint.get(context) == .mobile;
     final colors = Theme.of(context).colorScheme;
     return BlocProvider(
-      create: (context) => EpisodeCubit(EpisodeState()),
-      child: BlocBuilder<EpisodeCubit, EpisodeState>(
+      create: (context) => EpisodesCubit(EpisodesState()),
+      child: BlocBuilder<EpisodesCubit, EpisodesState>(
         builder: (context, state) {
-          final cubit = context.read<EpisodeCubit>();
+          final cubit = context.read<EpisodesCubit>();
 
           return MultiBlocListener(
             listeners: [
               BlocListener<HomeCubit, HomeState>(
                 listenWhen: (previous, current) => current.selectedIndex == 0,
-                listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(refresh: true),
+                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
               ),
               BlocListener<PlayerCubit, PlayerState>(
                 listenWhen: (previous, current) => previous.episode != current.episode,
-                listener: (context, state) => context.read<EpisodeCubit>().getEpisodes(refresh: true),
+                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
               ),
             ],
-            child: Column(
-              crossAxisAlignment: .stretch,
-              children: [
-                if (state.episodes.isNotEmpty)
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () => cubit.getEpisodes(refresh: true),
-                      child: Padding(
-                        padding: .symmetric(horizontal: pu2),
-                        child: isMobile
-                            ? _EpisodeList(state: state, cubit: cubit)
-                            : _EpisodeGrid(state: state, cubit: cubit),
+            child: ErrorHandler<EpisodesCubit, EpisodesState>(
+              child: Column(
+                crossAxisAlignment: .stretch,
+                children: [
+                  if (state.episodes.isNotEmpty)
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () => cubit.getEpisodes(refresh: true),
+                        child: Padding(
+                          padding: .symmetric(horizontal: pu2),
+                          child: isMobile
+                              ? _EpisodeList(state: state, cubit: cubit)
+                              : _EpisodeGrid(state: state, cubit: cubit),
+                        ),
+                      ),
+                    )
+                  else if (!state.loading) ...[
+                    Expanded(
+                      child: Center(
+                        child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
                       ),
                     ),
-                  )
-                else if (!state.loading) ...[
-                  Expanded(
-                    child: Center(
-                      child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
-                    ),
-                  ),
+                  ],
+                  if (state.loading) Center(child: LoadingIndicator()),
                 ],
-                if (state.loading) Center(child: LoadingIndicator()),
-              ],
+              ),
             ),
           );
         },
@@ -71,8 +74,8 @@ class EpisodeScreen extends StatelessWidget {
 }
 
 class _EpisodeGrid extends StatelessWidget {
-  final EpisodeState state;
-  final EpisodeCubit cubit;
+  final EpisodesState state;
+  final EpisodesCubit cubit;
 
   const _EpisodeGrid({required this.state, required this.cubit});
 
@@ -137,7 +140,7 @@ class _EpisodeGrid extends StatelessWidget {
     if (state.episodes.isNotEmpty && state.episodes.length % 100 == 0) {
       children.add(
         Center(
-          child: TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodeCubit>().loadMore()),
+          child: TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodesCubit>().loadMore()),
         ),
       );
     }
@@ -153,8 +156,8 @@ class _EpisodeGrid extends StatelessWidget {
 }
 
 class _EpisodeList extends StatelessWidget {
-  final EpisodeState state;
-  final EpisodeCubit cubit;
+  final EpisodesState state;
+  final EpisodesCubit cubit;
 
   const _EpisodeList({required this.state, required this.cubit});
 
@@ -202,7 +205,7 @@ class _EpisodeList extends StatelessWidget {
             },
           );
         } else {
-          return TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodeCubit>().loadMore());
+          return TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodesCubit>().loadMore());
         }
       },
     );

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PodcastState {
 
- List<Podcast> get subscriptions; SearchResult? get subscribingTo;
+ List<Podcast> get subscriptions; SearchResult? get subscribingTo; dynamic get error; StackTrace? get stackTrace;
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PodcastStateCopyWith<PodcastState> get copyWith => _$PodcastStateCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastState&&const DeepCollectionEquality().equals(other.subscriptions, subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastState&&const DeepCollectionEquality().equals(other.subscriptions, subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(subscriptions),subscribingTo);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo)';
+  return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PodcastStateCopyWith<$Res>  {
   factory $PodcastStateCopyWith(PodcastState value, $Res Function(PodcastState) _then) = _$PodcastStateCopyWithImpl;
 @useResult
 $Res call({
- List<Podcast> subscriptions, SearchResult? subscribingTo
+ List<Podcast> subscriptions, SearchResult? subscribingTo, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -62,11 +62,13 @@ class _$PodcastStateCopyWithImpl<$Res>
 
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? subscriptions = null,Object? subscribingTo = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? subscriptions = null,Object? subscribingTo = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_self.copyWith(
 subscriptions: null == subscriptions ? _self.subscriptions : subscriptions // ignore: cast_nullable_to_non_nullable
 as List<Podcast>,subscribingTo: freezed == subscribingTo ? _self.subscribingTo : subscribingTo // ignore: cast_nullable_to_non_nullable
-as SearchResult?,
+as SearchResult?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace?,
   ));
 }
 
@@ -148,10 +150,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Podcast> subscriptions,  SearchResult? subscribingTo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Podcast> subscriptions,  SearchResult? subscribingTo,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PodcastState() when $default != null:
-return $default(_that.subscriptions,_that.subscribingTo);case _:
+return $default(_that.subscriptions,_that.subscribingTo,_that.error,_that.stackTrace);case _:
   return orElse();
 
 }
@@ -169,10 +171,10 @@ return $default(_that.subscriptions,_that.subscribingTo);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Podcast> subscriptions,  SearchResult? subscribingTo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Podcast> subscriptions,  SearchResult? subscribingTo,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
 switch (_that) {
 case _PodcastState():
-return $default(_that.subscriptions,_that.subscribingTo);}
+return $default(_that.subscriptions,_that.subscribingTo,_that.error,_that.stackTrace);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +188,10 @@ return $default(_that.subscriptions,_that.subscribingTo);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Podcast> subscriptions,  SearchResult? subscribingTo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Podcast> subscriptions,  SearchResult? subscribingTo,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
 switch (_that) {
 case _PodcastState() when $default != null:
-return $default(_that.subscriptions,_that.subscribingTo);case _:
+return $default(_that.subscriptions,_that.subscribingTo,_that.error,_that.stackTrace);case _:
   return null;
 
 }
@@ -200,8 +202,8 @@ return $default(_that.subscriptions,_that.subscribingTo);case _:
 /// @nodoc
 
 
-class _PodcastState implements PodcastState {
-  const _PodcastState({final  List<Podcast> subscriptions = const [], this.subscribingTo}): _subscriptions = subscriptions;
+class _PodcastState implements PodcastState, WithError {
+  const _PodcastState({final  List<Podcast> subscriptions = const [], this.subscribingTo, this.error, this.stackTrace}): _subscriptions = subscriptions;
   
 
  final  List<Podcast> _subscriptions;
@@ -212,6 +214,8 @@ class _PodcastState implements PodcastState {
 }
 
 @override final  SearchResult? subscribingTo;
+@override final  dynamic error;
+@override final  StackTrace? stackTrace;
 
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
@@ -223,16 +227,16 @@ _$PodcastStateCopyWith<_PodcastState> get copyWith => __$PodcastStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastState&&const DeepCollectionEquality().equals(other._subscriptions, _subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastState&&const DeepCollectionEquality().equals(other._subscriptions, _subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_subscriptions),subscribingTo);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo)';
+  return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
 }
 
 
@@ -243,7 +247,7 @@ abstract mixin class _$PodcastStateCopyWith<$Res> implements $PodcastStateCopyWi
   factory _$PodcastStateCopyWith(_PodcastState value, $Res Function(_PodcastState) _then) = __$PodcastStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<Podcast> subscriptions, SearchResult? subscribingTo
+ List<Podcast> subscriptions, SearchResult? subscribingTo, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -260,11 +264,13 @@ class __$PodcastStateCopyWithImpl<$Res>
 
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? subscriptions = null,Object? subscribingTo = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? subscriptions = null,Object? subscribingTo = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_PodcastState(
 subscriptions: null == subscriptions ? _self._subscriptions : subscriptions // ignore: cast_nullable_to_non_nullable
 as List<Podcast>,subscribingTo: freezed == subscribingTo ? _self.subscribingTo : subscribingTo // ignore: cast_nullable_to_non_nullable
-as SearchResult?,
+as SearchResult?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace?,
   ));
 }
 

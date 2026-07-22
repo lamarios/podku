@@ -19,8 +19,8 @@ class ScrobblingCubit extends Cubit<ScrobblingState> {
     emit(state.copyWith(holdingPosition: details.localPosition.dx.clamp(0, constraints.maxWidth)));
   }
 
-  void dragEnd(PlayerCubit playerCubit, DragEndDetails details, BoxConstraints constraints) {
-    scrobbleTo(playerCubit, details.localPosition.dx / constraints.maxWidth);
+  void dragEnd(PlayerCubit playerCubit, Offset offset, BoxConstraints constraints) {
+    scrobbleTo(playerCubit, offset.dx / constraints.maxWidth);
     emit(state.copyWith(holdingPosition: null));
   }
 

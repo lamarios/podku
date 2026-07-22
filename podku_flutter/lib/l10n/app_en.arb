@@ -1,0 +1,21 @@
+{
+  "podcasts": "Podcasts",
+  "episodes": "Episodes",
+  "search": "Search",
+  "searchPodcasts": "Search Podcasts",
+  "subscribe": "Subscribe",
+  "subscribed": "Subscribed",
+  "unsubscribe": "Unsubscribed",
+  "downloads": "Downloads",
+  "downloadSettings": "Download settings",
+  "automaticDownload": "Download podcasts episodes automatically",
+  "automaticDownloadExplanation": "Keep the {count, plural, =1{newest episode} other{{count} newest episodes}} for each podcast, will clear the rest",
+  "episodesToKeepPerPodcast": "Episodes per podcast to keep",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "error": "Error",
+  "go": "Go",
+  "serverUrl": "Server URL",
+  "loggingOut": "Logging out",
+  "loggingOutText": "Logging out of the server will delete all the locally downloaded podcast episodes"
+}

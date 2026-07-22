@@ -232,6 +232,13 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> playEpisode(Episode episode) async {
     playbackState.add(playbackState.value.copyWith(processingState: .loading));
 
+    // we should try to get the latest version of the episode for up to date progress
+    try {
+      episode = await client.episodes.getEpisode(episode.id) ?? episode;
+    } catch (e) {
+      _log.warning("Couldn't get the episode before playing, we're probably offline");
+    }
+
     var offlineFiles = kIsWeb ? [] : await episode.offlineFiles;
 
     final offlineFile = offlineFiles.where((s) => s.endsWith(episode.episodeFile)).firstOrNull;
