@@ -40,6 +40,7 @@ class EpisodeScreen extends StatelessWidget {
               ),
             ],
             child: ErrorHandler<EpisodesCubit, EpisodesState>(
+              showAsSnack: true,
               child: Column(
                 crossAxisAlignment: .stretch,
                 children: [

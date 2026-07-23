@@ -67,6 +67,7 @@ class PodcastScreen extends StatelessWidget {
 
                 var isLoading = state.loading || state.podcast == null || !colorInitialized;
                 return ErrorHandler<PodcastCubit, PodcastState>(
+                  showAsSnack: true,
                   child: AnimatedTheme(
                     duration: animationDuration,
                     data: Theme.of(context).copyWith(colorScheme: colorScheme),

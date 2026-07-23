@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
@@ -22,13 +23,22 @@ import 'package:podku_client/podku_client.dart';
 /// instead of using a global client object. This is just a simple example.
 
 Client get client => getIt.get<ServerCubit>().state.client!;
+InternetConnectionStatus get connectionStatus => getIt.get<ServerCubit>().state.status;
+bool get isOnline => connectionStatus == .connected || connectionStatus == .slow;
+
 late final GoRouter _router;
 final sessionId = Uuid().v4obj();
 
 void main() async {
-  Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  Logger.root.level = kDebugMode ? Level.FINEST : Level.INFO;
   Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
+    debugPrint('[${record.loggerName}] ${record.level.name}: ${record.time}: ${record.message}');
+    if (record.error != null) {
+      debugPrint('Error: ${record.error}');
+    }
+    if (record.stackTrace != null) {
+      debugPrintStack(stackTrace: record.stackTrace);
+    }
   });
 
   WidgetsFlutterBinding.ensureInitialized();

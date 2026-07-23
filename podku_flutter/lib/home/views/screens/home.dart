@@ -54,6 +54,7 @@ class HomeScreen extends StatelessWidget {
         body: BlocBuilder<ServerCubit, ServerState>(
           builder: (context, state) {
             return ErrorHandler<PodcastsCubit, PodcastState>(
+              showAsSnack: true,
               child: SafeArea(
                 child: state.client == null
                     ? Center(child: LoadingIndicator())

@@ -204,6 +204,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logging out of the server will delete all the locally downloaded podcast episodes'**
   String get loggingOutText;
+
+  /// No description provided for @offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline mode'**
+  String get offline;
+
+  /// No description provided for @play.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get play;
+
+  /// No description provided for @markAsPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as played'**
+  String get markAsPlayed;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

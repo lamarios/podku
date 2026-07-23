@@ -72,4 +72,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loggingOutText => 'Logging out of the server will delete all the locally downloaded podcast episodes';
+
+  @override
+  String get offline => 'Offline mode';
+
+  @override
+  String get play => 'Play';
+
+  @override
+  String get markAsPlayed => 'Mark as played';
+
+  @override
+  String get download => 'Download';
 }

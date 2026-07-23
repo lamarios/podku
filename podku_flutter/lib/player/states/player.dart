@@ -85,7 +85,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         return;
       }
 
-      _log.fine('Playing episode: $episode');
+      _log.fine('Playing episode: ${episode.title}, offline? $offline');
 
       emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true));
       var backendEpisode = !kIsWeb && offline ? episode : await client.episodes.getEpisode(episode.id);
@@ -110,7 +110,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
         await _player.playEpisode(episode);
         emit(state.copyWith(loading: false));
-        if (episode.podcast?.id.uuid != unsubbedPodcastUuid) {
+        if (!offline && episode.podcast?.id.uuid != unsubbedPodcastUuid) {
           await client.episodes.startPlayback(episode, sessionId);
         }
         await _player.play();
@@ -150,15 +150,17 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         await _updateProgressInner(episode, progress);
         await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
       });
-    } else {}
+    }
   }
 
   Future<void> _updateProgressInner(Episode episode, double progress) async {
     episode = episode.copyWith(progress: progress.clamp(0, 1));
-    try {
-      await client.episodes.setProgress(episode, sessionId);
-    } catch (e) {
-      _log.warning("Could not update episode progress", e);
+    if (isOnline) {
+      try {
+        await client.episodes.setProgress(episode, sessionId);
+      } catch (e) {
+        _log.warning("Could not update episode progress", e);
+      }
     }
 
     try {

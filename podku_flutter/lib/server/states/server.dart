@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
 import 'package:podku/main.dart';
 import 'package:podku/utils/models/with_error.dart';
@@ -20,6 +21,7 @@ class ServerCubit extends Cubit<ServerState> {
   final TextEditingController controller = TextEditingController();
   final StreamController<EpisodeProgress> playbackStream = StreamController.broadcast();
   StreamSubscription<EpisodeProgress>? _innerStream;
+  InternetConnectionChecker? connectionChecker;
 
   ServerCubit(super.initialState) {
     init();
@@ -42,7 +44,7 @@ class ServerCubit extends Cubit<ServerState> {
       }
     }
 
-    await setServerUrl(serverUrl);
+    await setServerUrl(serverUrl, testServer: false);
   }
 
   Future<Client?> waitForClientToBeSet() async {
@@ -59,7 +61,7 @@ class ServerCubit extends Cubit<ServerState> {
     }
   }
 
-  Future<bool> setServerUrl(String? serverUrl) async {
+  Future<bool> setServerUrl(String? serverUrl, {bool testServer = true}) async {
     emit(state.copyWith(loading: true));
     try {
       if (serverUrl != null && _urlRegex.hasMatch(serverUrl)) {
@@ -75,14 +77,23 @@ class ServerCubit extends Cubit<ServerState> {
         final client = Client('$serverUrl/api')..connectivityMonitor = FlutterConnectivityMonitor();
 
         try {
-          await client.podcast.getPodcasts();
-
+          if (testServer) {
+            await client.podcast.getPodcasts();
+          }
           emit(state.copyWith(client: client, serverUrl: serverUrl, initialized: true));
           _subscribeToStream(client);
+
+          connectionChecker = InternetConnectionChecker.createInstance(
+            addresses: [AddressCheckOption(uri: Uri.parse(serverUrl))],
+          );
+
+          connectionChecker?.onStatusChange.listen(onConnectionChange);
           return true;
         } catch (e, s) {
           _log.fine("could not connect to server $serverUrl", e);
           emit(state.copyWith(error: e, stackTrace: s, serverUrl: null, initialized: false));
+          connectionChecker?.dispose();
+          connectionChecker == null;
           return false;
         }
       } else {
@@ -92,10 +103,14 @@ class ServerCubit extends Cubit<ServerState> {
         await prefs.remove("serverUrl");
         emit(state.copyWith(client: null, serverUrl: null, initialized: false));
         // }
+        connectionChecker?.dispose();
+        connectionChecker == null;
         return false;
       }
     } catch (e) {
       print(e);
+      connectionChecker?.dispose();
+      connectionChecker == null;
       return false;
     } finally {
       emit(state.copyWith(loading: false));
@@ -103,6 +118,7 @@ class ServerCubit extends Cubit<ServerState> {
   }
 
   Future<void> _subscribeToStream(Client client) async {
+    _log.fine('Connection to backend websocket');
     _innerStream = client.episodes.playbackStream(sessionId).listen((event) {
       _log.fine('Received new stream event: $event');
       playbackStream.add(event);
@@ -110,7 +126,9 @@ class ServerCubit extends Cubit<ServerState> {
 
     _innerStream?.onError((error) {
       _log.severe('Disconnected from playback stream', error);
-      Future.delayed(Duration(seconds: 5), () => _subscribeToStream(client));
+      if (state.status != .disconnected) {
+        Future.delayed(Duration(seconds: 5), () => _subscribeToStream(client));
+      }
     });
   }
 
@@ -121,8 +139,18 @@ class ServerCubit extends Cubit<ServerState> {
   @override
   Future<void> close() {
     controller.dispose();
+    connectionChecker?.dispose();
     _disconnectFromStream();
     return super.close();
+  }
+
+  void onConnectionChange(InternetConnectionStatus event) {
+    if (event == .disconnected) {
+      _disconnectFromStream();
+    } else {
+      _subscribeToStream(state.client!);
+    }
+    emit(state.copyWith(status: event));
   }
 }
 
@@ -136,6 +164,7 @@ sealed class ServerState with _$ServerState implements WithError {
     StackTrace? stackTrace,
     @Default(false) bool loading,
     dynamic error,
+    @Default(InternetConnectionStatus.connected) InternetConnectionStatus status,
   }) = _ServerState;
 
   const ServerState._();

@@ -28,6 +28,7 @@ class ServerSetupScreen extends StatelessWidget {
             ),
             child: SafeArea(
               child: ErrorHandler<ServerCubit, ServerState>(
+                showAsSnack: true,
                 child: BlocBuilder<ServerCubit, ServerState>(
                   builder: (context, state) {
                     final cubit = context.read<ServerCubit>();
