@@ -22,7 +22,7 @@ class PlayerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final isMobile = BreakPoint.get(context) == .mobile;
+    final isMobile = BreakPoint.get(context) == .mobile || BreakPoint.get(context) == .tablet;
     final colors = Theme.of(context).colorScheme;
     final brightness = Theme.brightnessOf(context);
     return Builder(
@@ -94,10 +94,10 @@ class PlayerWrapper extends StatelessWidget {
 
                           return SingleMotionBuilder(
                             motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                            value: showMiniPlayer ? offlinePadding : -MiniPlayer.playerSize - offlinePadding,
+                            value: showMiniPlayer ? offlinePadding : -1000,
                             from: 0,
                             builder: (context, value, child) {
-                              return value <= -MiniPlayer.playerSize - offlinePadding
+                              return value < -900
                                   ? SizedBox.shrink()
                                   : Positioned(
                                       left: 0,

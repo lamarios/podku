@@ -520,6 +520,9 @@
       <excludeFolder url="file://$MODULE_DIR$/podku_flutter/macos" />
       <excludeFolder url="file://$MODULE_DIR$/podku_flutter/web" />
       <excludeFolder url="file://$MODULE_DIR$/podku_flutter/windows" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

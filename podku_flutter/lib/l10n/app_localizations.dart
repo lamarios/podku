@@ -208,7 +208,7 @@ abstract class AppLocalizations {
   /// No description provided for @offline.
   ///
   /// In en, this message translates to:
-  /// **'Offline mode'**
+  /// **'Offline'**
   String get offline;
 
   /// No description provided for @play.

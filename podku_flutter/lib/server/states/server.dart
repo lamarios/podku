@@ -80,11 +80,15 @@ class ServerCubit extends Cubit<ServerState> {
           if (testServer) {
             await client.podcast.getPodcasts();
           }
-          emit(state.copyWith(client: client, serverUrl: serverUrl, initialized: true));
+          emit(state.copyWith(client: client, serverUrl: serverUrl, initialized: true, status: .connected));
           _subscribeToStream(client);
-
+          connectionChecker?.dispose();
           connectionChecker = InternetConnectionChecker.createInstance(
             addresses: [AddressCheckOption(uri: Uri.parse(serverUrl))],
+            slowConnectionConfig: SlowConnectionConfig(
+              enableToCheckForSlowConnection: true,
+              slowConnectionThreshold: Duration(seconds: 1),
+            ),
           );
 
           connectionChecker?.onStatusChange.listen(onConnectionChange);
@@ -97,14 +101,14 @@ class ServerCubit extends Cubit<ServerState> {
           return false;
         }
       } else {
+        connectionChecker?.dispose();
+        connectionChecker == null;
         _disconnectFromStream();
         // if (!kIsWeb) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove("serverUrl");
-        emit(state.copyWith(client: null, serverUrl: null, initialized: false));
+        emit(state.copyWith(status: .disconnected, client: null, serverUrl: null, initialized: false));
         // }
-        connectionChecker?.dispose();
-        connectionChecker == null;
         return false;
       }
     } catch (e) {

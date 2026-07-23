@@ -18,7 +18,7 @@
   "serverUrl": "Server URL",
   "loggingOut": "Logging out",
   "loggingOutText": "Logging out of the server will delete all the locally downloaded podcast episodes",
-  "offline": "Offline mode",
+  "offline": "Offline",
   "play": "Play",
   "markAsPlayed": "Mark as played",
   "download": "Download"

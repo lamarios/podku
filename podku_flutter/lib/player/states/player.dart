@@ -70,7 +70,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     _currentBreakPoint = BreakPoint.getFromSize((view.physicalSize / view.devicePixelRatio).width);
 
     // when we go from mobile to bigger, we need to switch to big player
-    if (oldBreakPoint != _currentBreakPoint && oldBreakPoint == .mobile && state.showMiniPlayer) {
+    if (oldBreakPoint != _currentBreakPoint &&
+        (oldBreakPoint == .mobile || oldBreakPoint == .tablet) &&
+        state.showMiniPlayer) {
       emit(state.copyWith(showBigPlayer: true, showMiniPlayer: false));
     }
 
