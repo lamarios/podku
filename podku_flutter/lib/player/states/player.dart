@@ -81,7 +81,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
 
-  Future<void> playEpisode(Episode episode, {bool offline = false}) async {
+  Future<void> playEpisode(Episode episode, {bool offline = false, Duration? initialPosition}) async {
     try {
       if (state.episode?.id == episode.id) {
         return;
@@ -110,7 +110,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         );
         await _player.stop();
 
-        await _player.playEpisode(episode);
+        await _player.playEpisode(episode, initialPosition: initialPosition);
         emit(state.copyWith(loading: false));
         if (!offline && episode.podcast?.id.uuid != unsubbedPodcastUuid) {
           await client.episodes.startPlayback(episode, sessionId);
@@ -133,6 +133,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void skip(int seconds) {
     _player.seek(state.position + Duration(seconds: seconds));
+  }
+
+  void seek(Duration duration) {
+    _player.seek(duration);
   }
 
   Future<void> onStateChanged(PlaybackState event) async {

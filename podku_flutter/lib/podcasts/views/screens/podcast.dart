@@ -15,6 +15,7 @@ import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
+import 'package:podku/utils/views/components/description.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
 import 'package:podku_client/podku_client.dart';
 
@@ -183,7 +184,7 @@ class _PodcastHeader extends SliverPersistentHeaderDelegate {
               Expanded(
                 child: Padding(
                   padding: .symmetric(horizontal: pu2),
-                  child: SingleChildScrollView(child: HtmlWidget(podcast.description!)),
+                  child: SingleChildScrollView(child: HtmlDescription(podcast: podcast, offline: false)),
                 ),
               ),
             ],

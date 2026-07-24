@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/player/states/player.dart';
@@ -11,6 +10,7 @@ import 'package:podku/podcasts/states/podcast_image_color.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/views/components/description.dart';
 
 const double _imageWidth = 200;
 
@@ -144,7 +144,7 @@ class BigPlayer extends StatelessWidget {
                                       child: SingleChildScrollView(
                                         child: Padding(
                                           padding: .all(pu4),
-                                          child: HtmlWidget(episode.description ?? ''),
+                                          child: HtmlDescription(episode: episode, offline: false),
                                         ),
                                       ),
                                     ),

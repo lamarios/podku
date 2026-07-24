@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
@@ -8,6 +7,7 @@ import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/views/components/description.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:stupid_simple_sheet/stupid_simple_sheet.dart';
 
@@ -78,7 +78,10 @@ class EpisodeSheet extends StatelessWidget {
               ConstrainedBox(
                 constraints: BoxConstraints(maxHeight: 400),
                 child: SingleChildScrollView(
-                  child: Padding(padding: .all(pu2), child: HtmlWidget(episode.description ?? '')),
+                  child: Padding(
+                    padding: .all(pu2),
+                    child: HtmlDescription(episode: episode, offline: offline),
+                  ),
                 ),
               ),
 

@@ -229,7 +229,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }
 
-  Future<void> playEpisode(Episode episode) async {
+  Future<void> playEpisode(Episode episode, {Duration? initialPosition}) async {
     playbackState.add(playbackState.value.copyWith(processingState: .loading));
 
     // we should try to get the latest version of the episode for up to date progress
@@ -251,7 +251,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     var audioProxyUrl = episode.audioProxyUrl;
 
-    final initialPosition = episode.durationSeconds == null
+    initialPosition ??= episode.durationSeconds == null
         ? Duration.zero
         : Duration(seconds: (episode.progress.clamp(0, 1) * episode.durationSeconds!).round());
 
