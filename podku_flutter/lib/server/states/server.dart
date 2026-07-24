@@ -17,7 +17,7 @@ part 'server.freezed.dart';
 final RegExp _urlRegex = RegExp(r'http.+');
 final _log = Logger('ServerCubit');
 
-class ServerCubit extends Cubit<ServerState> {
+class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   final TextEditingController controller = TextEditingController();
   final StreamController<EpisodeProgress> playbackStream = StreamController.broadcast();
   StreamSubscription<EpisodeProgress>? _innerStream;
@@ -25,6 +25,7 @@ class ServerCubit extends Cubit<ServerState> {
 
   ServerCubit(super.initialState) {
     init();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   Future<void> init() async {
@@ -82,39 +83,27 @@ class ServerCubit extends Cubit<ServerState> {
           }
           emit(state.copyWith(client: client, serverUrl: serverUrl, initialized: true, status: .connected));
           _subscribeToStream(client);
-          connectionChecker?.dispose();
-          connectionChecker = InternetConnectionChecker.createInstance(
-            addresses: [AddressCheckOption(uri: Uri.parse(serverUrl))],
-            slowConnectionConfig: SlowConnectionConfig(
-              enableToCheckForSlowConnection: true,
-              slowConnectionThreshold: Duration(seconds: 1),
-            ),
-          );
-
-          connectionChecker?.onStatusChange.listen(onConnectionChange);
+          _watchConnectionStatus(serverUrl);
           return true;
         } catch (e, s) {
           _log.fine("could not connect to server $serverUrl", e);
           emit(state.copyWith(error: e, stackTrace: s, serverUrl: null, initialized: false));
-          connectionChecker?.dispose();
-          connectionChecker == null;
+          _stopWatchConnectionStatus();
           return false;
         }
       } else {
-        connectionChecker?.dispose();
-        connectionChecker == null;
         _disconnectFromStream();
         // if (!kIsWeb) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove("serverUrl");
         emit(state.copyWith(status: .disconnected, client: null, serverUrl: null, initialized: false));
         // }
+        _stopWatchConnectionStatus();
         return false;
       }
-    } catch (e) {
-      print(e);
-      connectionChecker?.dispose();
-      connectionChecker == null;
+    } catch (e, s) {
+      _log.severe(e, s);
+      _stopWatchConnectionStatus();
       return false;
     } finally {
       emit(state.copyWith(loading: false));
@@ -141,10 +130,9 @@ class ServerCubit extends Cubit<ServerState> {
   }
 
   @override
-  Future<void> close() {
-    controller.dispose();
-    connectionChecker?.dispose();
-    _disconnectFromStream();
+  Future<void> close() async {
+    _stopWatchConnectionStatus();
+    await _disconnectFromStream();
     return super.close();
   }
 
@@ -155,6 +143,32 @@ class ServerCubit extends Cubit<ServerState> {
       _subscribeToStream(state.client!);
     }
     emit(state.copyWith(status: event));
+  }
+
+  void _watchConnectionStatus(String serverUrl) {
+    connectionChecker?.dispose();
+    connectionChecker = InternetConnectionChecker.createInstance(
+      addresses: [AddressCheckOption(uri: Uri.parse(serverUrl))],
+      slowConnectionConfig: SlowConnectionConfig(
+        enableToCheckForSlowConnection: true,
+        slowConnectionThreshold: Duration(seconds: 1),
+      ),
+    );
+    connectionChecker?.onStatusChange.listen(onConnectionChange);
+  }
+
+  void _stopWatchConnectionStatus() {
+    connectionChecker?.dispose();
+    connectionChecker = null;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) {
+    if (state.serverUrl != null && appState == AppLifecycleState.resumed) {
+      _watchConnectionStatus(state.serverUrl!);
+    } else {
+      _stopWatchConnectionStatus();
+    }
   }
 }
 

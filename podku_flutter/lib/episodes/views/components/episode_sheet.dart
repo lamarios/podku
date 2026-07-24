@@ -45,9 +45,16 @@ class EpisodeSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final locals = AppLocalizations.of(context)!;
+    final colors = Theme.of(context).colorScheme;
 
-    return Card(
+    return Container(
       margin: .all(pu4),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: .circular(pu6),
+        border: Border.all(color: colors.secondaryContainer.withValues(alpha: 0.75), width: 1),
+        boxShadow: [BoxShadow(color: colors.surface, spreadRadius: pu, blurRadius: pu4)],
+      ),
       child: Padding(
         padding: .all(pu2),
         child: Column(
