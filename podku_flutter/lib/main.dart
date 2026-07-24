@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:podku/player/states/player.dart';
 import 'package:podku/router.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/colors.dart';
 import 'package:podku_client/podku_client.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
@@ -77,29 +79,36 @@ class MyApp extends StatelessWidget {
     final tabTheme = TabBarThemeData(dividerColor: Colors.transparent);
     ColorScheme darkColorScheme = .fromSeed(seedColor: appColor, brightness: Brightness.dark);
     ColorScheme lightColorScheme = .fromSeed(seedColor: appColor);
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => getIt.get<ServerCubit>()),
-        BlocProvider(create: (context) => PlayerCubit(PlayerState())),
-        if (!kIsWeb) BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>()),
-      ],
-      child: MaterialApp.router(
-        routerConfig: _router,
-        debugShowCheckedModeBanner: kDebugMode,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        darkTheme: ThemeData(
-          colorScheme: darkColorScheme,
-          appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
-          tabBarTheme: tabTheme,
-        ),
-        themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
-        theme: ThemeData(
-          colorScheme: lightColorScheme,
-          appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
-          tabBarTheme: tabTheme,
-        ),
-      ),
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        darkColorScheme = darkDynamic?.copyWith(surface: darken(darkDynamic.surface, 0.3)) ?? darkColorScheme;
+        lightColorScheme = lightDynamic?.copyWith(surface: lighten(lightDynamic.surface, 0.3)) ?? lightColorScheme;
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => getIt.get<ServerCubit>()),
+            BlocProvider(create: (context) => PlayerCubit(PlayerState())),
+            if (!kIsWeb) BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>()),
+          ],
+
+          child: MaterialApp.router(
+            routerConfig: _router,
+            debugShowCheckedModeBanner: kDebugMode,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            darkTheme: ThemeData(
+              colorScheme: darkColorScheme,
+              appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
+              tabBarTheme: tabTheme,
+            ),
+            themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
+            theme: ThemeData(
+              colorScheme: lightColorScheme,
+              appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
+              tabBarTheme: tabTheme,
+            ),
+          ),
+        );
+      },
     );
   }
 }

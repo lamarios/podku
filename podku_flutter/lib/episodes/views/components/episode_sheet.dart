@@ -47,62 +47,65 @@ class EpisodeSheet extends StatelessWidget {
     final locals = AppLocalizations.of(context)!;
     final colors = Theme.of(context).colorScheme;
 
-    return Container(
-      margin: .all(pu4),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: .circular(pu6),
-        border: Border.all(color: colors.secondaryContainer.withValues(alpha: 0.75), width: 1),
-        boxShadow: [BoxShadow(color: colors.surface, spreadRadius: pu, blurRadius: pu4)],
-      ),
-      child: Padding(
-        padding: .all(pu2),
-        child: Column(
-          mainAxisSize: .min,
-          children: [
-            Row(
-              crossAxisAlignment: .center,
-              children: [
-                if (episode.podcast != null)
-                  PodcastImage(podcast: episode.podcast!, width: 30, height: 30, borderRadius: pu),
-                Gap(pu),
-                Expanded(
-                  child: Text(episode.title, maxLines: 1, overflow: .ellipsis, style: textTheme.titleMedium),
-                ),
-                IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.close)),
-              ],
-            ),
-
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 400),
-              child: SingleChildScrollView(
-                child: Padding(padding: .all(pu2), child: HtmlWidget(episode.description ?? '')),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: .all(pu4),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: .circular(pu6),
+          border: Border.all(color: colors.secondaryContainer.withValues(alpha: 0.75), width: 1),
+          boxShadow: [BoxShadow(color: colors.surface, spreadRadius: pu, blurRadius: pu4)],
+        ),
+        child: Padding(
+          padding: .all(pu2),
+          child: Column(
+            mainAxisSize: .min,
+            children: [
+              Row(
+                crossAxisAlignment: .center,
+                children: [
+                  if (episode.podcast != null)
+                    PodcastImage(podcast: episode.podcast!, width: 30, height: 30, borderRadius: pu),
+                  Gap(pu),
+                  Expanded(
+                    child: Text(episode.title, maxLines: 1, overflow: .ellipsis, style: textTheme.titleMedium),
+                  ),
+                  IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.close)),
+                ],
               ),
-            ),
 
-            Row(
-              mainAxisAlignment: .spaceAround,
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    context.read<PlayerCubit>().playEpisode(episode, offline: offline);
-                    Navigator.of(context).pop();
-                  },
-                  label: Text(locals.play),
-                  icon: Icon(Icons.play_arrow),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 400),
+                child: SingleChildScrollView(
+                  child: Padding(padding: .all(pu2), child: HtmlWidget(episode.description ?? '')),
                 ),
-                if (!offline)
+              ),
+
+              Row(
+                mainAxisAlignment: .spaceAround,
+                children: [
                   TextButton.icon(
                     onPressed: () {
-                      context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
+                      context.read<PlayerCubit>().playEpisode(episode, offline: offline);
                       Navigator.of(context).pop();
                     },
-                    label: Text(locals.download),
-                    icon: Icon(Icons.download),
+                    label: Text(locals.play),
+                    icon: Icon(Icons.play_arrow),
                   ),
-              ],
-            ),
-          ],
+                  if (!offline)
+                    TextButton.icon(
+                      onPressed: () {
+                        context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
+                        Navigator.of(context).pop();
+                      },
+                      label: Text(locals.download),
+                      icon: Icon(Icons.download),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
