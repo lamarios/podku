@@ -1,0 +1,10 @@
+class: Chapter
+table: episode_chapters
+fields:
+  id: UuidValue, defaultModel=random
+  startTime: double
+  title: String?
+  img: String?
+  toc: bool, default=true
+  endTime: double?
+  episode: Episode?, relation(name=episode_chapters, onDelete=cascade, optional)

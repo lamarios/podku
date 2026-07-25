@@ -12,7 +12,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../podcast/podcast.dart' as _i2;
-import 'package:podku_client/src/protocol/protocol.dart' as _i3;
+import '../episodes/chapter.dart' as _i3;
+import '../episodes/person.dart' as _i4;
+import '../episodes/episode_files.dart' as _i5;
+import '../episodes/episode_transcript.dart' as _i6;
+import 'package:podku_client/src/protocol/protocol.dart' as _i7;
 
 abstract class Episode implements _i1.SerializableModel {
   Episode._({
@@ -34,8 +38,14 @@ abstract class Episode implements _i1.SerializableModel {
     required this.podcastId,
     this.podcast,
     double? progress,
+    this.chapters,
+    this.people,
+    this.files,
+    this.transcript,
+    bool? processed,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       progress = progress ?? 0.0;
+       progress = progress ?? 0.0,
+       processed = processed ?? false;
 
   factory Episode({
     _i1.UuidValue? id,
@@ -56,6 +66,11 @@ abstract class Episode implements _i1.SerializableModel {
     required _i1.UuidValue podcastId,
     _i2.Podcast? podcast,
     double? progress,
+    List<_i3.Chapter>? chapters,
+    List<_i4.EpisodePerson>? people,
+    List<_i5.EpisodeFile>? files,
+    List<_i6.EpisodeTranscript>? transcript,
+    bool? processed,
   }) = _EpisodeImpl;
 
   factory Episode.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -82,10 +97,33 @@ abstract class Episode implements _i1.SerializableModel {
       ),
       podcast: jsonSerialization['podcast'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.Podcast>(
+          : _i7.Protocol().deserialize<_i2.Podcast>(
               jsonSerialization['podcast'],
             ),
       progress: (jsonSerialization['progress'] as num?)?.toDouble(),
+      chapters: jsonSerialization['chapters'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i3.Chapter>>(
+              jsonSerialization['chapters'],
+            ),
+      people: jsonSerialization['people'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i4.EpisodePerson>>(
+              jsonSerialization['people'],
+            ),
+      files: jsonSerialization['files'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i5.EpisodeFile>>(
+              jsonSerialization['files'],
+            ),
+      transcript: jsonSerialization['transcript'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i6.EpisodeTranscript>>(
+              jsonSerialization['transcript'],
+            ),
+      processed: jsonSerialization['processed'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['processed']),
     );
   }
 
@@ -126,6 +164,16 @@ abstract class Episode implements _i1.SerializableModel {
 
   double progress;
 
+  List<_i3.Chapter>? chapters;
+
+  List<_i4.EpisodePerson>? people;
+
+  List<_i5.EpisodeFile>? files;
+
+  List<_i6.EpisodeTranscript>? transcript;
+
+  bool processed;
+
   /// Returns a shallow copy of this [Episode]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -148,6 +196,11 @@ abstract class Episode implements _i1.SerializableModel {
     _i1.UuidValue? podcastId,
     _i2.Podcast? podcast,
     double? progress,
+    List<_i3.Chapter>? chapters,
+    List<_i4.EpisodePerson>? people,
+    List<_i5.EpisodeFile>? files,
+    List<_i6.EpisodeTranscript>? transcript,
+    bool? processed,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -171,6 +224,14 @@ abstract class Episode implements _i1.SerializableModel {
       'podcastId': podcastId.toJson(),
       if (podcast != null) 'podcast': podcast?.toJson(),
       'progress': progress,
+      if (chapters != null)
+        'chapters': chapters?.toJson(valueToJson: (v) => v.toJson()),
+      if (people != null)
+        'people': people?.toJson(valueToJson: (v) => v.toJson()),
+      if (files != null) 'files': files?.toJson(valueToJson: (v) => v.toJson()),
+      if (transcript != null)
+        'transcript': transcript?.toJson(valueToJson: (v) => v.toJson()),
+      'processed': processed,
     };
   }
 
@@ -202,6 +263,11 @@ class _EpisodeImpl extends Episode {
     required _i1.UuidValue podcastId,
     _i2.Podcast? podcast,
     double? progress,
+    List<_i3.Chapter>? chapters,
+    List<_i4.EpisodePerson>? people,
+    List<_i5.EpisodeFile>? files,
+    List<_i6.EpisodeTranscript>? transcript,
+    bool? processed,
   }) : super._(
          id: id,
          title: title,
@@ -221,6 +287,11 @@ class _EpisodeImpl extends Episode {
          podcastId: podcastId,
          podcast: podcast,
          progress: progress,
+         chapters: chapters,
+         people: people,
+         files: files,
+         transcript: transcript,
+         processed: processed,
        );
 
   /// Returns a shallow copy of this [Episode]
@@ -246,6 +317,11 @@ class _EpisodeImpl extends Episode {
     _i1.UuidValue? podcastId,
     Object? podcast = _Undefined,
     double? progress,
+    Object? chapters = _Undefined,
+    Object? people = _Undefined,
+    Object? files = _Undefined,
+    Object? transcript = _Undefined,
+    bool? processed,
   }) {
     return Episode(
       id: id ?? this.id,
@@ -270,6 +346,19 @@ class _EpisodeImpl extends Episode {
       podcastId: podcastId ?? this.podcastId,
       podcast: podcast is _i2.Podcast? ? podcast : this.podcast?.copyWith(),
       progress: progress ?? this.progress,
+      chapters: chapters is List<_i3.Chapter>?
+          ? chapters
+          : this.chapters?.map((e0) => e0.copyWith()).toList(),
+      people: people is List<_i4.EpisodePerson>?
+          ? people
+          : this.people?.map((e0) => e0.copyWith()).toList(),
+      files: files is List<_i5.EpisodeFile>?
+          ? files
+          : this.files?.map((e0) => e0.copyWith()).toList(),
+      transcript: transcript is List<_i6.EpisodeTranscript>?
+          ? transcript
+          : this.transcript?.map((e0) => e0.copyWith()).toList(),
+      processed: processed ?? this.processed,
     );
   }
 }

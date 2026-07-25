@@ -18,6 +18,11 @@ fields:
   link: String?
   podcast: Podcast?, relation(name=podcast_episodes, onDelete=cascade)
   progress: double, default=0.000
+  chapters: List<Chapter>?, relation(name=episode_chapters)
+  people: List<EpisodePerson>?, relation(name=episode_people)
+  files: List<EpisodeFile>?, relation(name=episode_files)
+  transcript: List<EpisodeTranscript>?, relation(name=episode_transcript)
+  processed: bool, default=false
 indexes:
   timeIndex:
     fields: pubDateMillis

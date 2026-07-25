@@ -148,7 +148,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   void _watchConnectionStatus(String serverUrl) {
     connectionChecker?.dispose();
     connectionChecker = InternetConnectionChecker.createInstance(
-      addresses: [AddressCheckOption(uri: Uri.parse(serverUrl))],
+      addresses: [AddressCheckOption(uri: Uri.parse('$serverUrl/ping'))],
       slowConnectionConfig: SlowConnectionConfig(
         enableToCheckForSlowConnection: true,
         slowConnectionThreshold: Duration(seconds: 1),

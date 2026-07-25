@@ -9,3 +9,4 @@ fields:
   author: String?
   link: String?
   episodes: List<Episode>?, relation(name=podcast_episodes)
+  people: List<PodcastPerson>?, relation(name=podcast_people)

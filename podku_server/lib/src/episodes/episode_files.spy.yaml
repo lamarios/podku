@@ -1,0 +1,10 @@
+class: EpisodeFile
+table: episode_files
+fields:
+  id: UuidValue, defaultModel=random,
+  type: EpisodeFileType
+  mime: String?
+  url: String
+  language: String?
+  rel: String?
+  episode: Episode?, relation(name=episode_files, onDelete=cascade)

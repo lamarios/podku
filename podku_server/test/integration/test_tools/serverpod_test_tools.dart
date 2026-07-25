@@ -160,6 +160,8 @@ class _InternalTestEndpoints extends TestEndpoints
 }
 
 class _FutureCalls {
+  late final episodePostProcess = _EpisodePostProcessFutureCall();
+
   late final podcastRefresh = _PodcastRefreshFutureCall();
 }
 
@@ -535,6 +537,52 @@ class _PodcastEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+}
+
+class _EpisodePostProcessFutureCall {
+  Future<void> processEpisodesCron(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
+        .internalBuild();
+    try {
+      await _i8.EpisodePostProcessProcessEpisodesCronFutureCall().invoke(
+        _localUniqueSession,
+        null,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
+  }
+
+  Future<void> processPodcast(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.Podcast podcast,
+  ) async {
+    var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
+        .internalBuild();
+    try {
+      await _i8.EpisodePostProcessProcessPodcastFutureCall().invoke(
+        _localUniqueSession,
+        podcast,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
+  }
+
+  Future<void> processEpisodes(_i1.TestSessionBuilder sessionBuilder) async {
+    var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
+        .internalBuild();
+    try {
+      await _i8.EpisodePostProcessProcessEpisodesFutureCall().invoke(
+        _localUniqueSession,
+        null,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
   }
 }
 

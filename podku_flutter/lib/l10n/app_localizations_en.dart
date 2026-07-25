@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscribed => 'Subscribed';
 
   @override
-  String get unsubscribe => 'Unsubscribed';
+  String get unsubscribe => 'Unsubscribe';
 
   @override
   String get downloads => 'Downloads';

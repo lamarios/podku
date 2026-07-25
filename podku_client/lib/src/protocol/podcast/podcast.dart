@@ -12,7 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../podcast/episode.dart' as _i2;
-import 'package:podku_client/src/protocol/protocol.dart' as _i3;
+import '../podcast/person.dart' as _i3;
+import 'package:podku_client/src/protocol/protocol.dart' as _i4;
 
 abstract class Podcast implements _i1.SerializableModel {
   Podcast._({
@@ -24,6 +25,7 @@ abstract class Podcast implements _i1.SerializableModel {
     this.author,
     this.link,
     this.episodes,
+    this.people,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
   factory Podcast({
@@ -35,6 +37,7 @@ abstract class Podcast implements _i1.SerializableModel {
     String? author,
     String? link,
     List<_i2.Episode>? episodes,
+    List<_i3.PodcastPerson>? people,
   }) = _PodcastImpl;
 
   factory Podcast.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -50,8 +53,13 @@ abstract class Podcast implements _i1.SerializableModel {
       link: jsonSerialization['link'] as String?,
       episodes: jsonSerialization['episodes'] == null
           ? null
-          : _i3.Protocol().deserialize<List<_i2.Episode>>(
+          : _i4.Protocol().deserialize<List<_i2.Episode>>(
               jsonSerialization['episodes'],
+            ),
+      people: jsonSerialization['people'] == null
+          ? null
+          : _i4.Protocol().deserialize<List<_i3.PodcastPerson>>(
+              jsonSerialization['people'],
             ),
     );
   }
@@ -73,6 +81,8 @@ abstract class Podcast implements _i1.SerializableModel {
 
   List<_i2.Episode>? episodes;
 
+  List<_i3.PodcastPerson>? people;
+
   /// Returns a shallow copy of this [Podcast]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -85,6 +95,7 @@ abstract class Podcast implements _i1.SerializableModel {
     String? author,
     String? link,
     List<_i2.Episode>? episodes,
+    List<_i3.PodcastPerson>? people,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -99,6 +110,8 @@ abstract class Podcast implements _i1.SerializableModel {
       if (link != null) 'link': link,
       if (episodes != null)
         'episodes': episodes?.toJson(valueToJson: (v) => v.toJson()),
+      if (people != null)
+        'people': people?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -120,6 +133,7 @@ class _PodcastImpl extends Podcast {
     String? author,
     String? link,
     List<_i2.Episode>? episodes,
+    List<_i3.PodcastPerson>? people,
   }) : super._(
          id: id,
          url: url,
@@ -129,6 +143,7 @@ class _PodcastImpl extends Podcast {
          author: author,
          link: link,
          episodes: episodes,
+         people: people,
        );
 
   /// Returns a shallow copy of this [Podcast]
@@ -144,6 +159,7 @@ class _PodcastImpl extends Podcast {
     Object? author = _Undefined,
     Object? link = _Undefined,
     Object? episodes = _Undefined,
+    Object? people = _Undefined,
   }) {
     return Podcast(
       id: id ?? this.id,
@@ -156,6 +172,9 @@ class _PodcastImpl extends Podcast {
       episodes: episodes is List<_i2.Episode>?
           ? episodes
           : this.episodes?.map((e0) => e0.copyWith()).toList(),
+      people: people is List<_i3.PodcastPerson>?
+          ? people
+          : this.people?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

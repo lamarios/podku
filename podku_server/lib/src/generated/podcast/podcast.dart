@@ -13,7 +13,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../podcast/episode.dart' as _i2;
-import 'package:podku_server/src/generated/protocol.dart' as _i3;
+import '../podcast/person.dart' as _i3;
+import 'package:podku_server/src/generated/protocol.dart' as _i4;
 
 abstract class Podcast
     implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
@@ -26,6 +27,7 @@ abstract class Podcast
     this.author,
     this.link,
     this.episodes,
+    this.people,
   }) : id = id ?? const _i1.Uuid().v4obj();
 
   factory Podcast({
@@ -37,6 +39,7 @@ abstract class Podcast
     String? author,
     String? link,
     List<_i2.Episode>? episodes,
+    List<_i3.PodcastPerson>? people,
   }) = _PodcastImpl;
 
   factory Podcast.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -52,8 +55,13 @@ abstract class Podcast
       link: jsonSerialization['link'] as String?,
       episodes: jsonSerialization['episodes'] == null
           ? null
-          : _i3.Protocol().deserialize<List<_i2.Episode>>(
+          : _i4.Protocol().deserialize<List<_i2.Episode>>(
               jsonSerialization['episodes'],
+            ),
+      people: jsonSerialization['people'] == null
+          ? null
+          : _i4.Protocol().deserialize<List<_i3.PodcastPerson>>(
+              jsonSerialization['people'],
             ),
     );
   }
@@ -79,6 +87,8 @@ abstract class Podcast
 
   List<_i2.Episode>? episodes;
 
+  List<_i3.PodcastPerson>? people;
+
   @override
   _i1.Table<_i1.UuidValue> get table => t;
 
@@ -94,6 +104,7 @@ abstract class Podcast
     String? author,
     String? link,
     List<_i2.Episode>? episodes,
+    List<_i3.PodcastPerson>? people,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -108,6 +119,8 @@ abstract class Podcast
       if (link != null) 'link': link,
       if (episodes != null)
         'episodes': episodes?.toJson(valueToJson: (v) => v.toJson()),
+      if (people != null)
+        'people': people?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -124,11 +137,19 @@ abstract class Podcast
       if (link != null) 'link': link,
       if (episodes != null)
         'episodes': episodes?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (people != null)
+        'people': people?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static PodcastInclude include({_i2.EpisodeIncludeList? episodes}) {
-    return PodcastInclude._(episodes: episodes);
+  static PodcastInclude include({
+    _i2.EpisodeIncludeList? episodes,
+    _i3.PodcastPersonIncludeList? people,
+  }) {
+    return PodcastInclude._(
+      episodes: episodes,
+      people: people,
+    );
   }
 
   static PodcastIncludeList includeList({
@@ -169,6 +190,7 @@ class _PodcastImpl extends Podcast {
     String? author,
     String? link,
     List<_i2.Episode>? episodes,
+    List<_i3.PodcastPerson>? people,
   }) : super._(
          id: id,
          url: url,
@@ -178,6 +200,7 @@ class _PodcastImpl extends Podcast {
          author: author,
          link: link,
          episodes: episodes,
+         people: people,
        );
 
   /// Returns a shallow copy of this [Podcast]
@@ -193,6 +216,7 @@ class _PodcastImpl extends Podcast {
     Object? author = _Undefined,
     Object? link = _Undefined,
     Object? episodes = _Undefined,
+    Object? people = _Undefined,
   }) {
     return Podcast(
       id: id ?? this.id,
@@ -205,6 +229,9 @@ class _PodcastImpl extends Podcast {
       episodes: episodes is List<_i2.Episode>?
           ? episodes
           : this.episodes?.map((e0) => e0.copyWith()).toList(),
+      people: people is List<_i3.PodcastPerson>?
+          ? people
+          : this.people?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -290,6 +317,10 @@ class PodcastTable extends _i1.Table<_i1.UuidValue> {
 
   _i1.ManyRelation<_i2.EpisodeTable>? _episodes;
 
+  _i3.PodcastPersonTable? ___people;
+
+  _i1.ManyRelation<_i3.PodcastPersonTable>? _people;
+
   _i2.EpisodeTable get __episodes {
     if (___episodes != null) return ___episodes!;
     ___episodes = _i1.createRelationTable(
@@ -301,6 +332,19 @@ class PodcastTable extends _i1.Table<_i1.UuidValue> {
           _i2.EpisodeTable(tableRelation: foreignTableRelation),
     );
     return ___episodes!;
+  }
+
+  _i3.PodcastPersonTable get __people {
+    if (___people != null) return ___people!;
+    ___people = _i1.createRelationTable(
+      relationFieldName: '__people',
+      field: Podcast.t.id,
+      foreignField: _i3.PodcastPerson.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.PodcastPersonTable(tableRelation: foreignTableRelation),
+    );
+    return ___people!;
   }
 
   _i1.ManyRelation<_i2.EpisodeTable> get episodes {
@@ -322,6 +366,25 @@ class PodcastTable extends _i1.Table<_i1.UuidValue> {
     return _episodes!;
   }
 
+  _i1.ManyRelation<_i3.PodcastPersonTable> get people {
+    if (_people != null) return _people!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'people',
+      field: Podcast.t.id,
+      foreignField: _i3.PodcastPerson.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.PodcastPersonTable(tableRelation: foreignTableRelation),
+    );
+    _people = _i1.ManyRelation<_i3.PodcastPersonTable>(
+      tableWithRelations: relationTable,
+      table: _i3.PodcastPersonTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _people!;
+  }
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -338,19 +401,31 @@ class PodcastTable extends _i1.Table<_i1.UuidValue> {
     if (relationField == 'episodes') {
       return __episodes;
     }
+    if (relationField == 'people') {
+      return __people;
+    }
     return null;
   }
 }
 
 class PodcastInclude extends _i1.IncludeObject {
-  PodcastInclude._({_i2.EpisodeIncludeList? episodes}) {
+  PodcastInclude._({
+    _i2.EpisodeIncludeList? episodes,
+    _i3.PodcastPersonIncludeList? people,
+  }) {
     _episodes = episodes;
+    _people = people;
   }
 
   _i2.EpisodeIncludeList? _episodes;
 
+  _i3.PodcastPersonIncludeList? _people;
+
   @override
-  Map<String, _i1.Include?> get includes => {'episodes': _episodes};
+  Map<String, _i1.Include?> get includes => {
+    'episodes': _episodes,
+    'people': _people,
+  };
 
   @override
   _i1.Table<_i1.UuidValue> get table => Podcast.t;
@@ -700,6 +775,31 @@ class PodcastAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [Podcast] and the given [PodcastPerson]s
+  /// by setting each [PodcastPerson]'s foreign key `episodeId` to refer to this [Podcast].
+  Future<void> people(
+    _i1.DatabaseSession session,
+    Podcast podcast,
+    List<_i3.PodcastPerson> podcastPerson, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (podcastPerson.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('podcastPerson.id');
+    }
+    if (podcast.id == null) {
+      throw ArgumentError.notNull('podcast.id');
+    }
+
+    var $podcastPerson = podcastPerson
+        .map((e) => e.copyWith(episodeId: podcast.id))
+        .toList();
+    await session.db.update<_i3.PodcastPerson>(
+      $podcastPerson,
+      columns: [_i3.PodcastPerson.t.episodeId],
+      transaction: transaction,
+    );
+  }
 }
 
 class PodcastAttachRowRepository {
@@ -724,6 +824,29 @@ class PodcastAttachRowRepository {
     await session.db.updateRow<_i2.Episode>(
       $episode,
       columns: [_i2.Episode.t.podcastId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Podcast] and the given [PodcastPerson]
+  /// by setting the [PodcastPerson]'s foreign key `episodeId` to refer to this [Podcast].
+  Future<void> people(
+    _i1.DatabaseSession session,
+    Podcast podcast,
+    _i3.PodcastPerson podcastPerson, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (podcastPerson.id == null) {
+      throw ArgumentError.notNull('podcastPerson.id');
+    }
+    if (podcast.id == null) {
+      throw ArgumentError.notNull('podcast.id');
+    }
+
+    var $podcastPerson = podcastPerson.copyWith(episodeId: podcast.id);
+    await session.db.updateRow<_i3.PodcastPerson>(
+      $podcastPerson,
+      columns: [_i3.PodcastPerson.t.episodeId],
       transaction: transaction,
     );
   }

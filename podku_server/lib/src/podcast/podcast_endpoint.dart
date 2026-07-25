@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:podku_server/src/generated/endpoints.dart';
 import 'package:podku_server/src/podcast/podcast_parser.dart';
 import 'package:podku_server/src/podcast/search/search.dart';
 import 'package:podku_shared/podku_shared.dart';
@@ -28,7 +31,13 @@ class PodcastEndpoint extends Endpoint {
       await Podcast.db.insertRow(session, podcast);
       if (podcast.episodes != null) {
         await Episode.db.insert(session, podcast.episodes!);
+        for (var e in podcast.episodes!) {
+          await EpisodeFile.db.insert(session, e.files ?? []);
+          await EpisodePerson.db.insert(session, e.people ?? []);
+        }
       }
+
+      unawaited(Serverpod.instance.futureCalls.callWithDelay(Duration.zero).episodePostProcess.processPodcast(podcast));
 
       return podcast;
     } else {

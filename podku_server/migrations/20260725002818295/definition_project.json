@@ -1,0 +1,756 @@
+{
+  "__className__": "serverpod.DatabaseDefinition",
+  "moduleName": "podku",
+  "tables": [
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "episode_chapters",
+      "dartName": "Chapter",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "startTime",
+          "columnType": 3,
+          "isNullable": false,
+          "dartType": "double"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "title",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "img",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "toc",
+          "columnType": 1,
+          "isNullable": false,
+          "columnDefault": "true",
+          "dartType": "bool"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "endTime",
+          "columnType": 3,
+          "isNullable": true,
+          "dartType": "double?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeId",
+          "columnType": 7,
+          "isNullable": true,
+          "dartType": "UuidValue?"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "__className__": "serverpod.ForeignKeyDefinition",
+          "constraintName": "episode_chapters_fk_0",
+          "columns": [
+            "episodeId"
+          ],
+          "referenceTable": "episodes",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "episode_chapters_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "episode_files",
+      "dartName": "EpisodeFile",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "type",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "protocol:EpisodeFileType"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "mime",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "url",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "language",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "rel",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "__className__": "serverpod.ForeignKeyDefinition",
+          "constraintName": "episode_files_fk_0",
+          "columns": [
+            "episodeId"
+          ],
+          "referenceTable": "episodes",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "episode_files_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "episode_people",
+      "dartName": "EpisodePerson",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "name",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "role",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "group",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "image",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "link",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "__className__": "serverpod.ForeignKeyDefinition",
+          "constraintName": "episode_people_fk_0",
+          "columns": [
+            "episodeId"
+          ],
+          "referenceTable": "episodes",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "episode_people_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "episode_transcripts",
+      "dartName": "EpisodeTranscript",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "startTime",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "endTime",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "speaker",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "content",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "language",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "__className__": "serverpod.ForeignKeyDefinition",
+          "constraintName": "episode_transcripts_fk_0",
+          "columns": [
+            "episodeId"
+          ],
+          "referenceTable": "episodes",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "episode_transcripts_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        },
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "episode_language_idx",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "language"
+            },
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "episodeId"
+            }
+          ],
+          "type": "btree",
+          "isUnique": false,
+          "isPrimary": false
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "episodes",
+      "dartName": "Episode",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "title",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "description",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "audioUrl",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "audioType",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "audioLengthBytes",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "pubDateMillis",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "durationSeconds",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "guid",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "imageUrl",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "seasonNumber",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeNumber",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeType",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "explicit",
+          "columnType": 1,
+          "isNullable": false,
+          "dartType": "bool"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "link",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "podcastId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "progress",
+          "columnType": 3,
+          "isNullable": false,
+          "columnDefault": "0.000",
+          "dartType": "double"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "processed",
+          "columnType": 1,
+          "isNullable": false,
+          "columnDefault": "false",
+          "dartType": "bool"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "__className__": "serverpod.ForeignKeyDefinition",
+          "constraintName": "episodes_fk_0",
+          "columns": [
+            "podcastId"
+          ],
+          "referenceTable": "podcasts",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "episodes_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        },
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "timeIndex",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "pubDateMillis"
+            }
+          ],
+          "type": "btree",
+          "isUnique": false,
+          "isPrimary": false
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "podcast_people",
+      "dartName": "PodcastPerson",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "name",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "role",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "group",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "image",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "link",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "episodeId",
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "__className__": "serverpod.ForeignKeyDefinition",
+          "constraintName": "podcast_people_fk_0",
+          "columns": [
+            "episodeId"
+          ],
+          "referenceTable": "podcasts",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 4
+        }
+      ],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "podcast_people_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    },
+    {
+      "__className__": "serverpod.TableDefinition",
+      "name": "podcasts",
+      "dartName": "Podcast",
+      "module": "podku",
+      "schema": "public",
+      "columns": [
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "id",
+          "columnType": 7,
+          "isNullable": false,
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "url",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "name",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "artworkUrl",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "description",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "author",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "__className__": "serverpod.ColumnDefinition",
+          "name": "link",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        }
+      ],
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "__className__": "serverpod.IndexDefinition",
+          "indexName": "podcasts_pkey",
+          "elements": [
+            {
+              "__className__": "serverpod.IndexElementDefinition",
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    }
+  ],
+  "installedModules": [
+    {
+      "__className__": "serverpod.DatabaseMigrationVersion",
+      "module": "serverpod",
+      "version": "20260129180959368"
+    }
+  ],
+  "migrationApiVersion": 1
+}

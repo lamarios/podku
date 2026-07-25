@@ -11,8 +11,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'dart:async' as _i2;
-import '../podcast/podcast_refresh.dart' as _i3;
+import 'package:podku_server/src/generated/podcast/podcast.dart' as _i2;
+import 'dart:async' as _i3;
+import '../episodes/episode_post_process.dart' as _i4;
+import '../podcast/podcast_refresh.dart' as _i5;
 
 /// Invokes a future call.
 typedef _InvokeFutureCall =
@@ -56,6 +58,12 @@ class FutureCalls extends _i1.FutureCallDispatch<_FutureCallRef> {
     String serverId,
   ) {
     var registeredFutureCalls = <String, _i1.FutureCall>{
+      'EpisodePostProcessProcessEpisodesCronFutureCall':
+          EpisodePostProcessProcessEpisodesCronFutureCall(),
+      'EpisodePostProcessProcessPodcastFutureCall':
+          EpisodePostProcessProcessPodcastFutureCall(),
+      'EpisodePostProcessProcessEpisodesFutureCall':
+          EpisodePostProcessProcessEpisodesFutureCall(),
       'PodcastRefreshRefreshPodcastsFutureCall':
           PodcastRefreshRefreshPodcastsFutureCall(),
     };
@@ -113,9 +121,40 @@ class _FutureCallRef {
 
   final _InvokeFutureCall _invokeFutureCall;
 
+  late final episodePostProcess = _EpisodePostProcessFutureCallDispatcher(
+    _invokeFutureCall,
+  );
+
   late final podcastRefresh = _PodcastRefreshFutureCallDispatcher(
     _invokeFutureCall,
   );
+}
+
+class _EpisodePostProcessFutureCallDispatcher {
+  _EpisodePostProcessFutureCallDispatcher(this._invokeFutureCall);
+
+  final _InvokeFutureCall _invokeFutureCall;
+
+  Future<void> processEpisodesCron() {
+    return _invokeFutureCall(
+      'EpisodePostProcessProcessEpisodesCronFutureCall',
+      null,
+    );
+  }
+
+  Future<void> processPodcast(_i2.Podcast podcast) {
+    return _invokeFutureCall(
+      'EpisodePostProcessProcessPodcastFutureCall',
+      podcast,
+    );
+  }
+
+  Future<void> processEpisodes() {
+    return _invokeFutureCall(
+      'EpisodePostProcessProcessEpisodesFutureCall',
+      null,
+    );
+  }
 }
 
 class _PodcastRefreshFutureCallDispatcher {
@@ -131,12 +170,46 @@ class _PodcastRefreshFutureCallDispatcher {
   }
 }
 
-class PodcastRefreshRefreshPodcastsFutureCall extends _i1.FutureCall {
+class EpisodePostProcessProcessEpisodesCronFutureCall extends _i1.FutureCall {
   @override
-  _i2.Future<void> invoke(
+  _i3.Future<void> invoke(
     _i1.Session session,
     _i1.SerializableModel? object,
   ) async {
-    await _i3.PodcastRefresh().refreshPodcasts(session);
+    await _i4.EpisodePostProcess().processEpisodesCron(session);
+  }
+}
+
+class EpisodePostProcessProcessPodcastFutureCall
+    extends _i1.FutureCall<_i2.Podcast> {
+  @override
+  _i3.Future<void> invoke(
+    _i1.Session session,
+    _i2.Podcast? podcast,
+  ) async {
+    await _i4.EpisodePostProcess().processPodcast(
+      session,
+      podcast!,
+    );
+  }
+}
+
+class EpisodePostProcessProcessEpisodesFutureCall extends _i1.FutureCall {
+  @override
+  _i3.Future<void> invoke(
+    _i1.Session session,
+    _i1.SerializableModel? object,
+  ) async {
+    await _i4.EpisodePostProcess().processEpisodes(session);
+  }
+}
+
+class PodcastRefreshRefreshPodcastsFutureCall extends _i1.FutureCall {
+  @override
+  _i3.Future<void> invoke(
+    _i1.Session session,
+    _i1.SerializableModel? object,
+  ) async {
+    await _i5.PodcastRefresh().refreshPodcasts(session);
   }
 }

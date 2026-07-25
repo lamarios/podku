@@ -130,7 +130,7 @@ abstract class AppLocalizations {
   /// No description provided for @unsubscribe.
   ///
   /// In en, this message translates to:
-  /// **'Unsubscribed'**
+  /// **'Unsubscribe'**
   String get unsubscribe;
 
   /// No description provided for @downloads.

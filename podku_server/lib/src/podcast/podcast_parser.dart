@@ -1,4 +1,6 @@
 import 'package:http/http.dart' as http;
+import 'package:podku_server/src/generated/episodes/episode_files.dart';
+import 'package:podku_server/src/generated/episodes/person.dart';
 import 'package:podku_server/src/generated/podcast/podcast.dart';
 import 'package:xml/xml.dart';
 
@@ -13,9 +15,7 @@ class PodcastFeedParser {
     final httpClient = http.Client();
     final response = await httpClient.get(Uri.parse(podcast.url));
     if (response.statusCode != 200) {
-      throw PodcastFeedException(
-        'Failed to fetch feed at ${podcast.url} (status ${response.statusCode})',
-      );
+      throw PodcastFeedException('Failed to fetch feed at ${podcast.url} (status ${response.statusCode})');
     }
     return parse(podcast, response.body);
   }
@@ -25,7 +25,7 @@ class PodcastFeedParser {
     final document = XmlDocument.parse(xmlString);
     final channel = document.findAllElements('channel').first;
 
-    final episodes = channel.findElements('item').map((e) => _parseItem(podcast, e),).toList(growable: false);
+    final episodes = channel.findElements('item').map((e) => _parseItem(podcast, e)).toList(growable: false);
 
     return podcast.copyWith(
       name: _text(channel, 'title') ?? '',
@@ -40,7 +40,7 @@ class PodcastFeedParser {
   static Episode _parseItem(Podcast podcast, XmlElement item) {
     final enclosure = item.findElements('enclosure').firstOrNull;
 
-    return Episode(
+    var episode = Episode(
       title: _text(item, 'title') ?? 'Untitled episode',
       description: _text(item, 'description') ?? _itunesText(item, 'summary'),
       audioUrl: enclosure?.getAttribute('url'),
@@ -53,13 +53,65 @@ class PodcastFeedParser {
       seasonNumber: int.tryParse(_itunesText(item, 'season') ?? ''),
       episodeNumber: int.tryParse(_itunesText(item, 'episode') ?? ''),
       episodeType: _itunesText(item, 'episodeType'),
-      explicit: (_itunesText(item, 'explicit') ?? 'false').toLowerCase() == 'true' || (_itunesText(item, 'explicit') ?? '').toLowerCase() == 'yes',
+      explicit:
+          (_itunesText(item, 'explicit') ?? 'false').toLowerCase() == 'true' ||
+          (_itunesText(item, 'explicit') ?? '').toLowerCase() == 'yes',
       link: _text(item, 'link'),
-      podcastId: podcast.id
+      podcastId: podcast.id,
     );
+    return episode.copyWith(people: _getPeople(episode, item), files: _getFiles(episode, item));
   }
 
   // --- helpers ------------------------------------------------------
+
+  static List<EpisodePerson> _getPeople(Episode episode, XmlElement episodeRoot) {
+    return episodeRoot
+        .findElements('podcast:person')
+        .map(
+          (e) => EpisodePerson(
+            name: e.innerText,
+            episodeId: episode.id,
+            role: e.getAttribute('role'),
+            image: e.getAttribute('img'),
+            link: e.getAttribute('href'),
+            group: e.getAttribute("role"),
+          ),
+        )
+        .toList();
+  }
+
+  static List<EpisodeFile> _getFiles(Episode episode, XmlElement episodeRoot) {
+    List<EpisodeFile> files = [];
+    // we get transcripts and chapters
+    files.addAll(
+      episodeRoot
+          .findElements('podcast:transcript')
+          .map(
+            (e) => EpisodeFile(
+              type: .transcript,
+              language: e.getAttribute('language'),
+              rel: e.getAttribute('rel'),
+              mime: e.getAttribute('type') ?? '',
+              url: e.getAttribute('url') ?? '',
+              episodeId: episode.id,
+            ),
+          ),
+    );
+
+    files.addAll(
+      episodeRoot
+          .findElements('podcast:chapters')
+          .map(
+            (e) => EpisodeFile(
+              type: .chapters,
+              url: e.getAttribute('url') ?? '',
+              mime: e.getAttribute('type'),
+              episodeId: episode.id,
+            ),
+          ),
+    );
+    return files;
+  }
 
   static String? _text(XmlElement parent, String tag) {
     return parent.findElements(tag).firstOrNull?.innerText.trim();
@@ -84,16 +136,33 @@ class PodcastFeedParser {
   }
 
   static const _monthsByAbbr = {
-    'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
-    'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
+    'jan': 1,
+    'feb': 2,
+    'mar': 3,
+    'apr': 4,
+    'may': 5,
+    'jun': 6,
+    'jul': 7,
+    'aug': 8,
+    'sep': 9,
+    'oct': 10,
+    'nov': 11,
+    'dec': 12,
   };
 
   static const _namedTimezoneOffsetMinutes = {
-    'UT': 0, 'GMT': 0, 'UTC': 0, 'Z': 0,
-    'EST': -300, 'EDT': -240,
-    'CST': -360, 'CDT': -300,
-    'MST': -420, 'MDT': -360,
-    'PST': -480, 'PDT': -420,
+    'UT': 0,
+    'GMT': 0,
+    'UTC': 0,
+    'Z': 0,
+    'EST': -300,
+    'EDT': -240,
+    'CST': -360,
+    'CDT': -300,
+    'MST': -420,
+    'MDT': -360,
+    'PST': -480,
+    'PDT': -420,
   };
 
   /// Parses an RSS `pubDate` (RFC 822/2822, e.g.
@@ -119,17 +188,11 @@ class PodcastFeedParser {
     if (parts.length < 4) return null;
 
     final day = int.tryParse(parts[0]);
-    final month = _monthsByAbbr[parts[1].toLowerCase().substring(
-        0, parts[1].length >= 3 ? 3 : parts[1].length)];
+    final month = _monthsByAbbr[parts[1].toLowerCase().substring(0, parts[1].length >= 3 ? 3 : parts[1].length)];
     var year = int.tryParse(parts[2]);
-    final timeParts =
-    parts[3].split(':').map((p) => int.tryParse(p)).toList();
+    final timeParts = parts[3].split(':').map((p) => int.tryParse(p)).toList();
 
-    if (day == null ||
-        month == null ||
-        year == null ||
-        timeParts.length < 2 ||
-        timeParts.any((p) => p == null)) {
+    if (day == null || month == null || year == null || timeParts.length < 2 || timeParts.any((p) => p == null)) {
       return null;
     }
 
@@ -140,17 +203,16 @@ class PodcastFeedParser {
     final minute = timeParts[1]!;
     final second = timeParts.length > 2 ? timeParts[2]! : 0;
 
-    final offsetMinutes =
-    parts.length > 4 ? _parseTimezoneOffsetMinutes(parts[4]) : 0;
+    final offsetMinutes = parts.length > 4 ? _parseTimezoneOffsetMinutes(parts[4]) : 0;
 
     try {
-      final utc = DateTime.utc(year, month, day, hour, minute, second)
-          .subtract(Duration(minutes: offsetMinutes));
+      final utc = DateTime.utc(year, month, day, hour, minute, second).subtract(Duration(minutes: offsetMinutes));
       return utc.millisecondsSinceEpoch;
     } catch (_) {
       return null;
     }
   }
+
   static int _parseTimezoneOffsetMinutes(String tz) {
     if (tz.startsWith('+') || tz.startsWith('-')) {
       final sign = tz.startsWith('-') ? -1 : 1;

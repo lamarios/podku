@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:podku_server/reverse_proxy.dart';
 import 'package:podku_server/src/podcast/podcast_audio_route.dart';
 import 'package:podku_server/src/podcast/podcast_route.dart';
+import 'package:podku_server/src/utils/ping_route.dart';
 import 'package:serverpod/serverpod.dart';
 
 import 'src/generated/endpoints.dart';
@@ -40,6 +41,7 @@ void run(List<String> args) async {
   // pod.webServer.addRoute(RootRoute(), '/index.html');
   pod.webServer.addRoute(PodcastRoute(), '/podcasts/image');
   pod.webServer.addRoute(PodcastAudioRoute(), '/podcasts/audio');
+  pod.webServer.addRoute(PingRoute(), '/ping');
   // pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');
 
   // Serve all files in the web/static relative directory under /.
@@ -52,31 +54,17 @@ void run(List<String> args) async {
   // Setup the app config route.
   // We build this configuration based on the servers api url and serve it to
   // the flutter app.
-  pod.webServer.addRoute(
-    AppConfigRoute(apiConfig: pod.config.apiServer),
-    '/app/assets/assets/config.json',
-  );
+  pod.webServer.addRoute(AppConfigRoute(apiConfig: pod.config.apiServer), '/app/assets/assets/config.json');
 
   // Checks if the flutter web app has been built and serves it if it has.
   final appDir = Directory(Uri(path: 'web').toFilePath());
   if (appDir.existsSync()) {
     // Serve the flutter web app under the /app path.
-    pod.webServer.addRoute(
-      FlutterRoute(
-        Directory(
-          Uri(path: 'web').toFilePath(),
-        ),
-      ),
-      '/',
-    );
+    pod.webServer.addRoute(FlutterRoute(Directory(Uri(path: 'web').toFilePath())), '/');
   } else {
     // If the flutter web app has not been built, serve the build app page.
     pod.webServer.addRoute(
-      StaticRoute.file(
-        File(
-          Uri(path: 'web/pages/build_flutter_app.html').toFilePath(),
-        ),
-      ),
+      StaticRoute.file(File(Uri(path: 'web/pages/build_flutter_app.html').toFilePath())),
       '/app/**',
     );
   }
@@ -85,10 +73,9 @@ void run(List<String> args) async {
   await pod.start();
 
   // refresh podcasts job
-  await pod.futureCalls
-      .callWithDelay(Duration(seconds: 10))
-      .podcastRefresh
-      .refreshPodcasts();
+  await pod.futureCalls.callWithDelay(Duration(seconds: 10)).podcastRefresh.refreshPodcasts();
+
+  await pod.futureCalls.callWithDelay(Duration(seconds: 5)).episodePostProcess.processEpisodesCron();
 
   runZonedGuarded(
     () async {

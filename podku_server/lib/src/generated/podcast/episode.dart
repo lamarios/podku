@@ -13,7 +13,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../podcast/podcast.dart' as _i2;
-import 'package:podku_server/src/generated/protocol.dart' as _i3;
+import '../episodes/chapter.dart' as _i3;
+import '../episodes/person.dart' as _i4;
+import '../episodes/episode_files.dart' as _i5;
+import '../episodes/episode_transcript.dart' as _i6;
+import 'package:podku_server/src/generated/protocol.dart' as _i7;
 
 abstract class Episode
     implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
@@ -36,8 +40,14 @@ abstract class Episode
     required this.podcastId,
     this.podcast,
     double? progress,
+    this.chapters,
+    this.people,
+    this.files,
+    this.transcript,
+    bool? processed,
   }) : id = id ?? const _i1.Uuid().v4obj(),
-       progress = progress ?? 0.0;
+       progress = progress ?? 0.0,
+       processed = processed ?? false;
 
   factory Episode({
     _i1.UuidValue? id,
@@ -58,6 +68,11 @@ abstract class Episode
     required _i1.UuidValue podcastId,
     _i2.Podcast? podcast,
     double? progress,
+    List<_i3.Chapter>? chapters,
+    List<_i4.EpisodePerson>? people,
+    List<_i5.EpisodeFile>? files,
+    List<_i6.EpisodeTranscript>? transcript,
+    bool? processed,
   }) = _EpisodeImpl;
 
   factory Episode.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -84,10 +99,33 @@ abstract class Episode
       ),
       podcast: jsonSerialization['podcast'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.Podcast>(
+          : _i7.Protocol().deserialize<_i2.Podcast>(
               jsonSerialization['podcast'],
             ),
       progress: (jsonSerialization['progress'] as num?)?.toDouble(),
+      chapters: jsonSerialization['chapters'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i3.Chapter>>(
+              jsonSerialization['chapters'],
+            ),
+      people: jsonSerialization['people'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i4.EpisodePerson>>(
+              jsonSerialization['people'],
+            ),
+      files: jsonSerialization['files'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i5.EpisodeFile>>(
+              jsonSerialization['files'],
+            ),
+      transcript: jsonSerialization['transcript'] == null
+          ? null
+          : _i7.Protocol().deserialize<List<_i6.EpisodeTranscript>>(
+              jsonSerialization['transcript'],
+            ),
+      processed: jsonSerialization['processed'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['processed']),
     );
   }
 
@@ -132,6 +170,16 @@ abstract class Episode
 
   double progress;
 
+  List<_i3.Chapter>? chapters;
+
+  List<_i4.EpisodePerson>? people;
+
+  List<_i5.EpisodeFile>? files;
+
+  List<_i6.EpisodeTranscript>? transcript;
+
+  bool processed;
+
   @override
   _i1.Table<_i1.UuidValue> get table => t;
 
@@ -157,6 +205,11 @@ abstract class Episode
     _i1.UuidValue? podcastId,
     _i2.Podcast? podcast,
     double? progress,
+    List<_i3.Chapter>? chapters,
+    List<_i4.EpisodePerson>? people,
+    List<_i5.EpisodeFile>? files,
+    List<_i6.EpisodeTranscript>? transcript,
+    bool? processed,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -180,6 +233,14 @@ abstract class Episode
       'podcastId': podcastId.toJson(),
       if (podcast != null) 'podcast': podcast?.toJson(),
       'progress': progress,
+      if (chapters != null)
+        'chapters': chapters?.toJson(valueToJson: (v) => v.toJson()),
+      if (people != null)
+        'people': people?.toJson(valueToJson: (v) => v.toJson()),
+      if (files != null) 'files': files?.toJson(valueToJson: (v) => v.toJson()),
+      if (transcript != null)
+        'transcript': transcript?.toJson(valueToJson: (v) => v.toJson()),
+      'processed': processed,
     };
   }
 
@@ -205,11 +266,34 @@ abstract class Episode
       'podcastId': podcastId.toJson(),
       if (podcast != null) 'podcast': podcast?.toJsonForProtocol(),
       'progress': progress,
+      if (chapters != null)
+        'chapters': chapters?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (people != null)
+        'people': people?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (files != null)
+        'files': files?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (transcript != null)
+        'transcript': transcript?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      'processed': processed,
     };
   }
 
-  static EpisodeInclude include({_i2.PodcastInclude? podcast}) {
-    return EpisodeInclude._(podcast: podcast);
+  static EpisodeInclude include({
+    _i2.PodcastInclude? podcast,
+    _i3.ChapterIncludeList? chapters,
+    _i4.EpisodePersonIncludeList? people,
+    _i5.EpisodeFileIncludeList? files,
+    _i6.EpisodeTranscriptIncludeList? transcript,
+  }) {
+    return EpisodeInclude._(
+      podcast: podcast,
+      chapters: chapters,
+      people: people,
+      files: files,
+      transcript: transcript,
+    );
   }
 
   static EpisodeIncludeList includeList({
@@ -260,6 +344,11 @@ class _EpisodeImpl extends Episode {
     required _i1.UuidValue podcastId,
     _i2.Podcast? podcast,
     double? progress,
+    List<_i3.Chapter>? chapters,
+    List<_i4.EpisodePerson>? people,
+    List<_i5.EpisodeFile>? files,
+    List<_i6.EpisodeTranscript>? transcript,
+    bool? processed,
   }) : super._(
          id: id,
          title: title,
@@ -279,6 +368,11 @@ class _EpisodeImpl extends Episode {
          podcastId: podcastId,
          podcast: podcast,
          progress: progress,
+         chapters: chapters,
+         people: people,
+         files: files,
+         transcript: transcript,
+         processed: processed,
        );
 
   /// Returns a shallow copy of this [Episode]
@@ -304,6 +398,11 @@ class _EpisodeImpl extends Episode {
     _i1.UuidValue? podcastId,
     Object? podcast = _Undefined,
     double? progress,
+    Object? chapters = _Undefined,
+    Object? people = _Undefined,
+    Object? files = _Undefined,
+    Object? transcript = _Undefined,
+    bool? processed,
   }) {
     return Episode(
       id: id ?? this.id,
@@ -328,6 +427,19 @@ class _EpisodeImpl extends Episode {
       podcastId: podcastId ?? this.podcastId,
       podcast: podcast is _i2.Podcast? ? podcast : this.podcast?.copyWith(),
       progress: progress ?? this.progress,
+      chapters: chapters is List<_i3.Chapter>?
+          ? chapters
+          : this.chapters?.map((e0) => e0.copyWith()).toList(),
+      people: people is List<_i4.EpisodePerson>?
+          ? people
+          : this.people?.map((e0) => e0.copyWith()).toList(),
+      files: files is List<_i5.EpisodeFile>?
+          ? files
+          : this.files?.map((e0) => e0.copyWith()).toList(),
+      transcript: transcript is List<_i6.EpisodeTranscript>?
+          ? transcript
+          : this.transcript?.map((e0) => e0.copyWith()).toList(),
+      processed: processed ?? this.processed,
     );
   }
 }
@@ -416,6 +528,11 @@ class EpisodeUpdateTable extends _i1.UpdateTable<EpisodeTable> {
     table.progress,
     value,
   );
+
+  _i1.ColumnValue<bool, bool> processed(bool value) => _i1.ColumnValue(
+    table.processed,
+    value,
+  );
 }
 
 class EpisodeTable extends _i1.Table<_i1.UuidValue> {
@@ -486,6 +603,11 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
       this,
       hasDefault: true,
     );
+    processed = _i1.ColumnBool(
+      'processed',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final EpisodeUpdateTable updateTable;
@@ -524,6 +646,24 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnDouble progress;
 
+  _i3.ChapterTable? ___chapters;
+
+  _i1.ManyRelation<_i3.ChapterTable>? _chapters;
+
+  _i4.EpisodePersonTable? ___people;
+
+  _i1.ManyRelation<_i4.EpisodePersonTable>? _people;
+
+  _i5.EpisodeFileTable? ___files;
+
+  _i1.ManyRelation<_i5.EpisodeFileTable>? _files;
+
+  _i6.EpisodeTranscriptTable? ___transcript;
+
+  _i1.ManyRelation<_i6.EpisodeTranscriptTable>? _transcript;
+
+  late final _i1.ColumnBool processed;
+
   _i2.PodcastTable get podcast {
     if (_podcast != null) return _podcast!;
     _podcast = _i1.createRelationTable(
@@ -535,6 +675,134 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
           _i2.PodcastTable(tableRelation: foreignTableRelation),
     );
     return _podcast!;
+  }
+
+  _i3.ChapterTable get __chapters {
+    if (___chapters != null) return ___chapters!;
+    ___chapters = _i1.createRelationTable(
+      relationFieldName: '__chapters',
+      field: Episode.t.id,
+      foreignField: _i3.Chapter.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.ChapterTable(tableRelation: foreignTableRelation),
+    );
+    return ___chapters!;
+  }
+
+  _i4.EpisodePersonTable get __people {
+    if (___people != null) return ___people!;
+    ___people = _i1.createRelationTable(
+      relationFieldName: '__people',
+      field: Episode.t.id,
+      foreignField: _i4.EpisodePerson.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.EpisodePersonTable(tableRelation: foreignTableRelation),
+    );
+    return ___people!;
+  }
+
+  _i5.EpisodeFileTable get __files {
+    if (___files != null) return ___files!;
+    ___files = _i1.createRelationTable(
+      relationFieldName: '__files',
+      field: Episode.t.id,
+      foreignField: _i5.EpisodeFile.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i5.EpisodeFileTable(tableRelation: foreignTableRelation),
+    );
+    return ___files!;
+  }
+
+  _i6.EpisodeTranscriptTable get __transcript {
+    if (___transcript != null) return ___transcript!;
+    ___transcript = _i1.createRelationTable(
+      relationFieldName: '__transcript',
+      field: Episode.t.id,
+      foreignField: _i6.EpisodeTranscript.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6.EpisodeTranscriptTable(tableRelation: foreignTableRelation),
+    );
+    return ___transcript!;
+  }
+
+  _i1.ManyRelation<_i3.ChapterTable> get chapters {
+    if (_chapters != null) return _chapters!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'chapters',
+      field: Episode.t.id,
+      foreignField: _i3.Chapter.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.ChapterTable(tableRelation: foreignTableRelation),
+    );
+    _chapters = _i1.ManyRelation<_i3.ChapterTable>(
+      tableWithRelations: relationTable,
+      table: _i3.ChapterTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _chapters!;
+  }
+
+  _i1.ManyRelation<_i4.EpisodePersonTable> get people {
+    if (_people != null) return _people!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'people',
+      field: Episode.t.id,
+      foreignField: _i4.EpisodePerson.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.EpisodePersonTable(tableRelation: foreignTableRelation),
+    );
+    _people = _i1.ManyRelation<_i4.EpisodePersonTable>(
+      tableWithRelations: relationTable,
+      table: _i4.EpisodePersonTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _people!;
+  }
+
+  _i1.ManyRelation<_i5.EpisodeFileTable> get files {
+    if (_files != null) return _files!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'files',
+      field: Episode.t.id,
+      foreignField: _i5.EpisodeFile.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i5.EpisodeFileTable(tableRelation: foreignTableRelation),
+    );
+    _files = _i1.ManyRelation<_i5.EpisodeFileTable>(
+      tableWithRelations: relationTable,
+      table: _i5.EpisodeFileTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _files!;
+  }
+
+  _i1.ManyRelation<_i6.EpisodeTranscriptTable> get transcript {
+    if (_transcript != null) return _transcript!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'transcript',
+      field: Episode.t.id,
+      foreignField: _i6.EpisodeTranscript.t.episodeId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6.EpisodeTranscriptTable(tableRelation: foreignTableRelation),
+    );
+    _transcript = _i1.ManyRelation<_i6.EpisodeTranscriptTable>(
+      tableWithRelations: relationTable,
+      table: _i6.EpisodeTranscriptTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _transcript!;
   }
 
   @override
@@ -556,6 +824,7 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
     link,
     podcastId,
     progress,
+    processed,
   ];
 
   @override
@@ -563,19 +832,55 @@ class EpisodeTable extends _i1.Table<_i1.UuidValue> {
     if (relationField == 'podcast') {
       return podcast;
     }
+    if (relationField == 'chapters') {
+      return __chapters;
+    }
+    if (relationField == 'people') {
+      return __people;
+    }
+    if (relationField == 'files') {
+      return __files;
+    }
+    if (relationField == 'transcript') {
+      return __transcript;
+    }
     return null;
   }
 }
 
 class EpisodeInclude extends _i1.IncludeObject {
-  EpisodeInclude._({_i2.PodcastInclude? podcast}) {
+  EpisodeInclude._({
+    _i2.PodcastInclude? podcast,
+    _i3.ChapterIncludeList? chapters,
+    _i4.EpisodePersonIncludeList? people,
+    _i5.EpisodeFileIncludeList? files,
+    _i6.EpisodeTranscriptIncludeList? transcript,
+  }) {
     _podcast = podcast;
+    _chapters = chapters;
+    _people = people;
+    _files = files;
+    _transcript = transcript;
   }
 
   _i2.PodcastInclude? _podcast;
 
+  _i3.ChapterIncludeList? _chapters;
+
+  _i4.EpisodePersonIncludeList? _people;
+
+  _i5.EpisodeFileIncludeList? _files;
+
+  _i6.EpisodeTranscriptIncludeList? _transcript;
+
   @override
-  Map<String, _i1.Include?> get includes => {'podcast': _podcast};
+  Map<String, _i1.Include?> get includes => {
+    'podcast': _podcast,
+    'chapters': _chapters,
+    'people': _people,
+    'files': _files,
+    'transcript': _transcript,
+  };
 
   @override
   _i1.Table<_i1.UuidValue> get table => Episode.t;
@@ -604,7 +909,13 @@ class EpisodeIncludeList extends _i1.IncludeList {
 class EpisodeRepository {
   const EpisodeRepository._();
 
+  final attach = const EpisodeAttachRepository._();
+
   final attachRow = const EpisodeAttachRowRepository._();
+
+  final detach = const EpisodeDetachRepository._();
+
+  final detachRow = const EpisodeDetachRowRepository._();
 
   /// Returns a list of [Episode]s matching the given query parameters.
   ///
@@ -896,6 +1207,110 @@ class EpisodeRepository {
   }
 }
 
+class EpisodeAttachRepository {
+  const EpisodeAttachRepository._();
+
+  /// Creates a relation between this [Episode] and the given [Chapter]s
+  /// by setting each [Chapter]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> chapters(
+    _i1.DatabaseSession session,
+    Episode episode,
+    List<_i3.Chapter> chapter, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (chapter.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('chapter.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $chapter = chapter
+        .map((e) => e.copyWith(episodeId: episode.id))
+        .toList();
+    await session.db.update<_i3.Chapter>(
+      $chapter,
+      columns: [_i3.Chapter.t.episodeId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [EpisodePerson]s
+  /// by setting each [EpisodePerson]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> people(
+    _i1.DatabaseSession session,
+    Episode episode,
+    List<_i4.EpisodePerson> episodePerson, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (episodePerson.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('episodePerson.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $episodePerson = episodePerson
+        .map((e) => e.copyWith(episodeId: episode.id))
+        .toList();
+    await session.db.update<_i4.EpisodePerson>(
+      $episodePerson,
+      columns: [_i4.EpisodePerson.t.episodeId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [EpisodeFile]s
+  /// by setting each [EpisodeFile]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> files(
+    _i1.DatabaseSession session,
+    Episode episode,
+    List<_i5.EpisodeFile> episodeFile, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (episodeFile.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('episodeFile.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $episodeFile = episodeFile
+        .map((e) => e.copyWith(episodeId: episode.id))
+        .toList();
+    await session.db.update<_i5.EpisodeFile>(
+      $episodeFile,
+      columns: [_i5.EpisodeFile.t.episodeId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [EpisodeTranscript]s
+  /// by setting each [EpisodeTranscript]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> transcript(
+    _i1.DatabaseSession session,
+    Episode episode,
+    List<_i6.EpisodeTranscript> episodeTranscript, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (episodeTranscript.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('episodeTranscript.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $episodeTranscript = episodeTranscript
+        .map((e) => e.copyWith(episodeId: episode.id))
+        .toList();
+    await session.db.update<_i6.EpisodeTranscript>(
+      $episodeTranscript,
+      columns: [_i6.EpisodeTranscript.t.episodeId],
+      transaction: transaction,
+    );
+  }
+}
+
 class EpisodeAttachRowRepository {
   const EpisodeAttachRowRepository._();
 
@@ -918,6 +1333,150 @@ class EpisodeAttachRowRepository {
     await session.db.updateRow<Episode>(
       $episode,
       columns: [Episode.t.podcastId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [Chapter]
+  /// by setting the [Chapter]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> chapters(
+    _i1.DatabaseSession session,
+    Episode episode,
+    _i3.Chapter chapter, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (chapter.id == null) {
+      throw ArgumentError.notNull('chapter.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $chapter = chapter.copyWith(episodeId: episode.id);
+    await session.db.updateRow<_i3.Chapter>(
+      $chapter,
+      columns: [_i3.Chapter.t.episodeId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [EpisodePerson]
+  /// by setting the [EpisodePerson]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> people(
+    _i1.DatabaseSession session,
+    Episode episode,
+    _i4.EpisodePerson episodePerson, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (episodePerson.id == null) {
+      throw ArgumentError.notNull('episodePerson.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $episodePerson = episodePerson.copyWith(episodeId: episode.id);
+    await session.db.updateRow<_i4.EpisodePerson>(
+      $episodePerson,
+      columns: [_i4.EpisodePerson.t.episodeId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [EpisodeFile]
+  /// by setting the [EpisodeFile]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> files(
+    _i1.DatabaseSession session,
+    Episode episode,
+    _i5.EpisodeFile episodeFile, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (episodeFile.id == null) {
+      throw ArgumentError.notNull('episodeFile.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $episodeFile = episodeFile.copyWith(episodeId: episode.id);
+    await session.db.updateRow<_i5.EpisodeFile>(
+      $episodeFile,
+      columns: [_i5.EpisodeFile.t.episodeId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Episode] and the given [EpisodeTranscript]
+  /// by setting the [EpisodeTranscript]'s foreign key `episodeId` to refer to this [Episode].
+  Future<void> transcript(
+    _i1.DatabaseSession session,
+    Episode episode,
+    _i6.EpisodeTranscript episodeTranscript, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (episodeTranscript.id == null) {
+      throw ArgumentError.notNull('episodeTranscript.id');
+    }
+    if (episode.id == null) {
+      throw ArgumentError.notNull('episode.id');
+    }
+
+    var $episodeTranscript = episodeTranscript.copyWith(episodeId: episode.id);
+    await session.db.updateRow<_i6.EpisodeTranscript>(
+      $episodeTranscript,
+      columns: [_i6.EpisodeTranscript.t.episodeId],
+      transaction: transaction,
+    );
+  }
+}
+
+class EpisodeDetachRepository {
+  const EpisodeDetachRepository._();
+
+  /// Detaches the relation between this [Episode] and the given [Chapter]
+  /// by setting the [Chapter]'s foreign key `episodeId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> chapters(
+    _i1.DatabaseSession session,
+    List<_i3.Chapter> chapter, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (chapter.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('chapter.id');
+    }
+
+    var $chapter = chapter.map((e) => e.copyWith(episodeId: null)).toList();
+    await session.db.update<_i3.Chapter>(
+      $chapter,
+      columns: [_i3.Chapter.t.episodeId],
+      transaction: transaction,
+    );
+  }
+}
+
+class EpisodeDetachRowRepository {
+  const EpisodeDetachRowRepository._();
+
+  /// Detaches the relation between this [Episode] and the given [Chapter]
+  /// by setting the [Chapter]'s foreign key `episodeId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> chapters(
+    _i1.DatabaseSession session,
+    _i3.Chapter chapter, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (chapter.id == null) {
+      throw ArgumentError.notNull('chapter.id');
+    }
+
+    var $chapter = chapter.copyWith(episodeId: null);
+    await session.db.updateRow<_i3.Chapter>(
+      $chapter,
+      columns: [_i3.Chapter.t.episodeId],
       transaction: transaction,
     );
   }
