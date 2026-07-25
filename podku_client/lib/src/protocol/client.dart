@@ -17,7 +17,9 @@ import 'package:podku_client/src/protocol/episodes/episode_progress.dart'
     as _i4;
 import 'package:podku_client/src/protocol/podcast/podcast.dart' as _i5;
 import 'package:podku_client/src/protocol/podcast/search_result.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:podku_client/src/protocol/episodes/episode_transcript.dart'
+    as _i7;
+import 'protocol.dart' as _i8;
 
 /// {@category Endpoint}
 class EndpointEpisodes extends _i1.EndpointRef {
@@ -131,6 +133,33 @@ class EndpointPodcast extends _i1.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointTranscript extends _i1.EndpointRef {
+  EndpointTranscript(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'transcript';
+
+  _i2.Future<List<String>> getLanguages(_i3.Episode episode) =>
+      caller.callServerEndpoint<List<String>>(
+        'transcript',
+        'getLanguages',
+        {'episode': episode},
+      );
+
+  _i2.Future<List<_i7.EpisodeTranscript>> getTranscript(
+    _i3.Episode episode,
+    String? language,
+  ) => caller.callServerEndpoint<List<_i7.EpisodeTranscript>>(
+    'transcript',
+    'getTranscript',
+    {
+      'episode': episode,
+      'language': language,
+    },
+  );
+}
+
 class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
@@ -151,7 +180,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i7.Protocol(),
+         _i8.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -162,16 +191,20 @@ class Client extends _i1.ServerpodClientShared {
        ) {
     episodes = EndpointEpisodes(this);
     podcast = EndpointPodcast(this);
+    transcript = EndpointTranscript(this);
   }
 
   late final EndpointEpisodes episodes;
 
   late final EndpointPodcast podcast;
 
+  late final EndpointTranscript transcript;
+
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
     'episodes': episodes,
     'podcast': podcast,
+    'transcript': transcript,
   };
 
   @override

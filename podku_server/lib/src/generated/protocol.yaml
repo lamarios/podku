@@ -11,3 +11,6 @@ podcast:
   - parsePodcast:
   - unsubscribe:
   - getPodcast:
+transcript:
+  - getLanguages:
+  - getTranscript:

@@ -1,0 +1,72 @@
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:podku/episodes/models/parsed_transcript.dart';
+import 'package:podku/main.dart';
+import 'package:podku/player/states/player.dart';
+import 'package:podku_client/podku_client.dart';
+
+part 'transcript.freezed.dart';
+
+class TranscriptCubit extends Cubit<TranscriptState> {
+  StreamSubscription<Duration>? playerPositionStream;
+  final PlayerCubit playerCubit;
+
+  TranscriptCubit(super.initialState, {required this.playerCubit}) {
+    init();
+  }
+
+  Future<void> init() async {
+    setEpisode(playerCubit.state.episode);
+    playerPositionStream = playerCubit.stream.map((event) => event.position).listen(onPositionChanged);
+  }
+
+  @override
+  Future<void> close() async {
+    playerPositionStream?.cancel();
+    super.close();
+  }
+
+  Future<void> setEpisode(Episode? episode) async {
+    if (episode != null) {
+      final languages = await client.transcript.getLanguages(episode);
+      final List<EpisodeTranscript> transcripts = await client.transcript.getTranscript(episode, languages.firstOrNull);
+      emit(state.copyWith(languages: languages, transcript: transcripts));
+    }
+  }
+
+  void onPositionChanged(Duration event) {
+    emit(state.copyWith(index: findCurrentTranscriptIndex(event)));
+  }
+
+  int findCurrentTranscriptIndex(Duration position) {
+    int low = 0;
+    int high = state.transcript.length - 1;
+
+    while (low <= high) {
+      final mid = (low + high) ~/ 2;
+      final entry = state.transcript[mid];
+
+      if (position < entry.startDuration) {
+        high = mid - 1;
+      } else if (position >= entry.endDuration) {
+        low = mid + 1;
+      } else {
+        return mid; // position falls within [start, end)
+      }
+    }
+
+    return -1; // no entry covers this position (gap, or before first/after last)
+  }
+}
+
+@freezed
+sealed class TranscriptState with _$TranscriptState {
+  const factory TranscriptState({
+    @Default(true) bool loading,
+    @Default(-1) int index,
+    @Default([]) List<EpisodeTranscript> transcript,
+    @Default([]) List<String> languages,
+  }) = _TranscriptState;
+}

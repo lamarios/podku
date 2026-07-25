@@ -4,9 +4,7 @@ import 'package:podku/utils.dart';
 
 extension PodcastExtension on Podcast {
   String get artUrl =>
-      '${getIt.get<ServerCubit>().state.serverUrl}/podcasts/image?art=${Uri.encodeComponent(artworkUrl ?? '')}';
+      '${getIt.get<ServerCubit>().state.serverUrl}/file-proxy?url=${Uri.encodeComponent(artworkUrl ?? '')}';
 
-  Uri get artUri => Uri.parse(
-    '${getIt.get<ServerCubit>().state.serverUrl}/podcasts/image?art=${Uri.encodeComponent(artworkUrl ?? '')}',
-  );
+  Uri get artUri => Uri.parse(artUrl);
 }

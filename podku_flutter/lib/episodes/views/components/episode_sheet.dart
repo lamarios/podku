@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
@@ -35,7 +36,7 @@ class EpisodeSheet extends StatelessWidget {
             context: context,
             builder: (context) => Dialog(
               backgroundColor: Colors.transparent,
-              constraints: BoxConstraints(maxWidth: 400, maxHeight: 600),
+              constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
               child: EpisodeSheet(episode: episode, offline: offline),
             ),
           );
@@ -74,9 +75,8 @@ class EpisodeSheet extends StatelessWidget {
                   IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.close)),
                 ],
               ),
-
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 400),
+              PeopleList(episode: episode, wrap: true, size: 50, nameStyle: textTheme.bodySmall),
+              Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: .all(pu2),

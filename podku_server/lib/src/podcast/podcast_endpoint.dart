@@ -70,7 +70,13 @@ class PodcastEndpoint extends Endpoint {
     var podcast = await Podcast.db.findById(
       session,
       UuidValue.fromString(podcastId),
-      include: Podcast.include(episodes: Episode.includeList(orderBy: (p0) => p0.pubDateMillis, orderDescending: true)),
+      include: Podcast.include(
+        episodes: Episode.includeList(
+          include: Episode.include(people: EpisodePerson.includeList(), chapters: Chapter.includeList()),
+          orderBy: (p0) => p0.pubDateMillis,
+          orderDescending: true,
+        ),
+      ),
     );
     return podcast;
   }

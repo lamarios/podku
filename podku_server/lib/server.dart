@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:podku_server/reverse_proxy.dart';
 import 'package:podku_server/src/podcast/podcast_audio_route.dart';
-import 'package:podku_server/src/podcast/podcast_route.dart';
 import 'package:podku_server/src/utils/ping_route.dart';
+import 'package:podku_server/src/web/routes/proxy_route.dart';
 import 'package:serverpod/serverpod.dart';
 
 import 'src/generated/endpoints.dart';
@@ -39,7 +39,7 @@ void run(List<String> args) async {
   // These are used by the default page.
   // pod.webServer.addRoute(RootRoute(), '/');
   // pod.webServer.addRoute(RootRoute(), '/index.html');
-  pod.webServer.addRoute(PodcastRoute(), '/podcasts/image');
+  pod.webServer.addRoute(ProxyRoute(), '/file-proxy');
   pod.webServer.addRoute(PodcastAudioRoute(), '/podcasts/audio');
   pod.webServer.addRoute(PingRoute(), '/ping');
   // pod.webServer.addRoute(ApiRedirectRoute(), '/api/**');

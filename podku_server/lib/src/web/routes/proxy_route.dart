@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:podku_server/src/utils/caching.dart';
 import 'package:serverpod/serverpod.dart';
 
-class PodcastRoute extends Route {
+class ProxyRoute extends Route {
   late final UrlFileCache cache;
 
-  PodcastRoute() : super(methods: {Method.get}) {
+  ProxyRoute() : super(methods: {Method.get}) {
     final cacheDir = Directory('./cache');
     if (!cacheDir.existsSync()) {
       cacheDir.createSync(recursive: true);
@@ -18,7 +18,7 @@ class PodcastRoute extends Route {
   @override
   Future<Result> handleCall(Session session, Request request) async {
     if (request.method == Method.get) {
-      final artUrl = request.queryParameters.raw['art'];
+      final artUrl = request.queryParameters.raw['url'];
 
       if (artUrl == null) {
         return Response.notFound();

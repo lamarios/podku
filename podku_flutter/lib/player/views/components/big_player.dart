@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
+import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/play_pause_button.dart';
 import 'package:podku/player/views/components/player_speed.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
+import 'package:podku/player/views/components/transcript_follower.dart';
 import 'package:podku/podcasts/states/podcast_image_color.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
@@ -137,6 +139,7 @@ class BigPlayer extends StatelessWidget {
                                         ),
                                         Gap(pu4),
                                         Row(mainAxisAlignment: .center, children: [PlayerSpeed()]),
+                                        TranscriptFollower(),
                                       ],
                                     ),
                                     Container(
@@ -144,7 +147,13 @@ class BigPlayer extends StatelessWidget {
                                       child: SingleChildScrollView(
                                         child: Padding(
                                           padding: .all(pu4),
-                                          child: HtmlDescription(episode: episode, offline: false),
+                                          child: Column(
+                                            children: [
+                                              PeopleList(episode: episode, wrap: true, size: 50),
+                                              Gap(pu2),
+                                              HtmlDescription(episode: episode, offline: false),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

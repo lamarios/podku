@@ -26,6 +26,8 @@ import 'podcast/search_result.dart' as _i13;
 import 'package:podku_server/src/generated/podcast/episode.dart' as _i14;
 import 'package:podku_server/src/generated/podcast/podcast.dart' as _i15;
 import 'package:podku_server/src/generated/podcast/search_result.dart' as _i16;
+import 'package:podku_server/src/generated/episodes/episode_transcript.dart'
+    as _i17;
 export 'episodes/chapter.dart';
 export 'episodes/chapters.dart';
 export 'episodes/episode_file_type.dart';
@@ -868,6 +870,15 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<_i16.SearchResult>) {
       return (data as List)
               .map((e) => deserialize<_i16.SearchResult>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == List<_i17.EpisodeTranscript>) {
+      return (data as List)
+              .map((e) => deserialize<_i17.EpisodeTranscript>(e))
               .toList()
           as T;
     }

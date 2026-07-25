@@ -47,6 +47,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 */
     _player.playbackState.stream.listen(onStateChanged);
     _player.mediaItem.stream.listen(episodeChangedListener);
+    _player.durationStream.stream.listen(onDurationChanged);
     stream.map((event) => event.showBigPlayer).listen(handleBackButton);
     widgetsBinding.addObserver(this);
     var view = PlatformDispatcher.instance.views.first;
@@ -219,12 +220,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           await client.episodes.getEpisode(uuidValue);
 
       if (episode != null) {
-        emit(
-          state.copyWith(
-            episode: episode,
-            duration: Duration(seconds: episode.durationSeconds ?? 1),
-          ),
-        );
+        emit(state.copyWith(episode: episode));
       }
       if (!state.showBigPlayer && !state.showMiniPlayer) {
         emit(state.copyWith(showBigPlayer: true));
@@ -242,6 +238,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void setSpeed(double speed) {
     _player.setSpeed(speed);
+  }
+
+  void onDurationChanged(Duration event) {
+    _log.fine('Duration changed: $event');
+    emit(state.copyWith(duration: event));
   }
 }
 

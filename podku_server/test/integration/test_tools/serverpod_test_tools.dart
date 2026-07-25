@@ -19,7 +19,9 @@ import 'package:podku_server/src/generated/episodes/episode_progress.dart'
     as _i5;
 import 'package:podku_server/src/generated/podcast/podcast.dart' as _i6;
 import 'package:podku_server/src/generated/podcast/search_result.dart' as _i7;
-import 'package:podku_server/src/generated/future_calls.dart' as _i8;
+import 'package:podku_server/src/generated/episodes/episode_transcript.dart'
+    as _i8;
+import 'package:podku_server/src/generated/future_calls.dart' as _i9;
 import 'package:podku_server/src/generated/protocol.dart';
 import 'package:podku_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -139,6 +141,8 @@ class TestEndpoints {
   late final _EpisodesEndpoint episodes;
 
   late final _PodcastEndpoint podcast;
+
+  late final _TranscriptEndpoint transcript;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -153,6 +157,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     podcast = _PodcastEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    transcript = _TranscriptEndpoint(
       endpoints,
       serializationManager,
     );
@@ -540,6 +548,83 @@ class _PodcastEndpoint {
   }
 }
 
+class _TranscriptEndpoint {
+  _TranscriptEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<String>> getLanguages(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i4.Episode episode,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'transcript',
+            method: 'getLanguages',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'transcript',
+          methodName: 'getLanguages',
+          parameters: _i1.testObjectToJson({'episode': episode}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<String>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i8.EpisodeTranscript>> getTranscript(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i4.Episode episode,
+    String? language,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'transcript',
+            method: 'getTranscript',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'transcript',
+          methodName: 'getTranscript',
+          parameters: _i1.testObjectToJson({
+            'episode': episode,
+            'language': language,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i8.EpisodeTranscript>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _EpisodePostProcessFutureCall {
   Future<void> processEpisodesCron(
     _i1.TestSessionBuilder sessionBuilder,
@@ -547,7 +632,7 @@ class _EpisodePostProcessFutureCall {
     var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
         .internalBuild();
     try {
-      await _i8.EpisodePostProcessProcessEpisodesCronFutureCall().invoke(
+      await _i9.EpisodePostProcessProcessEpisodesCronFutureCall().invoke(
         _localUniqueSession,
         null,
       );
@@ -563,7 +648,7 @@ class _EpisodePostProcessFutureCall {
     var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
         .internalBuild();
     try {
-      await _i8.EpisodePostProcessProcessPodcastFutureCall().invoke(
+      await _i9.EpisodePostProcessProcessPodcastFutureCall().invoke(
         _localUniqueSession,
         podcast,
       );
@@ -576,7 +661,7 @@ class _EpisodePostProcessFutureCall {
     var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
         .internalBuild();
     try {
-      await _i8.EpisodePostProcessProcessEpisodesFutureCall().invoke(
+      await _i9.EpisodePostProcessProcessEpisodesFutureCall().invoke(
         _localUniqueSession,
         null,
       );
@@ -591,7 +676,7 @@ class _PodcastRefreshFutureCall {
     var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
         .internalBuild();
     try {
-      await _i8.PodcastRefreshRefreshPodcastsFutureCall().invoke(
+      await _i9.PodcastRefreshRefreshPodcastsFutureCall().invoke(
         _localUniqueSession,
         null,
       );

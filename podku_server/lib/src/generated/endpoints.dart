@@ -13,10 +13,11 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../episodes/episodes_endoint.dart' as _i2;
 import '../podcast/podcast_endpoint.dart' as _i3;
-import 'package:podku_server/src/generated/podcast/episode.dart' as _i4;
-import 'package:podku_server/src/generated/podcast/search_result.dart' as _i5;
-import 'package:podku_server/src/generated/podcast/podcast.dart' as _i6;
-import 'package:podku_server/src/generated/future_calls.dart' as _i7;
+import '../transcript/transcript_endpoint.dart' as _i4;
+import 'package:podku_server/src/generated/podcast/episode.dart' as _i5;
+import 'package:podku_server/src/generated/podcast/search_result.dart' as _i6;
+import 'package:podku_server/src/generated/podcast/podcast.dart' as _i7;
+import 'package:podku_server/src/generated/future_calls.dart' as _i8;
 export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _i1.EndpointDispatch {
@@ -33,6 +34,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'podcast',
+          null,
+        ),
+      'transcript': _i4.TranscriptEndpoint()
+        ..initialize(
+          server,
+          'transcript',
           null,
         ),
     };
@@ -89,7 +96,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'episode': _i1.ParameterDescription(
               name: 'episode',
-              type: _i1.getType<_i4.Episode>(),
+              type: _i1.getType<_i5.Episode>(),
               nullable: false,
             ),
             'player': _i1.ParameterDescription(
@@ -114,7 +121,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'episode': _i1.ParameterDescription(
               name: 'episode',
-              type: _i1.getType<_i4.Episode>(),
+              type: _i1.getType<_i5.Episode>(),
               nullable: false,
             ),
             'player': _i1.ParameterDescription(
@@ -196,7 +203,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'result': _i1.ParameterDescription(
               name: 'result',
-              type: _i1.getType<_i5.SearchResult>(),
+              type: _i1.getType<_i6.SearchResult>(),
               nullable: false,
             ),
           },
@@ -215,7 +222,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'result': _i1.ParameterDescription(
               name: 'result',
-              type: _i1.getType<_i5.SearchResult>(),
+              type: _i1.getType<_i6.SearchResult>(),
               nullable: false,
             ),
           },
@@ -234,7 +241,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'podcast': _i1.ParameterDescription(
               name: 'podcast',
-              type: _i1.getType<_i6.Podcast>(),
+              type: _i1.getType<_i7.Podcast>(),
               nullable: false,
             ),
           },
@@ -269,10 +276,60 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['transcript'] = _i1.EndpointConnector(
+      name: 'transcript',
+      endpoint: endpoints['transcript']!,
+      methodConnectors: {
+        'getLanguages': _i1.MethodConnector(
+          name: 'getLanguages',
+          params: {
+            'episode': _i1.ParameterDescription(
+              name: 'episode',
+              type: _i1.getType<_i5.Episode>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['transcript'] as _i4.TranscriptEndpoint)
+                  .getLanguages(
+                    session,
+                    params['episode'],
+                  ),
+        ),
+        'getTranscript': _i1.MethodConnector(
+          name: 'getTranscript',
+          params: {
+            'episode': _i1.ParameterDescription(
+              name: 'episode',
+              type: _i1.getType<_i5.Episode>(),
+              nullable: false,
+            ),
+            'language': _i1.ParameterDescription(
+              name: 'language',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['transcript'] as _i4.TranscriptEndpoint)
+                  .getTranscript(
+                    session,
+                    params['episode'],
+                    params['language'],
+                  ),
+        ),
+      },
+    );
   }
 
   @override
   _i1.FutureCallDispatch? get futureCalls {
-    return _i7.FutureCalls();
+    return _i8.FutureCalls();
   }
 }
