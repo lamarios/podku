@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:podku_client/podku_client.dart';
 
-import '../../../utils.dart';
-import 'download_status.dart';
+import 'package:podku/utils.dart';
+import 'package:podku/episodes/views/components/download_status.dart';
 
 class EpisodeSubTitle extends StatelessWidget {
   final Episode episode;

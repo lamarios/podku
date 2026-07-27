@@ -5,7 +5,7 @@ import 'package:podku_client/podku_client.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HtmlDescription extends StatelessWidget {
-  static final _timestampRegex = RegExp(r'\b\d{2}:\d{2}:\d{2}\b');
+  static final _timestampRegex = RegExp(r'\b(\d{0,2}:)?\d{2}:\d{2}');
   final Episode? episode;
   final Podcast? podcast;
   final bool offline;

@@ -12,7 +12,16 @@ class TimestampLink extends StatelessWidget {
 
   Future<void> _seekOrPlay(BuildContext context) async {
     final split = timestamp.split(":").map((e) => int.parse(e)).toList();
-    final duration = Duration(hours: split[0], minutes: split[1], seconds: split[2]);
+
+    final int? hourIndex = split.length == 3 ? 0 : null;
+    final int minuteIndex = split.length == 3 ? 1 : 0;
+    final int secondIndex = split.length == 3 ? 2 : 1;
+
+    final duration = Duration(
+      hours: hourIndex != null ? split[hourIndex] : 0,
+      minutes: split[minuteIndex],
+      seconds: split[secondIndex],
+    );
 
     final cubit = context.read<PlayerCubit>();
     if (cubit.state.episode?.id == episode.id && cubit.state.playing) {

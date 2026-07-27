@@ -68,7 +68,10 @@ class EpisodesCubit extends Cubit<EpisodesState> {
         episodes[index] = episode.copyWith(progress: 1);
       }
       emit(state.copyWith(episodes: episodes));
-      await client.episodes.setProgress(episode.copyWith(progress: 1), sessionId);
+      await client.episodes.setProgress(
+        episode.copyWith(progress: episode.durationSeconds?.toDouble() ?? 1),
+        sessionId,
+      );
     } catch (e, s) {
       emit(state.copyWith(error: e, stackTrace: s));
     }

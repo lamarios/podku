@@ -14,6 +14,7 @@ import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
 import 'package:podku/utils/views/components/swite_action_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeScreen extends StatelessWidget {
   const EpisodeScreen({super.key});
@@ -95,8 +96,9 @@ class _EpisodeGrid extends StatelessWidget {
                 : context.select((DownloadManagerCubit c) => c.state.downloadStatus[e.id.uuid]);
 
             final showDownloadButton =
-                !kIsWeb &&
-                (downloadStatus == null || downloadStatus.status == .canceled || downloadStatus.status == .failed);
+                kIsWeb ||
+                (!kIsWeb &&
+                    (downloadStatus == null || downloadStatus.status == .canceled || downloadStatus.status == .failed));
 
             return Stack(
               children: [
@@ -110,7 +112,11 @@ class _EpisodeGrid extends StatelessWidget {
                       if (showDownloadButton)
                         MenuItemButton(
                           onPressed: () async {
-                            context.read<DownloadManagerCubit>().download(e, manualDownload: true);
+                            if (kIsWeb) {
+                              launchUrl(Uri.parse(e.audioUrl ?? ''));
+                            } else {
+                              context.read<DownloadManagerCubit>().download(e, manualDownload: true);
+                            }
                           },
                           child: Row(children: [Icon(Icons.download), Gap(pu), Text('Download')]),
                         ),
@@ -180,6 +186,15 @@ class _EpisodeList extends StatelessWidget {
               return SwipeActionCell(
                 key: ValueKey(e),
                 trailingActions: [
+                  if (kIsWeb)
+                    SwipeAction(
+                      content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
+                      color: Colors.transparent,
+                      onTap: (handler) async {
+                        launchUrl(Uri.parse(e.audioUrl ?? ''));
+                        await handler(false);
+                      },
+                    ),
                   if (!kIsWeb &&
                       (downloadStatus == null ||
                           downloadStatus.status == .canceled ||

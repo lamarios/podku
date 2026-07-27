@@ -148,20 +148,21 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   void _updateProgress() {
     if (state.episode?.podcast?.id.uuid != unsubbedPodcastUuid && !state.loading && state.episode != null) {
       final episode = state.episode!;
-      final progress = state.position.inSeconds / state.duration.inSeconds;
+      final progress = state.position;
+      final duration = state.duration;
       EasyThrottle.throttle('progress-update-${state.episode?.id}', Duration(seconds: 5), () async {
-        await _updateProgressInner(episode, progress);
+        await _updateProgressInner(episode, progress, duration);
       });
       // we do this so that whenever the episode stops playing, we save one last time
       EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
-        await _updateProgressInner(episode, progress);
+        await _updateProgressInner(episode, progress, duration);
         await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
       });
     }
   }
 
-  Future<void> _updateProgressInner(Episode episode, double progress) async {
-    episode = episode.copyWith(progress: progress.clamp(0, 1));
+  Future<void> _updateProgressInner(Episode episode, Duration progress, Duration totalDuration) async {
+    episode = episode.copyWith(progress: progress.inSeconds.toDouble(), durationSeconds: totalDuration.inSeconds);
     if (isOnline) {
       try {
         await client.episodes.setProgress(episode, sessionId);
@@ -244,6 +245,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     _log.fine('Duration changed: $event');
     emit(state.copyWith(duration: event));
   }
+
+  void showTranscript(bool show) {
+    emit(state.copyWith(showTranscript: show));
+  }
 }
 
 @freezed
@@ -258,6 +263,7 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(false) bool playing,
     @Default(false) bool showMiniPlayer,
     @Default(false) bool showBigPlayer,
+    @Default(false) bool showTranscript,
     dynamic error,
     StackTrace? stackTrace,
   }) = _PlayerState;

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podku/episodes/models/parsed_transcript.dart';
@@ -30,14 +31,18 @@ class TranscriptCubit extends Cubit<TranscriptState> {
 
   Future<void> setEpisode(Episode? episode) async {
     if (episode != null) {
+      emit(state.copyWith(loading: true));
       final languages = await client.transcript.getLanguages(episode);
       final List<EpisodeTranscript> transcripts = await client.transcript.getTranscript(episode, languages.firstOrNull);
-      emit(state.copyWith(languages: languages, transcript: transcripts));
+      emit(state.copyWith(languages: languages, transcript: transcripts, index: -1, loading: false));
     }
   }
 
   void onPositionChanged(Duration event) {
-    emit(state.copyWith(index: findCurrentTranscriptIndex(event)));
+    var newIndex = findCurrentTranscriptIndex(event);
+    if (newIndex != state.index && newIndex != -1) {
+      emit(state.copyWith(index: newIndex));
+    }
   }
 
   int findCurrentTranscriptIndex(Duration position) {

@@ -64,6 +64,7 @@ class BigPlayer extends StatelessWidget {
                       builder: (context) {
                         final episode = context.select((PlayerCubit c) => c.state.episode);
                         final loading = context.select((PlayerCubit c) => c.state.loading);
+                        final showTranscript = context.select((PlayerCubit c) => c.state.showTranscript);
                         return AnimatedSwitcher(
                           switchOutCurve: Curves.easeInOutQuad,
                           switchInCurve: Curves.easeInOutQuad,
@@ -125,12 +126,28 @@ class BigPlayer extends StatelessWidget {
                                           builder: (context) {
                                             final position = context.select((PlayerCubit c) => c.state.position);
                                             final duration = context.select((PlayerCubit c) => c.state.duration);
+                                            final chapter = context.select(
+                                              (PlayerCubit c) => c.state.episode?.chapters
+                                                  ?.where((ch) => ch.startTime <= c.state.position.inSeconds)
+                                                  .lastOrNull,
+                                            );
                                             return Padding(
                                               padding: .symmetric(horizontal: pu16),
                                               child: Row(
                                                 mainAxisAlignment: .spaceBetween,
+                                                crossAxisAlignment: .start,
                                                 children: [
                                                   Text(printDuration(position), style: textTheme.bodySmall),
+                                                  if (chapter != null)
+                                                    Expanded(
+                                                      child: Text(
+                                                        chapter.title ?? '',
+                                                        textAlign: .center,
+                                                        style: textTheme.bodySmall,
+                                                        maxLines: 2,
+                                                        overflow: .ellipsis,
+                                                      ),
+                                                    ),
                                                   Text(printDuration(duration), style: textTheme.bodySmall),
                                                 ],
                                               ),
@@ -138,8 +155,23 @@ class BigPlayer extends StatelessWidget {
                                           },
                                         ),
                                         Gap(pu4),
-                                        Row(mainAxisAlignment: .center, children: [PlayerSpeed()]),
-                                        TranscriptFollower(),
+                                        Row(
+                                          mainAxisAlignment: .center,
+                                          children: [
+                                            PlayerSpeed(),
+                                            IconButton(
+                                              onPressed: () => cubit.showTranscript(!showTranscript),
+                                              icon: Icon(Icons.closed_caption),
+                                              color: showTranscript ? colors.onSurface : colors.primary,
+                                            ),
+                                          ],
+                                        ),
+
+                                        if (showTranscript)
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints(maxHeight: 200),
+                                            child: TranscriptFollower(),
+                                          ),
                                       ],
                                     ),
                                     Container(

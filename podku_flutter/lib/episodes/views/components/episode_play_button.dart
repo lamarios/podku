@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:podku/episodes/models/episode_progress.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku_client/podku_client.dart';
@@ -24,7 +25,7 @@ class EpisodePlayButton extends StatelessWidget {
         final playerProgress = context.select(
           (PlayerCubit c) => isEpisodePlaying && c.state.loading == false
               ? (c.state.position.inSeconds) / (c.state.duration.inSeconds)
-              : episode.progress,
+              : episode.progressPercent,
         );
 
         return Stack(
@@ -45,9 +46,9 @@ class EpisodePlayButton extends StatelessWidget {
                           .stream
                           .where((e) => e.episodeId == episode.id && !e.newPlayback)
                           .map((e) => e.progress),
-                      initialData: episode.progress,
+                      initialData: episode.progressPercent,
                       builder: (context, snapshot) => CircularProgressIndicator(
-                        value: snapshot.data ?? episode.progress,
+                        value: snapshot.data ?? episode.progressPercent,
                         backgroundColor: colors.secondaryContainer,
                       ),
                     ),

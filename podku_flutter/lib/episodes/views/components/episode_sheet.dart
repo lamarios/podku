@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -11,6 +12,7 @@ import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/description.dart';
 import 'package:podku_client/podku_client.dart';
 import 'package:stupid_simple_sheet/stupid_simple_sheet.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeSheet extends StatelessWidget {
   final Episode episode;
@@ -99,8 +101,12 @@ class EpisodeSheet extends StatelessWidget {
                   if (!offline)
                     TextButton.icon(
                       onPressed: () {
-                        context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
-                        Navigator.of(context).pop();
+                        if (kIsWeb) {
+                          launchUrl(Uri.parse(episode.audioUrl ?? ''));
+                        } else {
+                          context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
+                          Navigator.of(context).pop();
+                        }
                       },
                       label: Text(locals.download),
                       icon: Icon(Icons.download),

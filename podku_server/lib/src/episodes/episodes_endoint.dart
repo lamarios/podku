@@ -13,7 +13,7 @@ class EpisodesEndpoint extends Endpoint {
       where: (p0) => p0.pubDateMillis < (after ?? DateTime.now().millisecondsSinceEpoch),
       include: Episode.include(
         podcast: Podcast.include(),
-        chapters: Chapter.includeList(),
+        chapters: Chapter.includeList(orderBy: (p0) => p0.startTime,),
         people: EpisodePerson.includeList(),
       ),
     );
@@ -25,7 +25,7 @@ class EpisodesEndpoint extends Endpoint {
       id,
       include: Episode.include(
         podcast: Podcast.include(),
-        chapters: Chapter.includeList(),
+        chapters: Chapter.includeList(orderBy: (p0) => p0.startTime,),
         people: EpisodePerson.includeList(),
       ),
     );
@@ -43,7 +43,7 @@ class EpisodesEndpoint extends Endpoint {
     await Episode.db.updateRow(session, episode);
     await session.messages.postMessage(
       _progressChannel,
-      EpisodeProgress(episodeId: episode.id, progress: episode.progress, player: player, newPlayback: false),
+      EpisodeProgress(episodeId: episode.id, progress: episode.progress / (episode.durationSeconds ?? 1), player: player, newPlayback: false),
     );
   }
 

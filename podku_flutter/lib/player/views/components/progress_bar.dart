@@ -43,6 +43,14 @@ class ProgressBar extends StatelessWidget {
               decoration: BoxDecoration(color: colors.surfaceDim, borderRadius: .circular(height)),
               child: LayoutBuilder(
                 builder: (context, constraints) {
+                  final scrobblingPositionSeconds =
+                      (((scrobblingState.holdingPosition ?? 0) / constraints.maxWidth) * totalDuration.inSeconds)
+                          .round();
+
+                  final scrobblingChapter = context.select(
+                    (PlayerCubit c) =>
+                        c.state.episode?.chapters?.where((c) => c.startTime <= (scrobblingPositionSeconds)).lastOrNull,
+                  );
                   return ConditionalWrap(
                     wrapIf: scrobblingDot,
                     wrapper: (child) => GestureDetector(
@@ -58,28 +66,36 @@ class ProgressBar extends StatelessWidget {
                       child: child,
                     ),
                     child: Stack(
-                      alignment: .centerLeft,
+                      alignment: .center,
                       clipBehavior: .none,
                       children: [
-                        AnimatedFractionallySizedBox(
-                          heightFactor: 1,
-                          widthFactor: bufferPosition.inSeconds / totalDurationAdjusted,
-                          duration: animationDuration,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: .circular(height),
-                              color: colors.secondaryContainer.withValues(alpha: 0.8),
+                        Align(
+                          alignment: .centerLeft,
+                          child: Positioned.fill(
+                            child: AnimatedFractionallySizedBox(
+                              heightFactor: 1,
+                              widthFactor: bufferPosition.inSeconds / totalDurationAdjusted,
+                              duration: animationDuration,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: .circular(height),
+                                  color: colors.secondaryContainer.withValues(alpha: 0.8),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                        AnimatedFractionallySizedBox(
-                          widthFactor: progress,
-                          heightFactor: 1,
-                          duration: animationDuration,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: .circular(height),
-                              color: colors.onSecondaryContainer,
+                        Align(
+                          alignment: .centerLeft,
+                          child: AnimatedFractionallySizedBox(
+                            widthFactor: progress,
+                            heightFactor: 1,
+                            duration: animationDuration,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: .circular(height),
+                                color: colors.onSecondaryContainer,
+                              ),
                             ),
                           ),
                         ),
@@ -99,7 +115,6 @@ class ProgressBar extends StatelessWidget {
                           ),
                         if (scrobblingDot)
                           Positioned(
-                            left: (scrobblingState.holdingPosition ?? 0) - 35,
                             bottom: height + 20,
                             child: SingleMotionBuilder(
                               from: 0,
@@ -109,27 +124,32 @@ class ProgressBar extends StatelessWidget {
                                 opacity: value.clamp(0, 1),
                                 child: Transform.translate(
                                   offset: Offset(0, lerpDouble(20, 0, value) ?? 1),
-                                  child: child,
+                                  child: value < 0.1 ? SizedBox.shrink() : child,
                                 ),
                               ),
-                              child: scrobblingState.holdingPosition == null
-                                  ? SizedBox.shrink()
-                                  : Container(
-                                      width: 70,
-                                      height: 20,
-                                      alignment: .center,
-                                      decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(pu)),
-                                      child: Text(
-                                        printDuration(
-                                          Duration(
-                                            seconds:
-                                                (((scrobblingState.holdingPosition ?? 0) / constraints.maxWidth) *
-                                                        totalDuration.inSeconds)
-                                                    .round(),
-                                          ),
-                                        ),
+                              child: Container(
+                                padding: .symmetric(horizontal: pu2, vertical: pu),
+                                /*
+                                      constraints: BoxConstraints(
+                                        minWidth: 70,
+                                        minHeight: 20,
+                                        // maxWidth: 300,
+                                        // maxHeight: 50,
                                       ),
-                                    ),
+                            */
+                                alignment: .center,
+                                decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(pu)),
+                                child: scrobblingState.holdingPosition == null
+                                    ? SizedBox(width: 50, height: 20)
+                                    : Column(
+                                        mainAxisSize: .min,
+                                        crossAxisAlignment: .center,
+                                        children: [
+                                          Text(printDuration(Duration(seconds: scrobblingPositionSeconds))),
+                                          if (scrobblingChapter != null) Text(scrobblingChapter.title ?? ''),
+                                        ],
+                                      ),
+                              ),
                             ),
                           ),
                       ],

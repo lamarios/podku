@@ -256,9 +256,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     var audioProxyUrl = episode.audioProxyUrl;
 
-    initialPosition ??= episode.durationSeconds == null
-        ? Duration.zero
-        : Duration(seconds: (episode.progress.clamp(0, 1) * episode.durationSeconds!).round());
+    initialPosition ??= episode.durationSeconds == null ? Duration.zero : Duration(seconds: episode.progress.floor());
 
     durationStream.add(Duration(seconds: episode.durationSeconds ?? 1));
 
