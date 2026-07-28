@@ -58,12 +58,7 @@ jobs:
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: apks
-          path: podku_flutter/build/app/outputs/flutter-apk
-      - name: Archive build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: appbundle
+          name: linux
           path: podku_flutter/build/linux/x64/release/bundle
     #  - name: Upload binaries to release
     #    uses: svenstaro/upload-release-action@v2
