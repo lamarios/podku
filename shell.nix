@@ -1,58 +1,123 @@
-# Using a fixed nix commit for maximum reproducability
-{ pkgs ? import <nixpkgs> {
+{
+  pkgs ? import <nixpkgs> {
     config.allowUnfree = true;
     config.allowBroken = true;
     config.permittedInsecurePackages = [
-                    "gradle-7.6.6"
-                  ];
-  }
-, ci ? false}:
+      "gradle-7.6.6"
+    ];
+  },
+  ci ? false,
+}:
 
 let
- aliases = [
-     ];
-
+  aliases = [
+  ];
 
 in
 pkgs.mkShell {
-  buildInputs = with pkgs; builtins.concatLists [
-    [ flutter git http-server serverpod_cli fastlane
-      gst_all_1.gstreamer
-           gst_all_1.gst-plugins-base
-           gst_all_1.gst-plugins-good
-           gst_all_1.gst-plugins-bad
-           gtk3
-           pkg-config
-           sysprof
-     ]
-  ];
+  buildInputs =
+    with pkgs;
+    builtins.concatLists [
+      [
+        flutter
+        git
+        http-server
+        serverpod_cli
+        fastlane
+        gst_all_1.gstreamer
+        gst_all_1.gst-plugins-base
+        gst_all_1.gst-plugins-good
+        gst_all_1.gst-plugins-bad
+        gtk3
+        pkg-config
+        sysprof
+        libX11.dev
+        libX11
+        libXScrnSaver
+        libXcomposite
+        libXcursor
+        libXdamage
+        libXext
+        libXfixes
+        libXi
+        libXrandr
+        libXrender
+        libXtst
+        libxkbfile
+        libxshmfence
+      ]
+    ];
 
   # What to run when the shell starts
   # clipiousNix.prepareShell is a helper function to sort things properly. It returns a string so it's possible to just concatenate stuff afterwards
   # to run CI or DB migrations
-  shellHook =  ''
+  shellHook = ''
 
-  echo "Setting up submodules"
-  git submodule init
-  git submodule update
+    echo "Setting up submodules"
+    git submodule init
+    git submodule update
 
-  echo "Setting up pre-commit hook"
-  dart run tools/setup_git_hooks.dart
+    echo "Setting up pre-commit hook"
+    dart run tools/setup_git_hooks.dart
 
-  echo "Adding flutter submodule to path"
-  export PATH="${toString ./.}/submodules/flutter/bin:$PATH"
-
-
-  flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
-
-  echo "Exporting android auto emulator libraries"
-  export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.libcxx pkgs.libcxxrt pkgs.gtk3 pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gstreamermm pkgs.libunwind ]}:$LD_LIBRARY_PATH"
-  export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" [ pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gst-plugins-base pkgs.libunwind pkgs.gtk3 pkgs.sysprof ]}:$PKG_CONFIG_PATH"
-  unset DESTDIR
-  ''+
-          pkgs.lib.concatStrings (map (x: ''echo "${x.name}: ${x.description}";'') aliases);
+    echo "Adding flutter submodule to path"
+    export PATH="${toString ./.}/submodules/flutter/bin:$PATH"
 
 
+    flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
+
+    echo "Exporting android auto emulator libraries"
+    export LD_LIBRARY_PATH="${
+      pkgs.lib.makeLibraryPath [
+        pkgs.libcxx
+        pkgs.libcxxrt
+        pkgs.gtk3
+        pkgs.gst_all_1.gstreamer
+        pkgs.gst_all_1.gstreamermm
+        pkgs.libunwind
+        pkgs.libX11.dev
+        pkgs.libX11
+        pkgs.libXScrnSaver
+        pkgs.libXcomposite
+        pkgs.libXcursor
+        pkgs.libXdamage
+        pkgs.libXext
+        pkgs.libXfixes
+        pkgs.libXi
+        pkgs.libXrandr
+        pkgs.libXrender
+        pkgs.libXtst
+        pkgs.libxkbfile
+        pkgs.libxshmfence
+
+      ]
+    }:$LD_LIBRARY_PATH"
+    export PKG_CONFIG_PATH="${
+      pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" [
+        pkgs.gst_all_1.gstreamer
+        pkgs.gst_all_1.gst-plugins-base
+        pkgs.libunwind
+        pkgs.gtk3
+        pkgs.sysprof
+        pkgs.libX11.dev
+        pkgs.libX11
+        pkgs.libXScrnSaver
+        pkgs.libXcomposite
+        pkgs.libXcursor
+        pkgs.libXdamage
+        pkgs.libXext
+        pkgs.libXfixes
+        pkgs.libXi
+        pkgs.libXrandr
+        pkgs.libXrender
+        pkgs.libXtst
+        pkgs.libxkbfile
+        pkgs.libxshmfence
+      ]
+    }:$PKG_CONFIG_PATH"
+    unset DESTDIR
+  ''
+  + pkgs.lib.concatStrings (map (x: ''echo "${x.name}: ${x.description}";'') aliases);
 
   ####################################################################
   # Without  this, almost  everything  fails with  locale issues  when
@@ -62,8 +127,8 @@ pkgs.mkShell {
   # + http://lists.linuxfromscratch.org/pipermail/lfs-support/2004-June/023900.html
   ####################################################################
 
-  LOCALE_ARCHIVE = if pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
+  LOCALE_ARCHIVE =
+    if pkgs.stdenv.isLinux then "${pkgs.glibcLocales}/lib/locale/locale-archive" else "";
 }
 
 # vim: set tabstop=2 shiftwidth=2 expandtab:
-
