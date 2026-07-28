@@ -60,7 +60,7 @@ dependencies:
     path: ../podku_client
   podku_shared:
     path: ../podku_shared
-  serverpod_flutter: 3.4.10
+  serverpod_flutter: 3.4.11
   shared_preferences: 2.5.5
   stupid_simple_sheet: 0.9.1+1
   url_launcher: 6.3.2

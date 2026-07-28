@@ -1041,63 +1041,49 @@
         <entry key="serverpod">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod-3.4.10/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="serverpod_auth_core_client">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_core_client-3.4.10/lib" />
-            </list>
-          </value>
-        </entry>
-        <entry key="serverpod_auth_idp_client">
-          <value>
-            <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_idp_client-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod-3.4.11/lib" />
             </list>
           </value>
         </entry>
         <entry key="serverpod_client">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_client-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_client-3.4.11/lib" />
             </list>
           </value>
         </entry>
         <entry key="serverpod_flutter">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_flutter-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_flutter-3.4.11/lib" />
             </list>
           </value>
         </entry>
         <entry key="serverpod_lints">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_lints-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_lints-3.4.11/lib" />
             </list>
           </value>
         </entry>
         <entry key="serverpod_serialization">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_serialization-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_serialization-3.4.11/lib" />
             </list>
           </value>
         </entry>
         <entry key="serverpod_shared">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_shared-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_shared-3.4.11/lib" />
             </list>
           </value>
         </entry>
         <entry key="serverpod_test">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_test-3.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_test-3.4.11/lib" />
             </list>
           </value>
         </entry>
@@ -1724,15 +1710,13 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/retry-3.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/rxdart-0.28.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/scroll_drag_detector-0.1.0+2/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_core_client-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_auth_idp_client-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_client-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_flutter-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_lints-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_serialization-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_shared-3.4.10/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_test-3.4.10/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod-3.4.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_client-3.4.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_flutter-3.4.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_lints-3.4.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_serialization-3.4.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_shared-3.4.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_test-3.4.11/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences-2.5.5/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.26/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.6/lib" />

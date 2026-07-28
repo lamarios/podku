@@ -22,7 +22,7 @@ class PlayerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final isMobile = BreakPoint.get(context) == .mobile || BreakPoint.get(context) == .tablet;
+    final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
     final colors = Theme.of(context).colorScheme;
     final brightness = Theme.brightnessOf(context);
     return Builder(

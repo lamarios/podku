@@ -21,7 +21,7 @@ class EpisodeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = BreakPoint.get(context) == .mobile;
+    final isMobile = BreakPoint.of(context) == .mobile;
     final colors = Theme.of(context).colorScheme;
     return BlocProvider(
       create: (context) => EpisodesCubit(EpisodesState()),

@@ -90,8 +90,10 @@ class EpisodeInGrid extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .stretch,
                   children: [
-                    Text(episode.title, maxLines: 2, overflow: .ellipsis),
-                    EpisodeSubTitle(episode: episode, offline: offline),
+                    Text(episode.title, maxLines: 2, overflow: .ellipsis, textAlign: .center),
+                    Center(
+                      child: EpisodeSubTitle(episode: episode, offline: offline, mainAxisAlignment: .center),
+                    ),
                   ],
                 ),
               ),

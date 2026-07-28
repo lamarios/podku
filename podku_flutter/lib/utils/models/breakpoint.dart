@@ -10,7 +10,7 @@ enum BreakPoint {
 
   const BreakPoint({required this.maxWidth});
 
-  static BreakPoint get(BuildContext context) {
+  static BreakPoint of(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;
     return getFromSize(width);
   }

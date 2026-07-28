@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -5,12 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
-import 'package:podku/episodes/views/components/episode_in_grid.dart';
-import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/states/podcast.dart';
 import 'package:podku/podcasts/states/podcast_image_color.dart';
+import 'package:podku/podcasts/views/components/podcast_episode.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -29,7 +29,9 @@ class PodcastScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    final isMobile = BreakPoint.get(context) == .mobile;
+    var breakPoint = BreakPoint.of(context);
+    final isMobile = breakPoint == .mobile;
+    final isDesktop = breakPoint == .desktop || breakPoint == .bigDesktop;
 
     var podcastCubit = PodcastCubit(
       PodcastState(),
@@ -73,7 +75,7 @@ class PodcastScreen extends StatelessWidget {
                     duration: animationDuration,
                     data: Theme.of(context).copyWith(colorScheme: colorScheme),
                     child: Container(
-                      color: isLoading ? colorScheme.surface : scaffoldColor,
+                      color: isLoading || isDesktop ? colorScheme.surface : scaffoldColor,
                       child: Scaffold(
                         appBar: AppBar(
                           title: Text(state.podcast?.name ?? ''),
@@ -83,59 +85,106 @@ class PodcastScreen extends StatelessWidget {
                         backgroundColor: Colors.transparent,
                         body: SafeArea(
                           bottom: false,
-                          child: CustomScrollView(
-                            controller: podcastColorCubit.scrollController,
-                            shrinkWrap: isLoading,
-                            physics: isLoading ? NeverScrollableScrollPhysics() : null,
-                            slivers: [
-                              if (isLoading)
-                                SliverFillRemaining(hasScrollBody: false, child: Center(child: LoadingIndicator())),
-                              if (state.podcast != null) ...[
-                                SliverPersistentHeader(
-                                  pinned: true,
-                                  delegate: _PodcastHeader(
-                                    podcast: state.podcast!,
-                                    subscribing: state.subscribing,
-                                    subscribed: state.subscribed,
-                                    maxExtent: isMobile ? 450 : 225,
-                                  ),
-                                ),
-                                if (state.podcast?.episodes != null)
-                                  DecoratedSliver(
-                                    decoration: BoxDecoration(color: colorScheme.surface),
-                                    sliver: isMobile
-                                        ? SliverList.builder(
-                                            itemCount: state.podcast!.episodes!.length,
-                                            itemBuilder: (context, index) => ConditionalWrap(
-                                              wrapIf: index == state.podcast!.episodes!.length - 1,
-                                              wrapper: (child) => Padding(padding: .only(bottom: 200), child: child),
-                                              child: EpisodeInList(
-                                                episode: state.podcast!.episodes![index],
-                                                offline: !state.subscribed,
-                                                // we set that as we're not going to track progress on unsubbed podcast episodes
-                                                showPodcastImage: false,
-                                              ),
-                                            ),
-                                          )
-                                        : SliverPadding(
-                                            padding: .only(top: pu4),
-                                            sliver: SliverGrid.extent(
-                                              maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
-                                              childAspectRatio:
-                                                  (EpisodeInGrid.crossAxisExtent * 0.8) / EpisodeInGrid.crossAxisExtent,
-                                              // mainAxisExtent: EpisodeInGrid.mainAxisExtent,
-                                              crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
-                                              mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
-                                              children:
-                                                  state.podcast?.episodes
-                                                      ?.map((e) => EpisodeInGrid(episode: e, showPodcastImage: false))
-                                                      .toList() ??
-                                                  [],
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return ConditionalWrap(
+                                wrapIf: isDesktop,
+                                wrapper: (child) => Center(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: 1100),
+                                    child: Row(
+                                      crossAxisAlignment: .start,
+                                      mainAxisAlignment: .center,
+                                      children: [
+                                        if (!state.loading)
+                                          Align(
+                                            alignment: .topCenter,
+                                            child: _VerticalPodcastHeader(
+                                              podcast: state.podcast!,
+                                              subscribing: state.subscribing,
+                                              subscribed: state.subscribed,
                                             ),
                                           ),
+                                        Expanded(child: child),
+                                      ],
+                                    ),
                                   ),
-                              ],
-                            ],
+                                ),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final double maxContentWidth = min(constraints.maxWidth, switch (breakPoint) {
+                                      .desktop => 800,
+                                      .bigDesktop => 1000,
+                                      _ => 640,
+                                    });
+
+                                    print('${constraints.maxWidth}');
+
+                                    return Align(
+                                      alignment: isDesktop ? .topLeft : .topCenter,
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(maxWidth: maxContentWidth),
+                                        child: CustomScrollView(
+                                          controller: podcastColorCubit.scrollController,
+                                          shrinkWrap: isLoading,
+                                          physics: isLoading ? NeverScrollableScrollPhysics() : null,
+                                          slivers: [
+                                            if (isLoading)
+                                              SliverFillRemaining(
+                                                hasScrollBody: false,
+                                                child: Center(child: LoadingIndicator()),
+                                              ),
+                                            if (state.podcast != null) ...[
+                                              if (!isDesktop)
+                                                SliverPersistentHeader(
+                                                  pinned: true,
+                                                  delegate: _PodcastHeader(
+                                                    podcast: state.podcast!,
+                                                    subscribing: state.subscribing,
+                                                    subscribed: state.subscribed,
+                                                    maxExtent: isMobile ? 450 : 255,
+                                                  ),
+                                                ),
+                                              if (state.podcast?.episodes != null)
+                                                DecoratedSliver(
+                                                  decoration: BoxDecoration(
+                                                    color: colorScheme.surface,
+                                                    borderRadius: .only(
+                                                      topLeft: .circular(pu4),
+                                                      topRight: .circular(pu4),
+                                                    ),
+                                                  ),
+                                                  sliver: SliverList.separated(
+                                                    separatorBuilder: (context, index) => Padding(
+                                                      padding: .symmetric(horizontal: pu6),
+                                                      child: Divider(),
+                                                    ),
+                                                    itemCount: state.podcast!.episodes!.length,
+                                                    itemBuilder: (context, index) => ConditionalWrap(
+                                                      wrapIf: index == state.podcast!.episodes!.length - 1,
+                                                      wrapper: (child) =>
+                                                          Padding(padding: .only(bottom: 200), child: child),
+                                                      child: Padding(
+                                                        padding: .symmetric(vertical: pu2, horizontal: pu6),
+                                                        child: PodcastEpisode(
+                                                          episode: state.podcast!.episodes![index],
+                                                          offline: !state.subscribed,
+                                                          // we set that as we're not going to track progress on unsubbed podcast episodes
+                                                          showPodcastImage: false,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -167,7 +216,7 @@ class _PodcastHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     // t goes 0 -> 1 as the header collapses
-    final isMobile = BreakPoint.get(context) == .mobile;
+    final isMobile = BreakPoint.of(context) == .mobile;
     final t = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
     final imageSize = lerpDouble(isMobile ? 200 : 150, _minImageSize, (t * 1).clamp(0, 1))!;
     final opacity = (1 - t * 1.25).clamp(0.0, 1.0); // fades out in the first half
@@ -265,7 +314,7 @@ class _SubscribeButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: .end,
         children: [
-          TextButton.icon(
+          FilledButton.tonalIcon(
             onPressed: subscribing
                 ? null
                 : () async {
@@ -284,6 +333,39 @@ class _SubscribeButton extends StatelessWidget {
               color: subscribed ? colors.error : colors.primary,
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerticalPodcastHeader extends StatelessWidget {
+  final bool subscribing;
+  final bool subscribed;
+  final Podcast podcast;
+
+  const _VerticalPodcastHeader({required this.podcast, required this.subscribing, required this.subscribed});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(color: colors.secondaryContainer, borderRadius: .circular(pu4)),
+      padding: .all(pu4),
+      margin: .all(pu4),
+      width: 300,
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          PodcastImage(podcast: podcast, width: 200, height: 200, borderRadius: pu2),
+          Gap(pu2),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 600),
+            child: SingleChildScrollView(child: HtmlDescription(podcast: podcast, offline: false)),
+          ),
+          Gap(pu4),
+          _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
         ],
       ),
     );

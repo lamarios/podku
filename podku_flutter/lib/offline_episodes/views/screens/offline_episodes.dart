@@ -17,7 +17,7 @@ class OfflineEpisodesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final isMobile = BreakPoint.get(context) == .mobile;
+    final isMobile = BreakPoint.of(context) == .mobile;
     final locals = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(

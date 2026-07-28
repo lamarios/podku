@@ -23,7 +23,7 @@ class BigPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final cubit = context.read<PlayerCubit>();
-    final isMobile = BreakPoint.get(context) == .mobile || BreakPoint.get(context) == .tablet;
+    final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
     return DefaultTabController(
       length: 2,
       child: Builder(

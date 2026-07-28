@@ -17,9 +17,8 @@ class ServerSetupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locals = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
-    final isMobile = BreakPoint.get(context) == .mobile;
+    final isMobile = BreakPoint.of(context) == .mobile;
 
     return ForcedDarkThemeBuilder(
       builder: (context) {

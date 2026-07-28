@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
     final locals = AppLocalizations.of(context)!;
     final titles = [locals.episodes, locals.podcasts, locals.search];
 
-    bool isMobile = BreakPoint.get(context) == .mobile;
+    bool isMobile = BreakPoint.of(context) == .mobile;
     return MultiBlocProvider(
       providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
       child: Scaffold(

@@ -21,5 +21,14 @@
   "offline": "Offline",
   "play": "Play",
   "markAsPlayed": "Mark as played",
-  "download": "Download"
+  "download": "Download",
+  "addPodcastFromUrl": "Add podcast from url",
+  "addPodcast": "Add podcast",
+  "next" : "Next",
+  "podcastUrl": "Podcast feed URL",
+  "nEpisodes" : "{count, plural, =1{1 episode} other{{count} episodes}}",
+  "podcastAdded": "Podcast added",
+  "podcastAddedText": "Podcast was added successfully",
+  "back": "Back",
+  "podcastParsingError": "Could not parse podcast"
 }

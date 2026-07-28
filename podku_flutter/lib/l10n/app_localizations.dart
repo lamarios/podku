@@ -228,6 +228,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download'**
   String get download;
+
+  /// No description provided for @addPodcastFromUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Add podcast from url'**
+  String get addPodcastFromUrl;
+
+  /// No description provided for @addPodcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Add podcast'**
+  String get addPodcast;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @podcastUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Podcast feed URL'**
+  String get podcastUrl;
+
+  /// No description provided for @nEpisodes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 episode} other{{count} episodes}}'**
+  String nEpisodes(num count);
+
+  /// No description provided for @podcastAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Podcast added'**
+  String get podcastAdded;
+
+  /// No description provided for @podcastAddedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Podcast was added successfully'**
+  String get podcastAddedText;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @podcastParsingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not parse podcast'**
+  String get podcastParsingError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

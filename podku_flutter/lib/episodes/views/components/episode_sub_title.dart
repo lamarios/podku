@@ -10,7 +10,8 @@ import 'package:podku/episodes/views/components/download_status.dart';
 class EpisodeSubTitle extends StatelessWidget {
   final Episode episode;
   final bool offline;
-  const EpisodeSubTitle({super.key, required this.episode, required this.offline});
+  final MainAxisAlignment? mainAxisAlignment;
+  const EpisodeSubTitle({super.key, required this.episode, required this.offline, this.mainAxisAlignment});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,7 @@ class EpisodeSubTitle extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     return Row(
       crossAxisAlignment: .center,
+      mainAxisAlignment: mainAxisAlignment ?? .start,
       children: [
         Text(
           DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(episode.pubDateMillis ?? 0)),

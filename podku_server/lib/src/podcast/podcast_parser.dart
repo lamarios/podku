@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:podku_server/src/generated/episodes/episode_files.dart';
 import 'package:podku_server/src/generated/episodes/person.dart';
+import 'package:podku_server/src/generated/podcast/person.dart';
 import 'package:podku_server/src/generated/podcast/podcast.dart';
 import 'package:xml/xml.dart';
 
@@ -34,6 +35,7 @@ class PodcastFeedParser {
       author: _itunesText(channel, 'author'),
       link: _text(channel, 'link'),
       episodes: episodes,
+      people: _getPodcastPeople(podcast, channel),
     );
   }
 
@@ -78,6 +80,23 @@ class PodcastFeedParser {
           ),
         )
         .toList();
+  }
+
+  static List<PodcastPerson> _getPodcastPeople(Podcast podcast, XmlElement root){
+    var people = root
+        .findElements('podcast:person')
+        .map(
+          (e) => PodcastPerson(
+        name: e.innerText,
+        episodeId: podcast.id,
+        role: e.getAttribute('role'),
+        image: e.getAttribute('img'),
+        link: e.getAttribute('href'),
+        group: e.getAttribute("role"),
+      ),
+    )
+        .toList();
+    return people;
   }
 
   static List<EpisodeFile> _getFiles(Episode episode, XmlElement episodeRoot) {

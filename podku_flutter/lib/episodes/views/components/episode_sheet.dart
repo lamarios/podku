@@ -21,7 +21,7 @@ class EpisodeSheet extends StatelessWidget {
   const EpisodeSheet({super.key, required this.episode, required this.offline});
 
   static Future<Object?> open(BuildContext context, Episode episode, bool offline) async {
-    final isMobile = BreakPoint.get(context) == .mobile;
+    final isMobile = BreakPoint.of(context) == .mobile;
 
     return isMobile
         ? Navigator.of(context).push(

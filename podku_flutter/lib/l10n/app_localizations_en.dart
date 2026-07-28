@@ -84,4 +84,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get download => 'Download';
+
+  @override
+  String get addPodcastFromUrl => 'Add podcast from url';
+
+  @override
+  String get addPodcast => 'Add podcast';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get podcastUrl => 'Podcast feed URL';
+
+  @override
+  String nEpisodes(num count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count episodes', one: '1 episode');
+    return '$_temp0';
+  }
+
+  @override
+  String get podcastAdded => 'Podcast added';
+
+  @override
+  String get podcastAddedText => 'Podcast was added successfully';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get podcastParsingError => 'Could not parse podcast';
 }

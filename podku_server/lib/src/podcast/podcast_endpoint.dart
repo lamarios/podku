@@ -36,6 +36,9 @@ class PodcastEndpoint extends Endpoint {
           await EpisodePerson.db.insert(session, e.people ?? []);
         }
       }
+      if (podcast.people != null) {
+        await PodcastPerson.db.insert(session, podcast.people!);
+      }
 
       unawaited(Serverpod.instance.futureCalls.callWithDelay(Duration.zero).episodePostProcess.processPodcast(podcast));
 
@@ -71,6 +74,7 @@ class PodcastEndpoint extends Endpoint {
       session,
       UuidValue.fromString(podcastId),
       include: Podcast.include(
+        people: PodcastPerson.includeList(),
         episodes: Episode.includeList(
           include: Episode.include(people: EpisodePerson.includeList(), chapters: Chapter.includeList()),
           orderBy: (p0) => p0.pubDateMillis,
