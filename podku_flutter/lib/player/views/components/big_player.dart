@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
+import 'package:podku/episodes/models/episode_transcript.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/play_pause_button.dart';
@@ -126,6 +127,9 @@ class BigPlayer extends StatelessWidget {
                                           builder: (context) {
                                             final position = context.select((PlayerCubit c) => c.state.position);
                                             final duration = context.select((PlayerCubit c) => c.state.duration);
+                                            final chapters = context.select(
+                                              (PlayerCubit c) => c.state.episode?.chapters ?? [],
+                                            );
                                             final chapter = context.select(
                                               (PlayerCubit c) => c.state.episode?.chapters
                                                   ?.where((ch) => ch.startTime <= c.state.position.inSeconds)
@@ -138,14 +142,35 @@ class BigPlayer extends StatelessWidget {
                                                 crossAxisAlignment: .start,
                                                 children: [
                                                   Text(printDuration(position), style: textTheme.bodySmall),
-                                                  if (chapter != null)
+                                                  if (chapter != null && chapters.isNotEmpty)
                                                     Expanded(
-                                                      child: Text(
-                                                        chapter.title ?? '',
-                                                        textAlign: .center,
-                                                        style: textTheme.bodySmall,
-                                                        maxLines: 2,
-                                                        overflow: .ellipsis,
+                                                      child: MenuAnchor(
+                                                        builder: (context, controller, child) {
+                                                          return InkWell(
+                                                            onTap: () => controller.isOpen
+                                                                ? controller.close()
+                                                                : controller.open(),
+                                                            child: Padding(
+                                                              padding: .only(bottom: pu3),
+                                                              child: Text(
+                                                                chapter.title ?? '',
+                                                                textAlign: .center,
+                                                                style: textTheme.bodySmall,
+                                                                maxLines: 2,
+                                                                overflow: .ellipsis,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        menuChildren: chapters
+                                                            .map(
+                                                              (e) => MenuItemButton(
+                                                                child: Text(e.title ?? ''),
+                                                                onPressed: () =>
+                                                                    cubit.seek(Duration(seconds: e.startTime.toInt())),
+                                                              ),
+                                                            )
+                                                            .toList(),
                                                       ),
                                                     ),
                                                   Text(printDuration(duration), style: textTheme.bodySmall),
@@ -159,11 +184,12 @@ class BigPlayer extends StatelessWidget {
                                           mainAxisAlignment: .center,
                                           children: [
                                             PlayerSpeed(),
-                                            IconButton(
-                                              onPressed: () => cubit.showTranscript(!showTranscript),
-                                              icon: Icon(Icons.closed_caption),
-                                              color: showTranscript ? colors.onSurface : colors.primary,
-                                            ),
+                                            if (episode.hasTranscript)
+                                              IconButton(
+                                                onPressed: () => cubit.showTranscript(!showTranscript),
+                                                icon: Icon(Icons.closed_caption),
+                                                color: showTranscript ? colors.onSurface : colors.primary,
+                                              ),
                                           ],
                                         ),
 

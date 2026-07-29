@@ -6,16 +6,22 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:podku/episodes/models/parsed_transcript.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
+import 'package:podku/utils.dart';
 import 'package:podku_client/podku_client.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 part 'transcript.freezed.dart';
 
 class TranscriptCubit extends Cubit<TranscriptState> {
   StreamSubscription<Duration>? playerPositionStream;
+  final ScrollController scrollController = ScrollController();
+  late final ListObserverController observerController;
+
   final PlayerCubit playerCubit;
 
   TranscriptCubit(super.initialState, {required this.playerCubit}) {
     init();
+    observerController = ListObserverController(controller: scrollController);
   }
 
   Future<void> init() async {
@@ -26,6 +32,7 @@ class TranscriptCubit extends Cubit<TranscriptState> {
   @override
   Future<void> close() async {
     playerPositionStream?.cancel();
+    scrollController.dispose();
     super.close();
   }
 
@@ -42,6 +49,13 @@ class TranscriptCubit extends Cubit<TranscriptState> {
     var newIndex = findCurrentTranscriptIndex(event);
     if (newIndex != state.index && newIndex != -1) {
       emit(state.copyWith(index: newIndex));
+      observerController.animateTo(
+        index: newIndex,
+        duration: animationDuration,
+        curve: Curves.easeInOutQuint,
+        padding: .all(pu4),
+        alignment: 0,
+      );
     }
   }
 

@@ -90,7 +90,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
       _log.fine('Playing episode: ${episode.title}, offline? $offline');
 
-      emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true));
+      emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true, showTranscript: false));
       var backendEpisode = !kIsWeb && offline ? episode : await client.episodes.getEpisode(episode.id);
 
       // at this point we're probably trying to play an episode of a podcast we're not subscribed to
@@ -156,7 +156,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       // we do this so that whenever the episode stops playing, we save one last time
       EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
         await _updateProgressInner(episode, progress, duration);
-        await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
+        if (!kIsWeb) {
+          await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
+        }
       });
     }
   }
@@ -217,7 +219,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     if (event != null) {
       var uuidValue = UuidValue.fromString(event.id);
       final episode =
-          getIt.get<DownloadManagerCubit>().state.offlineEpisodes.where((e) => e.id == uuidValue).firstOrNull ??
+          (!kIsWeb
+              ? getIt.get<DownloadManagerCubit>().state.offlineEpisodes.where((e) => e.id == uuidValue).firstOrNull
+              : null) ??
           await client.episodes.getEpisode(uuidValue);
 
       if (episode != null) {

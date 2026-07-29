@@ -78,7 +78,8 @@ class EpisodeSheet extends StatelessWidget {
                 ],
               ),
               PeopleList(episode: episode, wrap: true, size: 50, nameStyle: textTheme.bodySmall),
-              Expanded(
+              Flexible(
+                fit: .loose,
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: .all(pu2),
@@ -86,7 +87,6 @@ class EpisodeSheet extends StatelessWidget {
                   ),
                 ),
               ),
-
               Row(
                 mainAxisAlignment: .spaceAround,
                 children: [

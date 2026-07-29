@@ -15,6 +15,7 @@ class EpisodesEndpoint extends Endpoint {
         podcast: Podcast.include(),
         chapters: Chapter.includeList(orderBy: (p0) => p0.startTime,),
         people: EpisodePerson.includeList(),
+          files: EpisodeFile.includeList()
       ),
     );
   }
@@ -27,6 +28,7 @@ class EpisodesEndpoint extends Endpoint {
         podcast: Podcast.include(),
         chapters: Chapter.includeList(orderBy: (p0) => p0.startTime,),
         people: EpisodePerson.includeList(),
+        files: EpisodeFile.includeList()
       ),
     );
   }

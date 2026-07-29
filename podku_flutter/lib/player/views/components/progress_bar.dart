@@ -71,16 +71,14 @@ class ProgressBar extends StatelessWidget {
                       children: [
                         Align(
                           alignment: .centerLeft,
-                          child: Positioned.fill(
-                            child: AnimatedFractionallySizedBox(
-                              heightFactor: 1,
-                              widthFactor: bufferPosition.inSeconds / totalDurationAdjusted,
-                              duration: animationDuration,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: .circular(height),
-                                  color: colors.secondaryContainer.withValues(alpha: 0.8),
-                                ),
+                          child: AnimatedFractionallySizedBox(
+                            heightFactor: 1,
+                            widthFactor: bufferPosition.inSeconds / totalDurationAdjusted,
+                            duration: animationDuration,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: .circular(height),
+                                color: colors.secondaryContainer.withValues(alpha: 0.8),
                               ),
                             ),
                           ),

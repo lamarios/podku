@@ -1038,6 +1038,13 @@
             </list>
           </value>
         </entry>
+        <entry key="scrollview_observer">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/scrollview_observer-1.27.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="serverpod">
           <value>
             <list>
@@ -1710,6 +1717,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/retry-3.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/rxdart-0.28.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/scroll_drag_detector-0.1.0+2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/scrollview_observer-1.27.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod-3.4.11/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_client-3.4.11/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/serverpod_flutter-3.4.11/lib" />

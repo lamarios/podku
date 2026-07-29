@@ -118,8 +118,6 @@ class PodcastScreen extends StatelessWidget {
                                       _ => 640,
                                     });
 
-                                    print('${constraints.maxWidth}');
-
                                     return Align(
                                       alignment: isDesktop ? .topLeft : .topCenter,
                                       child: ConstrainedBox(
@@ -168,7 +166,7 @@ class PodcastScreen extends StatelessWidget {
                                                         padding: .symmetric(vertical: pu2, horizontal: pu6),
                                                         child: PodcastEpisode(
                                                           episode: state.podcast!.episodes![index],
-                                                          offline: !state.subscribed,
+                                                          // offline: !state.subscribed,
                                                           // we set that as we're not going to track progress on unsubbed podcast episodes
                                                           showPodcastImage: false,
                                                         ),
