@@ -159,7 +159,7 @@ class _PodcastResult extends StatelessWidget {
         Gap(pu),
         PodcastImage(podcast: podcast, width: 200, height: 200, borderRadius: pu4),
         Gap(pu),
-        Text(podcast.name ??'', style: textTheme.titleMedium),
+        Text(podcast.name ?? '', style: textTheme.titleMedium),
         Text(
           locals.nEpisodes(podcast.episodes?.length ?? 0),
           style: textTheme.bodyMedium?.copyWith(color: colors.secondary),

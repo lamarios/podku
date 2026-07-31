@@ -10,15 +10,12 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme
-        .of(context)
-        .colorScheme;
+    final colors = Theme.of(context).colorScheme;
     return BlocProvider(
       create: (context) => SearchCubit(SearchState()),
       child: BlocBuilder<SearchCubit, SearchState>(
         builder: (context, state) {
-          final subscriptions = context.select((PodcastsCubit c) => c.state.subscriptions).map((s) =>
-          s.url).toList();
+          final subscriptions = context.select((PodcastsCubit c) => c.state.subscriptions).map((s) => s.url).toList();
           final cubit = context.read<SearchCubit>();
           return Column(
             crossAxisAlignment: .stretch,

@@ -295,8 +295,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   void updatePlayerState(PlayerState event) {
     print('new player state: ${event}');
-    var playing  = event.playing;
-
+    var playing = event.playing;
 
     var newState = playbackState.value.copyWith(
       playing: playing,

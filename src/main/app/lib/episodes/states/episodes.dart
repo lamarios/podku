@@ -29,10 +29,12 @@ class EpisodesCubit extends Cubit<EpisodesState> {
     try {
       emit(state.copyWith(loading: !refresh));
 
-      final episodes = await client.episodes.getEpisodes(
-        before: refresh ? DateTime.now().millisecondsSinceEpoch : state.cursor,
-        pageSize: refresh && state.episodes.isNotEmpty ? state.episodes.length : _pageSize,
-      ).then((value) => value.data,);
+      final episodes = await client.episodes
+          .getEpisodes(
+            before: refresh ? DateTime.now().millisecondsSinceEpoch : state.cursor,
+            pageSize: refresh && state.episodes.isNotEmpty ? state.episodes.length : _pageSize,
+          )
+          .then((value) => value.data);
 
       if (!isClosed) {
         emit(
@@ -71,7 +73,12 @@ class EpisodesCubit extends Cubit<EpisodesState> {
       }
       emit(state.copyWith(episodes: episodes));
       await client.episodes.setProgress(
-        playbackProgress: PlaybackProgress(player: sessionId, episodeId: episode.id, progress: episode.durationSeconds?.toDouble() ?? 0, newPlayback: false),
+        playbackProgress: PlaybackProgress(
+          player: sessionId,
+          episodeId: episode.id,
+          progress: episode.durationSeconds?.toDouble() ?? 0,
+          newPlayback: false,
+        ),
       );
     } catch (e, s) {
       emit(state.copyWith(error: e, stackTrace: s));

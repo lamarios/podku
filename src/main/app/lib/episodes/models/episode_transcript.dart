@@ -1,4 +1,3 @@
-
 import 'package:openapi/openapi.dart';
 
 extension HasTranscript on Episode {

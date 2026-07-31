@@ -54,7 +54,7 @@ class PodcastCubit extends Cubit<PodcastState> {
           searchResult ?? SearchResult(artistName: state.podcast?.name ?? '', feedUrl: state.podcast?.url);
 
       final podcast = (await client.podcasts.subscribeToPodcast(searchResult: subbedResult)).data;
-      if(podcast != null) {
+      if (podcast != null) {
         emit(state.copyWith(subscribing: false, podcast: podcast));
       }
     } catch (e, s) {
@@ -78,7 +78,6 @@ class PodcastCubit extends Cubit<PodcastState> {
       emit(state.copyWith(error: e, stackTrace: s, subscribing: false));
     }
   }
-
 }
 
 @freezed

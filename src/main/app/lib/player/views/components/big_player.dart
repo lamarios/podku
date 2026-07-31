@@ -166,8 +166,9 @@ class BigPlayer extends StatelessWidget {
                                                             .map(
                                                               (e) => MenuItemButton(
                                                                 child: Text(e.title ?? ''),
-                                                                onPressed: () =>
-                                                                    cubit.seek(Duration(seconds: (e.startTime ?? 0).toInt())),
+                                                                onPressed: () => cubit.seek(
+                                                                  Duration(seconds: (e.startTime ?? 0).toInt()),
+                                                                ),
                                                               ),
                                                             )
                                                             .toList(),

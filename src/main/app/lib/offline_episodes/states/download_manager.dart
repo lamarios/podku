@@ -71,9 +71,9 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     }
     _log.fine('[Automatic] Starting to download episodes');
     final int episodesToDownload = await DownloadSettingsCubit.podcastEpisodes;
-    final podcasts = await client.podcasts.getPodcasts().then((value) => value.data ?? [],);
+    final podcasts = await client.podcasts.getPodcasts().then((value) => value.data ?? []);
     for (final p in podcasts) {
-      final podcast = await client.podcasts.getPodcast(id: p.id).then((value) => value.data,);
+      final podcast = await client.podcasts.getPodcast(id: p.id).then((value) => value.data);
       if (podcast?.episodes?.isEmpty ?? true) {
         continue;
       }
@@ -227,7 +227,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
       return;
     }
 
-    if(e.id == null){
+    if (e.id == null) {
       _log.fine('Episode does not have an id');
       return;
     }
@@ -314,7 +314,7 @@ sealed class DownloadManagerState with _$DownloadManagerState {
   Map<String, DownloadProgress> get downloadStatus {
     Map<String, DownloadProgress> statuses = Map.from(ongoingDownloads);
     for (final e in offlineEpisodes) {
-      if(e.id == null){
+      if (e.id == null) {
         continue;
       }
       statuses[e.id!] = DownloadProgress(id: '', status: .complete, progress: 100);

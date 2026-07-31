@@ -116,7 +116,14 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         await _player.playEpisode(episode, initialPosition: initialPosition);
         emit(state.copyWith(loading: false));
         if (!offline && episode.podcast?.id != unsubbedPodcastUuid) {
-          await client.episodes.startPlayback(playbackProgress: PlaybackProgress(episodeId: episode.id, newPlayback: true, progress: 0, player: sessionId));
+          await client.episodes.startPlayback(
+            playbackProgress: PlaybackProgress(
+              episodeId: episode.id,
+              newPlayback: true,
+              progress: 0,
+              player: sessionId,
+            ),
+          );
         }
         await _player.play();
       }
@@ -169,7 +176,12 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     if (isOnline) {
       try {
         await client.episodes.setProgress(
-          playbackProgress: PlaybackProgress(episodeId: episode.id, newPlayback: false, player: sessionId, progress: progress.inSeconds.toDouble()),
+          playbackProgress: PlaybackProgress(
+            episodeId: episode.id,
+            newPlayback: false,
+            player: sessionId,
+            progress: progress.inSeconds.toDouble(),
+          ),
         );
       } catch (e) {
         _log.warning("Could not update episode progress", e);

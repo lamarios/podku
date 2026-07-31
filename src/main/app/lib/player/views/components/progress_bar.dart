@@ -48,8 +48,9 @@ class ProgressBar extends StatelessWidget {
                           .round();
 
                   final scrobblingChapter = context.select(
-                    (PlayerCubit c) =>
-                        c.state.episode?.chapters?.where((c) => (c.startTime ?? 0) <= (scrobblingPositionSeconds)).lastOrNull,
+                    (PlayerCubit c) => c.state.episode?.chapters
+                        ?.where((c) => (c.startTime ?? 0) <= (scrobblingPositionSeconds))
+                        .lastOrNull,
                   );
                   return ConditionalWrap(
                     wrapIf: scrobblingDot,

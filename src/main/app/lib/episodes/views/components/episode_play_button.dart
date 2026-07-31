@@ -51,14 +51,13 @@ class EpisodePlayButton extends StatelessWidget {
                           .where((e) => e.episodeId == episode.id && !(e.newPlayback ?? false))
                           .map((event) {
                             return (event.progress ?? 0) / episodeDuration;
-                          })
-                ,
+                          }),
                       initialData: episode.progressPercent,
                       builder: (context, snapshot) {
                         return CircularProgressIndicator(
-                        value: snapshot.data ?? episode.progressPercent,
-                        backgroundColor: colors.secondaryContainer,
-                      );
+                          value: snapshot.data ?? episode.progressPercent,
+                          backgroundColor: colors.secondaryContainer,
+                        );
                       },
                     ),
             IconButton(

@@ -22,7 +22,9 @@ class SearchCubit extends Cubit<SearchState> {
 
   Future<void> search() async {
     EasyDebounce.debounce('podcast-search', Duration(milliseconds: 500), () async {
-      final results = await client.search.search(body: searchController.text).then((value) => value.data ?? <SearchResult>[],);
+      final results = await client.search
+          .search(body: searchController.text)
+          .then((value) => value.data ?? <SearchResult>[]);
       emit(state.copyWith(results: results));
     });
   }
