@@ -21,7 +21,6 @@ import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/models/with_error.dart';
-import 'package:podku_shared/podku_shared.dart';
 
 part 'player.freezed.dart';
 
