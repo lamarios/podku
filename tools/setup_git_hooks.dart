@@ -7,13 +7,9 @@ Future<void> main() async {
     '''
 #!/bin/sh
 set -e
-exec ./submodules/flutter/bin/dart format --set-exit-if-changed ./podku_flutter/lib
-exec ./submodules/flutter/bin/dart analyze ./podku_flutter/lib
-exec ./submodules/flutter/bin/dart analyze --fatal-infos ./podku_flutter/pubspec.yaml
-
-exec ./submodules/flutter/bin/dart format --set-exit-if-changed ./podku_server/lib
-exec ./submodules/flutter/bin/dart analyze ./podku_server/lib
-exec ./submodules/flutter/bin/dart analyze --fatal-infos ./podku_server/pubspec.yaml
+exec ./submodules/flutter/bin/dart format --set-exit-if-changed ./src/main/app/lib
+exec ./submodules/flutter/bin/dart analyze ./src/main/app/lib
+exec ./submodules/flutter/bin/dart analyze --fatal-infos ./src/main/app/pubspec.yaml
 ''',
   );
 
