@@ -1,0 +1,14 @@
+# This is just to run  database locally to do local development
+services:
+  postgres:
+    image: pgvector/pgvector:pg18
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: podku
+      POSTGRES_PASSWORD: "o1HC88oNaNCxtIy1Sc6mzDtTormrmBRC"
+    volumes:
+      - podku_data:/var/lib/postgresql
+volumes:
+  podku_data:

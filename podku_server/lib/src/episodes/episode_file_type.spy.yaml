@@ -1,5 +1,0 @@
-enum: EpisodeFileType
-serialized: byName
-values:
-  - transcript
-  - chapters

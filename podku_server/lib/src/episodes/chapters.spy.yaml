@@ -1,4 +1,0 @@
-class: ChaptersJson
-fields:
-  version: String?
-  chapters: List<Chapter>

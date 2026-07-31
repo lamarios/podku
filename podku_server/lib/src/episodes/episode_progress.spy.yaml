@@ -1,6 +1,0 @@
-class: EpisodeProgress
-fields:
-  episodeId: UuidValue
-  progress: double
-  player: UuidValue
-  newPlayback: bool

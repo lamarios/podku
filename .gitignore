@@ -6,3 +6,6 @@
 pubspec_overrides.yaml
 /podku_server/web/*
 /podku_server/cache/
+/image-cache/
+/target/
+/src/main/resources/public/

@@ -1,23 +1,10 @@
-# Defines a default set of lint rules enforced for
-# projects at Google. For details and rationale,
-# see https://github.com/dart-lang/pedantic#enabled-lints.
-
-# For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
-# Uncomment to specify additional rules.
-# linter:
-#   rules:
-#     - camel_case_types
-
 analyzer:
+  language:
+    strict-inference: true
+    strict-raw-types: true
+    strict-casts: false
   exclude:
-    - lib/src/protocol/**
-    - build/**
-    - android/**
-    - ios/**
-    - web/**
-    - windows/**
-    - macos/**
-    - linux/**
-
-formatter:
-  trailing_commas: preserve
+    - test/*.dart
+    - lib/src/model/*.g.dart
+  errors:
+    deprecated_member_use_from_same_package: ignore

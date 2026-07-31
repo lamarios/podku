@@ -62,42 +62,31 @@ jobs:
 #        run: |
 #          nix-shell --run "flutter test"
       - name: Build app
-        working-directory: podku_flutter
+        working-directory: src/main/app/
         run: |
-          nix-shell --run "../submodules/flutter/bin/flutter build apk --split-per-abi" ../shell.nix
-          nix-shell --run "../submodules/flutter/bin/flutter build appbundle" ../shell.nix
-#      - name: Set up Ruby
-#        if: startsWith(github.ref, 'refs/tags/')
-#        uses: ruby/setup-ruby@v1
-#        with:
-#          ruby-version: '3.0'
-#          working-directory: podku_flutter/android
+          nix-shell --run "flutter doctor" ../../../shell.nix
+          nix-shell --run "flutter build apk --split-per-abi" ../../../shell.nix
+          nix-shell --run "flutter build appbundle" ../../../shell.nix
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: apks
-          path: podku_flutter/build/app/outputs/flutter-apk
+          path: src/main/app/build/app/outputs/flutter-apk
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: appbundle
-          path: podku_flutter/build/app/outputs/bundle/release/
+          path: src/main/app/build/app/outputs/bundle/release/
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           repo_token: ${{ secrets.GH_TOKEN }}
-          file: podku_flutter/build/app/outputs/flutter-apk/*
+          file: src/main/app/build/app/outputs/flutter-apk/*
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
-     # - name: Install dependencies
-     #   if: startsWith(github.ref, 'refs/tags/')
-     #   working-directory: podku_flutter/android
-     #   run: |
-     #     bundle install
-
       - name: Run Fastlane to release
-        working-directory: podku_flutter/android
+        working-directory: src/main/app/android
         if: startsWith(github.ref, 'refs/tags/')
-        run: nix-shell --run "fastlane deploy" ../../shell.nix
+        run: nix-shell --run "fastlane deploy" ../../../shell.nix

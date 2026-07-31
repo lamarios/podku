@@ -22,29 +22,10 @@ pkgs.mkShell {
         flutter
         git
         http-server
-        serverpod_cli
         fastlane
-        gst_all_1.gstreamer
-        gst_all_1.gst-plugins-base
-        gst_all_1.gst-plugins-good
-        gst_all_1.gst-plugins-bad
-        gtk3
-        pkg-config
-        sysprof
-        libX11.dev
-        libX11
-        libXScrnSaver
-        libXcomposite
-        libXcursor
-        libXdamage
-        libXext
-        libXfixes
-        libXi
-        libXrandr
-        libXrender
-        libXtst
-        libxkbfile
-        libxshmfence
+        jdk25_headless
+        maven
+        (pkgs.callPackage ./openapi-generator-cli.nix { })
       ]
     ];
 
@@ -62,57 +43,17 @@ pkgs.mkShell {
 
     echo "Adding flutter submodule to path"
     export PATH="${toString ./.}/submodules/flutter/bin:$PATH"
-
+    export JAVA_HOME="${pkgs.jdk25_headless}"
 
     flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
 
     echo "Exporting android auto emulator libraries"
     export LD_LIBRARY_PATH="${
       pkgs.lib.makeLibraryPath [
-        pkgs.libcxx
-        pkgs.libcxxrt
-        pkgs.gtk3
-        pkgs.gst_all_1.gstreamer
-        pkgs.gst_all_1.gstreamermm
-        pkgs.libunwind
-        pkgs.libX11.dev
-        pkgs.libX11
-        pkgs.libXScrnSaver
-        pkgs.libXcomposite
-        pkgs.libXcursor
-        pkgs.libXdamage
-        pkgs.libXext
-        pkgs.libXfixes
-        pkgs.libXi
-        pkgs.libXrandr
-        pkgs.libXrender
-        pkgs.libXtst
-        pkgs.libxkbfile
-        pkgs.libxshmfence
-
       ]
     }:$LD_LIBRARY_PATH"
     export PKG_CONFIG_PATH="${
       pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" [
-        pkgs.gst_all_1.gstreamer
-        pkgs.gst_all_1.gst-plugins-base
-        pkgs.libunwind
-        pkgs.gtk3
-        pkgs.sysprof
-        pkgs.libX11.dev
-        pkgs.libX11
-        pkgs.libXScrnSaver
-        pkgs.libXcomposite
-        pkgs.libXcursor
-        pkgs.libXdamage
-        pkgs.libXext
-        pkgs.libXfixes
-        pkgs.libXi
-        pkgs.libXrandr
-        pkgs.libXrender
-        pkgs.libXtst
-        pkgs.libxkbfile
-        pkgs.libxshmfence
       ]
     }:$PKG_CONFIG_PATH"
     unset DESTDIR
