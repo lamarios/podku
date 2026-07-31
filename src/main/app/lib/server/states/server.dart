@@ -114,6 +114,12 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   }
 
   Future<void> _subscribeToStream(Client client) async {
+    if (socket != null && socket!.isConnected) {
+      _log.fine('Already connected to socket');
+      return;
+    }
+
+    await socket?.close();
     socket = ReconnectableWebSocket(uri: Uri.parse('${state.serverUrl}/ws'.replaceFirst('http', 'ws')));
     socket?.connect();
 
@@ -155,6 +161,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   }
 
   void onConnectionChange(InternetConnectionStatus event) {
+    _log.fine('Connection state:  $event');
     if (event == .disconnected) {
       _disconnectFromStream();
     } else {
@@ -164,9 +171,10 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   }
 
   void _watchConnectionStatus(String serverUrl) {
+    _log.fine('Watching connection status');
     connectionChecker?.dispose();
     connectionChecker = InternetConnectionChecker.createInstance(
-      addresses: [AddressCheckOption(uri: Uri.parse('$serverUrl/api/podcasts'))],
+      addresses: [AddressCheckOption(uri: Uri.parse('$serverUrl/api/ping'))],
       slowConnectionConfig: SlowConnectionConfig(
         enableToCheckForSlowConnection: true,
         slowConnectionThreshold: Duration(seconds: 1),
@@ -182,6 +190,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState appState) {
+    _log.fine('AppState: $appState');
     if (state.serverUrl != null && appState == AppLifecycleState.resumed) {
       _watchConnectionStatus(state.serverUrl!);
     } else {

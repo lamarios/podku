@@ -9,12 +9,51 @@ All URIs are relative to *http://localhost:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**exportFeeds**](PodcastsApi.md#exportfeeds) | **GET** /api/podcasts/export | 
 [**getPodcast**](PodcastsApi.md#getpodcast) | **GET** /api/podcasts/{id} | 
 [**getPodcasts**](PodcastsApi.md#getpodcasts) | **GET** /api/podcasts | 
+[**importFeed**](PodcastsApi.md#importfeed) | **POST** /api/podcasts/import | 
 [**parsePodcast**](PodcastsApi.md#parsepodcast) | **POST** /api/podcasts/parse | 
 [**subscribeToPodcast**](PodcastsApi.md#subscribetopodcast) | **POST** /api/podcasts | 
 [**unsubsribe**](PodcastsApi.md#unsubsribe) | **DELETE** /api/podcasts/{id} | 
 
+
+# **exportFeeds**
+> Object exportFeeds()
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getPodcastsApi();
+
+try {
+    final response = api.exportFeeds();
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling PodcastsApi->exportFeeds: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+**Object**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getPodcast**
 > Podcast getPodcast(id)
@@ -90,6 +129,47 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **importFeed**
+> List<PodcastLight> importFeed(file)
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getPodcastsApi();
+final MultipartFile file = BINARY_DATA_HERE; // MultipartFile | 
+
+try {
+    final response = api.importFeed(file);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling PodcastsApi->importFeed: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **file** | **MultipartFile**|  | 
+
+### Return type
+
+[**List&lt;PodcastLight&gt;**](PodcastLight.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
  - **Accept**: */*
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

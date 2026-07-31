@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
@@ -91,21 +92,28 @@ class MyApp extends StatelessWidget {
             if (!kIsWeb) BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>()),
           ],
 
-          child: MaterialApp.router(
-            routerConfig: _router,
-            debugShowCheckedModeBanner: kDebugMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            darkTheme: ThemeData(
-              colorScheme: darkColorScheme,
-              appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
-              tabBarTheme: tabTheme,
-            ),
-            themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
-            theme: ThemeData(
-              colorScheme: lightColorScheme,
-              appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
-              tabBarTheme: tabTheme,
+          child: M3ETheme(
+            data: Theme.brightnessOf(context) == .dark
+                ? M3EThemeData.dark(seedColor: appColor)
+                : M3EThemeData.light(seedColor: appColor),
+            dynamicColoring: true,
+            autoTheming: true,
+            child: MaterialApp.router(
+              routerConfig: _router,
+              debugShowCheckedModeBanner: kDebugMode,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              darkTheme: ThemeData(
+                colorScheme: darkColorScheme,
+                appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
+                tabBarTheme: tabTheme,
+              ),
+              themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
+              theme: ThemeData(
+                colorScheme: lightColorScheme,
+                appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
+                tabBarTheme: tabTheme,
+              ),
             ),
           ),
         );

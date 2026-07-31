@@ -24,8 +24,17 @@ class ScrobblingCubit extends Cubit<ScrobblingState> {
     emit(state.copyWith(holdingPosition: null));
   }
 
+  void setHolding(bool holding) {
+    emit(state.copyWith(holding: holding));
+  }
+
+  void setPosition(double position) {
+    emit(state.copyWith(holdingPosition: position, holding: true));
+  }
+
   void scrobbleTo(PlayerCubit playerCubit, double percentage) {
     final maxProgress = playerCubit.state.duration;
+    emit(state.copyWith(holding: false));
     getIt.get<PodkuAudioHandler>().seek(Duration(seconds: (maxProgress.inSeconds * percentage.clamp(0, 1)).round()));
   }
 }

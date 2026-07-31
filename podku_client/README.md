@@ -71,8 +71,11 @@ Class | Method | HTTP request | Description
 [*EpisodesApi*](doc/EpisodesApi.md) | [**proxyAudio**](doc/EpisodesApi.md#proxyaudio) | **GET** /api/episodes/audio-proxy | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**setProgress**](doc/EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**startPlayback**](doc/EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
+[*PingApi*](doc/PingApi.md) | [**ping**](doc/PingApi.md#ping) | **GET** /api/ping | 
+[*PodcastsApi*](doc/PodcastsApi.md) | [**exportFeeds**](doc/PodcastsApi.md#exportfeeds) | **GET** /api/podcasts/export | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**getPodcast**](doc/PodcastsApi.md#getpodcast) | **GET** /api/podcasts/{id} | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**getPodcasts**](doc/PodcastsApi.md#getpodcasts) | **GET** /api/podcasts | 
+[*PodcastsApi*](doc/PodcastsApi.md) | [**importFeed**](doc/PodcastsApi.md#importfeed) | **POST** /api/podcasts/import | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**parsePodcast**](doc/PodcastsApi.md#parsepodcast) | **POST** /api/podcasts/parse | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**subscribeToPodcast**](doc/PodcastsApi.md#subscribetopodcast) | **POST** /api/podcasts | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**unsubsribe**](doc/PodcastsApi.md#unsubsribe) | **DELETE** /api/podcasts/{id} | 

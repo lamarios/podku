@@ -8,6 +8,7 @@ import 'package:openapi/src/auth/basic_auth.dart';
 import 'package:openapi/src/auth/bearer_auth.dart';
 import 'package:openapi/src/auth/oauth.dart';
 import 'package:openapi/src/api/episodes_api.dart';
+import 'package:openapi/src/api/ping_api.dart';
 import 'package:openapi/src/api/podcasts_api.dart';
 import 'package:openapi/src/api/proxy_api.dart';
 import 'package:openapi/src/api/search_api.dart';
@@ -108,6 +109,12 @@ class Openapi {
   /// by doing that all interceptors will not be executed
   EpisodesApi getEpisodesApi() {
     return EpisodesApi(dio);
+  }
+
+  /// Get PingApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  PingApi getPingApi() {
+    return PingApi(dio);
   }
 
   /// Get PodcastsApi instance, base route and serializer can be overridden by a given but be careful,

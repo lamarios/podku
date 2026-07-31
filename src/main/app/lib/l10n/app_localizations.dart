@@ -154,7 +154,7 @@ abstract class AppLocalizations {
   /// No description provided for @automaticDownloadExplanation.
   ///
   /// In en, this message translates to:
-  /// **'Keep the {count, plural, =1{newest episode} other{{count} newest episodes}} for each podcast, will clear the rest'**
+  /// **'Keep the {count, plural, =1{newest episode} other{{count} newest episodes}}, will clear the rest'**
   String automaticDownloadExplanation(num count);
 
   /// No description provided for @episodesToKeepPerPodcast.

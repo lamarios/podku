@@ -9,7 +9,7 @@
   "downloads": "Downloads",
   "downloadSettings": "Download settings",
   "automaticDownload": "Download podcasts episodes automatically",
-  "automaticDownloadExplanation": "Keep the {count, plural, =1{newest episode} other{{count} newest episodes}} for each podcast, will clear the rest",
+  "automaticDownloadExplanation": "Keep the {count, plural, =1{newest episode} other{{count} newest episodes}}, will clear the rest",
   "episodesToKeepPerPodcast": "Episodes per podcast to keep",
   "ok": "OK",
   "cancel": "Cancel",

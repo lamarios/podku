@@ -10,6 +10,7 @@ export 'package:openapi/src/auth/oauth.dart';
 
 
 export 'package:openapi/src/api/episodes_api.dart';
+export 'package:openapi/src/api/ping_api.dart';
 export 'package:openapi/src/api/podcasts_api.dart';
 export 'package:openapi/src/api/proxy_api.dart';
 export 'package:openapi/src/api/search_api.dart';

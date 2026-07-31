@@ -23,7 +23,7 @@ class DownloadSettingsCubit extends Cubit<DownloadSettingsState> {
 
   static Future<int> get podcastEpisodes async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(podcastEpisodesKey) ?? 1;
+    return prefs.getInt(podcastEpisodesKey) ?? 10;
   }
 
   Future<void> setDownloadAutomatically(bool value) async {

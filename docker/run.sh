@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
- java -XX:MaxRAM=256m -jar /app/podku.jar
+ java -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -jar /app/podku.jar

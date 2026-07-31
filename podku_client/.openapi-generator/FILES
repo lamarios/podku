@@ -9,6 +9,7 @@ doc/EpisodeFile.md
 doc/EpisodePerson.md
 doc/EpisodeTranscript.md
 doc/EpisodesApi.md
+doc/PingApi.md
 doc/PlaybackProgress.md
 doc/Podcast.md
 doc/PodcastLight.md
@@ -21,6 +22,7 @@ doc/TranscriptsApi.md
 lib/openapi.dart
 lib/src/api.dart
 lib/src/api/episodes_api.dart
+lib/src/api/ping_api.dart
 lib/src/api/podcasts_api.dart
 lib/src/api/proxy_api.dart
 lib/src/api/search_api.dart
@@ -48,6 +50,7 @@ test/episode_person_test.dart
 test/episode_test.dart
 test/episode_transcript_test.dart
 test/episodes_api_test.dart
+test/ping_api_test.dart
 test/playback_progress_test.dart
 test/podcast_light_test.dart
 test/podcast_person_test.dart

@@ -71,36 +71,31 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     }
     _log.fine('[Automatic] Starting to download episodes');
     final int episodesToDownload = await DownloadSettingsCubit.podcastEpisodes;
-    final podcasts = await client.podcasts.getPodcasts().then((value) => value.data ?? []);
-    for (final p in podcasts) {
-      final podcast = await client.podcasts.getPodcast(id: p.id).then((value) => value.data);
-      if (podcast?.episodes?.isEmpty ?? true) {
-        continue;
-      }
-      // we get the first x episodes and downloads them if not already done
-      var downloadableEpisodes = podcast!.episodes!.take(episodesToDownload);
-      for (final e in downloadableEpisodes) {
-        final completeEpisode = e.copyWith(podcast: p);
+    final downloadableEpisodes = await client.episodes
+        .getEpisodes(pageSize: episodesToDownload)
+        .then((value) => value.data ?? <Episode>[]);
 
-        if (!await completeEpisode.validOfflineFiles) {
-          _log.fine('[Automatic] downloading ${completeEpisode.title}');
-          download(completeEpisode, manualDownload: false);
-        } else {
-          _log.fine('[Automatic] ${completeEpisode.title} already exists');
-        }
+    // we get the first x episodes and downloads them if not already done
+    for (final e in downloadableEpisodes) {
+      if (!await e.validOfflineFiles) {
+        _log.fine('[Automatic] downloading ${e.title}');
+        download(e, manualDownload: false);
+      } else {
+        _log.fine('[Automatic] ${e.title} already exists');
       }
-
-      // we get the episodes after x and delete if they exist
-      var episodesToClean = podcast.episodes!.skip(episodesToDownload);
-      for (final e in episodesToClean) {
-        final completeEpisode = e.copyWith(podcast: p);
-        if ((await completeEpisode.validOfflineFiles) && !(await completeEpisode.isManualDownload)) {
-          _log.fine('[Automatic] deleting local copy of ${completeEpisode.title}');
-          await delete(completeEpisode);
-        }
-      }
-      getOfflineEpisodes();
     }
+
+    // we get the episodes after x and delete if they exist
+    var episodesToClean = state.offlineEpisodes.where(
+      (element) => !downloadableEpisodes.map((e) => e.id).contains(element.id),
+    );
+    for (final e in episodesToClean) {
+      if ((await e.validOfflineFiles) && !(await e.isManualDownload)) {
+        _log.fine('[Automatic] deleting local copy of ${e.title}');
+        await delete(e);
+      }
+    }
+    getOfflineEpisodes();
   }
 
   Future<void> initDownloadListener() async {

@@ -40,7 +40,7 @@ class BigPlayer extends StatelessWidget {
                 final colors = Theme.of(context).colorScheme;
                 return AnimatedContainer(
                   duration: Duration(milliseconds: 500),
-                  color: tabController.index == 0 ? colors.secondaryContainer : colors.surface,
+                  color: tabController.index == 0 ? colors.primaryContainer : colors.surface,
                   child: Scaffold(
                     backgroundColor: Colors.transparent,
                     appBar: AppBar(

@@ -46,7 +46,7 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$count newest episodes',
       one: 'newest episode',
     );
-    return 'Keep the $_temp0 for each podcast, will clear the rest';
+    return 'Keep the $_temp0, will clear the rest';
   }
 
   @override
