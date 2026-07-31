@@ -21,6 +21,7 @@ public class Podcast {
     private String link;
 
     @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("pubDateMillis DESC")
     private List<Episode> episodes;
 
 
