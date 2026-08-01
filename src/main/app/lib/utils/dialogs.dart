@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
+import 'package:material_3_expressive/components/dialogs/m3e_dialogs.dart';
 import 'package:podku/l10n/app_localizations.dart';
 
 Future<bool?> okCancelDialog(
@@ -9,14 +11,14 @@ Future<bool?> okCancelDialog(
 }) async {
   final locals = AppLocalizations.of(context)!;
 
-  return await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: Text(title),
+  return await M3EDialog.show<bool>(
+    context,
+    dialog: M3EDialog(
+      title: title,
       content: content,
       actions: <Widget>[
-        if (showCancel) TextButton(onPressed: () => Navigator.pop(context, false), child: Text(locals.cancel)),
-        TextButton(
+        if (showCancel) M3EButton.text(onPressed: () => Navigator.pop(context, false), child: Text(locals.cancel)),
+        M3EButton.text(
           onPressed: () {
             Navigator.pop(context, true);
           },

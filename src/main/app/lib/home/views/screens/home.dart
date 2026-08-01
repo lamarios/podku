@@ -48,7 +48,11 @@ class HomeScreen extends StatelessWidget {
               if (!kIsWeb || kDebugMode)
                 IconButton(
                   onPressed: () async {
-                    if (await okCancelDialog(context, title: locals.loggingOut, content: Text(locals.loggingOutText)) ??
+                    if ((await okCancelDialog(
+                          context,
+                          title: locals.loggingOut,
+                          content: Text(locals.loggingOutText),
+                        )) ??
                         false) {
                       await getIt.get<ServerCubit>().setServerUrl(null);
                       if (context.mounted) {
