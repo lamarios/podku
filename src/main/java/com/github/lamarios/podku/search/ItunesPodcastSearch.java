@@ -44,7 +44,7 @@ public class ItunesPodcastSearch {
      */
     public List<SearchResult> search(String term, String country, Integer limit) {
         String country_ = country != null ? country : "US";
-        int limit_ = limit != null ? limit : 25;
+        int limit_ = limit != null ? limit : 50;
 
         String query = "term=" + encode(term)
                 + "&media=podcast"
