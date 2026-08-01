@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
@@ -77,10 +78,10 @@ class PodcastScreen extends StatelessWidget {
                     child: Container(
                       color: isLoading || isDesktop ? colorScheme.surface : scaffoldColor,
                       child: Scaffold(
-                        appBar: AppBar(
+                        appBar: M3EAppBar.top(
                           title: Text(state.podcast?.name ?? ''),
                           backgroundColor: Colors.transparent,
-                          surfaceTintColor: Colors.red,
+                          automaticallyImplyLeading: true,
                         ),
                         backgroundColor: Colors.transparent,
                         body: SafeArea(
