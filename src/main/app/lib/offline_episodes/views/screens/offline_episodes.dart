@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -16,12 +18,14 @@ class OfflineEpisodesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final isMobile = BreakPoint.of(context) == .mobile;
     final locals = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
+      appBar: M3EAppBar.top(
+        backgroundColor: Colors.transparent,
         title: Text(locals.downloads),
+        automaticallyImplyLeading: true,
         actions: [IconButton(onPressed: () => context.push('/offline/settings'), icon: Icon(Icons.settings))],
       ),
       body: SafeArea(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 
@@ -10,7 +11,7 @@ class PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return Builder(
       builder: (context) {
         final cubit = context.read<PlayerCubit>();

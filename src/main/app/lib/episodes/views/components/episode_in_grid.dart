@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/components/episode_play_button.dart';
 import 'package:podku/episodes/views/components/episode_sheet.dart';
@@ -23,7 +24,7 @@ class EpisodeInGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return InkWell(
       onTap: () => EpisodeSheet.open(context, episode, offline),
       child: Column(

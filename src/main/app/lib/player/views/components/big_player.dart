@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/models/episode_transcript.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
@@ -22,7 +24,7 @@ class BigPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = M3ETheme.of(context).textTheme;
     final cubit = context.read<PlayerCubit>();
     final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
     return DefaultTabController(
@@ -31,19 +33,18 @@ class BigPlayer extends StatelessWidget {
         builder: (context) {
           final colorScheme = context.select((PodcastImageColorCubit c) => c.state.colorScheme);
           var tabController = DefaultTabController.of(context);
-          return AnimatedTheme(
-            duration: animationDuration,
-            data: Theme.of(context).copyWith(colorScheme: colorScheme),
+          return M3ETheme(
+            data: M3ETheme.of(context).copyWith(colorScheme: colorScheme),
             child: ListenableBuilder(
               listenable: tabController,
               builder: (context, child) {
-                final colors = Theme.of(context).colorScheme;
+                final colors = M3ETheme.of(context).colorScheme;
                 return AnimatedContainer(
                   duration: Duration(milliseconds: 500),
-                  color: tabController.index == 0 ? colors.primaryContainer : colors.surface,
+                  color: tabController.index == 0 ? colors.surface : colors.surface,
                   child: Scaffold(
                     backgroundColor: Colors.transparent,
-                    appBar: AppBar(
+                    appBar: M3EAppBar.top(
                       leading: isMobile
                           ? IconButton(
                               onPressed: () => context.read<PlayerCubit>().showPlayers(true, false),

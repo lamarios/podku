@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -29,8 +30,9 @@ class HomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
       child: Scaffold(
-        appBar: AppBar(
+        appBar: M3EAppBar.top(
           title: Text(titles[navigationShell.currentIndex]),
+          backgroundColor: Colors.transparent,
           actions: [
             if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
             if (!kIsWeb || kDebugMode)

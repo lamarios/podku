@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:material_3_expressive/foundations/m3e_color_scheme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/podcasts/models/podcast.dart';
 import 'package:podku/utils/colors.dart';
@@ -16,7 +17,7 @@ final _log = Logger('PodcastImageColorCubit');
 class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
   final Podcast? podcast;
   final Brightness brightness;
-  final ColorScheme fallBackColorScheme;
+  final M3EColorScheme fallBackColorScheme;
 
   final ScrollController scrollController = ScrollController();
 
@@ -54,7 +55,7 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
       final podcastColor = await generatePalette(podcast?.artUrl ?? podcastLight!.artUrl);
       _log.fine('found podcast image $podcastColor');
       if (podcastColor != null) {
-        final colorScheme = ColorScheme.fromSeed(seedColor: podcastColor, brightness: brightness);
+        final colorScheme = M3EColorScheme.fromSeed(podcastColor, brightness: brightness);
         emit(state.copyWith(colorScheme: colorScheme, initialized: true));
       } else {
         emit(state.copyWith(colorScheme: fallBackColorScheme, initialized: true));
@@ -71,7 +72,7 @@ class PodcastImageColorCubit extends Cubit<PodcastImageColorState> {
 sealed class PodcastImageColorState with _$PodcastImageColorState {
   const factory PodcastImageColorState({
     required Color scaffoldColor,
-    required ColorScheme colorScheme,
+    required M3EColorScheme colorScheme,
     @Default(false) bool initialized,
   }) = _PodcastImageColorState;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/server/states/server.dart';
@@ -17,7 +18,7 @@ class ServerSetupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locals = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final isMobile = BreakPoint.of(context) == .mobile;
 
     return ForcedDarkThemeBuilder(

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/components/progress_indicators/m3e_progress_indicators.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_progress.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/server/states/server.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 const double _playedThreshold = 0.95;
 
@@ -16,7 +17,7 @@ class EpisodePlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return Builder(
       builder: (context) {
         var cubit = context.read<PlayerCubit>();
@@ -42,7 +43,7 @@ class EpisodePlayButton extends StatelessWidget {
             ),
             if (!offline)
               isEpisodePlaying
-                  ? CircularProgressIndicator(value: playerProgress, backgroundColor: colors.secondaryContainer)
+                  ? M3EProgressIndicator.circularWavy(value: playerProgress, trackColor: colors.secondaryContainer)
                   : StreamBuilder<double>(
                       stream: context
                           .read<ServerCubit>()
@@ -54,9 +55,9 @@ class EpisodePlayButton extends StatelessWidget {
                           }),
                       initialData: episode.progressPercent,
                       builder: (context, snapshot) {
-                        return CircularProgressIndicator(
+                        return M3EProgressIndicator.circular(
                           value: snapshot.data ?? episode.progressPercent,
-                          backgroundColor: colors.secondaryContainer,
+                          trackColor: colors.secondaryContainer,
                         );
                       },
                     ),

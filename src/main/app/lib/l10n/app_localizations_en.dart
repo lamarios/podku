@@ -36,7 +36,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get downloadSettings => 'Download settings';
 
   @override
-  String get automaticDownload => 'Download podcasts episodes automatically';
+  String get automaticDownload => 'Download episodes automatically';
 
   @override
   String automaticDownloadExplanation(num count) {

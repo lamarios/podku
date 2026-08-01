@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/search/states/search.dart';
 import 'package:podku/search/views/components/search_result.dart';
@@ -10,7 +11,7 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return BlocProvider(
       create: (context) => SearchCubit(SearchState()),
       child: BlocBuilder<SearchCubit, SearchState>(

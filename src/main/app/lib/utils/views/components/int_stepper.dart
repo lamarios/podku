@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 
 class IntStepper extends StatelessWidget {
   const IntStepper({
@@ -18,8 +19,8 @@ class IntStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -48,7 +49,7 @@ class _StepButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null;
-    final color = enabled ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor;
+    final color = enabled ? M3ETheme.of(context).colorScheme.primary : M3ETheme.of(context).colorScheme.surfaceDim;
 
     return IconButton(
       icon: Icon(icon, color: color),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -14,7 +15,7 @@ class PodcastsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
 
     return BlocBuilder<PodcastsCubit, PodcastState>(

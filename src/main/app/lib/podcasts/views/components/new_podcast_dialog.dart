@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
@@ -39,8 +40,8 @@ class NewPodcastDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
     return Material(
       color: Colors.transparent,
@@ -150,8 +151,8 @@ class _PodcastResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
 
     return Column(

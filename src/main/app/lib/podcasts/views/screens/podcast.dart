@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -27,7 +28,7 @@ class PodcastScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     var breakPoint = BreakPoint.of(context);
     final isMobile = breakPoint == .mobile;
@@ -71,9 +72,8 @@ class PodcastScreen extends StatelessWidget {
                 var isLoading = state.loading || state.podcast == null || !colorInitialized;
                 return ErrorHandler<PodcastCubit, PodcastState>(
                   showAsSnack: true,
-                  child: AnimatedTheme(
-                    duration: animationDuration,
-                    data: Theme.of(context).copyWith(colorScheme: colorScheme),
+                  child: M3ETheme(
+                    data: M3ETheme.of(context).copyWith(colorScheme: colorScheme),
                     child: Container(
                       color: isLoading || isDesktop ? colorScheme.surface : scaffoldColor,
                       child: Scaffold(
@@ -302,8 +302,8 @@ class _SubscribeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
 
     final cubit = context.read<PodcastCubit>();
@@ -346,7 +346,7 @@ class _VerticalPodcastHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(color: colors.secondaryContainer, borderRadius: .circular(pu4)),

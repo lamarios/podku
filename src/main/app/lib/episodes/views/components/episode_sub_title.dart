@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 
 import 'package:podku/utils.dart';
@@ -15,8 +16,8 @@ class EpisodeSubTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return Row(
       crossAxisAlignment: .center,
       mainAxisAlignment: mainAxisAlignment ?? .start,

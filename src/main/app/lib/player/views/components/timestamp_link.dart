@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/player/states/player.dart';
 
@@ -33,8 +34,8 @@ class TimestampLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     return InkWell(
       onTap: () => _seekOrPlay(context),

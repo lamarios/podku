@@ -16,7 +16,7 @@ class ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     return M3ETheme(
       data: M3EThemeData.dark(seedColor: colors.primary),

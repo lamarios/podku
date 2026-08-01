@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/big_player.dart';
@@ -23,7 +24,7 @@ class PlayerWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     final brightness = Theme.brightnessOf(context);
     return Builder(
       builder: (context) {

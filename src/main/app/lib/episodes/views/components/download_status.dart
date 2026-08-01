@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:logging/logging.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
@@ -16,8 +17,8 @@ class EpisodeDownloadStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return Builder(
       builder: (context) {
         final download = context.select((DownloadManagerCubit c) => c.state.downloadStatus[episode.id]);

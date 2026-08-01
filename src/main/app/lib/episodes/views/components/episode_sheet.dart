@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -46,9 +47,9 @@ class EpisodeSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = M3ETheme.of(context).textTheme;
     final locals = AppLocalizations.of(context)!;
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     return Material(
       color: Colors.transparent,

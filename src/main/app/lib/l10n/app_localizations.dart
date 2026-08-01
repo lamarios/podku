@@ -148,7 +148,7 @@ abstract class AppLocalizations {
   /// No description provided for @automaticDownload.
   ///
   /// In en, this message translates to:
-  /// **'Download podcasts episodes automatically'**
+  /// **'Download episodes automatically'**
   String get automaticDownload;
 
   /// No description provided for @automaticDownloadExplanation.

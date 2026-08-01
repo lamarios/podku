@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:openapi/openapi.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -38,7 +38,7 @@ class ErrorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final locals = AppLocalizations.of(context)!;
 
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = M3ETheme.of(context).textTheme;
     return Dialog(
       child: Container(
         constraints: BoxConstraints(maxWidth: BreakPoint.mobile.maxWidth),

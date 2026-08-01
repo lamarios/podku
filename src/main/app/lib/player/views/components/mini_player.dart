@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/play_pause_button.dart';
@@ -25,12 +26,11 @@ class MiniPlayer extends StatelessWidget {
           height: playerSize,
           child: Material(
             color: Colors.transparent,
-            child: AnimatedTheme(
-              duration: animationDuration,
-              data: Theme.of(context).copyWith(colorScheme: colorScheme),
+            child: M3ETheme(
+              data: M3ETheme.of(context).copyWith(colorScheme: colorScheme),
               child: Builder(
                 builder: (context) {
-                  final colors = Theme.of(context).colorScheme;
+                  final colors = M3ETheme.of(context).colorScheme;
                   return GestureDetector(
                     onTap: () => cubit.showPlayers(false, true),
                     child: Builder(

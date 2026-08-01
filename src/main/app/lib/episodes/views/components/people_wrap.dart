@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/person.dart';
 import 'package:podku/utils.dart';
@@ -20,8 +21,8 @@ class PeopleList extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     List<Widget> children = (episode.people ?? []).map((p) {
       return Column(

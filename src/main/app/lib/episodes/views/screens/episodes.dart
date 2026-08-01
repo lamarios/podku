@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
@@ -22,7 +23,7 @@ class EpisodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = BreakPoint.of(context) == .mobile;
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
     return BlocProvider(
       create: (context) => EpisodesCubit(EpisodesState()),
       child: BlocBuilder<EpisodesCubit, EpisodesState>(
@@ -84,7 +85,7 @@ class _EpisodeGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     children.addAll(
       state.episodes.map((e) {
@@ -170,7 +171,7 @@ class _EpisodeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final colors = M3ETheme.of(context).colorScheme;
 
     return ListView.builder(
       itemCount: state.episodes.length + (state.episodes.isNotEmpty && state.episodes.length % 100 == 0 ? 1 : 0),

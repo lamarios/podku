@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
+import 'package:material_3_expressive/components/app_bars/styles/m3e_app_bar_theme.dart';
+import 'package:material_3_expressive/components/tabs/m3e_tabs.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
@@ -78,6 +80,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBarTheme = AppBarThemeData(scrolledUnderElevation: 0, surfaceTintColor: Colors.transparent);
+    final m3eAppBarTheme = M3EAppBarTheme(elevation: 0);
+    final m3eTabTheme = M3ETabTheme();
     final tabTheme = TabBarThemeData(dividerColor: Colors.transparent);
     ColorScheme darkColorScheme = .fromSeed(seedColor: appColor, brightness: Brightness.dark);
     ColorScheme lightColorScheme = .fromSeed(seedColor: appColor);
@@ -93,9 +97,10 @@ class MyApp extends StatelessWidget {
           ],
 
           child: M3ETheme(
-            data: Theme.brightnessOf(context) == .dark
+            data: (Theme.brightnessOf(context) == .dark
                 ? M3EThemeData.dark(seedColor: appColor)
-                : M3EThemeData.light(seedColor: appColor),
+                : M3EThemeData.light(seedColor: appColor)).copyWith(appBarTheme: m3eAppBarTheme, tabTheme: m3eTabTheme),
+
             dynamicColoring: true,
             autoTheming: true,
             child: MaterialApp.router(

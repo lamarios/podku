@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 
 class OfflineIndicator extends StatelessWidget {
@@ -13,7 +14,7 @@ class OfflineIndicator extends StatelessWidget {
       child: Material(
         child: Builder(
           builder: (context) {
-            final colors = Theme.of(context).colorScheme;
+            final colors = M3ETheme.of(context).colorScheme;
             return Container(
               height: height,
               alignment: .center,
