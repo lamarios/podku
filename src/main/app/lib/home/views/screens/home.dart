@@ -1,8 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
+import 'package:material_3_expressive/components/navigation_rail/m3e_navigation_rail.dart';
+import 'package:material_3_expressive/components/navigation_rail/models/m3e_navigation_rail_destination.dart';
+import 'package:material_3_expressive/components/navigation_rail/models/m3e_navigation_rail_section.dart';
+import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -27,86 +32,96 @@ class HomeScreen extends StatelessWidget {
     final titles = [locals.episodes, locals.podcasts, locals.search];
 
     bool isMobile = BreakPoint.of(context) == .mobile;
-    return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
-      child: Scaffold(
-        appBar: M3EAppBar.top(
-          title: Text(titles[navigationShell.currentIndex]),
-          backgroundColor: Colors.transparent,
-          actions: [
-            if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
-            if (!kIsWeb || kDebugMode)
-              IconButton(
-                onPressed: () async {
-                  if (await okCancelDialog(context, title: locals.loggingOut, content: Text(locals.loggingOutText)) ??
-                      false) {
-                    await getIt.get<ServerCubit>().setServerUrl(null);
-                    if (context.mounted) {
-                      await context.read<DownloadManagerCubit>().deleteAllEpisodes();
+    return M3ETheme(
+      data: M3EThemeData.dark(),
+      dynamicColoring: true,
+      autoTheming: true,
+      child: MultiBlocProvider(
+        providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
+        child: Scaffold(
+          appBar: M3EAppBar.top(
+            leading: SvgPicture.asset('assets/podku-icon-no-background.svg', width: 50, height: 50),
+            title: Text(titles[navigationShell.currentIndex]),
+            backgroundColor: Colors.transparent,
+            actions: [
+              if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
+              if (!kIsWeb || kDebugMode)
+                IconButton(
+                  onPressed: () async {
+                    if (await okCancelDialog(context, title: locals.loggingOut, content: Text(locals.loggingOutText)) ??
+                        false) {
+                      await getIt.get<ServerCubit>().setServerUrl(null);
                       if (context.mounted) {
-                        context.go('/setup');
+                        await context.read<DownloadManagerCubit>().deleteAllEpisodes();
+                        if (context.mounted) {
+                          context.go('/setup');
+                        }
                       }
                     }
-                  }
-                },
-                icon: Icon(Icons.logout),
-              ),
-          ],
-        ),
-        body: BlocBuilder<ServerCubit, ServerState>(
-          builder: (context, state) {
-            return ErrorHandler<PodcastsCubit, PodcastState>(
-              showAsSnack: true,
-              child: SafeArea(
-                child: state.client == null
-                    ? Center(child: LoadingIndicator())
-                    : ConditionalWrap(
-                        wrapIf: !isMobile,
-                        wrapper: (child) => Row(
-                          crossAxisAlignment: .stretch,
-                          children: [
-                            NavigationRail(
-                              extended: true,
-                              destinations: [
-                                NavigationRailDestination(
-                                  icon: Icon(Icons.playlist_play),
-                                  label: Text(locals.episodes),
-                                ),
-                                NavigationRailDestination(icon: Icon(Icons.podcasts), label: Text(locals.podcasts)),
-                                NavigationRailDestination(icon: Icon(Icons.search), label: Text(locals.search)),
-                              ],
-                              selectedIndex: navigationShell.currentIndex,
-                              onDestinationSelected: (value) {
-                                navigationShell.goBranch(value);
-                                context.read<HomeCubit>().setIndex(value);
-                              },
-                            ),
-                            Expanded(child: child),
-                          ],
+                  },
+                  icon: Icon(Icons.logout),
+                ),
+            ],
+          ),
+          body: BlocBuilder<ServerCubit, ServerState>(
+            builder: (context, state) {
+              return ErrorHandler<PodcastsCubit, PodcastState>(
+                showAsSnack: true,
+                child: SafeArea(
+                  child: state.client == null
+                      ? Center(child: LoadingIndicator())
+                      : ConditionalWrap(
+                          wrapIf: !isMobile,
+                          wrapper: (child) => Row(
+                            crossAxisAlignment: .stretch,
+                            children: [
+                              M3ENavigationRail(
+                                labelBehavior: .alwaysShow,
+                                sections: [
+                                  M3ENavigationRailSection(
+                                    destinations: [
+                                      M3ENavigationRailDestination(
+                                        icon: Icon(Icons.playlist_play),
+                                        label: locals.episodes,
+                                      ),
+                                      M3ENavigationRailDestination(icon: Icon(Icons.podcasts), label: locals.podcasts),
+                                      M3ENavigationRailDestination(icon: Icon(Icons.search), label: locals.search),
+                                    ],
+                                  ),
+                                ],
+                                selectedIndex: navigationShell.currentIndex,
+                                onDestinationSelected: (value) {
+                                  navigationShell.goBranch(value);
+                                  context.read<HomeCubit>().setIndex(value);
+                                },
+                              ),
+                              Expanded(child: child),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: .symmetric(horizontal: pu2),
+                            child: KeyedSubtree(key: ValueKey(navigationShell.currentIndex), child: navigationShell),
+                          ),
                         ),
-                        child: Padding(
-                          padding: .symmetric(horizontal: pu2),
-                          child: KeyedSubtree(key: ValueKey(navigationShell.currentIndex), child: navigationShell),
-                        ),
-                      ),
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
+          bottomNavigationBar: isMobile
+              ? NavigationBar(
+                  selectedIndex: navigationShell.currentIndex,
+                  destinations: [
+                    NavigationDestination(icon: Icon(Icons.playlist_play), label: locals.episodes),
+                    NavigationDestination(icon: Icon(Icons.podcasts), label: locals.podcasts),
+                    NavigationDestination(icon: Icon(Icons.search), label: locals.search),
+                  ],
+                  onDestinationSelected: (value) {
+                    navigationShell.goBranch(value);
+                    context.read<HomeCubit>().setIndex(value);
+                  },
+                )
+              : null,
         ),
-        bottomNavigationBar: isMobile
-            ? NavigationBar(
-                selectedIndex: navigationShell.currentIndex,
-                destinations: [
-                  NavigationDestination(icon: Icon(Icons.playlist_play), label: locals.episodes),
-                  NavigationDestination(icon: Icon(Icons.podcasts), label: locals.podcasts),
-                  NavigationDestination(icon: Icon(Icons.search), label: locals.search),
-                ],
-                onDestinationSelected: (value) {
-                  navigationShell.goBranch(value);
-                  context.read<HomeCubit>().setIndex(value);
-                },
-              )
-            : null,
       ),
     );
   }

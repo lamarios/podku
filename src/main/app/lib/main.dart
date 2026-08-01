@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
-import 'package:material_3_expressive/components/app_bars/styles/m3e_app_bar_theme.dart';
-import 'package:material_3_expressive/components/tabs/m3e_tabs.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
@@ -29,7 +27,9 @@ import 'package:uuid/uuid.dart';
 /// instead of using a global client object. This is just a simple example.
 
 Client get client => getIt.get<ServerCubit>().state.client!;
+
 InternetConnectionStatus get connectionStatus => getIt.get<ServerCubit>().state.status;
+
 bool get isOnline => connectionStatus == .connected || connectionStatus == .slow;
 
 late final GoRouter _router;
@@ -80,8 +80,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appBarTheme = AppBarThemeData(scrolledUnderElevation: 0, surfaceTintColor: Colors.transparent);
-    final m3eAppBarTheme = M3EAppBarTheme(elevation: 0);
-    final m3eTabTheme = M3ETabTheme();
     final tabTheme = TabBarThemeData(dividerColor: Colors.transparent);
     ColorScheme darkColorScheme = .fromSeed(seedColor: appColor, brightness: Brightness.dark);
     ColorScheme lightColorScheme = .fromSeed(seedColor: appColor);
@@ -96,29 +94,23 @@ class MyApp extends StatelessWidget {
             if (!kIsWeb) BlocProvider(create: (context) => getIt.get<DownloadManagerCubit>()),
           ],
 
-          child: M3ETheme(
-            data: (Theme.brightnessOf(context) == .dark
-                ? M3EThemeData.dark(seedColor: appColor)
-                : M3EThemeData.light(seedColor: appColor)).copyWith(appBarTheme: m3eAppBarTheme, tabTheme: m3eTabTheme),
-
-            dynamicColoring: true,
-            autoTheming: true,
-            child: MaterialApp.router(
-              routerConfig: _router,
-              debugShowCheckedModeBanner: kDebugMode,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              darkTheme: ThemeData(
-                colorScheme: darkColorScheme,
-                appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
-                tabBarTheme: tabTheme,
-              ),
-              themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
-              theme: ThemeData(
-                colorScheme: lightColorScheme,
-                appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
-                tabBarTheme: tabTheme,
-              ),
+          child: MaterialApp.router(
+            routerConfig: _router,
+            debugShowCheckedModeBanner: kDebugMode,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (context, child) =>
+                M3ETheme(data: M3EThemeData.dark(seedColor: appColor), autoTheming: true, dynamicColoring: true, child: child!),
+            darkTheme: ThemeData(
+              colorScheme: darkColorScheme,
+              appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),
+              tabBarTheme: tabTheme,
+            ),
+            themeMode: MediaQuery.platformBrightnessOf(context) == .dark ? .dark : .light,
+            theme: ThemeData(
+              colorScheme: lightColorScheme,
+              appBarTheme: appBarTheme.copyWith(backgroundColor: lightColorScheme.surface),
+              tabBarTheme: tabTheme,
             ),
           ),
         );

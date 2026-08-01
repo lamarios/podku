@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
+import 'package:material_3_expressive/components/menus/m3e_menus.dart';
+import 'package:material_3_expressive/components/toggle_button_group/m3e_toggle_button_group.dart';
+import 'package:material_3_expressive/components/toggle_button_group/models/m3e_button_group_action.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
+import 'package:motor/motor.dart';
 import 'package:podku/episodes/models/episode_transcript.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/player/states/player.dart';
-import 'package:podku/player/views/components/play_pause_button.dart';
 import 'package:podku/player/views/components/player_speed.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/player/views/components/transcript_follower.dart';
@@ -27,6 +30,7 @@ class BigPlayer extends StatelessWidget {
     final textTheme = M3ETheme.of(context).textTheme;
     final cubit = context.read<PlayerCubit>();
     final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
+    final brightness = Theme.brightnessOf(context);
     return DefaultTabController(
       length: 2,
       child: Builder(
@@ -34,7 +38,9 @@ class BigPlayer extends StatelessWidget {
           final colorScheme = context.select((PodcastImageColorCubit c) => c.state.colorScheme);
           var tabController = DefaultTabController.of(context);
           return M3ETheme(
-            data: M3ETheme.of(context).copyWith(colorScheme: colorScheme),
+            data: brightness == .light ? M3EThemeData.light(seedColor: colorScheme.primary) : M3EThemeData.dark(seedColor: colorScheme.primary),
+            autoTheming: true,
+            initialTheme: brightness,
             child: ListenableBuilder(
               listenable: tabController,
               builder: (context, child) {
@@ -65,6 +71,7 @@ class BigPlayer extends StatelessWidget {
                     body: Builder(
                       builder: (context) {
                         final episode = context.select((PlayerCubit c) => c.state.episode);
+                        final playing = context.select((PlayerCubit c) => c.state.playing);
                         final loading = context.select((PlayerCubit c) => c.state.loading);
                         final showTranscript = context.select((PlayerCubit c) => c.state.showTranscript);
                         return AnimatedSwitcher(
@@ -103,18 +110,35 @@ class BigPlayer extends StatelessWidget {
                                           mainAxisAlignment: .center,
                                           crossAxisAlignment: .center,
                                           children: [
-                                            IconButton(
-                                              iconSize: 60,
-                                              onPressed: () => cubit.skip(-10),
-                                              icon: Icon(Icons.fast_rewind, color: colors.onSecondaryContainer),
-                                            ),
-                                            Gap(pu4),
-                                            PlayPauseButton(size: 75),
-                                            Gap(pu4),
-                                            IconButton(
-                                              iconSize: 60,
-                                              onPressed: () => cubit.skip(30),
-                                              icon: Icon(Icons.fast_forward, color: colors.onSecondaryContainer),
+                                            SingleMotionBuilder(
+                                              value: playing ? 1 : 0,
+                                              from: 0,
+                                              motion: MaterialSpringMotion.expressiveEffectsDefault(),
+                                              builder: (context, value, child) => M3EButtonGroup(
+                                                size: .xl,
+                                                style: .text,
+                                                onSelectedIndexChanged: (value) => switch (value) {
+                                                  0 => cubit.skip(-10),
+                                                  1 => cubit.playPause(),
+                                                  2 => cubit.skip(10),
+                                                  _ => throw UnimplementedError(),
+                                                },
+                                                actions: [
+                                                  M3EButtonGroupAction(
+                                                    icon: Icon(Icons.fast_rewind, color: colors.onSecondaryContainer),
+                                                  ),
+                                                  M3EButtonGroupAction(
+                                                    icon: AnimatedIcon(
+                                                      icon: AnimatedIcons.play_pause,
+                                                      color: colors.onSecondaryContainer,
+                                                      progress: AlwaysStoppedAnimation(value),
+                                                    ),
+                                                  ),
+                                                  M3EButtonGroupAction(
+                                                    icon: Icon(Icons.fast_forward, color: colors.onSecondaryContainer),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -145,12 +169,10 @@ class BigPlayer extends StatelessWidget {
                                                   Text(printDuration(position), style: textTheme.bodySmall),
                                                   if (chapter != null && chapters.isNotEmpty)
                                                     Expanded(
-                                                      child: MenuAnchor(
-                                                        builder: (context, controller, child) {
+                                                      child: M3EMenu(
+                                                        anchorBuilder: (context, open) {
                                                           return InkWell(
-                                                            onTap: () => controller.isOpen
-                                                                ? controller.close()
-                                                                : controller.open(),
+                                                            onTap: () => open(),
                                                             child: Padding(
                                                               padding: .only(bottom: pu3),
                                                               child: Text(
@@ -163,10 +185,10 @@ class BigPlayer extends StatelessWidget {
                                                             ),
                                                           );
                                                         },
-                                                        menuChildren: chapters
+                                                        children: chapters
                                                             .map(
-                                                              (e) => MenuItemButton(
-                                                                child: Text(e.title ?? ''),
+                                                              (e) => M3EMenuEntry(
+                                                                label: e.title ?? '',
                                                                 onPressed: () => cubit.seek(
                                                                   Duration(seconds: (e.startTime ?? 0).toInt()),
                                                                 ),
@@ -196,8 +218,7 @@ class BigPlayer extends StatelessWidget {
                                         ),
 
                                         if (showTranscript)
-                                          ConstrainedBox(
-                                            constraints: BoxConstraints(maxHeight: 200),
+                                          Expanded(
                                             child: TranscriptFollower(),
                                           ),
                                       ],

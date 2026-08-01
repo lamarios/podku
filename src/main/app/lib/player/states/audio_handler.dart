@@ -213,13 +213,16 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> seek(Duration position) async {
+    if (position.isNegative) {
+      return;
+    }
     _player.seek(position);
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }
 
   @override
   Future<void> fastForward() async {
-    var position = (_player.position ?? Duration.zero) + Duration(seconds: 30);
+    var position = (_player.position) + Duration(seconds: 30);
     _player.seek(position);
 
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
@@ -227,7 +230,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> rewind() async {
-    var position = (_player.position ?? Duration(seconds: 10)) + Duration(seconds: -10);
+    var position = (_player.position) + Duration(seconds: -10);
     _player.seek(position);
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }

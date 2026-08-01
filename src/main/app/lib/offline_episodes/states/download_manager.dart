@@ -185,14 +185,6 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
             case .failed:
               tasks.remove(taskEntry.key);
               await FileDownloader().cancel(update.task);
-              Future.delayed(Duration(seconds: 5), () async {
-                _log.fine('retrying downloading episode: ${taskEntry.key}, download task id ${task?.id}');
-                download(
-                  (await client.episodes.getEpisode(id: taskEntry.key)).data!,
-                  manualDownload: false,
-                  retries: task!.retries + 1,
-                );
-              });
               break;
             default:
               break;

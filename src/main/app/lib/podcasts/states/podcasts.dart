@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:background_downloader/background_downloader.dart';
+import 'package:dio/dio.dart';
+import 'package:file_picker/src/api/platform_file.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -8,6 +12,7 @@ import 'package:podku/main.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/with_error.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'podcasts.freezed.dart';
 
@@ -53,6 +58,26 @@ class PodcastsCubit extends Cubit<PodcastState> {
       getPodcasts();
     } else {
       emit(state.copyWith(subscriptions: []));
+    }
+  }
+
+  Future<void> downloadOpml() async {
+    final url = '${client.serverUrl}/api/podcasts/export';
+
+    if (kIsWeb) {
+      launchUrl(Uri.parse(url));
+    } else {
+      final task = DownloadTask(url: url, filename: 'podcasts.opml');
+      await FileDownloader().download(task);
+      await FileDownloader().moveToSharedStorage(task, SharedStorage.downloads);
+    }
+  }
+
+  Future<void> uploadOpml(PlatformFile result) async {
+    if (result.path != null) {
+      final file = await MultipartFile.fromFile(result.path!);
+      await client.podcasts.importFeed(file: file).then((value) => value.data ?? []);
+      getPodcasts();
     }
   }
 }

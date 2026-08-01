@@ -1,11 +1,11 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
+import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
@@ -32,7 +32,6 @@ class PodcastScreen extends StatelessWidget {
     final colors = M3ETheme.of(context).colorScheme;
 
     var breakPoint = BreakPoint.of(context);
-    final isMobile = breakPoint == .mobile;
     final isDesktop = breakPoint == .desktop || breakPoint == .bigDesktop;
 
     var podcastCubit = PodcastCubit(
@@ -135,6 +134,15 @@ class PodcastScreen extends StatelessWidget {
                                               ),
                                             if (state.podcast != null) ...[
                                               if (!isDesktop)
+                                                SliverToBoxAdapter(
+                                                  child: _PodcastHeader(
+                                                    podcast: state.podcast!,
+                                                    subscribing: state.subscribing,
+                                                    subscribed: state.subscribed,
+                                                    // maxExtent: isMobile ? 450 : 255,
+                                                  ),
+                                                ),
+                                              /*
                                                 SliverPersistentHeader(
                                                   pinned: true,
                                                   delegate: _PodcastHeader(
@@ -144,6 +152,7 @@ class PodcastScreen extends StatelessWidget {
                                                     maxExtent: isMobile ? 450 : 255,
                                                   ),
                                                 ),
+*/
                                               if (state.podcast?.episodes != null)
                                                 DecoratedSliver(
                                                   decoration: BoxDecoration(
@@ -197,49 +206,47 @@ class PodcastScreen extends StatelessWidget {
   }
 }
 
-class _PodcastHeader extends SliverPersistentHeaderDelegate {
+class _PodcastHeader extends StatelessWidget {
   final Podcast podcast;
   final bool subscribing;
   final bool subscribed;
-  @override
-  final double maxExtent;
-  static const double _minImageSize = 0;
+  static const double _imageSize = 200;
 
   const _PodcastHeader({
     required this.podcast,
     required this.subscribing,
     required this.subscribed,
-    required this.maxExtent,
+    // required this.maxExtent,
   });
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // t goes 0 -> 1 as the header collapses
+  Widget build(BuildContext context) {
     final isMobile = BreakPoint.of(context) == .mobile;
-    final t = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
-    final imageSize = lerpDouble(isMobile ? 200 : 150, _minImageSize, (t * 1).clamp(0, 1))!;
-    final opacity = (1 - t * 1.25).clamp(0.0, 1.0); // fades out in the first half
+    final double opacity = 1; // fades out in the first half
     if (isMobile) {
       return Opacity(
         opacity: opacity,
         child: Column(
           children: [
             Center(
-              child: PodcastImage(podcast: podcast, width: imageSize, height: imageSize, borderRadius: pu4),
+              child: PodcastImage(podcast: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
             ),
             if (podcast.description != null) ...[
               Gap(pu2),
-              Expanded(
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 300),
                 child: Padding(
                   padding: .symmetric(horizontal: pu2),
                   child: SingleChildScrollView(child: HtmlDescription(podcast: podcast, offline: false)),
                 ),
               ),
             ],
-            if (t < 0.05) ...[
-              Gap(pu2),
-              _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
-            ],
+            Gap(pu2),
+            Align(
+              alignment: .centerRight,
+              child: _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
+            ),
+            Gap(pu2),
           ],
         ),
       );
@@ -254,7 +261,7 @@ class _PodcastHeader extends SliverPersistentHeaderDelegate {
               children: [
                 Gap(pu4),
                 Center(
-                  child: PodcastImage(podcast: podcast, width: imageSize, height: imageSize, borderRadius: pu4),
+                  child: PodcastImage(podcast: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
                 ),
                 Gap(pu4),
                 Expanded(
@@ -275,23 +282,25 @@ class _PodcastHeader extends SliverPersistentHeaderDelegate {
                 ),
               ],
             ),
-            if (t < 0.05) ...[
-              Gap(pu2),
-              _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
-            ],
+            Gap(pu2),
+            Align(
+              alignment: .centerRight,
+              child: _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
+            ),
+            Gap(pu2),
           ],
         ),
       );
     }
   }
 
-  @override
-  double get minExtent => 0;
-
-  @override
-  bool shouldRebuild(covariant _PodcastHeader oldDelegate) {
-    return oldDelegate.podcast != podcast;
-  }
+  // @override
+  // double get minExtent => 0;
+  //
+  // @override
+  // bool shouldRebuild(covariant _PodcastHeader oldDelegate) {
+  //   return oldDelegate.podcast != podcast;
+  // }
 }
 
 class _SubscribeButton extends StatelessWidget {
@@ -303,36 +312,24 @@ class _SubscribeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = M3ETheme.of(context).textTheme;
-    final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
 
     final cubit = context.read<PodcastCubit>();
     return Padding(
       padding: .symmetric(horizontal: pu2),
-      child: Row(
-        mainAxisAlignment: .end,
-        children: [
-          FilledButton.tonalIcon(
-            onPressed: subscribing
-                ? null
-                : () async {
-                    if (subscribed) {
-                      cubit.unsubscribe();
-                    } else {
-                      cubit.subscribe();
-                    }
-                  },
-            label: Text(
-              subscribed ? locals.unsubscribe : locals.subscribe,
-              style: textTheme.bodyMedium!.copyWith(color: subscribed ? colors.error : colors.primary),
-            ),
-            icon: Icon(
-              subscribed ? Icons.block : Icons.check_box_outline_blank_outlined,
-              color: subscribed ? colors.error : colors.primary,
-            ),
-          ),
-        ],
+      child: M3EButton.icon(
+        onPressed: subscribing
+            ? null
+            : () async {
+                if (subscribed) {
+                  cubit.unsubscribe();
+                } else {
+                  cubit.subscribe();
+                }
+              },
+
+        label: subscribing ? LoadingIndicator.contained() : Text(subscribed ? locals.unsubscribe : locals.subscribe),
+        icon: Icon(subscribed ? Icons.block : Icons.check_box_outline_blank_outlined),
       ),
     );
   }

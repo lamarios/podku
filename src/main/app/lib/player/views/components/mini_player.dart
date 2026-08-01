@@ -18,6 +18,7 @@ class MiniPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PlayerCubit>();
+    final brightness = Theme.brightnessOf(context);
 
     return Builder(
       builder: (context) {
@@ -27,7 +28,11 @@ class MiniPlayer extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: M3ETheme(
-              data: M3ETheme.of(context).copyWith(colorScheme: colorScheme),
+              data: brightness == .light
+                  ? M3EThemeData.light(seedColor: colorScheme.primary)
+                  : M3EThemeData.dark(seedColor: colorScheme.primary),
+              autoTheming: true,
+              initialTheme: brightness,
               child: Builder(
                 builder: (context) {
                   final colors = M3ETheme.of(context).colorScheme;

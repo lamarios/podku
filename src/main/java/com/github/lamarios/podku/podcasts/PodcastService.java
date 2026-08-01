@@ -89,7 +89,7 @@ public class PodcastService {
     }
 
 
-    @Scheduled(cron = "@daily")
+    @Scheduled(cron = "@hourly")
     public void refreshPodcasts() {
         var parser = new PodcastParser();
         TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -12,35 +12,41 @@ import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/description.dart';
-import 'package:stupid_simple_sheet/stupid_simple_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeSheet extends StatelessWidget {
   final Episode episode;
   final bool offline;
+  final bool showTitle;
 
-  const EpisodeSheet({super.key, required this.episode, required this.offline});
+  const EpisodeSheet({super.key, required this.episode, required this.offline, this.showTitle = true});
 
   static Future<Object?> open(BuildContext context, Episode episode, bool offline) async {
     final isMobile = BreakPoint.of(context) == .mobile;
 
     return isMobile
-        ? Navigator.of(context).push(
-            StupidSimpleSheetRoute(
-              draggable: true,
-              barrierDismissible: true,
-              motion: MaterialSpringMotion.expressiveSpatialDefault(),
-              child: SafeArea(
+        ? M3EBottomSheet.show(
+            context,
+            showDragHandle: false,
+            builder: (context) => SafeArea(
+              top: false,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.7),
                 child: EpisodeSheet(episode: episode, offline: offline),
               ),
             ),
           )
-        : showDialog(
-            context: context,
-            builder: (context) => Dialog(
-              backgroundColor: Colors.transparent,
-              constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
-              child: EpisodeSheet(episode: episode, offline: offline),
+        : M3EDialog.show(
+            context,
+            dialog: M3EDialog(
+              // backgroundColor: Colors.transparent,
+              // constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
+              icon: PodcastImage(podcastLight: episode.podcast, width: 50, height: 50, borderRadius: pu2),
+              content: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.6),
+                child: EpisodeSheet(episode: episode, offline: offline, showTitle: false),
+              ),
+              title: episode.title ?? '',
             ),
           );
   }
@@ -49,25 +55,19 @@ class EpisodeSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = M3ETheme.of(context).textTheme;
     final locals = AppLocalizations.of(context)!;
-    final colors = M3ETheme.of(context).colorScheme;
 
     return Material(
       color: Colors.transparent,
-      child: Container(
-        margin: .all(pu4),
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: .circular(pu6),
-          border: Border.all(color: colors.secondaryContainer.withValues(alpha: 0.75), width: 1),
-          boxShadow: [BoxShadow(color: colors.surface, spreadRadius: pu, blurRadius: pu4)],
-        ),
-        child: Padding(
-          padding: .all(pu2),
-          child: Column(
-            mainAxisSize: .min,
-            children: [
+      child: Padding(
+        padding: .all(pu2),
+        child: Column(
+          mainAxisSize: .min,
+          spacing: pu2,
+          children: [
+            if (showTitle)
               Row(
                 crossAxisAlignment: .center,
+                spacing: pu,
                 children: [
                   if (episode.podcast != null)
                     PodcastImage(podcastLight: episode.podcast!, width: 30, height: 30, borderRadius: pu),
@@ -75,47 +75,45 @@ class EpisodeSheet extends StatelessWidget {
                   Expanded(
                     child: Text(episode.title ?? '', maxLines: 1, overflow: .ellipsis, style: textTheme.titleMedium),
                   ),
-                  IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.close)),
                 ],
               ),
-              PeopleList(episode: episode, wrap: true, size: 50, nameStyle: textTheme.bodySmall),
-              Flexible(
-                fit: .loose,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: .all(pu2),
-                    child: HtmlDescription(episode: episode, offline: offline),
-                  ),
+            PeopleList(episode: episode, wrap: true, size: 50, nameStyle: textTheme.bodySmall),
+            Flexible(
+              fit: .loose,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: .all(pu2),
+                  child: HtmlDescription(episode: episode, offline: offline),
                 ),
               ),
-              Row(
-                mainAxisAlignment: .spaceAround,
-                children: [
+            ),
+            Row(
+              mainAxisAlignment: .spaceAround,
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    context.read<PlayerCubit>().playEpisode(episode, offline: offline);
+                    Navigator.of(context).pop();
+                  },
+                  label: Text(locals.play),
+                  icon: Icon(Icons.play_arrow),
+                ),
+                if (!offline)
                   TextButton.icon(
                     onPressed: () {
-                      context.read<PlayerCubit>().playEpisode(episode, offline: offline);
-                      Navigator.of(context).pop();
+                      if (kIsWeb) {
+                        launchUrl(Uri.parse(episode.audioUrl ?? ''));
+                      } else {
+                        context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
+                        Navigator.of(context).pop();
+                      }
                     },
-                    label: Text(locals.play),
-                    icon: Icon(Icons.play_arrow),
+                    label: Text(locals.download),
+                    icon: Icon(Icons.download),
                   ),
-                  if (!offline)
-                    TextButton.icon(
-                      onPressed: () {
-                        if (kIsWeb) {
-                          launchUrl(Uri.parse(episode.audioUrl ?? ''));
-                        } else {
-                          context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      label: Text(locals.download),
-                      icon: Icon(Icons.download),
-                    ),
-                ],
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );

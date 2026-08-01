@@ -21,11 +21,14 @@ class PodcastInGrid extends StatelessWidget {
           context.read<PodcastsCubit>().getPodcasts();
         }
       }),
-      child: Column(
-        children: [
-          PodcastImage(podcastLight: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
-          Text(podcast.name ?? ''),
-        ],
+      child: Padding(
+        padding: .all(pu),
+        child: Column(
+          children: [
+            PodcastImage(podcastLight: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
+            Text(podcast.name ?? '', maxLines: 2, overflow: .ellipsis,),
+          ],
+        ),
       ),
     );
   }

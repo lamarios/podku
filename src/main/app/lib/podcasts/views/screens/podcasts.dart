@@ -1,5 +1,7 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/components/fab_menu/m3e_fab_menu.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/home/states/home.dart';
@@ -62,20 +64,50 @@ class PodcastsScreen extends StatelessWidget {
               Positioned(
                 bottom: pu3,
                 right: pu3,
-                child: FloatingActionButton.extended(
-                  onPressed: () async {
-                    final podcast = await NewPodcastDialog.show(context);
-                    if (context.mounted && podcast != null) {
-                      await context.read<PodcastsCubit>().subscribe(
-                        SearchResult(artistName: podcast.name, feedUrl: podcast.url),
-                      );
-                      if (context.mounted) {
-                        okCancelDialog(context, title: locals.podcastAdded, content: Text(locals.podcastAddedText));
-                      }
-                    }
-                  },
-                  label: Text(locals.addPodcastFromUrl),
-                  icon: Icon(Icons.add),
+                child: M3EFabMenu(
+                  items: [
+                    M3EFabMenuItem(
+                      icon: Icon(Icons.download),
+                      label: locals.downloadOpml,
+                      onPressed: () async {
+                        await context.read<PodcastsCubit>().downloadOpml();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(locals.fileDownloaded)));
+                        }
+                      },
+                    ),
+                    M3EFabMenuItem(
+                      icon: Icon(Icons.upload),
+                      label: locals.importOpml,
+                      onPressed: () async {
+
+                        PlatformFile? result = await FilePicker.pickFile();
+
+                        if(context.mounted && result != null){
+                          await context.read<PodcastsCubit>().uploadOpml(result);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(locals.podcastImported)));
+                          }
+                        }
+
+                      },
+                    ),
+                    M3EFabMenuItem(
+                      onPressed: () async {
+                        final podcast = await NewPodcastDialog.show(context);
+                        if (context.mounted && podcast != null) {
+                          await context.read<PodcastsCubit>().subscribe(
+                            SearchResult(artistName: podcast.name, feedUrl: podcast.url),
+                          );
+                          if (context.mounted) {
+                            okCancelDialog(context, title: locals.podcastAdded, content: Text(locals.podcastAddedText));
+                          }
+                        }
+                      },
+                      label: locals.addPodcastFromUrl,
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
                 ),
               ),
             ],

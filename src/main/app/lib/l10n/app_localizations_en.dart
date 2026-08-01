@@ -114,4 +114,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get podcastParsingError => 'Could not parse podcast';
+
+  @override
+  String get importOpml => 'Import OPML file';
+
+  @override
+  String get downloadOpml => 'Download OPML file';
+
+  @override
+  String get fileDownloaded => 'File downloaded';
+
+  @override
+  String get podcastImported => 'Podcasts imported';
 }

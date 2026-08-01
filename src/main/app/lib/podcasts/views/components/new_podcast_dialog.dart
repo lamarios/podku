@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/components/bottom_sheets/m3e_bottom_sheets.dart';
+import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
+import 'package:material_3_expressive/components/dialogs/m3e_dialogs.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
@@ -17,23 +20,15 @@ class NewPodcastDialog extends StatelessWidget {
 
   static Future<Podcast?> show(BuildContext context) async {
     final isMobile = BreakPoint.of(context) == .mobile;
+
+    final locals = AppLocalizations.of(context)!;
+
     if (isMobile) {
-      return Navigator.of(context).push(
-        StupidSimpleSheetRoute(
-          draggable: true,
-          barrierDismissible: true,
-          motion: MaterialSpringMotion.expressiveSpatialDefault(),
-          child: SafeArea(child: NewPodcastDialog()),
-        ),
-      );
+      return M3EBottomSheet.show(context, builder: (context) => SafeArea(top: false, bottom: true, child: NewPodcastDialog()));
     } else {
-      return showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          constraints: BoxConstraints(maxWidth: 400, maxHeight: 400),
-          child: NewPodcastDialog(),
-        ),
+      return M3EDialog.show(
+        context,
+        dialog: M3EDialog(title: locals.addPodcastFromUrl, content: NewPodcastDialog()),
       );
     }
   }
@@ -41,64 +36,67 @@ class NewPodcastDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = M3ETheme.of(context).textTheme;
-    final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
     return Material(
       color: Colors.transparent,
-      child: BlocProvider(
-        create: (context) => PodcastFromUrlCubit(PodcastFromUrlState()),
-        child: BlocBuilder<PodcastFromUrlCubit, PodcastFromUrlState>(
-          builder: (context, state) {
-            final cubit = context.read<PodcastFromUrlCubit>();
+      child: Padding(
+        padding: .only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+        child: BlocProvider(
+          create: (context) => PodcastFromUrlCubit(PodcastFromUrlState()),
+          child: BlocBuilder<PodcastFromUrlCubit, PodcastFromUrlState>(
+            builder: (context, state) {
+              final cubit = context.read<PodcastFromUrlCubit>();
 
-            return SingleMotionBuilder(
-              motion: MaterialSpringMotion.expressiveSpatialDefault(),
-              from: 160,
-              value: switch (state.page) {
-                0 => 180,
-                1 => 400,
-                _ => 0,
-              },
-              builder: (context, value, child) {
-                return Container(
-                  margin: .all(pu4),
-                  padding: .all(pu2),
-                  constraints: BoxConstraints(minWidth: 300),
-                  height: value,
-                  decoration: BoxDecoration(
-                    color: colors.surface,
-                    borderRadius: .circular(pu6),
-                    border: Border.all(color: colors.secondaryContainer.withValues(alpha: 0.75), width: 1),
-                    boxShadow: [BoxShadow(color: colors.surface, spreadRadius: pu, blurRadius: pu4)],
-                  ),
-                  child: child,
-                );
-              },
-              child: Column(
-                mainAxisSize: .min,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(child: Text(locals.addPodcast, style: textTheme.titleMedium)),
-                      IconButton(onPressed: () => Navigator.of(context).pop(null), icon: Icon(Icons.close)),
-                    ],
-                  ),
-                  Expanded(
-                    child: PageView(
-                      controller: cubit.pageController,
-                      physics: NeverScrollableScrollPhysics(),
+              return SingleMotionBuilder(
+                motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                from: 160,
+                value: switch (state.page) {
+                  0 => 180,
+                  1 => 400,
+                  _ => 0,
+                },
+                builder: (context, value, child) {
+                  return Container(
+                    margin: .all(pu4),
+                    padding: .all(pu2),
+                    constraints: BoxConstraints(minWidth: 300),
+                    height: value,
+                    /*
+                    decoration: BoxDecoration(
+                      color: colors.surface,
+                      borderRadius: .circular(pu6),
+                      border: Border.all(color: colors.secondaryContainer.withValues(alpha: 0.75), width: 1),
+                      boxShadow: [BoxShadow(color: colors.surface, spreadRadius: pu, blurRadius: pu4)],
+                    ),
+        */
+                    child: child,
+                  );
+                },
+                child: Column(
+                  mainAxisSize: .min,
+                  children: [
+                    Row(
                       children: [
-                        state.loading ? Center(child: LoadingIndicator()) : _PodcastUrl(hasError: state.podcastError),
-                        state.loading || state.podcast == null
-                            ? Center(child: LoadingIndicator())
-                            : _PodcastResult(podcast: state.podcast!),
+                        Expanded(child: Text(locals.addPodcast, style: textTheme.titleMedium)),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Expanded(
+                      child: PageView(
+                        controller: cubit.pageController,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          state.loading ? Center(child: LoadingIndicator()) : _PodcastUrl(hasError: state.podcastError),
+                          state.loading || state.podcast == null
+                              ? Center(child: LoadingIndicator())
+                              : _PodcastResult(podcast: state.podcast!),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -175,11 +173,11 @@ class _PodcastResult extends StatelessWidget {
               icon: Icon(Icons.arrow_back),
               iconAlignment: .start,
             ),
-            TextButton.icon(
+            M3EButton.icon(
+              size: .md,
               onPressed: () => Navigator.of(context).pop(podcast),
               label: Text(locals.addPodcast),
               icon: Icon(Icons.add),
-              iconAlignment: .start,
             ),
           ],
         ),

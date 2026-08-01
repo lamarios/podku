@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/components/menus/m3e_menus.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
@@ -11,12 +12,12 @@ class PlayerSpeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenuAnchor(
-      builder: (context, controller, child) {
+    return M3EMenu(
+      anchorBuilder: (context, open) {
         return Row(
           children: [
             TextButton.icon(
-              onPressed: () => controller.isOpen ? controller.close() : controller.open(),
+              onPressed: () => open(),
               label: StreamBuilder(
                 stream: getIt.get<PodkuAudioHandler>().playbackState.stream.map((event) => event.speed),
                 builder: (context, snapshot) => Text('${snapshot.data ?? 1}x'),
@@ -26,11 +27,11 @@ class PlayerSpeed extends StatelessWidget {
           ],
         );
       },
-      menuChildren: availableSpeeds
+      children: availableSpeeds
           .map(
-            (speed) => (MenuItemButton(
+            (speed) => (M3EMenuEntry(
               onPressed: () => context.read<PlayerCubit>().setSpeed(speed),
-              child: Text('${speed}x'),
+              label: '${speed}x',
             )),
           )
           .toList(),

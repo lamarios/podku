@@ -7,8 +7,9 @@ class Client {
   late final ProxyApi proxy;
   late final SearchApi search;
   late final Openapi _client;
+  final String serverUrl;
 
-  Client(String serverUrl) {
+  Client(this.serverUrl) {
     _client = Openapi(basePathOverride: serverUrl);
     podcasts = _client.getPodcastsApi();
     episodes = _client.getEpisodesApi();

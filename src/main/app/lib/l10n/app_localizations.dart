@@ -282,6 +282,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not parse podcast'**
   String get podcastParsingError;
+
+  /// No description provided for @importOpml.
+  ///
+  /// In en, this message translates to:
+  /// **'Import OPML file'**
+  String get importOpml;
+
+  /// No description provided for @downloadOpml.
+  ///
+  /// In en, this message translates to:
+  /// **'Download OPML file'**
+  String get downloadOpml;
+
+  /// No description provided for @fileDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'File downloaded'**
+  String get fileDownloaded;
+
+  /// No description provided for @podcastImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Podcasts imported'**
+  String get podcastImported;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
