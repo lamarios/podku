@@ -176,6 +176,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     if (taskEntry != null && task != null) {
       switch (update) {
         case TaskStatusUpdate():
+          print('new download status ${update.status}');
           task = task.copyWith(status: update.status);
 
           switch (update.status) {
@@ -183,8 +184,8 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
               getOfflineEpisodes();
               break;
             case .failed:
-              tasks.remove(taskEntry.key);
               await FileDownloader().cancel(update.task);
+              tasks.remove(taskEntry.key);
               break;
             default:
               break;

@@ -4,6 +4,9 @@ server:
  #     max: 8
   port: 8080
 spring:
+  mvc:
+    async:
+      request-timeout: -1
   jpa:
     show-sql: false
     properties:
