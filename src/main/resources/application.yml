@@ -3,6 +3,10 @@ server:
  #   threads:
  #     max: 8
   port: 8080
+podku:
+  episodes:
+    cache-dir: ${EPISODE_CACHE_DIR:./episode-cache}
+    cache-count: ${EPISODE_CACHE_COUNT:0}
 spring:
   mvc:
     async:

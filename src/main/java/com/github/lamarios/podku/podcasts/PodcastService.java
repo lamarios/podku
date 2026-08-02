@@ -8,13 +8,19 @@ import be.ceau.opml.entity.Body;
 import be.ceau.opml.entity.Head;
 import be.ceau.opml.entity.Opml;
 import be.ceau.opml.entity.Outline;
+import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.episodes.EpisodeService;
 import com.github.lamarios.podku.search.SearchResult;
 import com.github.lamarios.podku.utils.TransactionHelper;
+import com.google.common.hash.Hashing;
+import kong.unirest.core.Unirest;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,10 +28,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -36,12 +45,25 @@ public class PodcastService {
     private final PodcastRepository podcastRepository;
     private final EpisodeService episodeService;
     private final PlatformTransactionManager platformTransactionManager;
+    private final EpisodeRepository episodeRepository;
+    private final int episodeCacheCount;
+    private final Path episodeCacheFolder;
+
 
     @Autowired
-    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager) {
+    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager, EpisodeRepository episodeRepository, @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder, @Value("${podku.episodes.cache-count:0}") String episodeCacheCount) {
         this.podcastRepository = podcastRepository;
         this.episodeService = episodeService;
         this.platformTransactionManager = platformTransactionManager;
+        this.episodeRepository = episodeRepository;
+        this.episodeCacheCount = Integer.parseInt(episodeCacheCount);
+
+        Path p = Path.of(episodeCacheFolder);
+        if (!p.toFile().exists()) {
+            p.toFile().mkdirs();
+        }
+
+        this.episodeCacheFolder = p;
     }
 
 
@@ -110,6 +132,10 @@ public class PodcastService {
                 });
             }
         });
+
+        log.info("Episode refresh done");
+
+        downloadEpisodes();
     }
 
     @Transactional(readOnly = true)
@@ -134,29 +160,29 @@ public class PodcastService {
 
     @Transactional
     public List<Podcast> importPodcasts(MultipartFile file) throws IOException, OpmlParseException, SQLException {
-            log.info("Importing feed");
-            Path tempDirectory = Files.createTempDirectory("newsku-opml-import");
-            Path p = tempDirectory.resolve("import.opml");
-            file.transferTo(p);
-            List<Podcast> newPodcasts = new ArrayList<>();
+        log.info("Importing feed");
+        Path tempDirectory = Files.createTempDirectory("newsku-opml-import");
+        Path p = tempDirectory.resolve("import.opml");
+        file.transferTo(p);
+        List<Podcast> newPodcasts = new ArrayList<>();
 
-            try (var is = new FileInputStream(p.toFile())) {
-                var parser = new OpmlParser().parse(is);
-                for (Outline outline : parser.getBody().getOutlines()) {
-                    newPodcasts.addAll(importPodcast(outline));
-                }
-
-
-                podcastRepository.saveAll(newPodcasts);
-
-                return newPodcasts;
-            } catch (SQLException | OpmlParseException e) {
-                log.error("Failed to parse opml file", e);
-                throw e;
-            } finally {
-                Files.deleteIfExists(p);
-                Files.deleteIfExists(tempDirectory);
+        try (var is = new FileInputStream(p.toFile())) {
+            var parser = new OpmlParser().parse(is);
+            for (Outline outline : parser.getBody().getOutlines()) {
+                newPodcasts.addAll(importPodcast(outline));
             }
+
+
+            podcastRepository.saveAll(newPodcasts);
+
+            return newPodcasts;
+        } catch (SQLException | OpmlParseException e) {
+            log.error("Failed to parse opml file", e);
+            throw e;
+        } finally {
+            Files.deleteIfExists(p);
+            Files.deleteIfExists(tempDirectory);
+        }
     }
 
 
@@ -195,5 +221,56 @@ public class PodcastService {
         }
 
         return newPodcasts;
+    }
+
+    public void downloadEpisodes() {
+        TransactionHelper.doInNewTransaction(platformTransactionManager, true, () -> {
+            var episodes = episodeRepository.getEpisodeByPubDateMillisBefore(System.currentTimeMillis(), Sort.by(Sort.Direction.DESC, "pubDateMillis"), Limit.of(episodeCacheCount));
+
+            for (var e : episodes) {
+                var episodeHash = Hashing.sha256().hashString(e.getAudioUrl(), StandardCharsets.UTF_8).toString();
+
+                log.info("Downloading episode: {} from podcast {}", e.getTitle(), e.getPodcast().getName());
+                Path episodeFile = episodeCacheFolder.resolve(episodeHash);
+
+                if (episodeFile.toFile().exists()) {
+                    log.info("Episode {} already exists", episodeHash);
+                    continue;
+                }
+
+                try {
+                    IOUtils.copy(URI.create(e.getAudioUrl()).toURL(), episodeFile.toFile());
+                    log.info("Download finished for episode: {}", e.getTitle());
+
+                } catch (IOException ex) {
+                    log.error("Couldn't download episode {}", e.getTitle(), ex);
+                    // we delete anything that exists
+                    if (episodeFile.toFile().exists()) {
+                        episodeFile.toFile().delete();
+                    }
+                }
+
+            }
+
+            List<String> episodeHashes = episodes.stream().map(e -> Hashing.sha256().hashString(e.getAudioUrl(), StandardCharsets.UTF_8).toString()).toList();
+
+            try {
+                Files.list(episodeCacheFolder).forEach(path -> {
+                    File file = path.getFileName().toFile();
+                    String name = file.getName();
+                    if (!episodeHashes.contains(name)) {
+                        log.info("Deleting episode: {}", name);
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            log.error("Couldn't delete episode {}", name, e);
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
     }
 }

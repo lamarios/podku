@@ -9,3 +9,4 @@ pubspec_overrides.yaml
 /image-cache/
 /target/
 /src/main/resources/public/
+/episode-cache/
