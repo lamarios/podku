@@ -65,17 +65,20 @@ class EpisodeSheet extends StatelessWidget {
           spacing: pu2,
           children: [
             if (showTitle)
-              Row(
-                crossAxisAlignment: .center,
-                spacing: pu,
-                children: [
-                  if (episode.podcast != null)
-                    PodcastImage(podcastLight: episode.podcast!, width: 30, height: 30, borderRadius: pu),
-                  Gap(pu),
-                  Expanded(
-                    child: Text(episode.title ?? '', maxLines: 1, overflow: .ellipsis, style: textTheme.titleMedium),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(top: pu2, left: pu2, right: pu2),
+                child: Row(
+                  crossAxisAlignment: .center,
+                  spacing: pu,
+                  children: [
+                    if (episode.podcast != null)
+                      PodcastImage(podcastLight: episode.podcast!, width: 30, height: 30, borderRadius: pu),
+                    Gap(pu),
+                    Expanded(
+                      child: Text(episode.title ?? '', maxLines: 1, overflow: .ellipsis, style: textTheme.titleMedium),
+                    ),
+                  ],
+                ),
               ),
             PeopleList(episode: episode, wrap: true, size: 50, nameStyle: textTheme.bodySmall),
             Flexible(

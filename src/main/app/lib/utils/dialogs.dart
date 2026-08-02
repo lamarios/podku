@@ -17,12 +17,21 @@ Future<bool?> okCancelDialog(
       title: title,
       content: content,
       actions: <Widget>[
-        if (showCancel) M3EButton.text(onPressed: () => Navigator.pop(context, false), child: Text(locals.cancel)),
-        M3EButton.text(
-          onPressed: () {
-            Navigator.pop(context, true);
+        if (showCancel)
+          Builder(
+            builder: (context) {
+              return M3EButton.text(onPressed: () => Navigator.pop(context, false), child: Text(locals.cancel));
+            },
+          ),
+        Builder(
+          builder: (context) {
+            return M3EButton.text(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text(locals.ok),
+            );
           },
-          child: Text(locals.ok),
         ),
       ],
     ),

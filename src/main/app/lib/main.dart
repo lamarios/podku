@@ -85,8 +85,10 @@ class MyApp extends StatelessWidget {
     ColorScheme lightColorScheme = .fromSeed(seedColor: appColor);
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
-        darkColorScheme = darkDynamic?.copyWith(surface: darken(darkDynamic.surface, 0.3)) ?? darkColorScheme;
-        lightColorScheme = lightDynamic?.copyWith(surface: lighten(lightDynamic.surface, 0.3)) ?? lightColorScheme;
+        if (!kIsWeb) {
+          darkColorScheme = darkDynamic?.copyWith(surface: darken(darkDynamic.surface, 0.3)) ?? darkColorScheme;
+          lightColorScheme = lightDynamic?.copyWith(surface: lighten(lightDynamic.surface, 0.3)) ?? lightColorScheme;
+        }
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => getIt.get<ServerCubit>()),
@@ -101,7 +103,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) => M3ETheme(
               data: M3EThemeData.dark(seedColor: appColor),
-              autoTheming: !kIsWeb,
+              autoTheming: true,
               dynamicColoring: !kIsWeb,
               child: child!,
             ),

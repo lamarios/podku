@@ -38,6 +38,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locals = AppLocalizations.of(context)!;
+    final colors = M3ETheme.of(context).colorScheme;
     final titles = [locals.episodes, locals.podcasts, locals.search];
 
     bool isMobile = BreakPoint.of(context) == .mobile;
@@ -58,6 +59,9 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             centerTitle: true,
             isFullScreen: false,
+            barBackgroundColor: WidgetStatePropertyAll(colors.surfaceContainerLowest),
+            barHintText: locals.search,
+            density: .compact,
             actions: [
               if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
               if (!kIsWeb || kDebugMode)
