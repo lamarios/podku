@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
             leading: Row(
               children: [
                 SvgPicture.asset('assets/podku-icon-no-background.svg', width: 50, height: 50),
-                Text(titles[navigationShell.currentIndex]),
+                if (!isMobile) Text(titles[navigationShell.currentIndex]),
               ],
             ),
             backgroundColor: Colors.transparent,
@@ -193,7 +193,7 @@ class HomeScreen extends StatelessWidget {
     return [
       Padding(
         padding: .symmetric(horizontal: pu2, vertical: pu2),
-        child: Text(label, style: Theme.of(context).textTheme.labelSmall),
+        child: Text(label),
       ),
       ...items.map(
         (r) => Padding(
@@ -203,7 +203,7 @@ class HomeScreen extends StatelessWidget {
             title: Text(r.title, maxLines: 1, overflow: TextOverflow.ellipsis),
             subtitle: r.subtitle != null ? Text(r.subtitle!) : null,
             onTap: () {
-              controller.closeView(r.title);
+              controller.closeView(controller.text);
               _handleTap(context, r);
             },
           ),
