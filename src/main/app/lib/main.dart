@@ -99,8 +99,12 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: kDebugMode,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            builder: (context, child) =>
-                M3ETheme(data: M3EThemeData.dark(seedColor: appColor), autoTheming: true, dynamicColoring: true, child: child!),
+            builder: (context, child) => M3ETheme(
+              data: M3EThemeData.dark(seedColor: appColor),
+              autoTheming: !kIsWeb,
+              dynamicColoring: !kIsWeb,
+              child: child!,
+            ),
             darkTheme: ThemeData(
               colorScheme: darkColorScheme,
               appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),

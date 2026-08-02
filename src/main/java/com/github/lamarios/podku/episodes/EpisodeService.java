@@ -18,10 +18,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Service
 public class EpisodeService {
@@ -89,11 +91,10 @@ public class EpisodeService {
             return;
         }
 
-        if(episode.isProcessed()){
+        if (episode.isProcessed()) {
             log.info("Episode {} has already been processed", episode.getTitle());
             return;
         }
-
 
 
         for (var f : episode.getFiles().stream().filter(f -> f.getType() == EpisodeFileType.chapters).toList()) {
@@ -205,5 +206,17 @@ public class EpisodeService {
             episodeRepository.save(episode);
             WebSocketSessionManager.sendToUsers(progress);
         }
+    }
+
+    public List<Episode> searchPodcasts(String query, int limit) {
+        String tsQuery = Arrays.stream(query.trim().split("\\s+"))
+                .filter(s -> !s.isBlank())
+                .map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*")
+                .collect(Collectors.joining(" & "));
+
+        if (tsQuery.isBlank()) {
+            return List.of();
+        }
+        return episodeRepository.search(tsQuery, limit);
     }
 }

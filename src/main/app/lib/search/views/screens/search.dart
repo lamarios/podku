@@ -7,7 +7,8 @@ import 'package:podku/search/views/components/search_result.dart';
 import 'package:podku/utils.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+  final String? query;
+  const SearchScreen({super.key, this.query});
 
   @override
   Widget build(BuildContext context) {

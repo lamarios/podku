@@ -80,16 +80,14 @@ class PodcastsScreen extends StatelessWidget {
                       icon: Icon(Icons.upload),
                       label: locals.importOpml,
                       onPressed: () async {
-
                         PlatformFile? result = await FilePicker.pickFile();
 
-                        if(context.mounted && result != null){
+                        if (context.mounted && result != null) {
                           await context.read<PodcastsCubit>().uploadOpml(result);
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(locals.podcastImported)));
                           }
                         }
-
                       },
                     ),
                     M3EFabMenuItem(

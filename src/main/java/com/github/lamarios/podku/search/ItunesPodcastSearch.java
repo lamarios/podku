@@ -64,8 +64,8 @@ public class ItunesPodcastSearch {
         return results;
     }
 
-    public List<SearchResult> search(String term) {
-        return search(term, "US", 25);
+    public List<SearchResult> search(String term, int limit) {
+        return search(term, "US", limit);
     }
 
     /**

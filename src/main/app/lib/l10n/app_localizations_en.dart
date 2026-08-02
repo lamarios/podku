@@ -126,4 +126,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get podcastImported => 'Podcasts imported';
+
+  @override
+  String get discoverNewPodcasts => 'Discover';
+
+  @override
+  String get yourPodcasts => 'Your podcasts';
+
+  @override
+  String get yourEpisodes => 'Your episodes';
+
+  @override
+  String get openSearch => 'Open full screen search';
 }

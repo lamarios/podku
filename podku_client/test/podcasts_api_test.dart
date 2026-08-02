@@ -32,6 +32,11 @@ void main() {
       // TODO
     });
 
+    //Future<List<PodcastLight>> search1(String query, int limit) async
+    test('test search1', () async {
+      // TODO
+    });
+
     //Future<Podcast> subscribeToPodcast(SearchResult searchResult) async
     test('test subscribeToPodcast', () async {
       // TODO

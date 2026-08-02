@@ -17,8 +17,13 @@ void main() {
       // TODO
     });
 
-    //Future<Object> proxyAudio(String url) async
+    //Future<Object> proxyAudio(String url, { String range }) async
     test('test proxyAudio', () async {
+      // TODO
+    });
+
+    //Future<List<Episode>> search2(String query, int limit) async
+    test('test search2', () async {
       // TODO
     });
 

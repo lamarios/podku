@@ -306,6 +306,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Podcasts imported'**
   String get podcastImported;
+
+  /// No description provided for @discoverNewPodcasts.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get discoverNewPodcasts;
+
+  /// No description provided for @yourPodcasts.
+  ///
+  /// In en, this message translates to:
+  /// **'Your podcasts'**
+  String get yourPodcasts;
+
+  /// No description provided for @yourEpisodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Your episodes'**
+  String get yourEpisodes;
+
+  /// No description provided for @openSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Open full screen search'**
+  String get openSearch;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

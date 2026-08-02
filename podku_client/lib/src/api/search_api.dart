@@ -21,7 +21,8 @@ class SearchApi {
   /// 
   ///
   /// Parameters:
-  /// * [body] 
+  /// * [query] 
+  /// * [limit] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -32,7 +33,8 @@ class SearchApi {
   /// Returns a [Future] containing a [Response] with a [List<SearchResult>] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<List<SearchResult>>> search({ 
-    required String body,
+    required String query,
+    required int limit,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -42,7 +44,7 @@ class SearchApi {
   }) async {
     final _path = r'/api/search';
     final _options = Options(
-      method: r'POST',
+      method: r'GET',
       headers: <String, dynamic>{
         ...?headers,
       },
@@ -50,31 +52,18 @@ class SearchApi {
         'secure': <Map<String, String>>[],
         ...?extra,
       },
-      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
-    dynamic _bodyData;
-
-    try {
-      _bodyData = jsonEncode(body);
-
-    } catch(error, stackTrace) {
-      throw DioException(
-         requestOptions: _options.compose(
-          _dio.options,
-          _path,
-        ),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
+    final _queryParameters = <String, dynamic>{
+      r'query': query,
+      r'limit': limit,
+    };
 
     final _response = await _dio.request<Object>(
       _path,
-      data: _bodyData,
       options: _options,
+      queryParameters: _queryParameters,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,

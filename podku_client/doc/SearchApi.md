@@ -9,11 +9,11 @@ All URIs are relative to *http://localhost:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**search**](SearchApi.md#search) | **POST** /api/search | 
+[**search**](SearchApi.md#search) | **GET** /api/search | 
 
 
 # **search**
-> List<SearchResult> search(body)
+> List<SearchResult> search(query, limit)
 
 
 
@@ -22,10 +22,11 @@ Method | HTTP request | Description
 import 'package:openapi/api.dart';
 
 final api = Openapi().getSearchApi();
-final String body = body_example; // String | 
+final String query = query_example; // String | 
+final int limit = 56; // int | 
 
 try {
-    final response = api.search(body);
+    final response = api.search(query, limit);
     print(response);
 } on DioException catch (e) {
     print('Exception when calling SearchApi->search: $e\n');
@@ -36,7 +37,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**|  | 
+ **query** | **String**|  | 
+ **limit** | **int**|  | 
 
 ### Return type
 
@@ -48,7 +50,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: */*
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

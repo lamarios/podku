@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**getPodcasts**](PodcastsApi.md#getpodcasts) | **GET** /api/podcasts | 
 [**importFeed**](PodcastsApi.md#importfeed) | **POST** /api/podcasts/import | 
 [**parsePodcast**](PodcastsApi.md#parsepodcast) | **POST** /api/podcasts/parse | 
+[**search1**](PodcastsApi.md#search1) | **GET** /api/podcasts/search | 
 [**subscribeToPodcast**](PodcastsApi.md#subscribetopodcast) | **POST** /api/podcasts | 
 [**unsubsribe**](PodcastsApi.md#unsubsribe) | **DELETE** /api/podcasts/{id} | 
 
@@ -211,6 +212,49 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **search1**
+> List<PodcastLight> search1(query, limit)
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getPodcastsApi();
+final String query = query_example; // String | 
+final int limit = 56; // int | 
+
+try {
+    final response = api.search1(query, limit);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling PodcastsApi->search1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **query** | **String**|  | 
+ **limit** | **int**|  | 
+
+### Return type
+
+[**List&lt;PodcastLight&gt;**](PodcastLight.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: */*
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

@@ -13,7 +13,6 @@ import com.github.lamarios.podku.episodes.EpisodeService;
 import com.github.lamarios.podku.search.SearchResult;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.google.common.hash.Hashing;
-import kong.unirest.core.Unirest;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,14 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PodcastService {
@@ -272,5 +270,18 @@ public class PodcastService {
             }
 
         });
+    }
+
+    @Transactional(readOnly = true)
+    public List<Podcast> searchPodcasts(String query, int limit) {
+        String tsQuery = Arrays.stream(query.trim().split("\\s+"))
+                .filter(s -> !s.isBlank())
+                .map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*")
+                .collect(Collectors.joining(" & "));
+
+        if (tsQuery.isBlank()) {
+            return List.of();
+        }
+        return podcastRepository.searchPodcasts(tsQuery, limit);
     }
 }

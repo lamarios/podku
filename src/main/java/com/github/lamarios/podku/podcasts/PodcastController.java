@@ -103,4 +103,10 @@ public class PodcastController {
         }
     }
 
+
+    @GetMapping("/search")
+    public List<PodcastLight> search(@RequestParam("query") String query, @RequestParam("limit") int limit){
+        return podcastService.searchPodcasts(query, limit).stream().map(PodcastLight::new).toList();
+    }
+
 }

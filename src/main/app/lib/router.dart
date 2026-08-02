@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_3_expressive/components/search/controllers/m3e_search_controller.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/screens/episodes.dart';
 import 'package:podku/home/states/home.dart';
@@ -47,10 +48,15 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
           builder: (context, state) => OfflineEpisodesScreen(),
           routes: [GoRoute(path: '/settings', builder: (context, state) => DownloadSettingsScreen())],
         ),
+        GoRoute(
+          name: 'Search',
+          path: '/search',
+          builder: (context, state) => SearchScreen(query: state.extra as String),
+        ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
             return BlocProvider(
-              create: (context) => HomeCubit(HomeState(selectedIndex: 0)),
+              create: (context) => HomeCubit(HomeState(selectedIndex: 0), searchController: M3ESearchController()),
               child: HomeScreen(navigationShell: navigationShell),
             );
           },
@@ -60,9 +66,6 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
             ),
             StatefulShellBranch(
               routes: [GoRoute(name: 'Podcasts', path: '/podcasts', builder: (context, state) => PodcastsScreen())],
-            ),
-            StatefulShellBranch(
-              routes: [GoRoute(name: 'Search', path: '/search', builder: (context, state) => SearchScreen())],
             ),
           ],
         ),

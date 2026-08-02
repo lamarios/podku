@@ -38,7 +38,9 @@ class BigPlayer extends StatelessWidget {
           final colorScheme = context.select((PodcastImageColorCubit c) => c.state.colorScheme);
           var tabController = DefaultTabController.of(context);
           return M3ETheme(
-            data: brightness == .light ? M3EThemeData.light(seedColor: colorScheme.primary) : M3EThemeData.dark(seedColor: colorScheme.primary),
+            data: brightness == .light
+                ? M3EThemeData.light(seedColor: colorScheme.primary)
+                : M3EThemeData.dark(seedColor: colorScheme.primary),
             autoTheming: true,
             initialTheme: brightness,
             child: ListenableBuilder(
@@ -217,10 +219,7 @@ class BigPlayer extends StatelessWidget {
                                           ],
                                         ),
 
-                                        if (showTranscript)
-                                          Expanded(
-                                            child: TranscriptFollower(),
-                                          ),
+                                        if (showTranscript) Expanded(child: TranscriptFollower()),
                                       ],
                                     ),
                                     Container(

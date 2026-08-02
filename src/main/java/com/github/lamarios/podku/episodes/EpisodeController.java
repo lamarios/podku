@@ -1,5 +1,6 @@
 package com.github.lamarios.podku.episodes;
 
+import com.github.lamarios.podku.podcasts.PodcastLight;
 import com.github.lamarios.podku.websockets.PlaybackProgress;
 import com.github.lamarios.podku.websockets.WebSocketSessionManager;
 import com.google.common.hash.Hashing;
@@ -94,6 +95,10 @@ public class EpisodeController {
         WebSocketSessionManager.sendToUsers(progress);
     }
 
+    @GetMapping("/search")
+    public List<Episode> search(@RequestParam("query") String query, @RequestParam("limit") int limit) {
+        return episodeService.searchPodcasts(query, limit);
+    }
 
     @GetMapping("/audio-proxy")
     public ResponseEntity<StreamingResponseBody> proxyAudio(
@@ -210,4 +215,5 @@ public class EpisodeController {
         return ResponseEntity.status(status).headers(headers).body(body);
 
     }
+
 }

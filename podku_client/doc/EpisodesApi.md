@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**getEpisode**](EpisodesApi.md#getepisode) | **GET** /api/episodes/{id} | 
 [**getEpisodes**](EpisodesApi.md#getepisodes) | **GET** /api/episodes | 
 [**proxyAudio**](EpisodesApi.md#proxyaudio) | **GET** /api/episodes/audio-proxy | 
+[**search2**](EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [**setProgress**](EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [**startPlayback**](EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
 
@@ -101,7 +102,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **proxyAudio**
-> Object proxyAudio(url)
+> Object proxyAudio(url, range)
 
 
 
@@ -111,9 +112,10 @@ import 'package:openapi/api.dart';
 
 final api = Openapi().getEpisodesApi();
 final String url = url_example; // String | 
+final String range = range_example; // String | 
 
 try {
-    final response = api.proxyAudio(url);
+    final response = api.proxyAudio(url, range);
     print(response);
 } on DioException catch (e) {
     print('Exception when calling EpisodesApi->proxyAudio: $e\n');
@@ -125,10 +127,54 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **url** | **String**|  | 
+ **range** | **String**|  | [optional] 
 
 ### Return type
 
 **Object**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **search2**
+> List<Episode> search2(query, limit)
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getEpisodesApi();
+final String query = query_example; // String | 
+final int limit = 56; // int | 
+
+try {
+    final response = api.search2(query, limit);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling EpisodesApi->search2: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **query** | **String**|  | 
+ **limit** | **int**|  | 
+
+### Return type
+
+[**List&lt;Episode&gt;**](Episode.md)
 
 ### Authorization
 

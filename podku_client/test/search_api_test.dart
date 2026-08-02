@@ -7,7 +7,7 @@ void main() {
   final instance = Openapi().getSearchApi();
 
   group(SearchApi, () {
-    //Future<List<SearchResult>> search(String body) async
+    //Future<List<SearchResult>> search(String query, int limit) async
     test('test search', () async {
       // TODO
     });

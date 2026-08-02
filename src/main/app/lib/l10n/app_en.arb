@@ -34,5 +34,9 @@
   "importOpml": "Import OPML file",
   "downloadOpml": "Download OPML file",
   "fileDownloaded": "File downloaded",
-  "podcastImported": "Podcasts imported"
+  "podcastImported": "Podcasts imported",
+  "discoverNewPodcasts": "Discover",
+  "yourPodcasts": "Your podcasts",
+  "yourEpisodes": "Your episodes",
+  "openSearch": "Open full screen search"
 }

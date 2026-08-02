@@ -24,7 +24,10 @@ class NewPodcastDialog extends StatelessWidget {
     final locals = AppLocalizations.of(context)!;
 
     if (isMobile) {
-      return M3EBottomSheet.show(context, builder: (context) => SafeArea(top: false, bottom: true, child: NewPodcastDialog()));
+      return M3EBottomSheet.show(
+        context,
+        builder: (context) => SafeArea(top: false, bottom: true, child: NewPodcastDialog()),
+      );
     } else {
       return M3EDialog.show(
         context,
@@ -76,9 +79,7 @@ class NewPodcastDialog extends StatelessWidget {
                   mainAxisSize: .min,
                   children: [
                     Row(
-                      children: [
-                        Expanded(child: Text(locals.addPodcast, style: textTheme.titleMedium)),
-                      ],
+                      children: [Expanded(child: Text(locals.addPodcast, style: textTheme.titleMedium))],
                     ),
                     Expanded(
                       child: PageView(

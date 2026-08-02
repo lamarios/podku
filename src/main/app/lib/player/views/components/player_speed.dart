@@ -29,10 +29,7 @@ class PlayerSpeed extends StatelessWidget {
       },
       children: availableSpeeds
           .map(
-            (speed) => (M3EMenuEntry(
-              onPressed: () => context.read<PlayerCubit>().setSpeed(speed),
-              label: '${speed}x',
-            )),
+            (speed) => (M3EMenuEntry(onPressed: () => context.read<PlayerCubit>().setSpeed(speed), label: '${speed}x')),
           )
           .toList(),
     );

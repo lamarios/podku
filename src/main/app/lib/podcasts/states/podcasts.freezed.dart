@@ -12,7 +12,7 @@ part of 'podcasts.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PodcastState {
+mixin _$PodcastState implements DiagnosticableTreeMixin {
 
  List<PodcastLight> get subscriptions; SearchResult? get subscribingTo; dynamic get error; StackTrace? get stackTrace;
 /// Create a copy of PodcastState
@@ -22,6 +22,12 @@ mixin _$PodcastState {
 $PodcastStateCopyWith<PodcastState> get copyWith => _$PodcastStateCopyWithImpl<PodcastState>(this as PodcastState, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'PodcastState'))
+    ..add(DiagnosticsProperty('subscriptions', subscriptions))..add(DiagnosticsProperty('subscribingTo', subscribingTo))..add(DiagnosticsProperty('error', error))..add(DiagnosticsProperty('stackTrace', stackTrace));
+}
 
 @override
 bool operator ==(Object other) {
@@ -33,7 +39,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
 }
 
@@ -202,7 +208,7 @@ return $default(_that.subscriptions,_that.subscribingTo,_that.error,_that.stackT
 /// @nodoc
 
 
-class _PodcastState implements PodcastState, WithError {
+class _PodcastState with DiagnosticableTreeMixin implements PodcastState, WithError {
   const _PodcastState({final  List<PodcastLight> subscriptions = const [], this.subscribingTo, this.error, this.stackTrace}): _subscriptions = subscriptions;
   
 
@@ -224,6 +230,12 @@ class _PodcastState implements PodcastState, WithError {
 _$PodcastStateCopyWith<_PodcastState> get copyWith => __$PodcastStateCopyWithImpl<_PodcastState>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'PodcastState'))
+    ..add(DiagnosticsProperty('subscriptions', subscriptions))..add(DiagnosticsProperty('subscribingTo', subscribingTo))..add(DiagnosticsProperty('error', error))..add(DiagnosticsProperty('stackTrace', stackTrace));
+}
 
 @override
 bool operator ==(Object other) {
@@ -235,7 +247,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
 }
 
