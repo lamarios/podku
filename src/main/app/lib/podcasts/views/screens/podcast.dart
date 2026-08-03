@@ -185,7 +185,7 @@ class PodcastScreen extends StatelessWidget {
                                                   ),
                                                 ),
                                             ],
-                                            SliverFillRemaining(child: Container(color: colors.surface)),
+                                            SliverFillRemaining(child: Container(color: colorScheme.surface)),
                                           ],
                                         ),
                                       ),
