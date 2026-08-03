@@ -185,6 +185,7 @@ class PodcastScreen extends StatelessWidget {
                                                   ),
                                                 ),
                                             ],
+                                            SliverFillRemaining(child: Container(color: colors.surface)),
                                           ],
                                         ),
                                       ),
@@ -328,7 +329,9 @@ class _SubscribeButton extends StatelessWidget {
                 }
               },
 
-        label: subscribing ? LoadingIndicator.contained() : Text(subscribed ? locals.unsubscribe : locals.subscribe),
+        label: subscribing
+            ? SizedBox(width: 25, height: 25, child: Center(child: LoadingIndicator()))
+            : Text(subscribed ? locals.unsubscribe : locals.subscribe),
         icon: Icon(subscribed ? Icons.block : Icons.check_box_outline_blank_outlined),
       ),
     );
@@ -357,7 +360,7 @@ class _VerticalPodcastHeader extends StatelessWidget {
           PodcastImage(podcast: podcast, width: 200, height: 200, borderRadius: pu2),
           Gap(pu2),
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 600),
+            constraints: BoxConstraints(maxHeight: 300),
             child: SingleChildScrollView(child: HtmlDescription(podcast: podcast, offline: false)),
           ),
           Gap(pu4),

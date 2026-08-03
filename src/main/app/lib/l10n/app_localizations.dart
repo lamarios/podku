@@ -330,6 +330,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open full screen search'**
   String get openSearch;
+
+  /// No description provided for @searchForPodcasts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for new podcasts'**
+  String get searchForPodcasts;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -83,6 +83,7 @@ class MyApp extends StatelessWidget {
     final tabTheme = TabBarThemeData(dividerColor: Colors.transparent);
     ColorScheme darkColorScheme = .fromSeed(seedColor: appColor, brightness: Brightness.dark);
     ColorScheme lightColorScheme = .fromSeed(seedColor: appColor);
+
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
         if (!kIsWeb) {

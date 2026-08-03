@@ -66,7 +66,7 @@ public class PodcastService {
 
 
     @Transactional(readOnly = true)
-    List<Podcast> getPodcasts() {
+    public List<Podcast> getPodcasts() {
         return podcastRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchState {
 
- bool get loading; List<SearchResult> get results;
+ String get query; bool get loadingDiscover; bool get loadingPodcasts; bool get loadingEpisodes; List<SearchResult> get discoverResults; List<PodcastLight> get podcastResults; List<Episode> get episodeResults;
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SearchStateCopyWith<SearchState> get copyWith => _$SearchStateCopyWithImpl<Sear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.results, results));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.loadingDiscover, loadingDiscover) || other.loadingDiscover == loadingDiscover)&&(identical(other.loadingPodcasts, loadingPodcasts) || other.loadingPodcasts == loadingPodcasts)&&(identical(other.loadingEpisodes, loadingEpisodes) || other.loadingEpisodes == loadingEpisodes)&&const DeepCollectionEquality().equals(other.discoverResults, discoverResults)&&const DeepCollectionEquality().equals(other.podcastResults, podcastResults)&&const DeepCollectionEquality().equals(other.episodeResults, episodeResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(results));
+int get hashCode => Object.hash(runtimeType,query,loadingDiscover,loadingPodcasts,loadingEpisodes,const DeepCollectionEquality().hash(discoverResults),const DeepCollectionEquality().hash(podcastResults),const DeepCollectionEquality().hash(episodeResults));
 
 @override
 String toString() {
-  return 'SearchState(loading: $loading, results: $results)';
+  return 'SearchState(query: $query, loadingDiscover: $loadingDiscover, loadingPodcasts: $loadingPodcasts, loadingEpisodes: $loadingEpisodes, discoverResults: $discoverResults, podcastResults: $podcastResults, episodeResults: $episodeResults)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SearchStateCopyWith<$Res>  {
   factory $SearchStateCopyWith(SearchState value, $Res Function(SearchState) _then) = _$SearchStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, List<SearchResult> results
+ String query, bool loadingDiscover, bool loadingPodcasts, bool loadingEpisodes, List<SearchResult> discoverResults, List<PodcastLight> podcastResults, List<Episode> episodeResults
 });
 
 
@@ -62,11 +62,16 @@ class _$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? results = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? loadingDiscover = null,Object? loadingPodcasts = null,Object? loadingEpisodes = null,Object? discoverResults = null,Object? podcastResults = null,Object? episodeResults = null,}) {
   return _then(_self.copyWith(
-loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
-as bool,results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
-as List<SearchResult>,
+query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
+as String,loadingDiscover: null == loadingDiscover ? _self.loadingDiscover : loadingDiscover // ignore: cast_nullable_to_non_nullable
+as bool,loadingPodcasts: null == loadingPodcasts ? _self.loadingPodcasts : loadingPodcasts // ignore: cast_nullable_to_non_nullable
+as bool,loadingEpisodes: null == loadingEpisodes ? _self.loadingEpisodes : loadingEpisodes // ignore: cast_nullable_to_non_nullable
+as bool,discoverResults: null == discoverResults ? _self.discoverResults : discoverResults // ignore: cast_nullable_to_non_nullable
+as List<SearchResult>,podcastResults: null == podcastResults ? _self.podcastResults : podcastResults // ignore: cast_nullable_to_non_nullable
+as List<PodcastLight>,episodeResults: null == episodeResults ? _self.episodeResults : episodeResults // ignore: cast_nullable_to_non_nullable
+as List<Episode>,
   ));
 }
 
@@ -148,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  List<SearchResult> results)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<Episode> episodeResults)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.loading,_that.results);case _:
+return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.loadingEpisodes,_that.discoverResults,_that.podcastResults,_that.episodeResults);case _:
   return orElse();
 
 }
@@ -169,10 +174,10 @@ return $default(_that.loading,_that.results);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  List<SearchResult> results)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<Episode> episodeResults)  $default,) {final _that = this;
 switch (_that) {
 case _SearchState():
-return $default(_that.loading,_that.results);}
+return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.loadingEpisodes,_that.discoverResults,_that.podcastResults,_that.episodeResults);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +191,10 @@ return $default(_that.loading,_that.results);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  List<SearchResult> results)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<Episode> episodeResults)?  $default,) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.loading,_that.results);case _:
+return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.loadingEpisodes,_that.discoverResults,_that.podcastResults,_that.episodeResults);case _:
   return null;
 
 }
@@ -201,15 +206,32 @@ return $default(_that.loading,_that.results);case _:
 
 
 class _SearchState implements SearchState {
-  const _SearchState({this.loading = false, final  List<SearchResult> results = const []}): _results = results;
+  const _SearchState({this.query = "", this.loadingDiscover = false, this.loadingPodcasts = false, this.loadingEpisodes = false, final  List<SearchResult> discoverResults = const [], final  List<PodcastLight> podcastResults = const [], final  List<Episode> episodeResults = const []}): _discoverResults = discoverResults,_podcastResults = podcastResults,_episodeResults = episodeResults;
   
 
-@override@JsonKey() final  bool loading;
- final  List<SearchResult> _results;
-@override@JsonKey() List<SearchResult> get results {
-  if (_results is EqualUnmodifiableListView) return _results;
+@override@JsonKey() final  String query;
+@override@JsonKey() final  bool loadingDiscover;
+@override@JsonKey() final  bool loadingPodcasts;
+@override@JsonKey() final  bool loadingEpisodes;
+ final  List<SearchResult> _discoverResults;
+@override@JsonKey() List<SearchResult> get discoverResults {
+  if (_discoverResults is EqualUnmodifiableListView) return _discoverResults;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_results);
+  return EqualUnmodifiableListView(_discoverResults);
+}
+
+ final  List<PodcastLight> _podcastResults;
+@override@JsonKey() List<PodcastLight> get podcastResults {
+  if (_podcastResults is EqualUnmodifiableListView) return _podcastResults;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_podcastResults);
+}
+
+ final  List<Episode> _episodeResults;
+@override@JsonKey() List<Episode> get episodeResults {
+  if (_episodeResults is EqualUnmodifiableListView) return _episodeResults;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_episodeResults);
 }
 
 
@@ -223,16 +245,16 @@ _$SearchStateCopyWith<_SearchState> get copyWith => __$SearchStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other._results, _results));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.loadingDiscover, loadingDiscover) || other.loadingDiscover == loadingDiscover)&&(identical(other.loadingPodcasts, loadingPodcasts) || other.loadingPodcasts == loadingPodcasts)&&(identical(other.loadingEpisodes, loadingEpisodes) || other.loadingEpisodes == loadingEpisodes)&&const DeepCollectionEquality().equals(other._discoverResults, _discoverResults)&&const DeepCollectionEquality().equals(other._podcastResults, _podcastResults)&&const DeepCollectionEquality().equals(other._episodeResults, _episodeResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(_results));
+int get hashCode => Object.hash(runtimeType,query,loadingDiscover,loadingPodcasts,loadingEpisodes,const DeepCollectionEquality().hash(_discoverResults),const DeepCollectionEquality().hash(_podcastResults),const DeepCollectionEquality().hash(_episodeResults));
 
 @override
 String toString() {
-  return 'SearchState(loading: $loading, results: $results)';
+  return 'SearchState(query: $query, loadingDiscover: $loadingDiscover, loadingPodcasts: $loadingPodcasts, loadingEpisodes: $loadingEpisodes, discoverResults: $discoverResults, podcastResults: $podcastResults, episodeResults: $episodeResults)';
 }
 
 
@@ -243,7 +265,7 @@ abstract mixin class _$SearchStateCopyWith<$Res> implements $SearchStateCopyWith
   factory _$SearchStateCopyWith(_SearchState value, $Res Function(_SearchState) _then) = __$SearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, List<SearchResult> results
+ String query, bool loadingDiscover, bool loadingPodcasts, bool loadingEpisodes, List<SearchResult> discoverResults, List<PodcastLight> podcastResults, List<Episode> episodeResults
 });
 
 
@@ -260,11 +282,16 @@ class __$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? results = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? loadingDiscover = null,Object? loadingPodcasts = null,Object? loadingEpisodes = null,Object? discoverResults = null,Object? podcastResults = null,Object? episodeResults = null,}) {
   return _then(_SearchState(
-loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
-as bool,results: null == results ? _self._results : results // ignore: cast_nullable_to_non_nullable
-as List<SearchResult>,
+query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
+as String,loadingDiscover: null == loadingDiscover ? _self.loadingDiscover : loadingDiscover // ignore: cast_nullable_to_non_nullable
+as bool,loadingPodcasts: null == loadingPodcasts ? _self.loadingPodcasts : loadingPodcasts // ignore: cast_nullable_to_non_nullable
+as bool,loadingEpisodes: null == loadingEpisodes ? _self.loadingEpisodes : loadingEpisodes // ignore: cast_nullable_to_non_nullable
+as bool,discoverResults: null == discoverResults ? _self._discoverResults : discoverResults // ignore: cast_nullable_to_non_nullable
+as List<SearchResult>,podcastResults: null == podcastResults ? _self._podcastResults : podcastResults // ignore: cast_nullable_to_non_nullable
+as List<PodcastLight>,episodeResults: null == episodeResults ? _self._episodeResults : episodeResults // ignore: cast_nullable_to_non_nullable
+as List<Episode>,
   ));
 }
 

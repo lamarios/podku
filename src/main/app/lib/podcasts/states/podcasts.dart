@@ -36,6 +36,7 @@ class PodcastsCubit extends Cubit<PodcastState> {
       return;
     }
     try {
+      print('GETTING PODCASTS');
       emit(state.copyWith(subscriptions: await client.podcasts.getPodcasts().then((value) => value.data ?? [])));
     } catch (e, s) {
       emit(state.copyWith(error: e, stackTrace: s));

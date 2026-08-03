@@ -51,7 +51,7 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
         GoRoute(
           name: 'Search',
           path: '/search',
-          builder: (context, state) => SearchScreen(query: state.extra as String),
+          builder: (context, state) => SearchScreen(query: state.extra != null ? state.extra as String : null),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {

@@ -138,4 +138,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSearch => 'Open full screen search';
+
+  @override
+  String get searchForPodcasts => 'Search for new podcasts';
 }

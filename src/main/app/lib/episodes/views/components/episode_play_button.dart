@@ -6,6 +6,7 @@ import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_progress.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/server/states/server.dart';
+import 'package:podku/utils.dart';
 
 const double _playedThreshold = 0.95;
 
@@ -23,7 +24,8 @@ class EpisodePlayButton extends StatelessWidget {
         var cubit = context.read<PlayerCubit>();
 
         final playerEpisode = context.select((PlayerCubit c) => c.state.episode);
-        final isEpisodePlaying = playerEpisode?.id == episode.id;
+        final isEpisodePlaying =
+            episode.id != null && episode.podcast?.id != unsubbedPodcastUuid && playerEpisode?.id == episode.id;
         final episodeDuration = context.select(
           (PlayerCubit c) => isEpisodePlaying ? c.state.duration.inSeconds.toDouble() : episode.progress ?? 1,
         );

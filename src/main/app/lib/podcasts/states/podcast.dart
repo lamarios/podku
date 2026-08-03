@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
@@ -12,6 +13,7 @@ class PodcastCubit extends Cubit<PodcastState> {
   final String? podcastId;
   final SearchResult? searchResult;
   final PlayerCubit playerCubit;
+  static final _log = Logger('PodcastCubit');
 
   PodcastCubit(super.initialState, {this.podcastId, this.searchResult, required this.playerCubit}) {
     getPodcast();
@@ -28,9 +30,11 @@ class PodcastCubit extends Cubit<PodcastState> {
             .then((value) => value.data ?? [])
             .then((e) => e.where((p) => p.url == searchResult!.feedUrl).firstOrNull);
 
+        _log.fine("Is subscribed? $isSubscribed");
+
         var parsePodcast = await client.podcasts.parsePodcast(searchResult: searchResult!).then((value) => value.data);
         if (isSubscribed != null) {
-          parsePodcast = (await client.podcasts.getPodcast(id: isSubscribed.id.uuid)).data;
+          parsePodcast = (await client.podcasts.getPodcast(id: isSubscribed.id)).data;
         }
 
         if (parsePodcast != null) {

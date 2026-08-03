@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/fab_menu/m3e_fab_menu.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
@@ -104,6 +105,13 @@ class PodcastsScreen extends StatelessWidget {
                       },
                       label: locals.addPodcastFromUrl,
                       icon: Icon(Icons.add),
+                    ),
+                    M3EFabMenuItem(
+                      onPressed: () async {
+                        context.push('/search', extra: "");
+                      },
+                      label: locals.searchForPodcasts,
+                      icon: Icon(Icons.search),
                     ),
                   ],
                 ),

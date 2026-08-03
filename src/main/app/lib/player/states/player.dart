@@ -83,14 +83,17 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   Future<void> playEpisode(Episode episode, {bool offline = false, Duration? initialPosition}) async {
     try {
-      if (state.episode?.id == episode.id) {
+      if (state.episode != null && state.episode?.id == episode.id) {
         return;
       }
 
       _log.fine('Playing episode: ${episode.title}, offline? $offline');
 
       emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true, showTranscript: false));
-      var backendEpisode = !kIsWeb && offline
+      var backendEpisode =
+          (!kIsWeb && offline) ||
+              episode.id ==
+                  null // we're playing from a podcast we're not subscribed
           ? episode
           : await client.episodes.getEpisode(id: episode.id ?? '').then((value) => value.data);
 

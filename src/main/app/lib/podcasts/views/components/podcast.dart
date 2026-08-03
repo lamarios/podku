@@ -9,9 +9,10 @@ import 'package:podku/utils.dart';
 const double _imageSize = 200;
 
 class PodcastInGrid extends StatelessWidget {
+  final double? size;
   final PodcastLight podcast;
 
-  const PodcastInGrid({super.key, required this.podcast});
+  const PodcastInGrid({super.key, required this.podcast, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,16 @@ class PodcastInGrid extends StatelessWidget {
       child: Padding(
         padding: .all(pu),
         child: Column(
+          crossAxisAlignment: .center,
           children: [
-            PodcastImage(podcastLight: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
+            Center(
+              child: PodcastImage(
+                podcastLight: podcast,
+                width: size ?? _imageSize,
+                height: size ?? _imageSize,
+                borderRadius: pu4,
+              ),
+            ),
             Text(podcast.name ?? '', maxLines: 2, overflow: .ellipsis),
           ],
         ),
