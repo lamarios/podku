@@ -7,6 +7,7 @@ import 'package:podku/episodes/models/episode_progress.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/models/breakpoint.dart';
 
 const double _playedThreshold = 0.95;
 
@@ -19,6 +20,7 @@ class EpisodePlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = M3ETheme.of(context).colorScheme;
+    final isMobile = BreakPoint.of(context) == .mobile;
     return Builder(
       builder: (context) {
         var cubit = context.read<PlayerCubit>();
@@ -26,6 +28,8 @@ class EpisodePlayButton extends StatelessWidget {
         final playerEpisode = context.select((PlayerCubit c) => c.state.episode);
         final isEpisodePlaying =
             episode.id != null && episode.podcast?.id != unsubbedPodcastUuid && playerEpisode?.id == episode.id;
+        final playerPlaying = context.select((PlayerCubit c) => c.state.playing);
+
         final episodeDuration = context.select(
           (PlayerCubit c) => isEpisodePlaying ? c.state.duration.inSeconds.toDouble() : episode.progress ?? 1,
         );
@@ -40,12 +44,19 @@ class EpisodePlayButton extends StatelessWidget {
           children: [
             Positioned.fill(
               child: Container(
-                decoration: BoxDecoration(color: colors.surface, borderRadius: .circular(100)),
+                decoration: BoxDecoration(
+                  color: isMobile ? Colors.transparent : colors.surface,
+                  borderRadius: .circular(100),
+                ),
               ),
             ),
             if (!offline)
               isEpisodePlaying
-                  ? M3EProgressIndicator.circularWavy(value: playerProgress, trackColor: colors.secondaryContainer)
+                  ? M3EProgressIndicator.circularWavy(
+                      value: playerProgress,
+                      trackColor: playerPlaying ? colors.surfaceContainerHigh : colors.secondaryContainer,
+                      amplitude: playerPlaying ? 1 : 0,
+                    )
                   : StreamBuilder<double>(
                       stream: context
                           .read<ServerCubit>()

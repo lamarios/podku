@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -23,15 +24,20 @@ class EpisodeInList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = M3ETheme.of(context).colorScheme;
+    final colors = Theme.of(context).colorScheme;
     return Builder(
       builder: (context) {
-        final playerEpisode = context.select((PlayerCubit c) => c.state.episode);
-        final isEpisodePlaying =
-            episode.id != null && episode.podcast?.id != unsubbedPodcastUuid && playerEpisode?.id == episode.id;
+        final isPlayerOnEpisode = context.select(
+          (PlayerCubit c) =>
+              c.state.playing &&
+              episode.id != null &&
+              episode.podcast?.id != unsubbedPodcastUuid &&
+              c.state.episode?.id == episode.id,
+        );
+        final isEpisodePlaying = context.select((PlayerCubit c) => c.state.playing && isPlayerOnEpisode);
 
         return SingleMotionBuilder(
-          motion: MaterialSpringMotion.expressiveEffectsDefault(),
+          motion: MaterialSpringMotion.expressiveSpatialDefault(snapToEnd: true),
           value: isEpisodePlaying ? 1 : 0,
           builder: (context, value, child) {
             final padding = lerpDouble(0, pu2, value)!;
@@ -39,11 +45,10 @@ class EpisodeInList extends StatelessWidget {
               padding: .only(bottom: pu, top: pu),
               child: Container(
                 decoration: BoxDecoration(
-                  // color: isEpisodePlaying ? colors.primaryContainer : Colors.transparent,
                   color: Color.lerp(Colors.transparent, colors.primaryContainer, value),
-                  borderRadius: .circular(pu8),
+                  borderRadius: .circular(lerpDouble(pu, pu8 * 2, value) ?? pu),
                 ),
-                padding: .all(padding),
+                padding: .all(max(padding, 0)),
                 child: InkWell(
                   onTap: () => EpisodeSheet.open(context, episode, offline),
                   child: Row(
