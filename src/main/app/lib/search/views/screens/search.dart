@@ -86,7 +86,12 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (state.loadingDiscover) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
+                  if (state.loadingDiscover)
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(padding: const EdgeInsets.all(8.0), child: LoadingIndicator()),
+                      ),
+                    ),
                   if (!state.loadingDiscover && state.discoverResults.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
@@ -130,7 +135,12 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (state.loadingPodcasts) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
+                  if (state.loadingPodcasts)
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(padding: .all(pu4), child: LoadingIndicator()),
+                      ),
+                    ),
                   if (!state.loadingPodcasts && state.podcastResults.isNotEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
@@ -173,7 +183,12 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (state.loadingEpisodes) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
+                  if (state.loadingEpisodes)
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(padding: .all(pu4), child: LoadingIndicator()),
+                      ),
+                    ),
                   if (!state.loadingEpisodes && state.episodeResults.isNotEmpty)
                     SliverConstrainedCrossAxis(
                       maxExtent: BreakPoint.tablet.maxWidth,
