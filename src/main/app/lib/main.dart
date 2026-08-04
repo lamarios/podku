@@ -104,12 +104,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
               var m3eThemeData = M3EThemeData.fromMaterial(Theme.of(context));
-              return M3ETheme(
-                data: m3eThemeData,
-                autoTheming: true,
-                dynamicColoring: !kIsWeb,
-                child: Expanded(child: child!),
-              );
+              return M3ETheme(data: m3eThemeData, autoTheming: true, dynamicColoring: !kIsWeb, child: child!);
             },
             darkTheme: ThemeData(
               colorScheme: darkColorScheme,
