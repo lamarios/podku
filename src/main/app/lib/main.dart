@@ -102,12 +102,15 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: kDebugMode,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            builder: (context, child) => M3ETheme(
-              data: M3EThemeData.dark(seedColor: appColor),
-              autoTheming: true,
-              dynamicColoring: !kIsWeb,
-              child: child!,
-            ),
+            builder: (context, child) {
+              var m3eThemeData = M3EThemeData.fromMaterial(Theme.of(context));
+              return M3ETheme(
+                data: m3eThemeData,
+                autoTheming: true,
+                dynamicColoring: !kIsWeb,
+                child: Expanded(child: child!),
+              );
+            },
             darkTheme: ThemeData(
               colorScheme: darkColorScheme,
               appBarTheme: appBarTheme.copyWith(backgroundColor: darkColorScheme.surface),

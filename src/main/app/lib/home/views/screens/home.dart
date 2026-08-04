@@ -44,137 +44,129 @@ class HomeScreen extends StatelessWidget {
     final titles = [locals.episodes, locals.podcasts, locals.search];
 
     bool isMobile = BreakPoint.of(context) == .mobile;
-    return M3ETheme(
-      data: M3EThemeData.dark(),
-      dynamicColoring: !kIsWeb,
-      autoTheming: true,
-      child: MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
-        child: Builder(
-          builder: (originalContext) {
-            return Scaffold(
-              appBar: M3EAppBar.search(
-                leading: Row(
-                  children: [
-                    SvgPicture.asset('assets/podku-icon-no-background.svg', width: 50, height: 50),
-                    if (!isMobile) Text(titles[navigationShell.currentIndex]),
-                  ],
-                ),
-                backgroundColor: Colors.transparent,
-                centerTitle: true,
-                isFullScreen: false,
-                barBackgroundColor: WidgetStatePropertyAll(colors.surfaceContainerLowest),
-                barHintText: locals.search,
-                density: .compact,
-                actions: [
-                  if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
-                  if (!kIsWeb || kDebugMode)
-                    IconButton(
-                      onPressed: () async {
-                        if ((await okCancelDialog(
-                              context,
-                              title: locals.loggingOut,
-                              content: Text(locals.loggingOutText),
-                            )) ??
-                            false) {
-                          await getIt.get<ServerCubit>().setServerUrl(null);
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (context) => PodcastsCubit(PodcastState()))],
+      child: Builder(
+        builder: (originalContext) {
+          return Scaffold(
+            appBar: M3EAppBar.search(
+              leading: Row(
+                children: [
+                  SvgPicture.asset('assets/podku-icon-no-background.svg', width: 50, height: 50),
+                  if (!isMobile) Text(titles[navigationShell.currentIndex]),
+                ],
+              ),
+              backgroundColor: Colors.transparent,
+              centerTitle: true,
+              isFullScreen: false,
+              barBackgroundColor: WidgetStatePropertyAll(colors.surfaceContainerLowest),
+              barHintText: locals.search,
+              density: .compact,
+              actions: [
+                if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
+                if (!kIsWeb || kDebugMode)
+                  IconButton(
+                    onPressed: () async {
+                      if ((await okCancelDialog(
+                            context,
+                            title: locals.loggingOut,
+                            content: Text(locals.loggingOutText),
+                          )) ??
+                          false) {
+                        await getIt.get<ServerCubit>().setServerUrl(null);
+                        if (context.mounted) {
+                          await context.read<DownloadManagerCubit>().deleteAllEpisodes();
                           if (context.mounted) {
-                            await context.read<DownloadManagerCubit>().deleteAllEpisodes();
-                            if (context.mounted) {
-                              context.go('/setup');
-                            }
+                            context.go('/setup');
                           }
                         }
-                      },
-                      icon: Icon(Icons.logout),
-                    ),
-                ],
+                      }
+                    },
+                    icon: Icon(Icons.logout),
+                  ),
+              ],
 
-                searchController: context.read<HomeCubit>().searchController,
-                suggestionsBuilder: (BuildContext context, M3ESearchController controller) async {
-                  final query = controller.text;
-                  if (query.trim().isEmpty) return [];
+              searchController: context.read<HomeCubit>().searchController,
+              suggestionsBuilder: (BuildContext context, M3ESearchController controller) async {
+                final query = controller.text;
+                if (query.trim().isEmpty) return [];
 
-                  // Debounce: wait, then bail out if the text has already changed
-                  final completer = Completer<void>();
-                  _debounce?.cancel();
-                  _debounce = Timer(const Duration(milliseconds: 300), completer.complete);
-                  await completer.future;
-                  if (controller.text != query) return [];
+                // Debounce: wait, then bail out if the text has already changed
+                final completer = Completer<void>();
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), completer.complete);
+                await completer.future;
+                if (controller.text != query) return [];
 
-                  final results = await SearchService().search(query);
-                  if (results.isEmpty) {
-                    return [const ListTile(title: Text('No results found'))];
-                  }
+                final results = await SearchService().search(query);
+                if (results.isEmpty) {
+                  return [const ListTile(title: Text('No results found'))];
+                }
 
-                  return _buildSections(originalContext, results, controller);
-                },
-              ),
-              body: BlocBuilder<ServerCubit, ServerState>(
-                builder: (context, state) {
-                  return ErrorHandler<PodcastsCubit, PodcastState>(
-                    showAsSnack: true,
-                    child: SafeArea(
-                      child: state.client == null
-                          ? Center(child: LoadingIndicator())
-                          : ConditionalWrap(
-                              wrapIf: !isMobile,
-                              wrapper: (child) => Row(
-                                crossAxisAlignment: .stretch,
-                                children: [
-                                  M3ENavigationRail(
-                                    labelBehavior: .alwaysShow,
-                                    sections: [
-                                      M3ENavigationRailSection(
-                                        destinations: [
-                                          M3ENavigationRailDestination(
-                                            icon: Icon(M3EIcons.playlist_play),
-                                            label: locals.episodes,
-                                          ),
-                                          M3ENavigationRailDestination(
-                                            icon: Icon(M3EIcons.podcasts),
-                                            label: locals.podcasts,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                    selectedIndex: navigationShell.currentIndex,
-                                    onDestinationSelected: (value) {
-                                      navigationShell.goBranch(value);
-                                      context.read<HomeCubit>().setIndex(value);
-                                    },
-                                  ),
-                                  Expanded(child: child),
-                                ],
-                              ),
-                              child: Padding(
-                                padding: .symmetric(horizontal: pu2),
-                                child: KeyedSubtree(
-                                  key: ValueKey(navigationShell.currentIndex),
-                                  child: navigationShell,
+                return _buildSections(originalContext, results, controller);
+              },
+            ),
+            body: BlocBuilder<ServerCubit, ServerState>(
+              builder: (context, state) {
+                return ErrorHandler<PodcastsCubit, PodcastState>(
+                  showAsSnack: true,
+                  child: SafeArea(
+                    child: state.client == null
+                        ? Center(child: LoadingIndicator())
+                        : ConditionalWrap(
+                            wrapIf: !isMobile,
+                            wrapper: (child) => Row(
+                              crossAxisAlignment: .stretch,
+                              children: [
+                                M3ENavigationRail(
+                                  labelBehavior: .alwaysShow,
+                                  sections: [
+                                    M3ENavigationRailSection(
+                                      destinations: [
+                                        M3ENavigationRailDestination(
+                                          icon: Icon(M3EIcons.playlist_play),
+                                          label: locals.episodes,
+                                        ),
+                                        M3ENavigationRailDestination(
+                                          icon: Icon(M3EIcons.podcasts),
+                                          label: locals.podcasts,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                  selectedIndex: navigationShell.currentIndex,
+                                  onDestinationSelected: (value) {
+                                    navigationShell.goBranch(value);
+                                    context.read<HomeCubit>().setIndex(value);
+                                  },
                                 ),
-                              ),
+                                Expanded(child: child),
+                              ],
                             ),
-                    ),
-                  );
-                },
-              ),
-              bottomNavigationBar: isMobile
-                  ? M3ENavigationBar(
-                      selectedIndex: navigationShell.currentIndex,
-                      destinations: [
-                        M3ENavigationBarDestination(icon: Icon(M3EIcons.playlist_play), label: locals.episodes),
-                        M3ENavigationBarDestination(icon: Icon(M3EIcons.podcasts), label: locals.podcasts),
-                      ],
-                      onDestinationSelected: (value) {
-                        navigationShell.goBranch(value);
-                        context.read<HomeCubit>().setIndex(value);
-                      },
-                    )
-                  : null,
-            );
-          },
-        ),
+                            child: Padding(
+                              padding: .symmetric(horizontal: pu2),
+                              child: KeyedSubtree(key: ValueKey(navigationShell.currentIndex), child: navigationShell),
+                            ),
+                          ),
+                  ),
+                );
+              },
+            ),
+            bottomNavigationBar: isMobile
+                ? M3ENavigationBar(
+                    selectedIndex: navigationShell.currentIndex,
+                    destinations: [
+                      M3ENavigationBarDestination(icon: Icon(M3EIcons.playlist_play), label: locals.episodes),
+                      M3ENavigationBarDestination(icon: Icon(M3EIcons.podcasts), label: locals.podcasts),
+                    ],
+                    onDestinationSelected: (value) {
+                      navigationShell.goBranch(value);
+                      context.read<HomeCubit>().setIndex(value);
+                    },
+                  )
+                : null,
+          );
+        },
       ),
     );
   }

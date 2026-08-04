@@ -63,131 +63,128 @@ class PodcastScreen extends StatelessWidget {
                   builder: (context, colorScheme) {
                     return ErrorHandler<PodcastCubit, PodcastState>(
                       showAsSnack: true,
-                      child: M3ETheme(
-                        data: M3ETheme.of(context).copyWith(colorScheme: colorScheme),
-                        child: Container(
-                          color: isLoading || isDesktop
-                              ? colorScheme.surface
-                              : Color.lerp(colorScheme.secondaryContainer, colorScheme.surface, scrollProgress),
-                          child: Scaffold(
-                            appBar: M3EAppBar.top(
-                              title: Text(state.podcast?.name ?? ''),
-                              backgroundColor: Colors.transparent,
-                              automaticallyImplyLeading: true,
-                            ),
+                      child: Container(
+                        color: isLoading || isDesktop
+                            ? colorScheme.surface
+                            : Color.lerp(colorScheme.secondaryContainer, colorScheme.surface, scrollProgress),
+                        child: Scaffold(
+                          appBar: M3EAppBar.top(
+                            title: Text(state.podcast?.name ?? ''),
                             backgroundColor: Colors.transparent,
-                            body: SafeArea(
-                              bottom: false,
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  return ConditionalWrap(
-                                    wrapIf: isDesktop,
-                                    wrapper: (child) => Center(
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(maxWidth: 1100),
-                                        child: Row(
-                                          crossAxisAlignment: .start,
-                                          mainAxisAlignment: .center,
-                                          children: [
-                                            if (!state.loading)
-                                              Align(
-                                                alignment: .topCenter,
-                                                child: _VerticalPodcastHeader(
-                                                  podcast: state.podcast!,
-                                                  subscribing: state.subscribing,
-                                                  subscribed: state.subscribed,
-                                                ),
+                            automaticallyImplyLeading: true,
+                          ),
+                          backgroundColor: Colors.transparent,
+                          body: SafeArea(
+                            bottom: false,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return ConditionalWrap(
+                                  wrapIf: isDesktop,
+                                  wrapper: (child) => Center(
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(maxWidth: 1100),
+                                      child: Row(
+                                        crossAxisAlignment: .start,
+                                        mainAxisAlignment: .center,
+                                        children: [
+                                          if (!state.loading)
+                                            Align(
+                                              alignment: .topCenter,
+                                              child: _VerticalPodcastHeader(
+                                                podcast: state.podcast!,
+                                                subscribing: state.subscribing,
+                                                subscribed: state.subscribed,
                                               ),
-                                            Expanded(child: child),
-                                          ],
-                                        ),
+                                            ),
+                                          Expanded(child: child),
+                                        ],
                                       ),
                                     ),
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        final double maxContentWidth = min(constraints.maxWidth, switch (breakPoint) {
-                                          .desktop => 800,
-                                          .bigDesktop => 1000,
-                                          _ => 640,
-                                        });
+                                  ),
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final double maxContentWidth = min(constraints.maxWidth, switch (breakPoint) {
+                                        .desktop => 800,
+                                        .bigDesktop => 1000,
+                                        _ => 640,
+                                      });
 
-                                        return Align(
-                                          alignment: isDesktop ? .topLeft : .topCenter,
-                                          child: ConstrainedBox(
-                                            constraints: BoxConstraints(maxWidth: maxContentWidth),
-                                            child: CustomScrollView(
-                                              controller: podcastColorCubit.scrollController,
-                                              shrinkWrap: isLoading,
-                                              physics: isLoading ? NeverScrollableScrollPhysics() : null,
-                                              slivers: [
-                                                if (isLoading)
-                                                  SliverFillRemaining(
-                                                    hasScrollBody: false,
-                                                    child: Center(child: LoadingIndicator()),
+                                      return Align(
+                                        alignment: isDesktop ? .topLeft : .topCenter,
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(maxWidth: maxContentWidth),
+                                          child: CustomScrollView(
+                                            controller: podcastColorCubit.scrollController,
+                                            shrinkWrap: isLoading,
+                                            physics: isLoading ? NeverScrollableScrollPhysics() : null,
+                                            slivers: [
+                                              if (isLoading)
+                                                SliverFillRemaining(
+                                                  hasScrollBody: false,
+                                                  child: Center(child: LoadingIndicator()),
+                                                ),
+                                              if (state.podcast != null) ...[
+                                                if (!isDesktop)
+                                                  SliverToBoxAdapter(
+                                                    child: _PodcastHeader(
+                                                      podcast: state.podcast!,
+                                                      subscribing: state.subscribing,
+                                                      subscribed: state.subscribed,
+                                                      // maxExtent: isMobile ? 450 : 255,
+                                                    ),
                                                   ),
-                                                if (state.podcast != null) ...[
-                                                  if (!isDesktop)
-                                                    SliverToBoxAdapter(
-                                                      child: _PodcastHeader(
-                                                        podcast: state.podcast!,
-                                                        subscribing: state.subscribing,
-                                                        subscribed: state.subscribed,
-                                                        // maxExtent: isMobile ? 450 : 255,
+                                                /*
+                                                  SliverPersistentHeader(
+                                                    pinned: true,
+                                                    delegate: _PodcastHeader(
+                                                      podcast: state.podcast!,
+                                                      subscribing: state.subscribing,
+                                                      subscribed: state.subscribed,
+                                                      maxExtent: isMobile ? 450 : 255,
+                                                    ),
+                                                  ),
+                                          */
+                                                if (state.podcast?.episodes != null)
+                                                  DecoratedSliver(
+                                                    decoration: BoxDecoration(
+                                                      color: colorScheme.surface,
+                                                      borderRadius: .only(
+                                                        topLeft: .circular(pu4),
+                                                        topRight: .circular(pu4),
                                                       ),
                                                     ),
-                                                  /*
-                                                    SliverPersistentHeader(
-                                                      pinned: true,
-                                                      delegate: _PodcastHeader(
-                                                        podcast: state.podcast!,
-                                                        subscribing: state.subscribing,
-                                                        subscribed: state.subscribed,
-                                                        maxExtent: isMobile ? 450 : 255,
+                                                    sliver: SliverList.separated(
+                                                      separatorBuilder: (context, index) => Padding(
+                                                        padding: .symmetric(horizontal: pu6),
+                                                        child: Divider(),
                                                       ),
-                                                    ),
-                    */
-                                                  if (state.podcast?.episodes != null)
-                                                    DecoratedSliver(
-                                                      decoration: BoxDecoration(
-                                                        color: colorScheme.surface,
-                                                        borderRadius: .only(
-                                                          topLeft: .circular(pu4),
-                                                          topRight: .circular(pu4),
-                                                        ),
-                                                      ),
-                                                      sliver: SliverList.separated(
-                                                        separatorBuilder: (context, index) => Padding(
-                                                          padding: .symmetric(horizontal: pu6),
-                                                          child: Divider(),
-                                                        ),
-                                                        itemCount: state.podcast!.episodes!.length,
-                                                        itemBuilder: (context, index) => ConditionalWrap(
-                                                          wrapIf: index == state.podcast!.episodes!.length - 1,
-                                                          wrapper: (child) =>
-                                                              Padding(padding: .only(bottom: 200), child: child),
-                                                          child: Padding(
-                                                            padding: .symmetric(vertical: pu2, horizontal: pu6),
-                                                            child: PodcastEpisode(
-                                                              episode: state.podcast!.episodes![index],
-                                                              // offline: !state.subscribed,
-                                                              // we set that as we're not going to track progress on unsubbed podcast episodes
-                                                              showPodcastImage: false,
-                                                            ),
+                                                      itemCount: state.podcast!.episodes!.length,
+                                                      itemBuilder: (context, index) => ConditionalWrap(
+                                                        wrapIf: index == state.podcast!.episodes!.length - 1,
+                                                        wrapper: (child) =>
+                                                            Padding(padding: .only(bottom: 200), child: child),
+                                                        child: Padding(
+                                                          padding: .symmetric(vertical: pu2, horizontal: pu6),
+                                                          child: PodcastEpisode(
+                                                            episode: state.podcast!.episodes![index],
+                                                            // offline: !state.subscribed,
+                                                            // we set that as we're not going to track progress on unsubbed podcast episodes
+                                                            showPodcastImage: false,
                                                           ),
                                                         ),
                                                       ),
                                                     ),
-                                                ],
-                                                SliverFillRemaining(child: Container(color: colorScheme.surface)),
+                                                  ),
                                               ],
-                                            ),
+                                              SliverFillRemaining(child: Container(color: colorScheme.surface)),
+                                            ],
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
