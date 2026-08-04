@@ -2,6 +2,10 @@ package com.github.lamarios.podku.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.lamarios.podku.utils.DominantColorExtractor;
+import com.github.lamarios.podku.utils.VibrantColorExtractor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -13,6 +17,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Thin client for the iTunes Search API, scoped to podcasts.
@@ -20,6 +25,7 @@ import java.util.List;
 @Component
 public class ItunesPodcastSearch {
 
+    private final Logger log = LogManager.getLogger();
     private static final String SEARCH_URL = "https://itunes.apple.com/search";
     private static final String LOOKUP_URL = "https://itunes.apple.com/lookup";
 
@@ -61,7 +67,15 @@ public class ItunesPodcastSearch {
                 results.add(objectMapper.convertValue(r, SearchResult.class));
             }
         }
-        return results;
+
+
+        return results.parallelStream().peek(r -> {
+            try {
+                r.setColor(VibrantColorExtractor.extractVibrantColorHex(r.getArtworkUrl()));
+            } catch (Exception e) {
+                log.error("Could not get image color", e);
+            }
+        }).collect(Collectors.toList());
     }
 
     public List<SearchResult> search(String term, int limit) {

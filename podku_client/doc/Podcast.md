@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **description** | **String** |  | [optional] 
 **author** | **String** |  | [optional] 
 **link** | **String** |  | [optional] 
+**color** | **String** |  | [optional] 
 **episodes** | [**List&lt;Episode&gt;**](Episode.md) |  | [optional] 
 **people** | [**List&lt;PodcastPerson&gt;**](PodcastPerson.md) |  | [optional] 
 

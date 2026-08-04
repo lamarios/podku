@@ -56,7 +56,6 @@ dependencies:
   motor: 1.1.0
   openapi:
     path: ../../../podku_client
-  palette_generator_master: 1.1.0
   path: 1.9.1
   path_provider: 2.1.6
   scrollview_observer: 1.27.0

@@ -7,6 +7,9 @@ import com.github.lamarios.podku.episodes.EpisodeFileType;
 import com.github.lamarios.podku.episodes.EpisodePerson;
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.podcasts.PodcastPerson;
+import com.github.lamarios.podku.utils.VibrantColorExtractor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +38,7 @@ import java.util.regex.Pattern;
  * Parses podcast RSS/XML (with iTunes namespace extensions) into a Podcast.
  */
 public class PodcastParser {
+    private static final Logger log = LogManager.getLogger();
 
     private static final String ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd";
 
@@ -99,6 +103,13 @@ public class PodcastParser {
             podcast.getPeople().addAll(podcastPeople);
         }
 
+        if (podcast.getArtworkUrl() != null) {
+            try {
+                podcast.setColor(VibrantColorExtractor.extractVibrantColorHex(podcast.getArtworkUrl()));
+            } catch (Exception e) {
+                log.error("Couldn't get podcast image color");
+            }
+        }
         return podcast;
     }
 

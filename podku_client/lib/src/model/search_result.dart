@@ -31,6 +31,8 @@ class SearchResult {
      this.artworkUrl600,
 
      this.genres,
+
+     this.color,
   });
 
   @JsonKey(
@@ -105,6 +107,18 @@ class SearchResult {
 
 
 
+  @JsonKey(
+    
+    name: r'color',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? color;
+
+
+
 
 
     @override
@@ -114,7 +128,8 @@ class SearchResult {
       other.artistName == artistName &&
       other.feedUrl == feedUrl &&
       other.artworkUrl600 == artworkUrl600 &&
-      other.genres == genres;
+      other.genres == genres &&
+      other.color == color;
 
     @override
     int get hashCode =>
@@ -123,7 +138,8 @@ class SearchResult {
         artistName.hashCode +
         feedUrl.hashCode +
         artworkUrl600.hashCode +
-        genres.hashCode;
+        genres.hashCode +
+        color.hashCode;
 
   factory SearchResult.fromJson(Map<String, dynamic> json) => _$SearchResultFromJson(json);
 

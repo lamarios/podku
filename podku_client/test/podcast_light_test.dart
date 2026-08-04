@@ -42,6 +42,11 @@ void main() {
       // TODO
     });
 
+    // String color
+    test('to test the property `color`', () async {
+      // TODO
+    });
+
     // List<PodcastPerson> people
     test('to test the property `people`', () async {
       // TODO

@@ -3,6 +3,8 @@ package com.github.lamarios.podku.search;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResult {
     @JsonProperty("collectionId")
@@ -16,7 +18,17 @@ public class SearchResult {
     @JsonProperty("artworkUrl600")
     private String artworkUrl;
     @JsonProperty("genres")
-    private java.util.List<String> genres;
+    private List<String> genres;
+    @JsonProperty("color")
+    private String color;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     // getters/setters
     public Long getCollectionId() {

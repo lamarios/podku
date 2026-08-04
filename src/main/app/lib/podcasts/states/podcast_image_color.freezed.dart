@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PodcastImageColorState {
 
- Color get scaffoldColor; M3EColorScheme get colorScheme; bool get initialized;
+ double get progress;
 /// Create a copy of PodcastImageColorState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PodcastImageColorStateCopyWith<PodcastImageColorState> get copyWith => _$Podcas
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastImageColorState&&(identical(other.scaffoldColor, scaffoldColor) || other.scaffoldColor == scaffoldColor)&&(identical(other.colorScheme, colorScheme) || other.colorScheme == colorScheme)&&(identical(other.initialized, initialized) || other.initialized == initialized));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastImageColorState&&(identical(other.progress, progress) || other.progress == progress));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,scaffoldColor,colorScheme,initialized);
+int get hashCode => Object.hash(runtimeType,progress);
 
 @override
 String toString() {
-  return 'PodcastImageColorState(scaffoldColor: $scaffoldColor, colorScheme: $colorScheme, initialized: $initialized)';
+  return 'PodcastImageColorState(progress: $progress)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PodcastImageColorStateCopyWith<$Res>  {
   factory $PodcastImageColorStateCopyWith(PodcastImageColorState value, $Res Function(PodcastImageColorState) _then) = _$PodcastImageColorStateCopyWithImpl;
 @useResult
 $Res call({
- Color scaffoldColor, M3EColorScheme colorScheme, bool initialized
+ double progress
 });
 
 
@@ -62,12 +62,10 @@ class _$PodcastImageColorStateCopyWithImpl<$Res>
 
 /// Create a copy of PodcastImageColorState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? scaffoldColor = null,Object? colorScheme = null,Object? initialized = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? progress = null,}) {
   return _then(_self.copyWith(
-scaffoldColor: null == scaffoldColor ? _self.scaffoldColor : scaffoldColor // ignore: cast_nullable_to_non_nullable
-as Color,colorScheme: null == colorScheme ? _self.colorScheme : colorScheme // ignore: cast_nullable_to_non_nullable
-as M3EColorScheme,initialized: null == initialized ? _self.initialized : initialized // ignore: cast_nullable_to_non_nullable
-as bool,
+progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 
@@ -149,10 +147,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Color scaffoldColor,  M3EColorScheme colorScheme,  bool initialized)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double progress)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PodcastImageColorState() when $default != null:
-return $default(_that.scaffoldColor,_that.colorScheme,_that.initialized);case _:
+return $default(_that.progress);case _:
   return orElse();
 
 }
@@ -170,10 +168,10 @@ return $default(_that.scaffoldColor,_that.colorScheme,_that.initialized);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Color scaffoldColor,  M3EColorScheme colorScheme,  bool initialized)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double progress)  $default,) {final _that = this;
 switch (_that) {
 case _PodcastImageColorState():
-return $default(_that.scaffoldColor,_that.colorScheme,_that.initialized);}
+return $default(_that.progress);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -187,10 +185,10 @@ return $default(_that.scaffoldColor,_that.colorScheme,_that.initialized);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Color scaffoldColor,  M3EColorScheme colorScheme,  bool initialized)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double progress)?  $default,) {final _that = this;
 switch (_that) {
 case _PodcastImageColorState() when $default != null:
-return $default(_that.scaffoldColor,_that.colorScheme,_that.initialized);case _:
+return $default(_that.progress);case _:
   return null;
 
 }
@@ -202,12 +200,10 @@ return $default(_that.scaffoldColor,_that.colorScheme,_that.initialized);case _:
 
 
 class _PodcastImageColorState implements PodcastImageColorState {
-  const _PodcastImageColorState({required this.scaffoldColor, required this.colorScheme, this.initialized = false});
+  const _PodcastImageColorState({required this.progress});
   
 
-@override final  Color scaffoldColor;
-@override final  M3EColorScheme colorScheme;
-@override@JsonKey() final  bool initialized;
+@override final  double progress;
 
 /// Create a copy of PodcastImageColorState
 /// with the given fields replaced by the non-null parameter values.
@@ -219,16 +215,16 @@ _$PodcastImageColorStateCopyWith<_PodcastImageColorState> get copyWith => __$Pod
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastImageColorState&&(identical(other.scaffoldColor, scaffoldColor) || other.scaffoldColor == scaffoldColor)&&(identical(other.colorScheme, colorScheme) || other.colorScheme == colorScheme)&&(identical(other.initialized, initialized) || other.initialized == initialized));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastImageColorState&&(identical(other.progress, progress) || other.progress == progress));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,scaffoldColor,colorScheme,initialized);
+int get hashCode => Object.hash(runtimeType,progress);
 
 @override
 String toString() {
-  return 'PodcastImageColorState(scaffoldColor: $scaffoldColor, colorScheme: $colorScheme, initialized: $initialized)';
+  return 'PodcastImageColorState(progress: $progress)';
 }
 
 
@@ -239,7 +235,7 @@ abstract mixin class _$PodcastImageColorStateCopyWith<$Res> implements $PodcastI
   factory _$PodcastImageColorStateCopyWith(_PodcastImageColorState value, $Res Function(_PodcastImageColorState) _then) = __$PodcastImageColorStateCopyWithImpl;
 @override @useResult
 $Res call({
- Color scaffoldColor, M3EColorScheme colorScheme, bool initialized
+ double progress
 });
 
 
@@ -256,12 +252,10 @@ class __$PodcastImageColorStateCopyWithImpl<$Res>
 
 /// Create a copy of PodcastImageColorState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? scaffoldColor = null,Object? colorScheme = null,Object? initialized = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? progress = null,}) {
   return _then(_PodcastImageColorState(
-scaffoldColor: null == scaffoldColor ? _self.scaffoldColor : scaffoldColor // ignore: cast_nullable_to_non_nullable
-as Color,colorScheme: null == colorScheme ? _self.colorScheme : colorScheme // ignore: cast_nullable_to_non_nullable
-as M3EColorScheme,initialized: null == initialized ? _self.initialized : initialized // ignore: cast_nullable_to_non_nullable
-as bool,
+progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 

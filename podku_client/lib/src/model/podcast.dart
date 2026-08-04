@@ -36,6 +36,8 @@ class Podcast {
 
      this.link,
 
+     this.color,
+
      this.episodes,
 
      this.people,
@@ -127,6 +129,18 @@ class Podcast {
 
   @JsonKey(
     
+    name: r'color',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? color;
+
+
+
+  @JsonKey(
+    
     name: r'episodes',
     required: false,
     includeIfNull: false,
@@ -160,6 +174,7 @@ class Podcast {
       other.description == description &&
       other.author == author &&
       other.link == link &&
+      other.color == color &&
       other.episodes == episodes &&
       other.people == people;
 
@@ -172,6 +187,7 @@ class Podcast {
         description.hashCode +
         author.hashCode +
         link.hashCode +
+        color.hashCode +
         episodes.hashCode +
         people.hashCode;
 

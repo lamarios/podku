@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:openapi/openapi.dart';
-import 'package:podku/podcasts/states/podcast_image_color.dart';
 
 class PodcastColorProvider extends StatelessWidget {
   final Podcast? podcast;
@@ -14,18 +12,22 @@ class PodcastColorProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = M3ETheme.of(context).colorScheme;
     final brightness = Theme.brightnessOf(context);
-    return BlocProvider(
-      create: (context) => PodcastImageColorCubit(
-        PodcastImageColorState(colorScheme: colors, scaffoldColor: colors.surface),
-        brightness: brightness,
-        fallBackColorScheme: colors,
-      )..setPodcast(podcast: podcast, podcastLight: podcastLight),
-
-      child: BlocBuilder<PodcastImageColorCubit, PodcastImageColorState>(
-        builder: (context, state) {
-          return builder(context, state.colorScheme);
+    final colorScheme = (podcast?.color?.isNotEmpty ?? false) || (podcastLight?.color?.isNotEmpty ?? false)
+        ? M3EColorScheme.fromSeed(
+            Color(int.parse((podcast?.color ?? podcastLight!.color!).substring(1), radix: 16)),
+            brightness: brightness,
+          )
+        : M3ETheme.of(context).colorScheme;
+    return M3ETheme(
+      autoTheming: true,
+      initialTheme: brightness,
+      data: M3EThemeData.fromMaterial(
+        Theme.of(context).copyWith(brightness: brightness),
+      ).copyWith(colorScheme: colorScheme),
+      child: Builder(
+        builder: (context) {
+          return builder(context, colorScheme);
         },
       ),
     );

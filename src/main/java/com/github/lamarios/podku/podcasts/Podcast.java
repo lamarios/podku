@@ -19,6 +19,7 @@ public class Podcast {
     private String description;
     private String author;
     private String link;
+    private String color;
 
     @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("pubDateMillis DESC")
@@ -98,5 +99,13 @@ public class Podcast {
 
     public void setPeople(List<PodcastPerson> people) {
         this.people = people;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

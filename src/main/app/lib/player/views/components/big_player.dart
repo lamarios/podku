@@ -14,7 +14,7 @@ import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/player_speed.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/player/views/components/transcript_follower.dart';
-import 'package:podku/podcasts/states/podcast_image_color.dart';
+import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -30,23 +30,18 @@ class BigPlayer extends StatelessWidget {
     final textTheme = M3ETheme.of(context).textTheme;
     final cubit = context.read<PlayerCubit>();
     final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
-    final brightness = Theme.brightnessOf(context);
+
     return DefaultTabController(
       length: 2,
       child: Builder(
         builder: (context) {
-          final colorScheme = context.select((PodcastImageColorCubit c) => c.state.colorScheme);
+          final podcast = context.select((PlayerCubit c) => c.state.episode?.podcast);
           var tabController = DefaultTabController.of(context);
-          return M3ETheme(
-            data: brightness == .light
-                ? M3EThemeData.light(seedColor: colorScheme.primary)
-                : M3EThemeData.dark(seedColor: colorScheme.primary),
-            autoTheming: true,
-            initialTheme: brightness,
-            child: ListenableBuilder(
+          return PodcastColorProvider(
+            podcastLight: podcast,
+            builder: (context, colors) => ListenableBuilder(
               listenable: tabController,
               builder: (context, child) {
-                final colors = M3ETheme.of(context).colorScheme;
                 return AnimatedContainer(
                   duration: Duration(milliseconds: 500),
                   color: tabController.index == 0 ? colors.surface : colors.surface,

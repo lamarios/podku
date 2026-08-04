@@ -35,6 +35,8 @@ class PodcastLight {
 
      this.link,
 
+     this.color,
+
      this.people,
   });
 
@@ -124,6 +126,18 @@ class PodcastLight {
 
   @JsonKey(
     
+    name: r'color',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? color;
+
+
+
+  @JsonKey(
+    
     name: r'people',
     required: false,
     includeIfNull: false,
@@ -145,6 +159,7 @@ class PodcastLight {
       other.description == description &&
       other.author == author &&
       other.link == link &&
+      other.color == color &&
       other.people == people;
 
     @override
@@ -156,6 +171,7 @@ class PodcastLight {
         description.hashCode +
         author.hashCode +
         link.hashCode +
+        color.hashCode +
         people.hashCode;
 
   factory PodcastLight.fromJson(Map<String, dynamic> json) => _$PodcastLightFromJson(json);

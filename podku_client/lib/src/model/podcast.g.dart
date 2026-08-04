@@ -21,6 +21,8 @@ abstract class _$PodcastCWProxy {
 
   Podcast link(String? link);
 
+  Podcast color(String? color);
+
   Podcast episodes(List<Episode>? episodes);
 
   Podcast people(List<PodcastPerson>? people);
@@ -39,6 +41,7 @@ abstract class _$PodcastCWProxy {
     String? description,
     String? author,
     String? link,
+    String? color,
     List<Episode>? episodes,
     List<PodcastPerson>? people,
   });
@@ -72,6 +75,9 @@ class _$PodcastCWProxyImpl implements _$PodcastCWProxy {
   Podcast link(String? link) => this(link: link);
 
   @override
+  Podcast color(String? color) => this(color: color);
+
+  @override
   Podcast episodes(List<Episode>? episodes) => this(episodes: episodes);
 
   @override
@@ -92,6 +98,7 @@ class _$PodcastCWProxyImpl implements _$PodcastCWProxy {
     Object? description = const $CopyWithPlaceholder(),
     Object? author = const $CopyWithPlaceholder(),
     Object? link = const $CopyWithPlaceholder(),
+    Object? color = const $CopyWithPlaceholder(),
     Object? episodes = const $CopyWithPlaceholder(),
     Object? people = const $CopyWithPlaceholder(),
   }) {
@@ -124,6 +131,10 @@ class _$PodcastCWProxyImpl implements _$PodcastCWProxy {
           ? _value.link
           // ignore: cast_nullable_to_non_nullable
           : link as String?,
+      color: color == const $CopyWithPlaceholder()
+          ? _value.color
+          // ignore: cast_nullable_to_non_nullable
+          : color as String?,
       episodes: episodes == const $CopyWithPlaceholder()
           ? _value.episodes
           // ignore: cast_nullable_to_non_nullable
@@ -156,6 +167,7 @@ Podcast _$PodcastFromJson(Map<String, dynamic> json) =>
         description: $checkedConvert('description', (v) => v as String?),
         author: $checkedConvert('author', (v) => v as String?),
         link: $checkedConvert('link', (v) => v as String?),
+        color: $checkedConvert('color', (v) => v as String?),
         episodes: $checkedConvert(
           'episodes',
           (v) => (v as List<dynamic>?)
@@ -180,6 +192,7 @@ Map<String, dynamic> _$PodcastToJson(Podcast instance) => <String, dynamic>{
   'description': ?instance.description,
   'author': ?instance.author,
   'link': ?instance.link,
+  'color': ?instance.color,
   'episodes': ?instance.episodes?.map((e) => e.toJson()).toList(),
   'people': ?instance.people?.map((e) => e.toJson()).toList(),
 };

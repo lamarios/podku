@@ -21,6 +21,8 @@ abstract class _$PodcastLightCWProxy {
 
   PodcastLight link(String? link);
 
+  PodcastLight color(String? color);
+
   PodcastLight people(List<PodcastPerson>? people);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PodcastLight(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -37,6 +39,7 @@ abstract class _$PodcastLightCWProxy {
     String? description,
     String? author,
     String? link,
+    String? color,
     List<PodcastPerson>? people,
   });
 }
@@ -70,6 +73,9 @@ class _$PodcastLightCWProxyImpl implements _$PodcastLightCWProxy {
   PodcastLight link(String? link) => this(link: link);
 
   @override
+  PodcastLight color(String? color) => this(color: color);
+
+  @override
   PodcastLight people(List<PodcastPerson>? people) => this(people: people);
 
   @override
@@ -87,6 +93,7 @@ class _$PodcastLightCWProxyImpl implements _$PodcastLightCWProxy {
     Object? description = const $CopyWithPlaceholder(),
     Object? author = const $CopyWithPlaceholder(),
     Object? link = const $CopyWithPlaceholder(),
+    Object? color = const $CopyWithPlaceholder(),
     Object? people = const $CopyWithPlaceholder(),
   }) {
     return PodcastLight(
@@ -118,6 +125,10 @@ class _$PodcastLightCWProxyImpl implements _$PodcastLightCWProxy {
           ? _value.link
           // ignore: cast_nullable_to_non_nullable
           : link as String?,
+      color: color == const $CopyWithPlaceholder()
+          ? _value.color
+          // ignore: cast_nullable_to_non_nullable
+          : color as String?,
       people: people == const $CopyWithPlaceholder()
           ? _value.people
           // ignore: cast_nullable_to_non_nullable
@@ -146,6 +157,7 @@ PodcastLight _$PodcastLightFromJson(Map<String, dynamic> json) =>
         description: $checkedConvert('description', (v) => v as String?),
         author: $checkedConvert('author', (v) => v as String?),
         link: $checkedConvert('link', (v) => v as String?),
+        color: $checkedConvert('color', (v) => v as String?),
         people: $checkedConvert(
           'people',
           (v) => (v as List<dynamic>?)
@@ -165,5 +177,6 @@ Map<String, dynamic> _$PodcastLightToJson(PodcastLight instance) =>
       'description': ?instance.description,
       'author': ?instance.author,
       'link': ?instance.link,
+      'color': ?instance.color,
       'people': ?instance.people?.map((e) => e.toJson()).toList(),
     };

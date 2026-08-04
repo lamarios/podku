@@ -19,6 +19,8 @@ abstract class _$SearchResultCWProxy {
 
   SearchResult genres(List<String>? genres);
 
+  SearchResult color(String? color);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `SearchResult(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -32,6 +34,7 @@ abstract class _$SearchResultCWProxy {
     String? feedUrl,
     String? artworkUrl600,
     List<String>? genres,
+    String? color,
   });
 }
 
@@ -63,6 +66,9 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
   SearchResult genres(List<String>? genres) => this(genres: genres);
 
   @override
+  SearchResult color(String? color) => this(color: color);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `SearchResult(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -76,6 +82,7 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
     Object? feedUrl = const $CopyWithPlaceholder(),
     Object? artworkUrl600 = const $CopyWithPlaceholder(),
     Object? genres = const $CopyWithPlaceholder(),
+    Object? color = const $CopyWithPlaceholder(),
   }) {
     return SearchResult(
       collectionId: collectionId == const $CopyWithPlaceholder()
@@ -102,6 +109,10 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
           ? _value.genres
           // ignore: cast_nullable_to_non_nullable
           : genres as List<String>?,
+      color: color == const $CopyWithPlaceholder()
+          ? _value.color
+          // ignore: cast_nullable_to_non_nullable
+          : color as String?,
     );
   }
 }
@@ -131,6 +142,7 @@ SearchResult _$SearchResultFromJson(Map<String, dynamic> json) =>
           'genres',
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
         ),
+        color: $checkedConvert('color', (v) => v as String?),
       );
       return val;
     });
@@ -143,4 +155,5 @@ Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
       'feedUrl': ?instance.feedUrl,
       'artworkUrl600': ?instance.artworkUrl600,
       'genres': ?instance.genres,
+      'color': ?instance.color,
     };

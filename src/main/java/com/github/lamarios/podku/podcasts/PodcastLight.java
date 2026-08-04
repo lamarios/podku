@@ -11,6 +11,7 @@ public class PodcastLight {
     private String description;
     private String author;
     private String link;
+    private String color;
 
     private List<PodcastPerson> people;
 
@@ -23,6 +24,15 @@ public class PodcastLight {
         author = podcast.getAuthor();
         link = podcast.getLink();
         people = podcast.getPeople();
+        color = podcast.getColor();
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public UUID getId() {
