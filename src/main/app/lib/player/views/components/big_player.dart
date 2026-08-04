@@ -43,8 +43,15 @@ class BigPlayer extends StatelessWidget {
               listenable: tabController,
               builder: (context, child) {
                 return AnimatedContainer(
+                  decoration: BoxDecoration(
+                    color: tabController.index == 0 ? colors.surface : colors.surface,
+                    border: isMobile
+                        ? null
+                        : Border(
+                            left: BorderSide(color: colors.outlineVariant, width: pu),
+                          ),
+                  ),
                   duration: Duration(milliseconds: 500),
-                  color: tabController.index == 0 ? colors.surface : colors.surface,
                   child: Scaffold(
                     backgroundColor: Colors.transparent,
                     appBar: M3EAppBar.top(
