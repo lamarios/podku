@@ -37,10 +37,26 @@ class EpisodeInList extends StatelessWidget {
         final isEpisodePlaying = context.select((PlayerCubit c) => c.state.playing && isPlayerOnEpisode);
 
         return SingleMotionBuilder(
-          motion: MaterialSpringMotion.expressiveSpatialDefault(snapToEnd: true),
+          motion: MaterialSpringMotion.expressiveSpatialFast(),
           value: isEpisodePlaying ? 1 : 0,
           builder: (context, value, child) {
             final padding = lerpDouble(0, pu2, value)!;
+            var clipper2 = MorphClipper(
+              Morph(
+                RoundedPolygon.rectangle(
+                  width: 1,
+                  height: 1,
+                  rounding: CornerRounding(radius: 0.15),
+                  centerX: 0.5,
+                  centerY: 0.5,
+                ),
+                M3EMaterialNewShapes.cookie9Sided,
+              ),
+              value,
+            );
+            double pictureSize = lerpDouble(75, 100, value)!;
+            double borderSize = lerpDouble(0, 4, value)!;
+            final borderColor = Color.lerp(Colors.transparent, colors.primary, value);
             return Padding(
               padding: .only(bottom: pu, top: pu),
               child: Container(
@@ -54,26 +70,22 @@ class EpisodeInList extends StatelessWidget {
                   child: Row(
                     children: [
                       if (showPodcastImage && episode.podcast != null)
-                        ClipPath(
-                          clipper: MorphClipper(
-                            Morph(
-                              RoundedPolygon.rectangle(
-                                width: 1,
-                                height: 1,
-                                rounding: CornerRounding(radius: 0.15),
-                                centerX: 0.5,
-                                centerY: 0.5,
+                        Stack(
+                          children: [
+                            ClipPath(
+                              clipper: clipper2,
+                              child: PodcastImage(
+                                podcastLight: episode.podcast!,
+                                width: pictureSize,
+                                height: pictureSize,
+                                borderRadius: pu,
                               ),
-                              M3EMaterialNewShapes.cookie9Sided,
                             ),
-                            value,
-                          ),
-                          child: PodcastImage(
-                            podcastLight: episode.podcast!,
-                            width: lerpDouble(75, 100, value),
-                            height: lerpDouble(75, 100, value),
-                            borderRadius: pu,
-                          ),
+                            CustomPaint(
+                              size: Size(pictureSize, pictureSize),
+                              painter: BorderPainter(clipper: clipper2, color: borderColor!, width: borderSize),
+                            ),
+                          ],
                         ),
                       Gap(pu2),
                       Expanded(

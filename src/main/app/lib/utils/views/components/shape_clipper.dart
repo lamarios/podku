@@ -41,6 +41,26 @@ class MorphClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant MorphClipper oldClipper) => oldClipper.progress != progress || oldClipper.morph != morph;
 }
 
+class BorderPainter extends CustomPainter {
+  final Color color;
+  final double width;
+  final CustomClipper<Path> clipper;
+  BorderPainter({required this.clipper, required this.color, required this.width});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = clipper.getClip(size);
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width;
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 RoundedPolygon _fitToSize(RoundedPolygon polygon, Size size) {
   // [left, top, right, bottom] of the polygon's actual coordinate space
   final bounds = polygon.calculateBounds();

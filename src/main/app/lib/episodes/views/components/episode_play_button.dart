@@ -84,7 +84,11 @@ class EpisodePlayButton extends StatelessWidget {
                   ? Colors.green
                   : null,
               icon: Icon(
-                !isEpisodePlaying && playerProgress > _playedThreshold ? Icons.check : Icons.play_arrow,
+                !isEpisodePlaying && playerProgress > _playedThreshold
+                    ? Icons.check
+                    : isEpisodePlaying && playerPlaying
+                    ? Icons.pause
+                    : Icons.play_arrow,
                 size: 20,
               ),
               visualDensity: .compact,

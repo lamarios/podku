@@ -84,6 +84,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   Future<void> playEpisode(Episode episode, {bool offline = false, Duration? initialPosition}) async {
     try {
       if (state.episode != null && state.episode?.id == episode.id) {
+        if (state.episode?.id == episode.id) {
+          playPause();
+        }
         return;
       }
 
