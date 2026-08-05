@@ -1,18 +1,27 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
+import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/play_pause_button.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/views/components/shape_clipper.dart';
 
 class MiniPlayer extends StatelessWidget {
   static const double playerSize = 75;
 
   const MiniPlayer({super.key});
+
+  static SliverPadding miniPlayerPadding() {
+    return SliverPadding(padding: .only(bottom: playerSize * 2));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +30,8 @@ class MiniPlayer extends StatelessWidget {
     return Builder(
       builder: (context) {
         final podcast = context.select((PlayerCubit c) => c.state.episode?.podcast);
+        final isPlaying = context.select((PlayerCubit c) => c.state.playing);
+
         return PodcastColorProvider(
           podcastLight: podcast,
           builder: (context, colors) {
@@ -30,11 +41,32 @@ class MiniPlayer extends StatelessWidget {
                 color: Colors.transparent,
                 child: GestureDetector(
                   onTap: () => cubit.showPlayers(false, true),
-                  child: Builder(
-                    builder: (context) {
+                  child: SingleMotionBuilder(
+                    motion: MaterialSpringMotion.expressiveSpatialFast(),
+                    value: isPlaying ? 1 : 0,
+                    builder: (context, value, child) {
+                      double borderSize = lerpDouble(0, 2, value)!;
+                      final borderColor = Color.lerp(Colors.transparent, colors.primary, value);
+                      var clipper = MorphClipper(
+                        Morph(
+                          RoundedPolygon.rectangle(
+                            width: 1,
+                            height: 1,
+                            rounding: CornerRounding(radius: 0.15),
+                            centerX: 0.5,
+                            centerY: 0.5,
+                          ),
+                          M3EMaterialNewShapes.cookie9Sided,
+                        ),
+                        value,
+                      );
+
                       return Container(
                         height: 70,
-                        decoration: BoxDecoration(color: colors.secondaryContainer),
+                        decoration: BoxDecoration(
+                          color: Color.lerp(colors.secondaryContainer, colors.primaryContainer, value),
+                          borderRadius: .circular(lerpDouble(pu3, pu8, value)!),
+                        ),
                         child: Builder(
                           builder: (context) {
                             final episode = context.select((PlayerCubit c) => c.state.episode);
@@ -49,11 +81,29 @@ class MiniPlayer extends StatelessWidget {
 
                             return Row(
                               children: [
-                                PodcastImage(
-                                  key: ValueKey(episode.id),
-                                  podcastLight: episode.podcast!,
-                                  width: playerSize,
-                                  height: playerSize,
+                                Transform.scale(
+                                  scale: lerpDouble(1, 1.2, value),
+                                  child: Stack(
+                                    children: [
+                                      ClipPath(
+                                        clipper: clipper,
+                                        child: PodcastImage(
+                                          podcastLight: episode.podcast!,
+                                          width: playerSize,
+                                          height: playerSize,
+                                          borderRadius: pu,
+                                        ),
+                                      ),
+                                      CustomPaint(
+                                        size: Size(playerSize, playerSize),
+                                        painter: BorderPainter(
+                                          clipper: clipper,
+                                          color: borderColor!,
+                                          width: borderSize,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Gap(pu6),
                                 Expanded(

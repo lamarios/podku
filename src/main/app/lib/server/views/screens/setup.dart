@@ -69,7 +69,7 @@ class ServerSetupScreen extends StatelessWidget {
                                     : TextButton(
                                         onPressed: () async {
                                           if ((await cubit.setServerUrl(cubit.controller.text)) && context.mounted) {
-                                            context.go('/episodes');
+                                            context.go('/home/episodes');
                                           }
                                         },
                                         child: Text(locals.go),

@@ -8,9 +8,9 @@ import 'package:openapi/src/auth/basic_auth.dart';
 import 'package:openapi/src/auth/bearer_auth.dart';
 import 'package:openapi/src/auth/oauth.dart';
 import 'package:openapi/src/api/episodes_api.dart';
+import 'package:openapi/src/api/media_api.dart';
 import 'package:openapi/src/api/ping_api.dart';
 import 'package:openapi/src/api/podcasts_api.dart';
-import 'package:openapi/src/api/proxy_api.dart';
 import 'package:openapi/src/api/search_api.dart';
 import 'package:openapi/src/api/transcripts_api.dart';
 
@@ -111,6 +111,12 @@ class Openapi {
     return EpisodesApi(dio);
   }
 
+  /// Get MediaApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  MediaApi getMediaApi() {
+    return MediaApi(dio);
+  }
+
   /// Get PingApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   PingApi getPingApi() {
@@ -121,12 +127,6 @@ class Openapi {
   /// by doing that all interceptors will not be executed
   PodcastsApi getPodcastsApi() {
     return PodcastsApi(dio);
-  }
-
-  /// Get ProxyApi instance, base route and serializer can be overridden by a given but be careful,
-  /// by doing that all interceptors will not be executed
-  ProxyApi getProxyApi() {
-    return ProxyApi(dio);
   }
 
   /// Get SearchApi instance, base route and serializer can be overridden by a given but be careful,

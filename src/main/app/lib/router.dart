@@ -26,14 +26,14 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
     final goingToSetup = state.matchedLocation == '/setup';
 
     if (serverUrl == null && !goingToSetup) return '/setup';
-    if (serverUrl != null && goingToSetup) return '/episodes';
+    if (serverUrl != null && goingToSetup) return '/home/episodes';
     return null; // no redirect
   },
-  initialLocation: '/episodes',
+  initialLocation: '/home/episodes',
   routes: [
     GoRoute(path: '/setup', builder: (context, state) => ServerSetupScreen()),
     ShellRoute(
-      builder: (context, state, child) => PlayerWrapper(child: child),
+      builder: (context, state, child) => PlayerWrapper(routerState: state, child: child),
       routes: [
         GoRoute(
           path: '/podcast/:podcastId',
@@ -62,10 +62,12 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
           },
           branches: [
             StatefulShellBranch(
-              routes: [GoRoute(name: 'Episodes', path: '/episodes', builder: (context, state) => EpisodeScreen())],
+              routes: [GoRoute(name: 'Episodes', path: '/home/episodes', builder: (context, state) => EpisodeScreen())],
             ),
             StatefulShellBranch(
-              routes: [GoRoute(name: 'Podcasts', path: '/podcasts', builder: (context, state) => PodcastsScreen())],
+              routes: [
+                GoRoute(name: 'Podcasts', path: '/home/podcasts', builder: (context, state) => PodcastsScreen()),
+              ],
             ),
           ],
         ),

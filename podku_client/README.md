@@ -68,10 +68,11 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 [*EpisodesApi*](doc/EpisodesApi.md) | [**getEpisode**](doc/EpisodesApi.md#getepisode) | **GET** /api/episodes/{id} | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**getEpisodes**](doc/EpisodesApi.md#getepisodes) | **GET** /api/episodes | 
-[*EpisodesApi*](doc/EpisodesApi.md) | [**proxyAudio**](doc/EpisodesApi.md#proxyaudio) | **GET** /api/episodes/audio-proxy | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**search2**](doc/EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**setProgress**](doc/EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**startPlayback**](doc/EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
+[*MediaApi*](doc/MediaApi.md) | [**getImage**](doc/MediaApi.md#getimage) | **GET** /media/image/{hash} | 
+[*MediaApi*](doc/MediaApi.md) | [**proxyAudio**](doc/MediaApi.md#proxyaudio) | **GET** /media/audio/{hash} | 
 [*PingApi*](doc/PingApi.md) | [**ping**](doc/PingApi.md#ping) | **GET** /api/ping | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**exportFeeds**](doc/PodcastsApi.md#exportfeeds) | **GET** /api/podcasts/export | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**getPodcast**](doc/PodcastsApi.md#getpodcast) | **GET** /api/podcasts/{id} | 
@@ -81,7 +82,6 @@ Class | Method | HTTP request | Description
 [*PodcastsApi*](doc/PodcastsApi.md) | [**search1**](doc/PodcastsApi.md#search1) | **GET** /api/podcasts/search | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**subscribeToPodcast**](doc/PodcastsApi.md#subscribetopodcast) | **POST** /api/podcasts | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**unsubsribe**](doc/PodcastsApi.md#unsubsribe) | **DELETE** /api/podcasts/{id} | 
-[*ProxyApi*](doc/ProxyApi.md) | [**proxyImage**](doc/ProxyApi.md#proxyimage) | **GET** /api/images/proxy | 
 [*SearchApi*](doc/SearchApi.md) | [**search**](doc/SearchApi.md#search) | **GET** /api/search | 
 [*TranscriptsApi*](doc/TranscriptsApi.md) | [**getEpisodeLanguages**](doc/TranscriptsApi.md#getepisodelanguages) | **GET** /api/transcripts/{id}/languages | 
 [*TranscriptsApi*](doc/TranscriptsApi.md) | [**getTranscript**](doc/TranscriptsApi.md#gettranscript) | **GET** /api/transcripts/{id}/{language} | 

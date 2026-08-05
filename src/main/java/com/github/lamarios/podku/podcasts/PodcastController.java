@@ -28,15 +28,15 @@ import static com.github.lamarios.podku.utils.EndpointUtils.serveFile;
 @RequestMapping("/api/podcasts")
 @Tag(name = "Podcasts")
 public class PodcastController {
-
-
     private final PodcastService podcastService;
     private final EpisodeService episodeService;
+    private final PodcastParser podcastParser;
 
     @Autowired
-    public PodcastController(PodcastService podcastService, EpisodeService episodeService) {
+    public PodcastController(PodcastService podcastService, EpisodeService episodeService, PodcastParser podcastParser) {
         this.podcastService = podcastService;
         this.episodeService = episodeService;
+        this.podcastParser = podcastParser;
     }
 
     @GetMapping
@@ -64,7 +64,7 @@ public class PodcastController {
         podcast.setName(result.getCollectionName());
         podcast.setArtworkUrl(result.getArtworkUrl());
 
-        return new PodcastParser().parseUrl(podcast);
+        return podcastParser.parseUrl(podcast);
     }
 
     @DeleteMapping("{id}")

@@ -46,10 +46,11 @@ public class PodcastService {
     private final EpisodeRepository episodeRepository;
     private final int episodeCacheCount;
     private final Path episodeCacheFolder;
+    private final PodcastParser podcastParser;
 
 
     @Autowired
-    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager, EpisodeRepository episodeRepository, @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder, @Value("${podku.episodes.cache-count:0}") String episodeCacheCount) {
+    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager, EpisodeRepository episodeRepository, @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder, @Value("${podku.episodes.cache-count:0}") String episodeCacheCount, PodcastParser podcastParser) {
         this.podcastRepository = podcastRepository;
         this.episodeService = episodeService;
         this.platformTransactionManager = platformTransactionManager;
@@ -62,6 +63,7 @@ public class PodcastService {
         }
 
         this.episodeCacheFolder = p;
+        this.podcastParser = podcastParser;
     }
 
 
@@ -85,7 +87,7 @@ public class PodcastService {
                 podcast.setName(name);
                 podcast.setArtworkUrl(result.getArtworkUrl());
 
-                podcast = new PodcastParser().parseUrl(podcast);
+                podcast = podcastParser.parseUrl(podcast);
 
                 podcastRepository.save(podcast);
                 episodeService.processPodcast(podcast);
@@ -111,7 +113,6 @@ public class PodcastService {
 
     @Scheduled(cron = "@hourly")
     public void refreshPodcasts() {
-        var parser = new PodcastParser();
         TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {
             var podcasts = podcastRepository.findAll();
             for (var podcast : podcasts) {
@@ -120,7 +121,7 @@ public class PodcastService {
                     try {
                         log.info("Refreshing podcast {}", podcast.getName());
 
-                        parsed = parser.parseUrl(podcast);
+                        parsed = podcastParser.parseUrl(podcast);
                         podcastRepository.save(parsed);
                     } finally {
                         if (parsed != null) {
@@ -198,7 +199,7 @@ public class PodcastService {
                 try {
                     Podcast podcast = new Podcast();
                     podcast.setUrl(url);
-                    podcast = new PodcastParser().parseUrl(podcast);
+                    podcast = podcastParser.parseUrl(podcast);
                     newPodcasts.add(podcast);
                 } catch (Exception e) {
                     log.warn("Couldnt parse podcast {}", url, e);

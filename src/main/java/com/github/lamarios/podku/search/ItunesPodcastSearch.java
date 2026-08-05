@@ -2,11 +2,14 @@ package com.github.lamarios.podku.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.lamarios.podku.urls.UrlService;
 import com.github.lamarios.podku.utils.DominantColorExtractor;
 import com.github.lamarios.podku.utils.VibrantColorExtractor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * Thin client for the iTunes Search API, scoped to podcasts.
  */
-@Component
+@Service
 public class ItunesPodcastSearch {
 
     private final Logger log = LogManager.getLogger();
@@ -32,14 +35,19 @@ public class ItunesPodcastSearch {
     private final HttpClient client;
     private final ObjectMapper objectMapper;
 
-    public ItunesPodcastSearch() {
-        this(HttpClient.newHttpClient(), new ObjectMapper());
+    final UrlService urlService;
+
+    @Autowired
+    public ItunesPodcastSearch(UrlService urlService) {
+        this(HttpClient.newHttpClient(), new ObjectMapper(), urlService);
     }
 
-    public ItunesPodcastSearch(HttpClient client, ObjectMapper objectMapper) {
+    public ItunesPodcastSearch(HttpClient client, ObjectMapper objectMapper, UrlService urlService) {
         this.client = client;
         this.objectMapper = objectMapper;
+        this.urlService = urlService;
     }
+
 
     /**
      * Searches the iTunes podcast directory.
@@ -68,6 +76,8 @@ public class ItunesPodcastSearch {
             }
         }
 
+        List<String> urls = new ArrayList<>(results.stream().map(SearchResult::getArtworkUrl).toList());
+        urlService.storeUrls(urls);
 
         return results.parallelStream().peek(r -> {
             try {

@@ -28,6 +28,7 @@ dependencies:
   back_button_interceptor: 8.0.4
   background_downloader: 9.5.7
   cached_network_image: 3.4.1
+  crypto: 3.0.7
   cupertino_icons: ^1.0.5
   dio: 5.11.0
   dynamic_color: 1.8.1

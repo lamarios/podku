@@ -1,12 +1,17 @@
+import 'dart:ui';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/fab_menu/m3e_fab_menu.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
+import 'package:podku/player/states/player.dart';
+import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/podcasts/views/components/new_podcast_dialog.dart';
 import 'package:podku/podcasts/views/components/podcast.dart';
@@ -23,6 +28,7 @@ class PodcastsScreen extends StatelessWidget {
 
     return BlocBuilder<PodcastsCubit, PodcastState>(
       builder: (context, state) {
+        final hasMiniPlayer = context.select((PlayerCubit c) => c.state.showMiniPlayer);
         return BlocListener<HomeCubit, HomeState>(
           listener: (context, state) => context.read<PodcastsCubit>().getPodcasts(),
           listenWhen: (previous, current) => current.selectedIndex == 1,
@@ -50,6 +56,7 @@ class PodcastsScreen extends StatelessWidget {
                                   },
                                 ),
                               ),
+                              MiniPlayer.miniPlayerPadding(),
                             ],
                           )
                         : Center(
@@ -62,9 +69,16 @@ class PodcastsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: pu3,
-                right: pu3,
+              SingleMotionBuilder(
+                motion: MaterialSpringMotion.expressiveSpatialFast(),
+                value: hasMiniPlayer ? 1 : 0,
+                builder: (context, value, child) {
+                  return Positioned(
+                    bottom: lerpDouble(pu3, pu8 + MiniPlayer.playerSize, value),
+                    right: pu3,
+                    child: child!,
+                  );
+                },
                 child: M3EFabMenu(
                   items: [
                     M3EFabMenuItem(

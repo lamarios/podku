@@ -11,7 +11,6 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getEpisode**](EpisodesApi.md#getepisode) | **GET** /api/episodes/{id} | 
 [**getEpisodes**](EpisodesApi.md#getepisodes) | **GET** /api/episodes | 
-[**proxyAudio**](EpisodesApi.md#proxyaudio) | **GET** /api/episodes/audio-proxy | 
 [**search2**](EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [**setProgress**](EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [**startPlayback**](EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
@@ -89,49 +88,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List&lt;Episode&gt;**](Episode.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **proxyAudio**
-> Object proxyAudio(url, range)
-
-
-
-### Example
-```dart
-import 'package:openapi/api.dart';
-
-final api = Openapi().getEpisodesApi();
-final String url = url_example; // String | 
-final String range = range_example; // String | 
-
-try {
-    final response = api.proxyAudio(url, range);
-    print(response);
-} on DioException catch (e) {
-    print('Exception when calling EpisodesApi->proxyAudio: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **url** | **String**|  | 
- **range** | **String**|  | [optional] 
-
-### Return type
-
-**Object**
 
 ### Authorization
 

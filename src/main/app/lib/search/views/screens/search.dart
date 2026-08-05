@@ -9,6 +9,7 @@ import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/l10n/app_localizations.dart';
+import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/search/states/search.dart';
 import 'package:podku/search/views/components/search_result.dart';
@@ -217,7 +218,9 @@ class SearchScreen extends StatelessWidget {
                       child: Center(
                         child: Icon(Icons.search, size: 100, color: colors.onSurface.withValues(alpha: 0.1)),
                       ),
-                    ),
+                    )
+                  else
+                    MiniPlayer.miniPlayerPadding(),
                 ],
               ),
             ),

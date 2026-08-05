@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/src/state.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
@@ -9,6 +10,7 @@ import 'package:podku/player/views/components/big_player.dart';
 import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/server/views/components/offline_indicator.dart';
+import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
@@ -16,8 +18,9 @@ import 'package:podku/utils/views/components/error_listener.dart';
 class PlayerWrapper extends StatelessWidget {
   static final double _bigPlayerWidth = BreakPoint.mobile.maxWidth * 0.7;
   final Widget child;
+  final GoRouterState routerState;
 
-  const PlayerWrapper({super.key, required this.child});
+  const PlayerWrapper({super.key, required this.child, required this.routerState});
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +61,10 @@ class PlayerWrapper extends StatelessWidget {
                   ),
                   wrapElse: (child) => Builder(
                     builder: (context) {
-                      final showMiniPlayer = context.select((PlayerCubit c) => c.state.showMiniPlayer);
+                      // final showMiniPlayer = context.select((PlayerCubit c) => c.state.showMiniPlayer);
                       return SingleMotionBuilder(
                         motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                        value: (showMiniPlayer ? MiniPlayer.playerSize : 0) + (isOnline ? 0 : OfflineIndicator.height),
+                        value: (isOnline ? 0 : OfflineIndicator.height),
                         from: 0,
                         builder: (context, value, child) => Container(
                           padding: .only(bottom: value.clamp(0, MiniPlayer.playerSize * 2)),
@@ -81,16 +84,25 @@ class PlayerWrapper extends StatelessWidget {
 
                       return SingleMotionBuilder(
                         motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                        value: showMiniPlayer ? offlinePadding : -1000,
+                        value: showMiniPlayer ? 1 : 0,
                         from: 0,
                         builder: (context, value, child) {
-                          return value < -900
+                          var isHome = routerState.fullPath?.startsWith("/home") ?? false;
+                          return value < 0.1
                               ? SizedBox.shrink()
-                              : Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: value,
-                                  child: SafeArea(child: MiniPlayer()),
+                              : SingleMotionBuilder(
+                                  motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                                  value: isHome ? 100 : pu2,
+                                  builder: (context, bottomValue, child) {
+                                    return Positioned(
+                                      left: lerpDouble(0, pu2, value),
+                                      right: lerpDouble(0, pu2, value),
+                                      bottom: lerpDouble(500, bottomValue + offlinePadding, value),
+                                      child: SafeArea(
+                                        child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
+                                      ),
+                                    );
+                                  },
                                 );
                         },
                       );

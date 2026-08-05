@@ -11,6 +11,7 @@ import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
+import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
@@ -20,75 +21,31 @@ import 'package:url_launcher/url_launcher.dart';
 class EpisodeScreen extends StatelessWidget {
   const EpisodeScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final isMobile = BreakPoint.of(context) == .mobile;
-    final colors = M3ETheme.of(context).colorScheme;
-    return BlocProvider(
-      create: (context) => EpisodesCubit(EpisodesState()),
-      child: BlocBuilder<EpisodesCubit, EpisodesState>(
-        builder: (context, state) {
-          final cubit = context.read<EpisodesCubit>();
+  SliverGrid buildSliverGrid(BuildContext context) {
+    final cubit = context.read<EpisodesCubit>();
+    final state = cubit.state;
 
-          return MultiBlocListener(
-            listeners: [
-              BlocListener<HomeCubit, HomeState>(
-                listenWhen: (previous, current) => current.selectedIndex == 0,
-                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
-              ),
-              BlocListener<PlayerCubit, PlayerState>(
-                listenWhen: (previous, current) => previous.episode != current.episode,
-                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
-              ),
-            ],
-            child: ErrorHandler<EpisodesCubit, EpisodesState>(
-              showAsSnack: true,
-              child: Column(
-                crossAxisAlignment: .stretch,
-                children: [
-                  if (state.episodes.isNotEmpty)
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () => cubit.getEpisodes(refresh: true),
-                        child: Padding(
-                          padding: .symmetric(horizontal: pu2),
-                          child: isMobile
-                              ? _EpisodeList(state: state, cubit: cubit)
-                              : _EpisodeGrid(state: state, cubit: cubit),
-                        ),
-                      ),
-                    )
-                  else if (!state.loading) ...[
-                    Expanded(
-                      child: Center(
-                        child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
-                      ),
-                    ),
-                  ],
-                  if (state.loading) Center(child: LoadingIndicator()),
-                ],
-              ),
-            ),
-          );
-        },
+    final colors = M3ETheme.of(context).colorScheme;
+
+    var hasMore = !state.loading && state.episodes.isNotEmpty && state.episodes.length % 100 == 0;
+
+    return SliverGrid.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
+        mainAxisExtent: EpisodeInGrid.mainAxisExtent,
+        crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
+        mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
       ),
-    );
-  }
-}
+      itemCount: state.episodes.length + (hasMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (hasMore && index == state.episodes.length) {
+          return Center(
+            child: TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodesCubit>().loadMore()),
+          );
+        }
 
-class _EpisodeGrid extends StatelessWidget {
-  final EpisodesState state;
-  final EpisodesCubit cubit;
+        final e = state.episodes[index];
 
-  const _EpisodeGrid({required this.state, required this.cubit});
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = [];
-    final colors = M3ETheme.of(context).colorScheme;
-
-    children.addAll(
-      state.episodes.map((e) {
         return Builder(
           key: ValueKey(e),
           builder: (context) {
@@ -100,7 +57,6 @@ class _EpisodeGrid extends StatelessWidget {
                 kIsWeb ||
                 (!kIsWeb &&
                     (downloadStatus == null || downloadStatus.status == .canceled || downloadStatus.status == .failed));
-
             return Stack(
               children: [
                 EpisodeInGrid(episode: e),
@@ -142,39 +98,19 @@ class _EpisodeGrid extends StatelessWidget {
             );
           },
         );
-      }).toList(),
-    );
-
-    if (state.episodes.isNotEmpty && state.episodes.length % 100 == 0) {
-      children.add(
-        Center(
-          child: TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodesCubit>().loadMore()),
-        ),
-      );
-    }
-
-    return GridView.extent(
-      maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
-      mainAxisExtent: EpisodeInGrid.mainAxisExtent,
-      crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
-      mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,
-      children: children,
+      },
     );
   }
-}
 
-class _EpisodeList extends StatelessWidget {
-  final EpisodesState state;
-  final EpisodesCubit cubit;
-
-  const _EpisodeList({required this.state, required this.cubit});
-
-  @override
-  Widget build(BuildContext context) {
+  SliverList buildSliverList(BuildContext context) {
+    final cubit = context.read<EpisodesCubit>();
+    final state = cubit.state;
     final colors = M3ETheme.of(context).colorScheme;
 
-    return ListView.builder(
-      itemCount: state.episodes.length + (state.episodes.isNotEmpty && state.episodes.length % 100 == 0 ? 1 : 0),
+    var hasMore = !state.loading && state.episodes.isNotEmpty && state.episodes.length % 100 == 0;
+
+    return SliverList.builder(
+      itemCount: state.episodes.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
         if (index < state.episodes.length) {
           final e = state.episodes[index];
@@ -225,6 +161,59 @@ class _EpisodeList extends StatelessWidget {
           return TextButton(child: Text('Load more'), onPressed: () => context.read<EpisodesCubit>().loadMore());
         }
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = BreakPoint.of(context) == .mobile;
+    final colors = M3ETheme.of(context).colorScheme;
+    return BlocProvider(
+      create: (context) => EpisodesCubit(EpisodesState()),
+      child: BlocBuilder<EpisodesCubit, EpisodesState>(
+        builder: (context, state) {
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<HomeCubit, HomeState>(
+                listenWhen: (previous, current) => current.selectedIndex == 0,
+                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
+              ),
+              BlocListener<PlayerCubit, PlayerState>(
+                listenWhen: (previous, current) => previous.episode != current.episode,
+                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
+              ),
+            ],
+            child: ErrorHandler<EpisodesCubit, EpisodesState>(
+              showAsSnack: true,
+              child: CustomScrollView(
+                slivers: [
+                  if (state.episodes.isNotEmpty)
+                    isMobile ? buildSliverList(context) : buildSliverGrid(context)
+                  /*
+                    Expanded(
+                      child: Padding(
+                        padding: .symmetric(horizontal: pu2),
+                        child: isMobile
+                            ? _EpisodeList(state: state, cubit: cubit)
+                            : _EpisodeGrid(state: state, cubit: cubit),
+                      ),
+                    )
+*/
+                  else if (!state.loading) ...[
+                    SliverFillRemaining(
+                      child: Center(
+                        child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
+                      ),
+                    ),
+                  ],
+                  if (state.loading) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
+                  MiniPlayer.miniPlayerPadding(),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

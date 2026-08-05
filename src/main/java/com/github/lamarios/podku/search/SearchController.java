@@ -16,10 +16,12 @@ public class SearchController {
 
 
     private final PodcastService podcastService;
+    private final ItunesPodcastSearch itunesPodcastSearch;
 
     @Autowired
-    public SearchController(PodcastService podcastService) {
+    public SearchController(PodcastService podcastService, ItunesPodcastSearch itunesPodcastSearch) {
         this.podcastService = podcastService;
+        this.itunesPodcastSearch = itunesPodcastSearch;
     }
 
     @GetMapping
@@ -27,7 +29,7 @@ public class SearchController {
 
         var subscribedPodcasts = podcastService.getPodcasts().stream().map(Podcast::getUrl).toList();
 
-        List<SearchResult> results = new ItunesPodcastSearch().search(query, limit);
+        List<SearchResult> results = itunesPodcastSearch.search(query, limit);
         results.removeIf(result -> subscribedPodcasts.contains(result.getFeedUrl()));
         return results;
     }
