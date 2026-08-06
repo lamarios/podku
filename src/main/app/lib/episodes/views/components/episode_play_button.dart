@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/components/progress_indicators/m3e_progress_indicators.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_progress.dart';
 import 'package:podku/player/states/player.dart';
@@ -51,29 +54,37 @@ class EpisodePlayButton extends StatelessWidget {
               ),
             ),
             if (!offline)
-              isEpisodePlaying
-                  ? M3EProgressIndicator.circularWavy(
-                      value: playerProgress,
-                      trackColor: playerPlaying ? colors.surfaceContainerHigh : colors.secondaryContainer,
-                      amplitude: playerPlaying ? 1 : 0,
-                    )
-                  : StreamBuilder<double>(
-                      stream: context
-                          .read<ServerCubit>()
-                          .playbackStream
-                          .stream
-                          .where((e) => e.episodeId == episode.id && !(e.newPlayback ?? false))
-                          .map((event) {
-                            return (event.progress ?? 0) / episodeDuration;
-                          }),
-                      initialData: episode.progressPercent,
-                      builder: (context, snapshot) {
-                        return M3EProgressIndicator.circular(
-                          value: snapshot.data ?? episode.progressPercent,
-                          trackColor: colors.secondaryContainer,
-                        );
-                      },
-                    ),
+              Positioned.fill(
+                child: isEpisodePlaying
+                    ? SingleMotionBuilder(
+                        motion: MaterialSpringMotion.expressiveSpatialFast(),
+                        value: playerPlaying ? 1 : 0,
+                        builder: (context, value, child) {
+                          return M3EProgressIndicator.circularWavy(
+                            value: playerProgress,
+                            trackColor: Color.lerp(colors.surfaceContainer, colors.surfaceContainerHigh, value),
+                            amplitude: value.clamp(0, 1),
+                          );
+                        },
+                      )
+                    : StreamBuilder<double>(
+                        stream: context
+                            .read<ServerCubit>()
+                            .playbackStream
+                            .stream
+                            .where((e) => e.episodeId == episode.id && !(e.newPlayback ?? false))
+                            .map((event) {
+                              return (event.progress ?? 0) / episodeDuration;
+                            }),
+                        initialData: episode.progressPercent,
+                        builder: (context, snapshot) {
+                          return M3EProgressIndicator.circular(
+                            value: snapshot.data ?? episode.progressPercent,
+                            trackColor: colors.secondaryContainer,
+                          );
+                        },
+                      ),
+              ),
             IconButton(
               onPressed: () {
                 cubit.playEpisode(episode, offline: offline);
@@ -83,13 +94,12 @@ class EpisodePlayButton extends StatelessWidget {
                   : playerProgress > _playedThreshold
                   ? Colors.green
                   : null,
-              icon: Icon(
-                !isEpisodePlaying && playerProgress > _playedThreshold
-                    ? Icons.check
-                    : isEpisodePlaying && playerPlaying
-                    ? Icons.pause
-                    : Icons.play_arrow,
-                size: 20,
+              icon: SingleMotionBuilder(
+                motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                value: isEpisodePlaying && playerPlaying ? 1 : 0,
+
+                builder: (context, value, child) =>
+                    AnimatedIcon(icon: AnimatedIcons.play_pause, progress: AlwaysStoppedAnimation(value), size: 20),
               ),
               visualDensity: .compact,
             ),

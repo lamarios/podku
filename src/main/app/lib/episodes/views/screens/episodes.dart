@@ -185,30 +185,23 @@ class EpisodeScreen extends StatelessWidget {
             ],
             child: ErrorHandler<EpisodesCubit, EpisodesState>(
               showAsSnack: true,
-              child: CustomScrollView(
-                slivers: [
-                  if (state.episodes.isNotEmpty)
-                    isMobile ? buildSliverList(context) : buildSliverGrid(context)
-                  /*
-                    Expanded(
-                      child: Padding(
-                        padding: .symmetric(horizontal: pu2),
-                        child: isMobile
-                            ? _EpisodeList(state: state, cubit: cubit)
-                            : _EpisodeGrid(state: state, cubit: cubit),
+              child: RefreshIndicator(
+                onRefresh: () => context.read<EpisodesCubit>().getEpisodes(refresh: true),
+                child: CustomScrollView(
+                  slivers: [
+                    if (state.episodes.isNotEmpty)
+                      isMobile ? buildSliverList(context) : buildSliverGrid(context)
+                    else if (!state.loading) ...[
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
+                        ),
                       ),
-                    )
-*/
-                  else if (!state.loading) ...[
-                    SliverFillRemaining(
-                      child: Center(
-                        child: Icon(Icons.playlist_remove, size: 100, color: colors.onSurface.withValues(alpha: 0.2)),
-                      ),
-                    ),
+                    ],
+                    if (state.loading) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
+                    MiniPlayer.miniPlayerPadding(),
                   ],
-                  if (state.loading) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
-                  MiniPlayer.miniPlayerPadding(),
-                ],
+                ),
               ),
             ),
           );

@@ -2,10 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
-import 'package:material_3_expressive/components/cards/m3e_cards.dart';
-import 'package:material_3_expressive/components/icon_buttons/m3e_icon_buttons.dart';
-import 'package:material_3_expressive/foundations/foundations.dart';
+import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -37,7 +34,6 @@ class SearchScreen extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<SearchCubit>();
           var sizeOf = MediaQuery.sizeOf(context);
-          print('sizeOf ${sizeOf.width}');
           return Scaffold(
             appBar: M3EAppBar.top(
               title: Center(
@@ -48,15 +44,20 @@ class SearchScreen extends StatelessWidget {
                     child: TextField(
                       controller: cubit.searchController,
                       textInputAction: .search,
+                      textAlignVertical: .center,
                       decoration: InputDecoration(
                         enabledBorder: .none,
                         focusedBorder: .none,
                         prefixIcon: Icon(M3EIcons.search),
                         fillColor: colors.secondaryContainer,
                         filled: true,
-
-                        label: Text(locals.searchPodcasts),
-                        suffix: M3EIconButton(
+                        isDense: true,
+                        floatingLabelBehavior: .never,
+                        // label: Text(locals.searchPodcasts),
+                        hintText: locals.searchPodcasts,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12), // fine-tune if needed
+                        suffixIcon: IconButton(
+                          visualDensity: .compact,
                           onPressed: () => cubit.searchController.text = '',
                           icon: Icon(M3EIcons.close),
                         ),
@@ -100,22 +101,28 @@ class SearchScreen extends StatelessWidget {
                         child: M3ECard(
                           child: Padding(
                             padding: .only(left: pu2),
-                            child: SizedBox(
-                              height: 300,
-                              child: GridView.count(
-                                scrollDirection: .horizontal,
-                                crossAxisCount: 3,
-                                mainAxisExtent: min(375, sizeOf.width * 0.6),
-                                children: state.discoverResults
-                                    .map(
-                                      (r) => Padding(
-                                        key: ValueKey(r),
-                                        padding: .only(bottom: pu2),
-                                        child: SearchResultView(result: r),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
+                            child: Builder(
+                              builder: (context) {
+                                var rows = state.discoverResults.length < 3 ? state.discoverResults.length : 3;
+                                const rowHeight = 100.0;
+                                return SizedBox(
+                                  height: rows * rowHeight,
+                                  child: GridView.count(
+                                    scrollDirection: .horizontal,
+                                    crossAxisCount: rows,
+                                    mainAxisExtent: min(375, sizeOf.width * 0.6),
+                                    children: state.discoverResults
+                                        .map(
+                                          (r) => Padding(
+                                            key: ValueKey(r),
+                                            padding: .only(bottom: pu2),
+                                            child: SearchResultView(result: r),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -149,22 +156,29 @@ class SearchScreen extends StatelessWidget {
                         child: M3ECard(
                           child: Padding(
                             padding: .only(left: pu2),
-                            child: SizedBox(
-                              height: 300,
-                              child: GridView.count(
-                                scrollDirection: .horizontal,
-                                crossAxisCount: 3,
-                                mainAxisExtent: min(375, sizeOf.width * 0.6),
-                                children: state.podcastResults
-                                    .map(
-                                      (r) => Padding(
-                                        key: ValueKey(r),
-                                        padding: .only(bottom: pu2),
-                                        child: SearchResultView(podcast: r),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
+                            child: Builder(
+                              builder: (context) {
+                                var rows = state.podcastResults.length < 3 ? state.podcastResults.length : 3;
+                                const rowHeight = 100.0;
+                                return ConstrainedBox(
+                                  constraints: BoxConstraints(maxHeight: rows * rowHeight),
+                                  child: GridView.count(
+                                    shrinkWrap: true,
+                                    scrollDirection: .horizontal,
+                                    crossAxisCount: rows,
+                                    mainAxisExtent: min(375, sizeOf.width * 0.6),
+                                    children: state.podcastResults
+                                        .map(
+                                          (r) => Padding(
+                                            key: ValueKey(r),
+                                            padding: .only(bottom: pu2),
+                                            child: SearchResultView(podcast: r),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),

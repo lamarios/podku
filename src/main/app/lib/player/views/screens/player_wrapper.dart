@@ -25,7 +25,8 @@ class PlayerWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
+    var breakPoint = BreakPoint.of(context);
+    final isMobile = breakPoint == .mobile || breakPoint == .tablet;
     final colors = M3ETheme.of(context).colorScheme;
     return Builder(
       builder: (context) {
@@ -92,11 +93,12 @@ class PlayerWrapper extends StatelessWidget {
                               ? SizedBox.shrink()
                               : SingleMotionBuilder(
                                   motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                                  value: isHome ? 100 : pu2,
+                                  value: isHome && breakPoint == .mobile ? 100 : pu2,
                                   builder: (context, bottomValue, child) {
+                                    final isTablet = breakPoint == .tablet;
                                     return Positioned(
-                                      left: lerpDouble(0, pu2, value),
-                                      right: lerpDouble(0, pu2, value),
+                                      left: isTablet ? 100 : pu2,
+                                      right: isTablet ? 100 : pu2,
                                       bottom: lerpDouble(500, bottomValue + offlinePadding, value),
                                       child: SafeArea(
                                         child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
