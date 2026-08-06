@@ -66,6 +66,7 @@ class MiniPlayer extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Color.lerp(colors.secondaryContainer, colors.primaryContainer, value),
                           borderRadius: .circular(lerpDouble(pu3, pu8, value)!),
+                          boxShadow: [BoxShadow(blurRadius: pu4, color: Colors.black.withValues(alpha: 0.5))],
                         ),
                         child: Builder(
                           builder: (context) {

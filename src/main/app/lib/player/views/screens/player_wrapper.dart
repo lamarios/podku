@@ -97,8 +97,8 @@ class PlayerWrapper extends StatelessWidget {
                                   builder: (context, bottomValue, child) {
                                     final isTablet = breakPoint == .tablet;
                                     return Positioned(
-                                      left: isTablet ? 100 : pu2,
-                                      right: isTablet ? 100 : pu2,
+                                      left: isTablet ? 100 : pu4,
+                                      right: isTablet ? 100 : pu4,
                                       bottom: lerpDouble(500, bottomValue + offlinePadding, value),
                                       child: SafeArea(
                                         child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
