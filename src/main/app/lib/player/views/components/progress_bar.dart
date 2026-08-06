@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/components/progress_indicators/m3e_progress_indicators.dart';
 import 'package:material_3_expressive/components/sliders/m3e_sliders.dart';
+import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/states/scrobbling.dart';
 import 'package:podku/utils.dart';
@@ -37,37 +38,43 @@ class ProgressBar extends StatelessWidget {
             (PlayerCubit c) => c.state.episode?.chapters?.where((c) => (c.startTime ?? 0) <= (sliderValue)).lastOrNull,
           );
 
-          return scrobblingDot
-              ? M3ESlider.wavy(
-                  onChangeEnd: (value) {
-                    scrobblingCubit.setHolding(false);
-                    playerCubit.seek(Duration(seconds: (value).toInt()));
-                  },
-                  value: sliderValue,
-                  amplitude: playing ? null : 0,
-                  label:
-                      '${printDuration(Duration(seconds: sliderValue.toInt()))}${scrobblingChapter != null ? '\n${scrobblingChapter.title}' : ''}',
-                  onChanged: (double value) {
-                    scrobblingCubit.setPosition(value);
-                    EasyDebounce.debounce('progress-debounce', Duration(milliseconds: 500), () {
-                      scrobblingCubit.setHolding(false);
-                      playerCubit.seek(Duration(seconds: (value).toInt()));
-                    });
-                  },
+          return SingleMotionBuilder(
+            motion: MaterialSpringMotion.expressiveEffectsDefault(),
+            value: playing ? 1 : 0,
+            builder: (context, value, child) {
+              return scrobblingDot
+                  ? M3ESlider.wavy(
+                      onChangeEnd: (value) {
+                        scrobblingCubit.setHolding(false);
+                        playerCubit.seek(Duration(seconds: (value).toInt()));
+                      },
+                      value: sliderValue,
+                      amplitude: value,
+                      label:
+                          '${printDuration(Duration(seconds: sliderValue.toInt()))}${scrobblingChapter != null ? '\n${scrobblingChapter.title}' : ''}',
+                      onChanged: (double value) {
+                        scrobblingCubit.setPosition(value);
+                        EasyDebounce.debounce('progress-debounce', Duration(milliseconds: 500), () {
+                          scrobblingCubit.setHolding(false);
+                          playerCubit.seek(Duration(seconds: (value).toInt()));
+                        });
+                      },
 
-                  divisions: 0,
-                  dotSize: 0,
-                  min: 0,
-                  max: totalDuration.inSeconds.toDouble(),
-                  trackThickness: pu,
-                  thumbLength: pu8,
-                )
-              : M3EProgressIndicator.linearWavy(
-                  value: progress.clamp(0, 1),
-                  stopSize: 0,
-                  strokeWidth: 3,
-                  amplitude: playing ? 0.75 : 0,
-                );
+                      divisions: 0,
+                      dotSize: 0,
+                      min: 0,
+                      max: totalDuration.inSeconds.toDouble(),
+                      trackThickness: pu,
+                      thumbLength: pu8,
+                    )
+                  : M3EProgressIndicator.linearWavy(
+                      value: progress.clamp(0, 1),
+                      stopSize: 0,
+                      strokeWidth: 3,
+                      amplitude: value,
+                    );
+            },
+          );
 
           /*
           return ClipRRect(

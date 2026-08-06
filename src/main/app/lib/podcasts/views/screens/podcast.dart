@@ -178,37 +178,38 @@ class _PodcastHeader extends StatelessWidget {
     final isMobile = BreakPoint.of(context) == .mobile;
     final colors = M3ETheme.of(context).colorScheme;
     if (isMobile) {
-      return Column(
-        children: [
-          Center(
-            child: PodcastImage(podcast: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
-          ),
-          if (podcast.description != null) ...[
-            Gap(pu2),
-            Padding(
-              padding: .symmetric(horizontal: pu6, vertical: pu),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 500),
-                child: M3ECard(
-                  color: colors.secondaryContainer,
-                  child: Padding(
-                    padding: .symmetric(horizontal: pu2),
-                    child: SingleChildScrollView(child: HtmlDescription(podcast: podcast, offline: false)),
+      return Padding(
+        padding: .only(bottom: pu2),
+        child: Column(
+          spacing: pu2,
+          children: [
+            Center(
+              child: PodcastImage(podcast: podcast, width: _imageSize, height: _imageSize, borderRadius: pu4),
+            ),
+            if (podcast.description != null) ...[
+              Padding(
+                padding: .symmetric(horizontal: pu6),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: 500),
+                  child: M3ECard(
+                    color: colors.secondaryContainer,
+                    child: Padding(
+                      padding: .symmetric(horizontal: pu2),
+                      child: SingleChildScrollView(child: HtmlDescription(podcast: podcast, offline: false)),
+                    ),
                   ),
                 ),
               ),
+            ],
+            Align(
+              alignment: .centerRight,
+              child: Padding(
+                padding: .symmetric(horizontal: pu6),
+                child: _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
+              ),
             ),
           ],
-          Gap(pu2),
-          Align(
-            alignment: .centerRight,
-            child: Padding(
-              padding: .symmetric(horizontal: pu6),
-              child: _SubscribeButton(podcast: podcast, subscribing: subscribing, subscribed: subscribed),
-            ),
-          ),
-          Gap(pu2),
-        ],
+        ),
       );
     } else {
       return Padding(
