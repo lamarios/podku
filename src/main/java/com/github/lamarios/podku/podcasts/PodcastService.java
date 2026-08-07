@@ -10,7 +10,9 @@ import be.ceau.opml.entity.Opml;
 import be.ceau.opml.entity.Outline;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.episodes.EpisodeService;
+import com.github.lamarios.podku.episodes.EpisodeUtils;
 import com.github.lamarios.podku.search.SearchResult;
+import com.github.lamarios.podku.transcripts.WhisperService;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.google.common.hash.Hashing;
 import org.apache.commons.io.IOUtils;
@@ -29,12 +31,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,10 +53,11 @@ public class PodcastService {
     private final int episodeCacheCount;
     private final Path episodeCacheFolder;
     private final PodcastParser podcastParser;
+    private final WhisperService whisperService;
 
 
     @Autowired
-    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager, EpisodeRepository episodeRepository, @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder, @Value("${podku.episodes.cache-count:0}") String episodeCacheCount, PodcastParser podcastParser) {
+    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager, EpisodeRepository episodeRepository, @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder, @Value("${podku.episodes.cache-count:0}") String episodeCacheCount, PodcastParser podcastParser, WhisperService whisperService) {
         this.podcastRepository = podcastRepository;
         this.episodeService = episodeService;
         this.platformTransactionManager = platformTransactionManager;
@@ -64,6 +71,7 @@ public class PodcastService {
 
         this.episodeCacheFolder = p;
         this.podcastParser = podcastParser;
+        this.whisperService = whisperService;
     }
 
 
@@ -90,8 +98,7 @@ public class PodcastService {
                 podcast = podcastParser.parseUrl(podcast);
 
                 podcastRepository.save(podcast);
-                episodeService.processPodcast(podcast);
-
+                episodeService.processPodcast(podcast).thenAccept(_ -> whisperService.processEpisodeCron());
                 return podcast;
             }
         } else {
@@ -113,40 +120,45 @@ public class PodcastService {
 
     @Scheduled(cron = "@hourly")
     public void refreshPodcasts() {
-        TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {
-            var podcasts = podcastRepository.findAll();
-            for (var podcast : podcasts) {
+        List<Podcast> podcasts = TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {
+            List<Podcast> result = new ArrayList<>();
+            var toProcess = podcastRepository.findAll();
+            for (var podcast : toProcess) {
                 TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {
                     Podcast parsed = null;
-                    try {
-                        log.info("Refreshing podcast {}", podcast.getName());
+                    log.info("Refreshing podcast {}", podcast.getName());
 
-                        parsed = podcastParser.parseUrl(podcast);
-                        podcastRepository.save(parsed);
-                    } finally {
-                        if (parsed != null) {
-                            episodeService.processPodcast(parsed);
-                        }
-                    }
+                    parsed = podcastParser.parseUrl(podcast);
+                    podcastRepository.save(parsed);
+                    result.add(parsed);
                 });
             }
+
+            return result;
         });
 
         log.info("Episode refresh done");
+        try {
+            downloadEpisodes();
+        } catch (Exception e) {
+            log.error("Error while downloading episodes", e);
+        }
+        // we wait for the episode process to finish
+        List<CompletableFuture<Podcast>> futures = podcasts.stream().map(episodeService::processPodcast).toList();
+        CompletableFuture<Void> combined = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-        downloadEpisodes();
+        combined.join();
+        // then we process whisper
+        whisperService.processEpisodeCron();
     }
 
     @Transactional(readOnly = true)
     public String exportPodcasts() throws OpmlWriteException {
         List<Podcast> feeds = podcastRepository.findAll();
 
-        Head head = new Head("Podku", LocalDateTime.now()
-                .toString(), null, null, null, null, null, null, null, null, null, null, null);
+        Head head = new Head("Podku", LocalDateTime.now().toString(), null, null, null, null, null, null, null, null, null, null, null);
 
-        List<Outline> outlines = feeds.stream()
-                .map(feed -> new Outline(Map.of("type", "rss", "xmlUrl", feed.getUrl(), "title", feed.getName()), Collections.emptyList()))
-                .toList();
+        List<Outline> outlines = feeds.stream().map(feed -> new Outline(Map.of("type", "rss", "xmlUrl", feed.getUrl(), "title", feed.getName()), Collections.emptyList())).toList();
 
         Body body = new Body(outlines);
 
@@ -190,8 +202,7 @@ public class PodcastService {
         List<Podcast> newPodcasts = new ArrayList<>();
 
         Map<String, String> attributes = outline.getAttributes();
-        if (attributes.containsKey("type") && attributes.get("type")
-                .equalsIgnoreCase("rss") && attributes.containsKey("xmlUrl")) {
+        if (attributes.containsKey("type") && attributes.get("type").equalsIgnoreCase("rss") && attributes.containsKey("xmlUrl")) {
 
             // we check if the feed already exists
             String url = attributes.get("xmlUrl");
@@ -227,28 +238,11 @@ public class PodcastService {
             var episodes = episodeRepository.getEpisodeByPubDateMillisBefore(System.currentTimeMillis(), Sort.by(Sort.Direction.DESC, "pubDateMillis"), Limit.of(episodeCacheCount));
 
             for (var e : episodes) {
-                var episodeHash = Hashing.sha256().hashString(e.getAudioUrl(), StandardCharsets.UTF_8).toString();
-
-                log.info("Downloading episode: {} from podcast {}", e.getTitle(), e.getPodcast().getName());
-                Path episodeFile = episodeCacheFolder.resolve(episodeHash);
-
-                if (episodeFile.toFile().exists()) {
-                    log.info("Episode {} already exists", episodeHash);
-                    continue;
-                }
-
                 try {
-                    IOUtils.copy(URI.create(e.getAudioUrl()).toURL(), episodeFile.toFile());
-                    log.info("Download finished for episode: {}", e.getTitle());
-
+                    EpisodeUtils.downloadEpisode(e, episodeCacheFolder);
                 } catch (IOException ex) {
-                    log.error("Couldn't download episode {}", e.getTitle(), ex);
-                    // we delete anything that exists
-                    if (episodeFile.toFile().exists()) {
-                        episodeFile.toFile().delete();
-                    }
+                    log.error("Failed to download episode {}", e.getTitle(), ex);
                 }
-
             }
 
             List<String> episodeHashes = episodes.stream().map(e -> Hashing.sha256().hashString(e.getAudioUrl(), StandardCharsets.UTF_8).toString()).toList();
@@ -275,10 +269,7 @@ public class PodcastService {
 
     @Transactional(readOnly = true)
     public List<Podcast> searchPodcasts(String query, int limit) {
-        String tsQuery = Arrays.stream(query.trim().split("\\s+"))
-                .filter(s -> !s.isBlank())
-                .map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*")
-                .collect(Collectors.joining(" & "));
+        String tsQuery = Arrays.stream(query.trim().split("\\s+")).filter(s -> !s.isBlank()).map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*").collect(Collectors.joining(" & "));
 
         if (tsQuery.isBlank()) {
             return List.of();

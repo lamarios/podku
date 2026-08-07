@@ -3,6 +3,7 @@ package com.github.lamarios.podku.episodes;
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
 import com.github.lamarios.podku.transcripts.EpisodeTranscriptRepository;
+import com.github.lamarios.podku.transcripts.WhisperService;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.github.lamarios.podku.websockets.PlaybackProgress;
 import com.github.lamarios.podku.websockets.WebSocketSessionManager;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -49,15 +51,22 @@ public class EpisodeService {
      *
      * @param podcast the podcast to process
      */
-    public void processPodcast(Podcast podcast) {
+    public CompletableFuture<Podcast> processPodcast(Podcast podcast) {
+        CompletableFuture<Podcast> future = new CompletableFuture<>();
         exec.submit(() -> {
-            for (Episode episode : podcast.getEpisodes()) {
-                TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
-                    var e = episodeRepository.findById(episode.getId());
-                    e.ifPresent(this::processEpisode);
-                });
+            try {
+                for (Episode episode : podcast.getEpisodes()) {
+                    TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
+                        var e = episodeRepository.findById(episode.getId());
+                        e.ifPresent(this::processEpisode);
+                    });
+                }
+            } finally {
+                future.complete(podcast);
             }
         });
+
+        return future;
     }
 
     @Scheduled(cron = "@daily")

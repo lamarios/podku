@@ -141,4 +141,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchForPodcasts => 'Search for new podcasts';
+
+  @override
+  String get aiGeneratedTranscript => 'AI generated transcript';
 }

@@ -1,16 +1,15 @@
 package com.github.lamarios.podku.episodes;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonKey;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.podcasts.PodcastLight;
-import com.github.lamarios.podku.podcasts.PodcastParser;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
+import com.google.common.hash.Hashing;
 import jakarta.persistence.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -242,5 +241,10 @@ public class Episode {
 
     public void setPeople(List<EpisodePerson> people) {
         this.people = people;
+    }
+
+    @Transient
+    public String getAudioUrlHash() {
+        return Hashing.sha256().hashString(getAudioUrl(), StandardCharsets.UTF_8).toString();
     }
 }

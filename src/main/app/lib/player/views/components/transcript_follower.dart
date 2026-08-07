@@ -4,6 +4,7 @@ import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/states/transcript.dart';
 import 'package:podku/utils.dart';
@@ -14,6 +15,9 @@ class TranscriptFollower extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locals = AppLocalizations.of(context)!;
+    var colors = M3ETheme.of(context).colorScheme;
+    final textTheme = M3ETheme.of(context).textTheme;
     return BlocProvider(
       create: (context) => TranscriptCubit(TranscriptState(), playerCubit: context.read<PlayerCubit>()),
       child: BlocBuilder<TranscriptCubit, TranscriptState>(
@@ -27,14 +31,32 @@ class TranscriptFollower extends StatelessWidget {
                 ? Center(child: LoadingIndicator())
                 : Padding(
                     padding: .symmetric(horizontal: pu8),
-                    child: ListViewObserver(
-                      controller: cubit.observerController,
-                      child: ListView.builder(
-                        controller: cubit.scrollController,
-                        itemCount: state.transcript.length,
-                        itemBuilder: (context, index) =>
-                            _TranscriptLine(line: state.transcript[index], lineIndex: index, currentIndex: state.index),
-                      ),
+                    child: Column(
+                      spacing: pu,
+                      children: [
+                        if (state.selectedLanguage == 'a.i')
+                          Row(
+                            spacing: pu,
+                            children: [
+                              Icon(Icons.auto_awesome, size: 15, color: colors.secondary),
+                              Text(locals.aiGeneratedTranscript, style: textTheme.labelSmall),
+                            ],
+                          ),
+                        Expanded(
+                          child: ListViewObserver(
+                            controller: cubit.observerController,
+                            child: ListView.builder(
+                              controller: cubit.scrollController,
+                              itemCount: state.transcript.length,
+                              itemBuilder: (context, index) => _TranscriptLine(
+                                line: state.transcript[index],
+                                lineIndex: index,
+                                currentIndex: state.index,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
           );

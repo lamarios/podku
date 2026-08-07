@@ -39,5 +39,6 @@
   "yourPodcasts": "Your podcasts",
   "yourEpisodes": "Your episodes",
   "openSearch": "Open full screen search",
-  "searchForPodcasts": "Search for new podcasts"
+  "searchForPodcasts": "Search for new podcasts",
+  "aiGeneratedTranscript": "AI generated transcript"
 }

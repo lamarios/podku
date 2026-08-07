@@ -4,6 +4,7 @@ import be.ceau.opml.OpmlParseException;
 import be.ceau.opml.OpmlWriteException;
 import com.github.lamarios.podku.episodes.EpisodeService;
 import com.github.lamarios.podku.search.SearchResult;
+import com.github.lamarios.podku.transcripts.WhisperService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.io.IOUtils;
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.github.lamarios.podku.utils.EndpointUtils.serveFile;
 
@@ -31,12 +33,14 @@ public class PodcastController {
     private final PodcastService podcastService;
     private final EpisodeService episodeService;
     private final PodcastParser podcastParser;
+    private final WhisperService whisperService;
 
     @Autowired
-    public PodcastController(PodcastService podcastService, EpisodeService episodeService, PodcastParser podcastParser) {
+    public PodcastController(PodcastService podcastService, EpisodeService episodeService, PodcastParser podcastParser, WhisperService whisperService) {
         this.podcastService = podcastService;
         this.episodeService = episodeService;
         this.podcastParser = podcastParser;
+        this.whisperService = whisperService;
     }
 
     @GetMapping
@@ -47,14 +51,8 @@ public class PodcastController {
     @PostMapping
     public Podcast subscribeToPodcast(@RequestBody SearchResult result) {
         Podcast newPodcast = null;
-        try {
-            newPodcast = podcastService.subscribe(result);
-            return newPodcast;
-        } finally {
-            if (newPodcast != null) {
-                episodeService.processPodcast(newPodcast);
-            }
-        }
+        newPodcast = podcastService.subscribe(result);
+        return newPodcast;
     }
 
     @PostMapping("/parse")
@@ -99,13 +97,18 @@ public class PodcastController {
 
             return added.stream().map(PodcastLight::new).toList();
         } finally {
-            added.forEach(episodeService::processPodcast);
+            List<CompletableFuture<Podcast>> futures = added.stream().map(episodeService::processPodcast).toList();
+            CompletableFuture<Void> combined = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+            combined.join();
+            // then we process whisper
+            whisperService.processEpisodeCron();
         }
     }
 
 
     @GetMapping("/search")
-    public List<PodcastLight> search(@RequestParam("query") String query, @RequestParam("limit") int limit){
+    public List<PodcastLight> search(@RequestParam("query") String query, @RequestParam("limit") int limit) {
         return podcastService.searchPodcasts(query, limit).stream().map(PodcastLight::new).toList();
     }
 

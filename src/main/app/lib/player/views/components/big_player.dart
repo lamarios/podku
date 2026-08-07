@@ -212,12 +212,19 @@ class BigPlayer extends StatelessWidget {
                                           mainAxisAlignment: .center,
                                           children: [
                                             PlayerSpeed(),
-                                            if (episode.hasTranscript)
-                                              IconButton(
-                                                onPressed: () => cubit.showTranscript(!showTranscript),
-                                                icon: Icon(Icons.closed_caption),
-                                                color: showTranscript ? colors.onSurface : colors.primary,
-                                              ),
+                                            FutureBuilder<bool>(
+                                              future: episode.hasTranscript,
+                                              builder: (context, snapshot) {
+                                                if (!(snapshot.data ?? false)) {
+                                                  return SizedBox.shrink();
+                                                }
+                                                return IconButton(
+                                                  onPressed: () => cubit.showTranscript(!showTranscript),
+                                                  icon: Icon(Icons.closed_caption),
+                                                  color: showTranscript ? colors.onSurface : colors.primary,
+                                                );
+                                              },
+                                            ),
                                           ],
                                         ),
 

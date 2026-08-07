@@ -336,6 +336,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search for new podcasts'**
   String get searchForPodcasts;
+
+  /// No description provided for @aiGeneratedTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'AI generated transcript'**
+  String get aiGeneratedTranscript;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

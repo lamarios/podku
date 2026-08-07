@@ -46,7 +46,15 @@ class TranscriptCubit extends Cubit<TranscriptState> {
         final List<EpisodeTranscript> transcripts = await client.transcripts
             .getTranscript(id: episode.id ?? '', language: languages.first)
             .then((value) => value.data ?? []);
-        emit(state.copyWith(languages: languages, transcript: transcripts, index: -1, loading: false));
+        emit(
+          state.copyWith(
+            languages: languages,
+            transcript: transcripts,
+            index: -1,
+            loading: false,
+            selectedLanguage: languages.first,
+          ),
+        );
       } else {
         emit(state.copyWith(loading: false));
       }
@@ -93,6 +101,7 @@ sealed class TranscriptState with _$TranscriptState {
   const factory TranscriptState({
     @Default(true) bool loading,
     @Default(-1) int index,
+    String? selectedLanguage,
     @Default([]) List<EpisodeTranscript> transcript,
     @Default([]) List<String> languages,
   }) = _TranscriptState;
