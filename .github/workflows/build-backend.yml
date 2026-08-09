@@ -75,7 +75,7 @@ jobs:
           context: .
           platforms: linux/amd64, linux/arm64
           push: true
-          file: ./podku_server/Dockerfile
+          file: docker/Dockerfile
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/podku:latest
             ${{ secrets.DOCKER_USERNAME }}/podku:${{ env.TAG_NAME }}
