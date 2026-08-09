@@ -5,6 +5,12 @@ import java.util.Arrays;
 
 public class WebSocketMessage<T> {
     public enum Type {
+        playerStatus(PlayerStatus.class),
+        getPlayerStatus(null),
+        remoteCommand(RemoteCommand.class),
+        playerInfo(WebsocketClient.class),
+        clientList(ClientList.class),
+        transferPlayback(TransferPlayback.class),
         playbackProgress(PlaybackProgress.class);
 
 
@@ -25,6 +31,14 @@ public class WebSocketMessage<T> {
 
     private Type type;
     private T message;
+
+    public WebSocketMessage() {
+    }
+
+    public WebSocketMessage(Type type, T message) {
+        this.type = type;
+        this.message = message;
+    }
 
     public Type getType() {
         return type;

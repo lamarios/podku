@@ -40,11 +40,12 @@ public class EpisodeController {
 
 
     private final EpisodeService episodeService;
+    private final WebSocketSessionManager webSocketSessionManager;
 
     @Autowired
-    public EpisodeController(EpisodeService episodeService) {
+    public EpisodeController(EpisodeService episodeService, WebSocketSessionManager webSocketSessionManager) {
         this.episodeService = episodeService;
-
+        this.webSocketSessionManager = webSocketSessionManager;
     }
 
     @GetMapping
@@ -66,7 +67,7 @@ public class EpisodeController {
 
     @PostMapping("startPlayback")
     public void startPlayback(@RequestBody PlaybackProgress progress) {
-        WebSocketSessionManager.sendToUsers(progress);
+        webSocketSessionManager.sendToUsers(progress);
     }
 
     @GetMapping("/search")

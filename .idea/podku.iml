@@ -2,18 +2,15 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
-      <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_tools/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_tools/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_tools/build" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/app/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/app/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/app/build" />
       <excludeFolder url="file://$MODULE_DIR$/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/podku_client/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/podku_client/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/podku_client/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/build" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/connectivity_plus/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/connectivity_plus/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/connectivity_plus/build" />
@@ -518,6 +515,9 @@
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_test/test/test_config/project_root/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_test/test/test_config/project_root/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_test/test/test_config/project_root/build" />
+      <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_tools/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_tools/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_tools/build" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_web_plugins/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_web_plugins/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/flutter_web_plugins/build" />

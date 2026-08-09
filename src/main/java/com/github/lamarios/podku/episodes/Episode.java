@@ -45,16 +45,29 @@ public class Episode {
     private Podcast podcast;
 
 
+    @Transient
+    private PodcastLight podcastLight;
+
+
     public boolean isProcessed() {
         return processed;
     }
 
-    @Transactional
+    @Transient
     @JsonProperty("podcast")
     public PodcastLight getPodcastLight() {
-        return new PodcastLight(podcast);
+        if (podcast != null) {
+            return new PodcastLight(podcast);
+        } else {
+            return podcastLight;
+        }
     }
 
+    @Transient
+    @JsonProperty("podcast")
+    public void setPodcastLight(PodcastLight podcastLight) {
+        this.podcastLight = podcastLight;
+    }
 
     public void setProcessed(boolean processed) {
         this.processed = processed;
@@ -244,6 +257,7 @@ public class Episode {
     }
 
     @Transient
+    @JsonIgnore
     public String getAudioUrlHash() {
         return Hashing.sha256().hashString(getAudioUrl(), StandardCharsets.UTF_8).toString();
     }

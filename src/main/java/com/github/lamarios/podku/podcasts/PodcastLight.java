@@ -15,6 +15,9 @@ public class PodcastLight {
 
     private List<PodcastPerson> people;
 
+    public PodcastLight() {
+    }
+
     public PodcastLight(Podcast podcast) {
         id = podcast.getId();
         url = podcast.getUrl();

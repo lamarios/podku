@@ -37,13 +37,15 @@ public class EpisodeService {
     private final EpisodeRepository episodeRepository;
     private final ExecutorService exec = Executors.newSingleThreadExecutor();
     private final PlatformTransactionManager transactionManager;
+    private final WebSocketSessionManager webSocketSessionManager;
 
     @Autowired
-    public EpisodeService(ChapterRepository chapterRepository, EpisodeTranscriptRepository episodeTranscriptRepository, EpisodeRepository episodeRepository, PlatformTransactionManager transactionManager) {
+    public EpisodeService(ChapterRepository chapterRepository, EpisodeTranscriptRepository episodeTranscriptRepository, EpisodeRepository episodeRepository, PlatformTransactionManager transactionManager, WebSocketSessionManager webSocketSessionManager) {
         this.chapterRepository = chapterRepository;
         this.episodeTranscriptRepository = episodeTranscriptRepository;
         this.episodeRepository = episodeRepository;
         this.transactionManager = transactionManager;
+        this.webSocketSessionManager = webSocketSessionManager;
     }
 
     /**
@@ -213,7 +215,7 @@ public class EpisodeService {
         if (episode != null) {
             episode.setProgress(progress.progress());
             episodeRepository.save(episode);
-            WebSocketSessionManager.sendToUsers(progress);
+            webSocketSessionManager.sendToUsers(progress);
         }
     }
 

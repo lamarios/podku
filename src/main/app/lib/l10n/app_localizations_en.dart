@@ -144,4 +144,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiGeneratedTranscript => 'AI generated transcript';
+
+  @override
+  String get devices => 'Connected devices';
+
+  @override
+  String get thisDevice => 'This device';
+
+  @override
+  String get devicesExplanation => 'Select which device should be playing audio';
 }

@@ -43,10 +43,16 @@ class ReconnectableWebSocket {
       _subscription = _channel!.stream.listen(
         (message) {
           _log.fine("Received web socket message: $message");
+          if (message == 'ping') {
+            return;
+          }
           final decoded = jsonDecode(message);
           controller.add(PodkuSocketMessage.fromJson(decoded));
         },
-        onDone: _handleDisconnect,
+        onDone: () {
+          _log.fine('onDone, reconnecting. ${_channel?.closeCode}, reason ${_channel?.closeReason}');
+          _handleDisconnect();
+        },
         onError: (error) {
           _log.info("WebSocket error: $error");
           _handleDisconnect();
