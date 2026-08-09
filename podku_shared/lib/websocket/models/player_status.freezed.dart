@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerStatus {
 
- PlayerInfo? get client; Episode? get episode; int get position; int get duration; double get speed; bool get playing;
+ PlayerInfo? get client; Episode? get episode; int get position; int get duration; double get speed; bool get playing; bool get broadcast;
 /// Create a copy of PlayerStatus
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PlayerStatusCopyWith<PlayerStatus> get copyWith => _$PlayerStatusCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerStatus&&(identical(other.client, client) || other.client == client)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerStatus&&(identical(other.client, client) || other.client == client)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,client,episode,position,duration,speed,playing);
+int get hashCode => Object.hash(runtimeType,client,episode,position,duration,speed,playing,broadcast);
 
 @override
 String toString() {
-  return 'PlayerStatus(client: $client, episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing)';
+  return 'PlayerStatus(client: $client, episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing, broadcast: $broadcast)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PlayerStatusCopyWith<$Res>  {
   factory $PlayerStatusCopyWith(PlayerStatus value, $Res Function(PlayerStatus) _then) = _$PlayerStatusCopyWithImpl;
 @useResult
 $Res call({
- PlayerInfo? client, Episode? episode, int position, int duration, double speed, bool playing
+ PlayerInfo? client, Episode? episode, int position, int duration, double speed, bool playing, bool broadcast
 });
 
 
@@ -65,7 +65,7 @@ class _$PlayerStatusCopyWithImpl<$Res>
 
 /// Create a copy of PlayerStatus
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? client = freezed,Object? episode = freezed,Object? position = null,Object? duration = null,Object? speed = null,Object? playing = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? client = freezed,Object? episode = freezed,Object? position = null,Object? duration = null,Object? speed = null,Object? playing = null,Object? broadcast = null,}) {
   return _then(_self.copyWith(
 client: freezed == client ? _self.client : client // ignore: cast_nullable_to_non_nullable
 as PlayerInfo?,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
@@ -73,6 +73,7 @@ as Episode?,position: null == position ? _self.position : position // ignore: ca
 as int,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as int,speed: null == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
 as double,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
+as bool,broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -167,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlayerInfo? client,  Episode? episode,  int position,  int duration,  double speed,  bool playing)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlayerInfo? client,  Episode? episode,  int position,  int duration,  double speed,  bool playing,  bool broadcast)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlayerStatus() when $default != null:
-return $default(_that.client,_that.episode,_that.position,_that.duration,_that.speed,_that.playing);case _:
+return $default(_that.client,_that.episode,_that.position,_that.duration,_that.speed,_that.playing,_that.broadcast);case _:
   return orElse();
 
 }
@@ -188,10 +189,10 @@ return $default(_that.client,_that.episode,_that.position,_that.duration,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlayerInfo? client,  Episode? episode,  int position,  int duration,  double speed,  bool playing)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlayerInfo? client,  Episode? episode,  int position,  int duration,  double speed,  bool playing,  bool broadcast)  $default,) {final _that = this;
 switch (_that) {
 case _PlayerStatus():
-return $default(_that.client,_that.episode,_that.position,_that.duration,_that.speed,_that.playing);}
+return $default(_that.client,_that.episode,_that.position,_that.duration,_that.speed,_that.playing,_that.broadcast);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -205,10 +206,10 @@ return $default(_that.client,_that.episode,_that.position,_that.duration,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlayerInfo? client,  Episode? episode,  int position,  int duration,  double speed,  bool playing)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlayerInfo? client,  Episode? episode,  int position,  int duration,  double speed,  bool playing,  bool broadcast)?  $default,) {final _that = this;
 switch (_that) {
 case _PlayerStatus() when $default != null:
-return $default(_that.client,_that.episode,_that.position,_that.duration,_that.speed,_that.playing);case _:
+return $default(_that.client,_that.episode,_that.position,_that.duration,_that.speed,_that.playing,_that.broadcast);case _:
   return null;
 
 }
@@ -220,7 +221,7 @@ return $default(_that.client,_that.episode,_that.position,_that.duration,_that.s
 @JsonSerializable()
 
 class _PlayerStatus implements PlayerStatus {
-  const _PlayerStatus({this.client, required this.episode, required this.position, required this.duration, required this.speed, this.playing = false});
+  const _PlayerStatus({this.client, required this.episode, required this.position, required this.duration, required this.speed, this.playing = false, this.broadcast = true});
   factory _PlayerStatus.fromJson(Map<String, dynamic> json) => _$PlayerStatusFromJson(json);
 
 @override final  PlayerInfo? client;
@@ -229,6 +230,7 @@ class _PlayerStatus implements PlayerStatus {
 @override final  int duration;
 @override final  double speed;
 @override@JsonKey() final  bool playing;
+@override@JsonKey() final  bool broadcast;
 
 /// Create a copy of PlayerStatus
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerStatus&&(identical(other.client, client) || other.client == client)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerStatus&&(identical(other.client, client) || other.client == client)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,client,episode,position,duration,speed,playing);
+int get hashCode => Object.hash(runtimeType,client,episode,position,duration,speed,playing,broadcast);
 
 @override
 String toString() {
-  return 'PlayerStatus(client: $client, episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing)';
+  return 'PlayerStatus(client: $client, episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing, broadcast: $broadcast)';
 }
 
 
@@ -263,7 +265,7 @@ abstract mixin class _$PlayerStatusCopyWith<$Res> implements $PlayerStatusCopyWi
   factory _$PlayerStatusCopyWith(_PlayerStatus value, $Res Function(_PlayerStatus) _then) = __$PlayerStatusCopyWithImpl;
 @override @useResult
 $Res call({
- PlayerInfo? client, Episode? episode, int position, int duration, double speed, bool playing
+ PlayerInfo? client, Episode? episode, int position, int duration, double speed, bool playing, bool broadcast
 });
 
 
@@ -280,7 +282,7 @@ class __$PlayerStatusCopyWithImpl<$Res>
 
 /// Create a copy of PlayerStatus
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? client = freezed,Object? episode = freezed,Object? position = null,Object? duration = null,Object? speed = null,Object? playing = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? client = freezed,Object? episode = freezed,Object? position = null,Object? duration = null,Object? speed = null,Object? playing = null,Object? broadcast = null,}) {
   return _then(_PlayerStatus(
 client: freezed == client ? _self.client : client // ignore: cast_nullable_to_non_nullable
 as PlayerInfo?,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
@@ -288,6 +290,7 @@ as Episode?,position: null == position ? _self.position : position // ignore: ca
 as int,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as int,speed: null == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
 as double,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
+as bool,broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

@@ -308,18 +308,19 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     emit(state.copyWith(playing: event.playing, position: event.position, bufferPosition: event.bufferedPosition));
     // we only want to update when there's a change in play status here, otherwise we're going to flood the websocket
     if (sendSocketUpdate) {
-      _sendCurrentState();
+      _sendCurrentState(true);
     }
     _updateProgress();
   }
 
-  void _sendCurrentState() {
+  void _sendCurrentState(bool broadcast) {
     final status = PlayerStatus(
       episode: state.episode,
       position: state.position.inSeconds,
       duration: state.duration.inSeconds,
       playing: state.playing,
       speed: _player.playbackState.value.speed,
+      broadcast: broadcast,
     );
     final message = PodkuSocketMessage(message: status.toJson(), type: .playerStatus);
     getIt.get<ServerCubit>().socket?.send(jsonEncode(message));
@@ -340,7 +341,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       });
       // we do this so that whenever the episode stops playing, we save one last time
       EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
-        await _updateProgressInner(episode, progress, duration);
+        await _updateProgressInner(episode, progress, duration, broadcast: false);
         if (!kIsWeb) {
           await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
         }
@@ -348,10 +349,15 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _updateProgressInner(Episode episode, Duration progress, Duration totalDuration) async {
+  Future<void> _updateProgressInner(
+    Episode episode,
+    Duration progress,
+    Duration totalDuration, {
+    bool broadcast = true,
+  }) async {
     if (isOnline) {
       try {
-        _sendCurrentState();
+        _sendCurrentState(broadcast);
       } catch (e) {
         _log.warning("Could not update episode progress", e);
       }
@@ -418,7 +424,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         emit(state.copyWith(showBigPlayer: true));
       }
 
-      _sendCurrentState();
+      _sendCurrentState(true);
     }
   }
 

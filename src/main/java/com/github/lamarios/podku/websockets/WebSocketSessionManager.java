@@ -235,7 +235,7 @@ public class WebSocketSessionManager {
             // playback stopped
             this.playerStatus = null;
         } else if (playerStatus.episode().getId() != null) {
-            this.playerStatus = new PlayerStatus(sessions.get(session), playerStatus.episode(), playerStatus.position(), playerStatus.duration(), playerStatus.playing(), playerStatus.speed());
+            this.playerStatus = new PlayerStatus(sessions.get(session), playerStatus.episode(), playerStatus.position(), playerStatus.duration(), playerStatus.playing(), playerStatus.speed(), true);
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
                 episodeRepository.findById(playerStatus.episode().getId()).ifPresent(episode -> {
                     episode.setProgress(playerStatus.position());
@@ -244,19 +244,21 @@ public class WebSocketSessionManager {
             });
         }
 
-        WebSocketMessage<PlayerStatus> message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, this.playerStatus);
+        if(this.playerStatus == null || playerStatus.broadcast()) {
+            WebSocketMessage<PlayerStatus> message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, this.playerStatus);
 
-        for (Map.Entry<WebSocketSession, WebsocketClient> entry : sessions.entrySet()) {
-            WebSocketSession webSocketSession = entry.getKey();
-            WebsocketClient websocketClient = entry.getValue();
-            if (websocketClient.id() == null
+            for (Map.Entry<WebSocketSession, WebsocketClient> entry : sessions.entrySet()) {
+                WebSocketSession webSocketSession = entry.getKey();
+                WebsocketClient websocketClient = entry.getValue();
+                if (websocketClient.id() == null
 //                    || (this.playerStatus != null && websocketClient.id().equalsIgnoreCase(this.playerStatus.client().id()))
-            ) {
-                continue;
+                ) {
+                    continue;
+                }
+
+                webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+
             }
-
-            webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-
         }
     }
 

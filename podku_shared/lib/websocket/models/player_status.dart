@@ -15,6 +15,7 @@ sealed class PlayerStatus with _$PlayerStatus {
     required int duration,
     required double speed,
     @Default(false) bool playing,
+    @Default(true) bool broadcast
   }) = _PlayerStatus;
 
   factory PlayerStatus.fromJson(Map<String, Object?> json) => _$PlayerStatusFromJson(json);

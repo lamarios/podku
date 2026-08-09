@@ -85,8 +85,8 @@ class Podkunnect {
     }
   }
 
-  void _broadcastStatus() {
-    final message = PodkuSocketMessage(message: playbackStatus?.toJson(), type: .playerStatus);
+  void _broadcastStatus(PlayerStatus? status, {bool broadcast = true}) {
+    final message = PodkuSocketMessage(message: status?.copyWith(broadcast: broadcast).toJson(), type: .playerStatus);
     socket?.send(jsonEncode(message));
   }
 
@@ -111,25 +111,26 @@ class Podkunnect {
       playing: true,
     );
 
-    _broadcastStatus();
+    _broadcastStatus(playbackStatus);
     _playingSubscription = _player?.stream.playing.listen((event) {
       playbackStatus = playbackStatus?.copyWith(playing: event);
-      _broadcastStatus();
+      _broadcastStatus(playbackStatus);
     });
 
     _positionSubscription = _player?.stream.position.listen((event) {
       playbackStatus = playbackStatus?.copyWith(position: event.inSeconds);
-      EasyThrottle.throttle('throttle-progress-update', Duration(seconds: 5), () {
-        _broadcastStatus();
+      final toBroadcast = playbackStatus?.copyWith();
+      EasyThrottle.throttle('throttle-progress-update-${toBroadcast?.episode?.id}', Duration(seconds: 5), () {
+        _broadcastStatus(toBroadcast);
       });
-      EasyDebounce.debounce('progress-update', Duration(seconds: 2), () {
-        _broadcastStatus();
+      EasyDebounce.debounce('progress-update-${toBroadcast?.episode?.id}', Duration(seconds: 2), () {
+        _broadcastStatus(toBroadcast, broadcast: false);
       });
     });
 
     _durationSubscription = _player?.stream.duration.listen((event) {
       playbackStatus = playbackStatus?.copyWith(duration: event.inSeconds);
-      _broadcastStatus();
+      _broadcastStatus(playbackStatus);
     });
   }
 
@@ -139,7 +140,7 @@ class Podkunnect {
       case .stop:
         await disposePlayer();
         playbackStatus = null;
-        _broadcastStatus();
+        _broadcastStatus(null);
         break;
       case .seek:
         if (remoteCommand.position != null) {
@@ -190,6 +191,6 @@ class Podkunnect {
       playing: true,
     );
 
-    _broadcastStatus();
+    _broadcastStatus(playbackStatus);
   }
 }
