@@ -52,6 +52,7 @@ pkgs.mkShell {
       pkgs.lib.makeLibraryPath [
         pkgs.libcxx
         pkgs.libcxxrt
+        pkgs.mpv
       ]
     }:$LD_LIBRARY_PATH"
     export PKG_CONFIG_PATH="${

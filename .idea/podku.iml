@@ -533,6 +533,13 @@
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/integration_test/integration_test_macos/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/integration_test/integration_test_macos/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/submodules/flutter/packages/integration_test/integration_test_macos/build" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/podkunnect/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/podkunnect/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/podkunnect/build" />
+      <excludeFolder url="file://$MODULE_DIR$/submodules" />
     </content>
   </component>
 </module>

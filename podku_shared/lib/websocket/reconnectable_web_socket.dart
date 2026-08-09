@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:podku/utils/models/socket_message.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'models/socket_message.dart';
 
 class ReconnectableWebSocket {
   final Logger _log = Logger('Reconnectable Web Socket');

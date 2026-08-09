@@ -6,7 +6,7 @@ import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/utils.dart';
-import 'package:podku/websocket/models/player_info.dart';
+import 'package:podku_shared/podku_shared.dart';
 
 class RemotePlayer extends StatelessWidget {
   final PlayerInfo player;

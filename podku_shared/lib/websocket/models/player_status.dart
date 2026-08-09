@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openapi/openapi.dart';
-import 'package:podku/websocket/models/player_info.dart';
+import 'package:podku_shared/websocket/models/player_info.dart';
 
 part 'player_status.freezed.dart';
 

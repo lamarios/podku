@@ -11,14 +11,8 @@ import 'package:logging/logging.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/main.dart';
 import 'package:podku/server/client/client.dart';
-import 'package:podku/utils/models/socket_message.dart';
 import 'package:podku/utils/models/with_error.dart';
-import 'package:podku/utils/reconnectable_web_socket.dart';
-import 'package:podku/websocket/models/client_list.dart';
-import 'package:podku/websocket/models/player_info.dart';
-import 'package:podku/websocket/models/player_status.dart';
-import 'package:podku/websocket/models/remote_command.dart';
-import 'package:podku/websocket/models/transfer_playback.dart';
+import 'package:podku_shared/podku_shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'server.freezed.dart';

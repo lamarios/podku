@@ -20,12 +20,8 @@ import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
-import 'package:podku/utils/models/socket_message.dart';
 import 'package:podku/utils/models/with_error.dart';
-import 'package:podku/websocket/models/player_info.dart';
-import 'package:podku/websocket/models/player_status.dart';
-import 'package:podku/websocket/models/remote_command.dart';
-import 'package:podku/websocket/models/transfer_playback.dart';
+import 'package:podku_shared/podku_shared.dart';
 
 part 'player.freezed.dart';
 

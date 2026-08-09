@@ -60,6 +60,8 @@ dependencies:
     path: ../../../podku_client
   path: 1.9.1
   path_provider: 2.1.6
+  podku_shared:
+    path: ../../../podku_shared
   scrollview_observer: 1.27.0
   shared_preferences: 2.5.5
   stupid_simple_sheet: 0.9.1+1

@@ -58,7 +58,7 @@ public class WebSocketSessionManager {
     public void testingSessions() {
         List<WebSocketSession> toRemove = new ArrayList<>();
 
-        var textMessage = new WebSocketMessage<ClientList>(WebSocketMessage.Type.clientList, getClientList());
+        var textMessage = new WebSocketMessage<>(WebSocketMessage.Type.clientList, getClientList());
 
         sessions.keySet().forEach(s -> {
             try {
@@ -88,7 +88,7 @@ public class WebSocketSessionManager {
     }
 
     public <T> void sendToUsers(T content) {
-        WebSocketMessage<T> message = new WebSocketMessage<T>();
+        WebSocketMessage<T> message = new WebSocketMessage<>();
         message.setType(WebSocketMessage.Type.getFromClass(content.getClass()));
         message.setMessage(content);
 
@@ -230,12 +230,12 @@ public class WebSocketSessionManager {
      */
     private void handlePlayerStatus(WebSocketSession session, PlayerStatus playerStatus) throws IOException {
         // we update the current status
-        this.playerStatus = new PlayerStatus(sessions.get(session), playerStatus.episode(), playerStatus.position(), playerStatus.duration(), playerStatus.playing(), playerStatus.speed());
 
-        if (playerStatus.episode() == null) {
+        if (playerStatus == null || playerStatus.episode() == null) {
             // playback stopped
             this.playerStatus = null;
         } else if (playerStatus.episode().getId() != null) {
+            this.playerStatus = new PlayerStatus(sessions.get(session), playerStatus.episode(), playerStatus.position(), playerStatus.duration(), playerStatus.playing(), playerStatus.speed());
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
                 episodeRepository.findById(playerStatus.episode().getId()).ifPresent(episode -> {
                     episode.setProgress(playerStatus.position());
