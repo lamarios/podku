@@ -36,9 +36,10 @@ jobs:
         if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
         run: echo "TAG_NAME=1" >> $GITHUB_ENV
       # Build web app
-      - name: build web
+      - name: build podkunnect cli
         working-directory: ./src/main/podkunnect
         run: |
+          nix-shell --run "dart pub get" ../../../shell.nix
           nix-shell --run "make compile-linux-x64" ../../../shell.nix
           nix-shell --run "make compile-linux-arm" ../../../shell.nix
           nix-shell --run "make compile-linux-arm64" ../../../shell.nix
