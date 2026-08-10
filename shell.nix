@@ -50,6 +50,8 @@ pkgs.mkShell {
     echo "Exporting android auto emulator libraries"
     export LD_LIBRARY_PATH="${
       pkgs.lib.makeLibraryPath [
+        pkgs.libcxx
+        pkgs.libcxxrt
       ]
     }:$LD_LIBRARY_PATH"
     export PKG_CONFIG_PATH="${
