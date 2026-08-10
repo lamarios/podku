@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/components/bottom_sheets/m3e_bottom_sheets.dart';
+import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/components/dialogs/m3e_dialogs.dart';
-import 'package:material_3_expressive/components/icon_buttons/m3e_icon_buttons.dart';
 import 'package:material_3_expressive/foundations/m3e_icons.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -22,9 +22,11 @@ class RemotePlayers extends StatelessWidget {
       builder: (context) {
         final clients = context.select((ServerCubit c) => c.state.clients);
         final playingLocally = context.select((PlayerCubit c) => c.isPlayingLocally);
-
+        final currentPlayer = context.select((PlayerCubit c) => c.state.currentPlayer);
         if (clients.length > 1) {
-          return M3EIconButton(
+          return M3EButton.icon(
+            style: .text,
+            label: Text(!playingLocally ? currentPlayer?.name ?? '' : ''),
             onPressed: () => RemotePlayersDialog.open(context),
             icon: Icon(
               playingLocally ? M3EIcons.devices : M3EIcons.tap_and_play,
@@ -91,7 +93,14 @@ class RemotePlayersDialog extends StatelessWidget {
             crossAxisAlignment: .stretch,
             mainAxisSize: .min,
             children: [
-              if (showTitle) Text(locals.devices, style: textTheme.titleLarge),
+              if (showTitle)
+                Row(
+                  spacing: pu2,
+                  children: [
+                    Icon(M3EIcons.devices_other),
+                    Text(locals.devices, style: textTheme.titleLarge),
+                  ],
+                ),
               Text(locals.devicesExplanation),
               Flexible(
                 child: ListView.builder(

@@ -121,6 +121,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
             bufferPosition: .zero,
             duration: .zero,
             playing: false,
+            speed: 1,
           ),
         );
       } else {
@@ -134,6 +135,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
             duration: Duration(seconds: playerStatus.duration),
             showMiniPlayer: shouldShowPlayer ? false : state.showMiniPlayer,
             showBigPlayer: shouldShowPlayer ? true : state.showBigPlayer,
+            speed: playerStatus.speed,
           ),
         );
       }
@@ -305,7 +307,14 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     if (event.playing != state.playing) {
       sendSocketUpdate = true;
     }
-    emit(state.copyWith(playing: event.playing, position: event.position, bufferPosition: event.bufferedPosition));
+    emit(
+      state.copyWith(
+        playing: event.playing,
+        position: event.position,
+        bufferPosition: event.bufferedPosition,
+        speed: event.speed,
+      ),
+    );
     // we only want to update when there's a change in play status here, otherwise we're going to flood the websocket
     if (sendSocketUpdate) {
       _sendCurrentState(true);
@@ -437,7 +446,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void setSpeed(double speed) {
-    _player.setSpeed(speed);
+    if (isPlayingLocally) {
+      _player.setSpeed(speed);
+    } else {
+      _sendRemoteCommand(type: .setSpeed, speed: speed);
+    }
   }
 
   void onDurationChanged(Duration event) {
@@ -459,6 +472,7 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(Duration(seconds: 0)) Duration position,
     @Default(Duration(seconds: 0)) Duration bufferPosition,
     @Default(Duration(seconds: 1)) Duration duration,
+    @Default(1) double speed,
     @Default(false) bool playing,
     @Default(false) bool showMiniPlayer,
     @Default(false) bool showBigPlayer,

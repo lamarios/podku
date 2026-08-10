@@ -21,7 +21,7 @@ import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/description.dart';
 
-const double _imageWidth = 200;
+const double _imageWidth = 170;
 
 class BigPlayer extends StatelessWidget {
   const BigPlayer({super.key});

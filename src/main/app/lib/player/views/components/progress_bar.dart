@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +50,7 @@ class ProgressBar extends StatelessWidget {
                         scrobblingCubit.setHolding(false);
                         playerCubit.seek(Duration(seconds: (value).toInt()));
                       },
-                      value: sliderValue,
+                      value: sliderValue.clamp(0, totalDuration.inSeconds.toDouble()),
                       amplitude: value,
                       label:
                           '${printDuration(Duration(seconds: sliderValue.toInt()))}${scrobblingChapter != null ? '\n${scrobblingChapter.title}' : ''}',
@@ -63,7 +65,7 @@ class ProgressBar extends StatelessWidget {
                       divisions: 0,
                       dotSize: 0,
                       min: 0,
-                      max: totalDuration.inSeconds.toDouble(),
+                      max: max(1, totalDuration.inSeconds.toDouble()),
                       trackThickness: pu,
                       thumbLength: pu8,
                     )

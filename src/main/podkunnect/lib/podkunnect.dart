@@ -86,7 +86,10 @@ class Podkunnect {
   }
 
   void _broadcastStatus(PlayerStatus? status, {bool broadcast = true}) {
-    final message = PodkuSocketMessage(message: status?.copyWith(broadcast: broadcast).toJson(), type: .playerStatus);
+    final message = PodkuSocketMessage(
+      message: status?.copyWith(broadcast: broadcast, speed: _player?.state.rate ?? 1).toJson(),
+      type: .playerStatus,
+    );
     socket?.send(jsonEncode(message));
   }
 
@@ -135,38 +138,55 @@ class Podkunnect {
   }
 
   Future<void> _handleRemoteCommand(RemoteCommand remoteCommand) async {
-    _log.info("Received remote command: ${remoteCommand.type}");
-    switch (remoteCommand.type) {
-      case .stop:
-        await disposePlayer();
-        playbackStatus = null;
-        _broadcastStatus(null);
-        break;
-      case .seek:
-        if (remoteCommand.position != null) {
-          _player?.seek(Duration(seconds: remoteCommand.position!));
-        }
-        break;
-      case .rewind:
-        _player?.seek(_player!.state.position - Duration(seconds: 10));
-        break;
-      case .skipForward:
-        _player?.seek(_player!.state.position + Duration(seconds: 30));
-        break;
-      case .pause:
-      case .play:
-        _player?.playOrPause();
-        break;
-      case .setSpeed:
-        if (remoteCommand.speed != null) {
-          _player?.setRate(remoteCommand.speed ?? 1);
-        }
-        break;
-      case .setEpisode:
-        if (remoteCommand.episode != null) {
-          _playEpisode(remoteCommand.episode!);
-        }
-        break;
+    if (_player != null) {
+      _log.info("Received remote command: ${remoteCommand.type}");
+      Duration? newPosition;
+      switch (remoteCommand.type) {
+        case .stop:
+          await disposePlayer();
+          playbackStatus = null;
+          _broadcastStatus(null);
+          break;
+        case .seek:
+          if (remoteCommand.position != null) {
+            newPosition = Duration(seconds: remoteCommand.position!);
+            await _player?.seek(Duration(seconds: remoteCommand.position!));
+          }
+          break;
+        case .rewind:
+          newPosition = _player!.state.position - Duration(seconds: 10);
+          await _player?.seek(newPosition);
+          break;
+        case .skipForward:
+          newPosition = _player!.state.position + Duration(seconds: 30);
+          await _player?.seek(newPosition);
+          break;
+        case .pause:
+        case .play:
+          await _player?.playOrPause();
+          break;
+        case .setSpeed:
+          if (remoteCommand.speed != null) {
+            await _player?.setRate(remoteCommand.speed ?? 1);
+          }
+          break;
+        case .setEpisode:
+          if (remoteCommand.episode != null) {
+            await _playEpisode(remoteCommand.episode!);
+          }
+          break;
+      }
+
+      final state = _player!.state;
+
+      _broadcastStatus(
+        playbackStatus?.copyWith(
+          position: newPosition?.inSeconds ?? state.position.inSeconds,
+          duration: state.duration.inSeconds,
+          speed: state.rate,
+          playing: state.playing,
+        ),
+      );
     }
   }
 
