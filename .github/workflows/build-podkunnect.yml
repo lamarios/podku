@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: podkunnect-x86_64.tar.gz
-          path: src/main/podkunnect/build/podkunnect-x86-64.tar.gz
+          path: src/main/podkunnect/build/podkunnect-x86_64.tar.gz
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
