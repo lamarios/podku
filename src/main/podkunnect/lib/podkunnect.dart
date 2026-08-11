@@ -146,7 +146,7 @@ class Podkunnect {
           await disposePlayer();
           playbackStatus = null;
           _broadcastStatus(null);
-          break;
+          return;
         case .seek:
           if (remoteCommand.position != null) {
             newPosition = Duration(seconds: remoteCommand.position!);
