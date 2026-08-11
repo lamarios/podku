@@ -34,6 +34,10 @@
 
             nativeBuildInputs = [ pkgs.pkg-config ];
             buildInputs = [ pkgs.mpv ];
+            postFixup = ''
+                wrapProgram $out/bin/podkunnect \
+                  --prefix LD_LIBRARY_PATH : "${pkgs.mpv}/lib"
+              '';
           };
         }
       );
