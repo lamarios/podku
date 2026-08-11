@@ -66,9 +66,9 @@
           };
 
           config = mkIf cfg.enable {
-            systemd.services.podkunnect = {
+            systemd.user.services.podkunnect = {
               description = "Podkunnect Service";
-              wantedBy = [ "multi-user.target" ];
+              wantedBy = [ "default.target" ];
               after = [ "network.target" ];
 
               serviceConfig = {
