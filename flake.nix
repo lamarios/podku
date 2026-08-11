@@ -72,9 +72,19 @@
               after = [ "network.target" ];
 
               serviceConfig = {
+                Type = "simple";
                 ExecStart = ''${cfg.package}/bin/podkunnect --name "${cfg.name}" --server "${cfg.server}"'';
                 Restart = "on-failure";
-                DynamicUser = true;
+
+                  # Restart if the server drops or network hiccups occur during boot
+                Restart = "always";
+                RestartSec = "5s";
+
+                # Audio services need access to system sound hardware
+                RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
+                SuppressIONice = false;
+
+
               };
             };
           };
