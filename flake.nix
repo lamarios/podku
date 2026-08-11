@@ -20,10 +20,14 @@
             version = "unstable";
 
             # Include the entire repository so relative path dependencies (like podku_shared) are available
-            src = ./.;
+            src = builtins.path { path = ./.; name = "source"; };
 
             # Tell the builder where the main Dart project is located relative to the root
             sourceRoot = "source/src/main/podkunnect";
+#            setSourceRoot = ''
+#                  tree .
+#                  sourceRoot="source/src/main/podkunnect"
+#            '';
 
             # Path to the lockfile relative to the repository root
             autoPubspecLock = ./src/main/podkunnect/pubspec.lock;

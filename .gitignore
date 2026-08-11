@@ -12,3 +12,4 @@ pubspec_overrides.yaml
 /episode-cache/
 /src/main/podkunnect/bin/podkunnect.exe
 /src/main/podkunnect/build/
+/result/
