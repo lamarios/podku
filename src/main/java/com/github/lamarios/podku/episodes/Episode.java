@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku.episodes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,8 +8,6 @@ import com.github.lamarios.podku.podcasts.PodcastLight;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
 import com.google.common.hash.Hashing;
 import jakarta.persistence.*;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -16,12 +15,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "episodes")
 public class Episode {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private String title;
     private String description;
     private String audioUrl;
@@ -38,16 +34,12 @@ public class Episode {
     private Boolean explicit;
     private String link;
     private boolean processed = false;
-
     @ManyToOne
     @JoinColumn(name = "podcast_id")
     @JsonIgnore
     private Podcast podcast;
-
-
     @Transient
     private PodcastLight podcastLight;
-
 
     public boolean isProcessed() {
         return processed;
@@ -86,14 +78,11 @@ public class Episode {
 
     @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EpisodeFile> files;
-
     @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<EpisodeTranscript> transcripts;
-
     @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EpisodePerson> people;
-
 
     public Integer getEpisodeNumber() {
         return episodeNumber;
@@ -190,7 +179,6 @@ public class Episode {
     public void setSeasonNumber(Integer seasonNumber) {
         this.seasonNumber = seasonNumber;
     }
-
 
     public String getEpisodeType() {
         return episodeType;

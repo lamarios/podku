@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;

@@ -1,17 +1,16 @@
+/* (C)2026 */
 package com.github.lamarios.podku.transcripts;
 
 import com.github.lamarios.podku.episodes.EpisodeService;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-
 @Service
 public class TranscriptService {
-
     private final EpisodeService episodeService;
     private final EpisodeTranscriptRepository episodeTranscriptRepository;
 
@@ -37,7 +36,11 @@ public class TranscriptService {
         if (episode == null) {
             return Collections.emptyList();
         } else {
-            return episodeTranscriptRepository.findAllByEpisodeAndLanguage(episode, language, Sort.by(Sort.Direction.ASC, "startTime"));
+            return episodeTranscriptRepository.findAllByEpisodeAndLanguage(
+                    episode,
+                    language,
+                    Sort.by(Sort.Direction.ASC, "startTime")
+            );
         }
     }
 }

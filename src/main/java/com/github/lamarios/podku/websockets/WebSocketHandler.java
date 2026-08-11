@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku.websockets;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,14 +12,13 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
-    private final static Logger log = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger();
     private final WebSocketSessionManager webSocketSessionManager;
 
     @Autowired
     public WebSocketHandler(WebSocketSessionManager webSocketSessionManager) {
         this.webSocketSessionManager = webSocketSessionManager;
     }
-
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {

@@ -1,19 +1,18 @@
+/* (C)2026 */
 package com.github.lamarios.podku.transcripts;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/transcripts")
 @Tag(name = "Transcripts")
 public class TranscriptController {
-
     private final TranscriptService transcriptService;
 
     @Autowired
@@ -23,7 +22,7 @@ public class TranscriptController {
 
     @GetMapping("{id}/languages")
     public List<String> getEpisodeLanguages(@PathVariable String id) {
-       return transcriptService.getLanguages(id);
+        return transcriptService.getLanguages(id);
     }
 
     @GetMapping("{id}/{language}")

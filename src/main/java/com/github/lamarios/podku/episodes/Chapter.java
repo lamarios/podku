@@ -1,14 +1,13 @@
+/* (C)2026 */
 package com.github.lamarios.podku.episodes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Entity
 @Table(name = "episode_chapters")
 public class Chapter {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -17,12 +16,10 @@ public class Chapter {
     private String img;
     private Boolean toc = true;
     private Double endTime;
-
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "episode_id")
     @JsonIgnore
     private Episode episode;
-
 
     public UUID getId() {
         return id;

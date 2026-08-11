@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku.podcasts;
 
 import java.util.List;
@@ -12,7 +13,6 @@ public class PodcastLight {
     private String author;
     private String link;
     private String color;
-
     private List<PodcastPerson> people;
 
     public PodcastLight() {

@@ -1,11 +1,14 @@
+/* (C)2026 */
 package com.github.lamarios.podku.websockets;
-
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.utils.TransactionHelper;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,11 +17,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
 
 @Component
 public class WebSocketSessionManager {
@@ -36,7 +34,7 @@ public class WebSocketSessionManager {
     }
 
     public void register(WebSocketSession session) {
-        sessions.put(session, new WebsocketClient(null,null));
+        sessions.put(session, new WebsocketClient(null, null));
         log.info("{} websocket sessions", sessions.size());
     }
 
@@ -50,8 +48,13 @@ public class WebSocketSessionManager {
         }
     }
 
-    private ClientList  getClientList(){
-        return new ClientList(sessions.values().stream().filter(websocketClient -> websocketClient.id()!=null).toList());
+    private ClientList getClientList() {
+        return new ClientList(sessions
+            .values()
+            .stream()
+            .filter(websocketClient -> websocketClient.id() != null)
+            .toList()
+        );
     }
 
     @Scheduled(cron = "0 * * * * *")
@@ -60,21 +63,23 @@ public class WebSocketSessionManager {
 
         var textMessage = new WebSocketMessage<>(WebSocketMessage.Type.clientList, getClientList());
 
-        sessions.keySet().forEach(s -> {
-            try {
-                // we broadcast the clients as a test
-                s.sendMessage(new TextMessage(objectMapper.writeValueAsString(textMessage)));
-            } catch (Exception e) {
-                log.warn("Failed to communicate with client, might be disconnected");
+        sessions
+            .keySet()
+            .forEach(s -> {
                 try {
-                    s.close(CloseStatus.GOING_AWAY);
-                } catch (Exception ex) {
-                    log.info("Couldn't close session properly, most likely gone");
-                }
+                    // we broadcast the clients as a test
+                    s.sendMessage(new TextMessage(objectMapper.writeValueAsString(textMessage)));
+                } catch (Exception e) {
+                    log.warn("Failed to communicate with client, might be disconnected");
+                    try {
+                        s.close(CloseStatus.GOING_AWAY);
+                    } catch (Exception ex) {
+                        log.info("Couldn't close session properly, most likely gone");
+                    }
 
-                toRemove.add(s);
-            }
-        });
+                    toRemove.add(s);
+                }
+            });
 
         log.info("Removed {} inactive sessions", toRemove.size());
 
@@ -110,30 +115,36 @@ public class WebSocketSessionManager {
             log.info("Received message of type: {}", parsed.getType());
 
             switch (parsed.getType()) {
-                case playerInfo ->
-                        handlePlayerInfo(session, objectMapper.convertValue(parsed.getMessage(), WebsocketClient.class));
+                case playerInfo -> handlePlayerInfo(
+                        session,
+                        objectMapper.convertValue(parsed.getMessage(), WebsocketClient.class)
+                );
                 case getPlayerStatus -> session.sendMessage(getCurrentPlayerStatus());
-                case playerStatus ->
-                        handlePlayerStatus(session, objectMapper.convertValue(parsed.getMessage(), PlayerStatus.class));
+                case playerStatus -> handlePlayerStatus(
+                        session,
+                        objectMapper.convertValue(parsed.getMessage(), PlayerStatus.class)
+                );
                 case remoteCommand -> handleRemoteCommand(parsed);
-                case transferPlayback ->
-                        handlePlaybackTransfer(objectMapper.convertValue(parsed.getMessage(), TransferPlayback.class));
+                case transferPlayback -> handlePlaybackTransfer(objectMapper.convertValue(
+                        parsed.getMessage(),
+                        TransferPlayback.class
+                ));
             }
-
         } catch (Exception e) {
             log.error("Couldn't parse websocket message", e);
         }
     }
 
     /**
-     * We send the same message to both the current player and the new one
-     * the new player will have to stop it's current playback while the new one will have to take over
+     * We send the same message to both the current player and the new one the new player will have to
+     * stop it's current playback while the new one will have to take over
      *
      * @param transfer
      * @throws IOException
      */
     private void handlePlaybackTransfer(TransferPlayback transfer) throws IOException {
-        WebSocketMessage<TransferPlayback> message = new WebSocketMessage<>(WebSocketMessage.Type.transferPlayback, transfer);
+        WebSocketMessage<TransferPlayback> message =
+                new WebSocketMessage<>(WebSocketMessage.Type.transferPlayback, transfer);
         var textMessage = new TextMessage(objectMapper.writeValueAsString(message));
 
         WebSocketSession target = null;
@@ -191,26 +202,23 @@ public class WebSocketSessionManager {
             if (websocketClient.id().equalsIgnoreCase(playerStatus.client().id())) {
                 return Optional.ofNullable(webSocketSession);
             }
-
         }
 
         return Optional.empty();
     }
 
     private void cleanupSession(WebSocketSession session) throws IOException {
-
         var remoteSession = sessions.get(session);
 
         WebSocketMessage<PlayerStatus> message = null;
 
-        if (remoteSession != null && playerStatus != null && remoteSession.id().equalsIgnoreCase(playerStatus.client().id())) {
+        if (remoteSession != null
+                && playerStatus != null
+                && remoteSession.id().equalsIgnoreCase(playerStatus.client().id())) {
             playerStatus = null;
 
-
             message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, null);
-
         }
-
 
         sessions.remove(session);
 
@@ -220,51 +228,57 @@ public class WebSocketSessionManager {
                 webSocketSession.sendMessage(textMessage);
             }
         }
-
     }
 
-
     /**
-     * A client starts playing or updates its playback status
-     * will be broadcasted to all other connected clients
+     * A client starts playing or updates its playback status will be broadcasted to all other
+     * connected clients
      */
     private void handlePlayerStatus(WebSocketSession session, PlayerStatus playerStatus) throws IOException {
         // we update the current status
-
         if (playerStatus == null || playerStatus.episode() == null) {
             // playback stopped
             this.playerStatus = null;
         } else if (playerStatus.episode().getId() != null) {
-            this.playerStatus = new PlayerStatus(sessions.get(session), playerStatus.episode(), playerStatus.position(), playerStatus.duration(), playerStatus.playing(), playerStatus.speed(), true);
+            this.playerStatus = new PlayerStatus(
+                    sessions.get(session),
+                    playerStatus.episode(),
+                    playerStatus.position(),
+                    playerStatus.duration(),
+                    playerStatus.playing(),
+                    playerStatus.speed(),
+                    true
+            );
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
-                episodeRepository.findById(playerStatus.episode().getId()).ifPresent(episode -> {
-                    episode.setProgress(playerStatus.position());
-                    episodeRepository.save(episode);
-                });
+                episodeRepository
+                    .findById(playerStatus.episode().getId())
+                    .ifPresent(episode -> {
+                        episode.setProgress(playerStatus.position());
+                        episodeRepository.save(episode);
+                    });
             });
         }
 
-        if(this.playerStatus == null || playerStatus.broadcast()) {
-            WebSocketMessage<PlayerStatus> message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, this.playerStatus);
+        if (this.playerStatus == null || playerStatus.broadcast()) {
+            WebSocketMessage<PlayerStatus> message =
+                    new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, this.playerStatus);
 
             for (Map.Entry<WebSocketSession, WebsocketClient> entry : sessions.entrySet()) {
                 WebSocketSession webSocketSession = entry.getKey();
                 WebsocketClient websocketClient = entry.getValue();
-                if (websocketClient.id() == null
-//                    || (this.playerStatus != null && websocketClient.id().equalsIgnoreCase(this.playerStatus.client().id()))
-                ) {
+                if (//                    || (this.playerStatus != null &&
+                // websocketClient.id().equalsIgnoreCase(this.playerStatus.client().id()))
+                websocketClient.id() == null) {
                     continue;
                 }
 
                 webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-
             }
         }
     }
 
     private TextMessage getCurrentPlayerStatus() throws JsonProcessingException {
         WebSocketMessage<PlayerStatus> status = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, playerStatus);
-
 
         try {
             return new TextMessage(objectMapper.writeValueAsBytes(status));

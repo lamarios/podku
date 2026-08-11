@@ -1,25 +1,24 @@
+/* (C)2026 */
 package com.github.lamarios.podku.episodes;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EpisodeUtils {
-    private final static Logger log = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger();
+
     public static Path downloadEpisode(Episode e, Path episodeCacheFolder) throws IOException {
         var episodeHash = e.getAudioUrlHash();
 
         log.info("Downloading episode: {} from podcast {}", e.getTitle(), e.getPodcast().getName());
         Path episodeFile = episodeCacheFolder.resolve(episodeHash);
-
 
         try {
             URL url = URI.create(e.getAudioUrl()).toURL();

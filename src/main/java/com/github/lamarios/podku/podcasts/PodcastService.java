@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku.podcasts;
 
 import be.ceau.opml.OpmlParseException;
@@ -15,7 +16,15 @@ import com.github.lamarios.podku.search.SearchResult;
 import com.github.lamarios.podku.transcripts.WhisperService;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.google.common.hash.Hashing;
-import org.apache.commons.io.IOUtils;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +38,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-
 @Service
 public class PodcastService {
     private final Logger log = LogManager.getLogger();
@@ -55,9 +50,17 @@ public class PodcastService {
     private final PodcastParser podcastParser;
     private final WhisperService whisperService;
 
-
     @Autowired
-    public PodcastService(PodcastRepository podcastRepository, EpisodeService episodeService, @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager, EpisodeRepository episodeRepository, @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder, @Value("${podku.episodes.cache-count:0}") String episodeCacheCount, PodcastParser podcastParser, WhisperService whisperService) {
+    public PodcastService(
+            PodcastRepository podcastRepository,
+            EpisodeService episodeService,
+            @Qualifier("transactionManager") PlatformTransactionManager platformTransactionManager,
+            EpisodeRepository episodeRepository,
+            @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder,
+            @Value("${podku.episodes.cache-count:0}") String episodeCacheCount,
+            PodcastParser podcastParser,
+            WhisperService whisperService
+    ) {
         this.podcastRepository = podcastRepository;
         this.episodeService = episodeService;
         this.platformTransactionManager = platformTransactionManager;
@@ -74,12 +77,10 @@ public class PodcastService {
         this.whisperService = whisperService;
     }
 
-
     @Transactional(readOnly = true)
     public List<Podcast> getPodcasts() {
         return podcastRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
-
 
     @Transactional
     public Podcast subscribe(SearchResult result) {
@@ -98,13 +99,14 @@ public class PodcastService {
                 podcast = podcastParser.parseUrl(podcast);
 
                 podcastRepository.save(podcast);
-                episodeService.processPodcast(podcast).thenAccept(_ -> whisperService.processEpisodeCron());
+                episodeService
+                    .processPodcast(podcast)
+                    .thenAccept(_ -> whisperService.processEpisodeCron());
                 return podcast;
             }
         } else {
             return null;
         }
-
     }
 
     @Transactional(readOnly = true)
@@ -116,7 +118,6 @@ public class PodcastService {
     public void unsubscribe(String id) {
         podcastRepository.deletePodcastById(UUID.fromString(id));
     }
-
 
     @Scheduled(cron = "@hourly")
     public void refreshPodcasts() {
@@ -156,9 +157,29 @@ public class PodcastService {
     public String exportPodcasts() throws OpmlWriteException {
         List<Podcast> feeds = podcastRepository.findAll();
 
-        Head head = new Head("Podku", LocalDateTime.now().toString(), null, null, null, null, null, null, null, null, null, null, null);
+        Head head = new Head(
+                "Podku",
+                LocalDateTime.now().toString(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
 
-        List<Outline> outlines = feeds.stream().map(feed -> new Outline(Map.of("type", "rss", "xmlUrl", feed.getUrl(), "title", feed.getName()), Collections.emptyList())).toList();
+        List<Outline> outlines = feeds
+            .stream()
+            .map(feed -> new Outline(
+                    Map.of("type", "rss", "xmlUrl", feed.getUrl(), "title", feed.getName()),
+                    Collections.emptyList()
+            ))
+            .toList();
 
         Body body = new Body(outlines);
 
@@ -183,7 +204,6 @@ public class PodcastService {
                 newPodcasts.addAll(importPodcast(outline));
             }
 
-
             podcastRepository.saveAll(newPodcasts);
 
             return newPodcasts;
@@ -196,14 +216,14 @@ public class PodcastService {
         }
     }
 
-
     @Transactional
     public List<Podcast> importPodcast(Outline outline) throws SQLException, IOException {
         List<Podcast> newPodcasts = new ArrayList<>();
 
         Map<String, String> attributes = outline.getAttributes();
-        if (attributes.containsKey("type") && attributes.get("type").equalsIgnoreCase("rss") && attributes.containsKey("xmlUrl")) {
-
+        if (attributes.containsKey("type")
+                && attributes.get("type").equalsIgnoreCase("rss")
+                && attributes.containsKey("xmlUrl")) {
             // we check if the feed already exists
             String url = attributes.get("xmlUrl");
             if (podcastRepository.findFirstByUrl(url).isEmpty()) {
@@ -235,7 +255,11 @@ public class PodcastService {
 
     public void downloadEpisodes() {
         TransactionHelper.doInNewTransaction(platformTransactionManager, true, () -> {
-            var episodes = episodeRepository.getEpisodeByPubDateMillisBefore(System.currentTimeMillis(), Sort.by(Sort.Direction.DESC, "pubDateMillis"), Limit.of(episodeCacheCount));
+            var episodes = episodeRepository.getEpisodeByPubDateMillisBefore(
+                    System.currentTimeMillis(),
+                    Sort.by(Sort.Direction.DESC, "pubDateMillis"),
+                    Limit.of(episodeCacheCount)
+            );
 
             for (var e : episodes) {
                 try {
@@ -245,7 +269,10 @@ public class PodcastService {
                 }
             }
 
-            List<String> episodeHashes = episodes.stream().map(e -> Hashing.sha256().hashString(e.getAudioUrl(), StandardCharsets.UTF_8).toString()).toList();
+            List<String> episodeHashes = episodes
+                .stream()
+                .map(e -> Hashing.sha256().hashString(e.getAudioUrl(), StandardCharsets.UTF_8).toString())
+                .toList();
 
             try {
                 Files.list(episodeCacheFolder).forEach(path -> {
@@ -263,13 +290,16 @@ public class PodcastService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         });
     }
 
     @Transactional(readOnly = true)
     public List<Podcast> searchPodcasts(String query, int limit) {
-        String tsQuery = Arrays.stream(query.trim().split("\\s+")).filter(s -> !s.isBlank()).map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*").collect(Collectors.joining(" & "));
+        String tsQuery = Arrays
+            .stream(query.trim().split("\\s+"))
+            .filter(s -> !s.isBlank())
+            .map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*")
+            .collect(Collectors.joining(" & "));
 
         if (tsQuery.isBlank()) {
             return List.of();

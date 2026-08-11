@@ -1,20 +1,17 @@
+/* (C)2026 */
 package com.github.lamarios.podku.urls;
-
 
 import com.google.common.hash.Hashing;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import java.nio.charset.StandardCharsets;
 
 @Entity
 @Table(name = "url_hashes")
 public class UrlHash {
-
     @Id
     private String hash;
-
     private String url;
 
     public UrlHash() {

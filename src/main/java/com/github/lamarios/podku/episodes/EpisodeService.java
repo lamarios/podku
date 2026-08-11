@@ -1,12 +1,20 @@
+/* (C)2026 */
 package com.github.lamarios.podku.episodes;
 
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
 import com.github.lamarios.podku.transcripts.EpisodeTranscriptRepository;
-import com.github.lamarios.podku.transcripts.WhisperService;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.github.lamarios.podku.websockets.PlaybackProgress;
 import com.github.lamarios.podku.websockets.WebSocketSessionManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import kong.unirest.core.Unirest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,15 +25,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Service
 public class EpisodeService {
@@ -40,7 +39,13 @@ public class EpisodeService {
     private final WebSocketSessionManager webSocketSessionManager;
 
     @Autowired
-    public EpisodeService(ChapterRepository chapterRepository, EpisodeTranscriptRepository episodeTranscriptRepository, EpisodeRepository episodeRepository, PlatformTransactionManager transactionManager, WebSocketSessionManager webSocketSessionManager) {
+    public EpisodeService(
+            ChapterRepository chapterRepository,
+            EpisodeTranscriptRepository episodeTranscriptRepository,
+            EpisodeRepository episodeRepository,
+            PlatformTransactionManager transactionManager,
+            WebSocketSessionManager webSocketSessionManager
+    ) {
         this.chapterRepository = chapterRepository;
         this.episodeTranscriptRepository = episodeTranscriptRepository;
         this.episodeRepository = episodeRepository;
@@ -107,8 +112,11 @@ public class EpisodeService {
             return;
         }
 
-
-        for (var f : episode.getFiles().stream().filter(f -> f.getType() == EpisodeFileType.chapters).toList()) {
+        for (var f : episode
+            .getFiles()
+            .stream()
+            .filter(f -> f.getType() == EpisodeFileType.chapters)
+            .toList()) {
             var chapters = getChapters(f);
             for (Chapter chapter : chapters) {
                 chapter.setEpisode(episode);
@@ -120,22 +128,27 @@ public class EpisodeService {
                 ;
                 episode.getChapters().addAll(chapters);
             }
-
         }
-
         // saving transcript
-        List<EpisodeFile> transcriptFiles = episode.getFiles().stream().filter(f -> f.getType() == EpisodeFileType.transcript)
-                .sorted((a, b) -> {
-                            if (a.getMime().equalsIgnoreCase(b.getMime())) return 0;
-                            if (a.getMime().equalsIgnoreCase(TEXT_VTT)) return -1;
-                            if (b.getMime().equalsIgnoreCase(TEXT_VTT)) return 1;
-                            return 0;
-                        }
-                )
-                .toList();
+        List<EpisodeFile> transcriptFiles = episode
+            .getFiles()
+            .stream()
+            .filter(f -> f.getType() == EpisodeFileType.transcript)
+            .sorted((a, b) -> {
+                if (a.getMime().equalsIgnoreCase(b.getMime())) {
+                    return 0;
+                }
+                if (a.getMime().equalsIgnoreCase(TEXT_VTT)) {
+                    return -1;
+                }
+                if (b.getMime().equalsIgnoreCase(TEXT_VTT)) {
+                    return 1;
+                }
+                return 0;
+            })
+            .toList();
 
         for (EpisodeFile f : transcriptFiles) {
-
             var existing = episodeTranscriptRepository.findFirstByEpisodeEqualsAndLanguage(episode, f.getLanguage());
 
             if (existing != null) {
@@ -150,8 +163,7 @@ public class EpisodeService {
             } else if (f.getMime().equalsIgnoreCase(APPLICATION_X_SUBRIP)) {
                 transcript.addAll(new SrtParser().parse(response, episode, f.getLanguage()));
             }
-
-//            episodeTranscriptRepository.saveAll(transcript);
+            //            episodeTranscriptRepository.saveAll(transcript);
             if (episode.getTranscripts() == null) {
                 episode.setTranscripts(transcript);
             } else {
@@ -159,13 +171,11 @@ public class EpisodeService {
                 episode.getTranscripts().addAll(transcript);
             }
             log.info("inserted {} transcript lines for episode {}", transcript.size(), episode.getTitle());
-
         }
 
         episode.setProcessed(true);
 
         episodeRepository.save(episode);
-
     }
 
     /**
@@ -184,13 +194,17 @@ public class EpisodeService {
     /**
      * Gets episodes
      *
-     * @param before   timestamp from which to get episodes from
+     * @param before timestamp from which to get episodes from
      * @param pageSize how many to retrieve
      * @return list of episodes
      */
     @Transactional(readOnly = true)
     public List<Episode> getEpisodes(Long before, int pageSize) {
-        return episodeRepository.getEpisodeByPubDateMillisBefore(before, Sort.by(Sort.Direction.DESC, "pubDateMillis"), Limit.of(pageSize));
+        return episodeRepository.getEpisodeByPubDateMillisBefore(
+                before,
+                Sort.by(Sort.Direction.DESC, "pubDateMillis"),
+                Limit.of(pageSize)
+        );
     }
 
     /**
@@ -220,10 +234,11 @@ public class EpisodeService {
     }
 
     public List<Episode> searchPodcasts(String query, int limit) {
-        String tsQuery = Arrays.stream(query.trim().split("\\s+"))
-                .filter(s -> !s.isBlank())
-                .map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*")
-                .collect(Collectors.joining(" & "));
+        String tsQuery = Arrays
+            .stream(query.trim().split("\\s+"))
+            .filter(s -> !s.isBlank())
+            .map(s -> s.replaceAll("[^a-zA-Z0-9]", "") + ":*")
+            .collect(Collectors.joining(" & "));
 
         if (tsQuery.isBlank()) {
             return List.of();

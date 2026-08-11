@@ -1,9 +1,8 @@
+/* (C)2026 */
 package com.github.lamarios.podku.podcasts;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.lamarios.podku.episodes.Episode;
 import jakarta.persistence.*;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -20,12 +19,9 @@ public class Podcast {
     private String author;
     private String link;
     private String color;
-
     @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("pubDateMillis DESC")
     private List<Episode> episodes;
-
-
     @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PodcastPerson> people;
 

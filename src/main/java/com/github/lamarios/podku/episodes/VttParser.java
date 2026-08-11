@@ -1,25 +1,23 @@
+/* (C)2026 */
 package com.github.lamarios.podku.episodes;
 
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VttParser {
-
     // Matches lines like: 00:00:11.447 --> 00:00:16.131 (optional cue settings after)
     private static final Pattern TIME_LINE_PATTERN = Pattern.compile(
-            "^(\\d{2}:\\d{2}:\\d{2}\\.\\d{3}|\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3}|\\d{2}:\\d{2}\\.\\d{3})"
+            "^(\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3}|\\\\d{2}:\\\\d{2}\\\\.\\\\d{3})\\\\s*--"
+            + ">\\\\s*(\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3}|\\\\d{2}:\\\\d{2}\\\\.\\\\d{3})"
     );
-
     // Matches a leading <v Speaker> tag, capturing the speaker name.
     private static final Pattern VOICE_TAG_PATTERN = Pattern.compile("^<v\\s+([^>]+)>\\s*");
 
     public List<EpisodeTranscript> parse(String vttContent, Episode episode, String language) {
         List<EpisodeTranscript> cues = new ArrayList<>();
-
         // Normalize line endings and split into lines.
         String[] lines = vttContent.replace("\r\n", "\n").split("\n", -1);
 
@@ -41,7 +39,6 @@ public class VttParser {
             String startTime = timeMatcher.group(1);
             String endTime = timeMatcher.group(2);
             i++;
-
             // Collect all following lines until a blank line or EOF — this is the cue text,
             // which may span multiple lines.
             List<String> contentLines = new ArrayList<>();
@@ -53,7 +50,6 @@ public class VttParser {
             if (contentLines.isEmpty()) {
                 continue;
             }
-
             // Extract speaker from a leading <v Speaker> tag on the first content line.
             String speaker = null;
             String firstLine = contentLines.get(0);

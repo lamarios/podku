@@ -1,6 +1,6 @@
+/* (C)2026 */
 package com.github.lamarios.podku.websockets;
 
 import java.util.List;
 
-public record ClientList(List<WebsocketClient> clients) {
-}
+public record ClientList(List<WebsocketClient> clients) {}

@@ -1,5 +1,7 @@
+/* (C)2026 */
 package com.github.lamarios.podku.podcasts;
 
+import static com.github.lamarios.podku.utils.EndpointUtils.serveFile;
 import be.ceau.opml.OpmlParseException;
 import be.ceau.opml.OpmlWriteException;
 import com.github.lamarios.podku.episodes.EpisodeService;
@@ -7,14 +9,6 @@ import com.github.lamarios.podku.search.SearchResult;
 import com.github.lamarios.podku.transcripts.WhisperService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -23,8 +17,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import static com.github.lamarios.podku.utils.EndpointUtils.serveFile;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 @RequestMapping("/api/podcasts")
@@ -36,7 +35,12 @@ public class PodcastController {
     private final WhisperService whisperService;
 
     @Autowired
-    public PodcastController(PodcastService podcastService, EpisodeService episodeService, PodcastParser podcastParser, WhisperService whisperService) {
+    public PodcastController(
+            PodcastService podcastService,
+            EpisodeService episodeService,
+            PodcastParser podcastParser,
+            WhisperService whisperService
+    ) {
         this.podcastService = podcastService;
         this.episodeService = episodeService;
         this.podcastParser = podcastParser;
@@ -75,7 +79,6 @@ public class PodcastController {
         return podcastService.getPodcast(id);
     }
 
-
     @GetMapping("/export")
     public ResponseEntity<@NotNull StreamingResponseBody> exportFeeds() throws IOException, OpmlWriteException {
         Path p = Files.createTempFile("ompl-export", ".opml");
@@ -83,14 +86,15 @@ public class PodcastController {
 
         try (PrintWriter printer = new PrintWriter(p.toFile().getAbsolutePath())) {
             IOUtils.write(opml, printer);
-
         }
         return serveFile(p);
     }
 
-
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<PodcastLight> importFeed(@RequestParam("file") MultipartFile file) throws SQLException, OpmlParseException, IOException {
+    public List<PodcastLight> importFeed(@RequestParam("file") MultipartFile file)
+            throws SQLException,
+            OpmlParseException,
+            IOException {
         List<Podcast> added = new ArrayList<>();
         try {
             added = podcastService.importPodcasts(file);
@@ -106,10 +110,8 @@ public class PodcastController {
         }
     }
 
-
     @GetMapping("/search")
     public List<PodcastLight> search(@RequestParam("query") String query, @RequestParam("limit") int limit) {
         return podcastService.searchPodcasts(query, limit).stream().map(PodcastLight::new).toList();
     }
-
 }

@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku.websockets;
 
 import org.springframework.context.annotation.Bean;
@@ -12,23 +13,28 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 public class WebSocketConfig implements WebSocketConfigurer {
     private final WebSocketHandler customWebSocketHandler;
 
-    public WebSocketConfig(
-            WebSocketHandler customWebSocketHandler) {
+    public WebSocketConfig(WebSocketHandler customWebSocketHandler) {
         this.customWebSocketHandler = customWebSocketHandler;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(customWebSocketHandler, "/ws")
-                .setAllowedOrigins("*"); // TODO: tighten in prod
+        registry
+            .addHandler(customWebSocketHandler, "/ws")
+            // TODO: tighten in prod
+            .setAllowedOrigins("*");
     }
 
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(512 * 1024); // 512KB, tune as needed
+        // 512KB, tune as needed
+        container.setMaxTextMessageBufferSize(512 * 1024);
         container.setMaxBinaryMessageBufferSize(512 * 1024);
-        container.setMaxSessionIdleTimeout(-1L); // optional, don't let container itself time out sessions
+        // optional, don't let container itself time out sessions
+        container
+            // optional, don't let container itself time out sessions
+            .setMaxSessionIdleTimeout(-1L);
         return container;
     }
 }
