@@ -19,7 +19,6 @@ class Podkunnect {
   Player? _player;
   late final Client client;
   PlayerStatus? playbackStatus;
-  StreamSubscription<PodkuSocketMessage>? _subscription;
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<Duration>? _durationSubscription;
   StreamSubscription<bool>? _playingSubscription;
@@ -51,7 +50,7 @@ class Podkunnect {
       socket?.send(jsonEncode(message));
     };
 
-    _subscription = socket?.controller.stream.listen((event) {
+    socket?.controller.stream.listen((event) {
       _handleSocketMessage(event);
     });
 

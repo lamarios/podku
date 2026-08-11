@@ -7,14 +7,22 @@ Future<void> main() async {
     '''
 #!/bin/sh
 set -e
-exec ./submodules/flutter/bin/dart format --set-exit-if-changed ./src/main/app/lib
-exec ./submodules/flutter/bin/dart analyze ./src/main/app/lib
-exec ./submodules/flutter/bin/dart analyze --fatal-infos ./src/main/app/pubspec.yaml
-exec ./submodules/flutter/bin/dart format --set-exit-if-changed ./src/main/podkunnect/lib
-exec ./submodules/flutter/bin/dart analyze ./src/main/podkunnect/lib
-exec ./submodules/flutter/bin/dart analyze --fatal-infos ./src/main/podkunnect/pubspec.yaml
-exec mvn spotless:apply
-exec git diff --cached --name-only --diff-filter=ACM | grep '\.java\$' | xargs -r git add
+echo "Formatting flutter app"
+./submodules/flutter/bin/dart format ./src/main/app/lib
+echo "Analyzing flutter app"
+./submodules/flutter/bin/dart analyze ./src/main/app/lib
+echo "Analyzing flutter pubspec"
+./submodules/flutter/bin/dart analyze --fatal-infos ./src/main/app/pubspec.yaml
+echo "Formatting podkunnect cli"
+./submodules/flutter/bin/dart format  ./src/main/podkunnect/lib
+echo "Analyzing podkunnect cli"
+./submodules/flutter/bin/dart analyze ./src/main/podkunnect/lib
+echo "Analyzing podkunnect pubspec"
+./submodules/flutter/bin/dart analyze --fatal-infos ./src/main/podkunnect/pubspec.yaml
+git diff --cached --name-only --diff-filter=ACM | grep '\.dart\$' | xargs -r git add
+echo "Formatting Java"
+mvn spotless:apply
+git diff --cached --name-only --diff-filter=ACM | grep '\.java\$' | xargs -r git add
 ''',
   );
 

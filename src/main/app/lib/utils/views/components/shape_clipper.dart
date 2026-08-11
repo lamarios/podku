@@ -74,9 +74,11 @@ RoundedPolygon _fitToSize(RoundedPolygon polygon, Size size) {
   return polygon.transformed(matrix.asPointTransformer());
 }
 
+/*
 RoundedPolygon _scaledPolygon(RoundedPolygon polygon, Size size) {
   final matrix = Matrix4.identity()
     ..translate(size.width / 2, size.height / 2)
     ..scale(size.width / 2, size.height / 2);
   return polygon.transformed(matrix.asPointTransformer());
 }
+*/
