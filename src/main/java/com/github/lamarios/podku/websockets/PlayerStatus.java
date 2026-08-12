@@ -10,5 +10,6 @@ public record PlayerStatus(
         long duration,
         boolean playing,
         double speed,
+        double volume,
         boolean broadcast
 ) {}

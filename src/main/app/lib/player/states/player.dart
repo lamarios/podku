@@ -104,6 +104,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           playEpisode(command.episode!);
         }
         break;
+      case .setVolume:
+        if (command.volume != null) {
+          setVolume(command.volume!);
+        }
     }
   }
 
@@ -250,11 +254,17 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     }
   }
 
-  void _sendRemoteCommand({required CommandType type, Episode? episode, int? position, double? speed}) {
+  void _sendRemoteCommand({required CommandType type, Episode? episode, int? position, double? speed, double? volume}) {
     getIt.get<ServerCubit>().socket?.send(
       jsonEncode(
         PodkuSocketMessage(
-          message: RemoteCommand(type: type, episode: episode, speed: speed, position: position).toJson(),
+          message: RemoteCommand(
+            type: type,
+            episode: episode,
+            speed: speed,
+            position: position,
+            volume: volume,
+          ).toJson(),
           type: .remoteCommand,
         ),
       ),
@@ -330,6 +340,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       duration: state.duration.inSeconds,
       playing: state.playing,
       speed: _player.playbackState.value.speed,
+      volume: _player.getVolume(),
       broadcast: broadcast,
     );
     final message = PodkuSocketMessage(message: status.toJson(), type: .playerStatus);
@@ -457,6 +468,15 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       _player.setSpeed(speed);
     } else {
       _sendRemoteCommand(type: .setSpeed, speed: speed);
+    }
+  }
+
+  void setVolume(double volume) {
+    if (isPlayingLocally) {
+      _player.setVolume(volume);
+      _sendCurrentState(true);
+    } else {
+      _sendRemoteCommand(type: .setVolume, volume: volume);
     }
   }
 

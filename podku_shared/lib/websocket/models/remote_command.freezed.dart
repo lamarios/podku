@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RemoteCommand {
 
- CommandType get type; Episode? get episode; int? get position; double? get speed;
+ CommandType get type; Episode? get episode; int? get position; double? get speed; double? get volume;
 /// Create a copy of RemoteCommand
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $RemoteCommandCopyWith<RemoteCommand> get copyWith => _$RemoteCommandCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.volume, volume) || other.volume == volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,episode,position,speed);
+int get hashCode => Object.hash(runtimeType,type,episode,position,speed,volume);
 
 @override
 String toString() {
-  return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed)';
+  return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed, volume: $volume)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $RemoteCommandCopyWith<$Res>  {
   factory $RemoteCommandCopyWith(RemoteCommand value, $Res Function(RemoteCommand) _then) = _$RemoteCommandCopyWithImpl;
 @useResult
 $Res call({
- CommandType type, Episode? episode, int? position, double? speed
+ CommandType type, Episode? episode, int? position, double? speed, double? volume
 });
 
 
@@ -65,12 +65,13 @@ class _$RemoteCommandCopyWithImpl<$Res>
 
 /// Create a copy of RemoteCommand
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? episode = freezed,Object? position = freezed,Object? speed = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? episode = freezed,Object? position = freezed,Object? speed = freezed,Object? volume = freezed,}) {
   return _then(_self.copyWith(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CommandType,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: freezed == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as int?,speed: freezed == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
+as double?,volume: freezed == volume ? _self.volume : volume // ignore: cast_nullable_to_non_nullable
 as double?,
   ));
 }
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CommandType type,  Episode? episode,  int? position,  double? speed)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CommandType type,  Episode? episode,  int? position,  double? speed,  double? volume)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RemoteCommand() when $default != null:
-return $default(_that.type,_that.episode,_that.position,_that.speed);case _:
+return $default(_that.type,_that.episode,_that.position,_that.speed,_that.volume);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.type,_that.episode,_that.position,_that.speed);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CommandType type,  Episode? episode,  int? position,  double? speed)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CommandType type,  Episode? episode,  int? position,  double? speed,  double? volume)  $default,) {final _that = this;
 switch (_that) {
 case _RemoteCommand():
-return $default(_that.type,_that.episode,_that.position,_that.speed);}
+return $default(_that.type,_that.episode,_that.position,_that.speed,_that.volume);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,10 +192,10 @@ return $default(_that.type,_that.episode,_that.position,_that.speed);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CommandType type,  Episode? episode,  int? position,  double? speed)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CommandType type,  Episode? episode,  int? position,  double? speed,  double? volume)?  $default,) {final _that = this;
 switch (_that) {
 case _RemoteCommand() when $default != null:
-return $default(_that.type,_that.episode,_that.position,_that.speed);case _:
+return $default(_that.type,_that.episode,_that.position,_that.speed,_that.volume);case _:
   return null;
 
 }
@@ -206,13 +207,14 @@ return $default(_that.type,_that.episode,_that.position,_that.speed);case _:
 @JsonSerializable()
 
 class _RemoteCommand implements RemoteCommand {
-  const _RemoteCommand({required this.type, this.episode, this.position, this.speed});
+  const _RemoteCommand({required this.type, this.episode, this.position, this.speed, this.volume});
   factory _RemoteCommand.fromJson(Map<String, dynamic> json) => _$RemoteCommandFromJson(json);
 
 @override final  CommandType type;
 @override final  Episode? episode;
 @override final  int? position;
 @override final  double? speed;
+@override final  double? volume;
 
 /// Create a copy of RemoteCommand
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +229,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.volume, volume) || other.volume == volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,episode,position,speed);
+int get hashCode => Object.hash(runtimeType,type,episode,position,speed,volume);
 
 @override
 String toString() {
-  return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed)';
+  return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed, volume: $volume)';
 }
 
 
@@ -247,7 +249,7 @@ abstract mixin class _$RemoteCommandCopyWith<$Res> implements $RemoteCommandCopy
   factory _$RemoteCommandCopyWith(_RemoteCommand value, $Res Function(_RemoteCommand) _then) = __$RemoteCommandCopyWithImpl;
 @override @useResult
 $Res call({
- CommandType type, Episode? episode, int? position, double? speed
+ CommandType type, Episode? episode, int? position, double? speed, double? volume
 });
 
 
@@ -264,12 +266,13 @@ class __$RemoteCommandCopyWithImpl<$Res>
 
 /// Create a copy of RemoteCommand
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? episode = freezed,Object? position = freezed,Object? speed = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? episode = freezed,Object? position = freezed,Object? speed = freezed,Object? volume = freezed,}) {
   return _then(_RemoteCommand(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CommandType,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: freezed == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as int?,speed: freezed == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
+as double?,volume: freezed == volume ? _self.volume : volume // ignore: cast_nullable_to_non_nullable
 as double?,
   ));
 }

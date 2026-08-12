@@ -66,6 +66,15 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     return rewind();
   }
 
+  /// volume: 0 - 100
+  Future<void> setVolume(double volume) async {
+    return _player.setVolume((volume / 100));
+  }
+
+  double getVolume() {
+    return _player.volume;
+  }
+
   @override
   Future<List<MediaItem>> getChildren(String parentMediaId, [Map<String, dynamic>? options]) async {
     _log.fine('Getting android auto children for parent: $parentMediaId');

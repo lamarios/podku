@@ -16,6 +16,7 @@ class Podkunnect {
   static final _log = Logger('Podkunnect');
   final String name;
   final String serverUrl;
+  final double volume;
   Player? _player;
   late final Client client;
   PlayerStatus? playbackStatus;
@@ -25,7 +26,7 @@ class Podkunnect {
 
   ReconnectableWebSocket? socket;
 
-  Podkunnect({required this.name, required this.serverUrl}) {
+  Podkunnect({required this.name, required this.serverUrl, this.volume = 100.0}) {
     client = Client(serverUrl);
     _subscribeToStream();
   }
@@ -102,7 +103,10 @@ class Podkunnect {
   }
 
   Future<void> startPlayback({required Episode episode, required int position}) async {
+    // if we were already playing at a certain volume, we keep it
+    final volume = _player?.state.volume ?? this.volume;
     _player ??= Player();
+    _player?.setVolume(volume);
     _player?.open(Media(episode.audioProxyUrl(serverUrl), start: Duration(seconds: position)));
 
     playbackStatus = PlayerStatus(
@@ -174,6 +178,10 @@ class Podkunnect {
             await _playEpisode(remoteCommand.episode!);
           }
           break;
+        case .setVolume:
+          if (remoteCommand.volume != null) {
+            await _player?.setVolume(remoteCommand.volume!);
+          }
       }
 
       final state = _player!.state;
@@ -184,6 +192,7 @@ class Podkunnect {
           duration: state.duration.inSeconds,
           speed: state.rate,
           playing: state.playing,
+          volume: state.volume,
         ),
       );
     }
@@ -195,6 +204,7 @@ class Podkunnect {
       backendEpisode = await client.episodes.getEpisode(id: episode.id!).then((value) => value.data);
     }
 
+    final volume = _player?.state.volume ?? this.volume;
     backendEpisode ??= episode;
     _player ??= Player();
 
@@ -208,6 +218,7 @@ class Podkunnect {
       duration: episode.durationSeconds ?? 1,
       speed: 1,
       playing: true,
+      volume: volume,
     );
 
     _broadcastStatus(playbackStatus);

@@ -62,6 +62,13 @@
               example = "https://example.com";
             };
 
+            volume = mkOption {
+              type = types.int;
+              default = 100;
+              description = "Default player volume, between 0 and 100 (in %)";
+              example = "100";
+            };
+
             package = mkOption {
               type = types.package;
               default = self.packages.${pkgs.system}.default;
@@ -77,7 +84,7 @@
 
               serviceConfig = {
                 Type = "simple";
-                ExecStart = ''${cfg.package}/bin/podkunnect --name "${cfg.name}" --server "${cfg.server}"'';
+                ExecStart = ''${cfg.package}/bin/podkunnect --name "${cfg.name}" --server "${cfg.server}" --volume ${cfg.volume}'';
 
                   # Restart if the server drops or network hiccups occur during boot
                 Restart = "always";

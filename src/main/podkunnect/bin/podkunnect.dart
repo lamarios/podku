@@ -11,6 +11,7 @@ void main(List<String> arguments) {
 
   parser.addOption("server", abbr: 's', mandatory: true, help: 'The podku server URL');
   parser.addOption("name", abbr: 'n', mandatory: true, help: 'The name of this device');
+  parser.addOption("volume", abbr: 'v', mandatory: false, defaultsTo: "100", help: "Default volume");
   parser.addFlag('debug', abbr: 'd', help: 'Debug mode (more verbose logs)', negatable: false);
   var result = parser.parse(arguments);
 
@@ -27,11 +28,15 @@ void main(List<String> arguments) {
 
   try {
     _log.info(
-      "Starting podkunnect with name: ${result.option("name")} and server: ${result.option('server')}, debug? ${result.flag('debug')}",
+      "Starting podkunnect with name: ${result.option("name")} and server: ${result.option('server')}, default volume: ${result.option('volume')}, debug? ${result.flag('debug')}",
     );
   } catch (e) {
     _log.info(parser.usage);
     return;
   }
-  Podkunnect(name: result.option('name')!, serverUrl: result.option('server')!);
+  Podkunnect(
+    name: result.option('name')!,
+    serverUrl: result.option('server')!,
+    volume: double.tryParse(result.option('volume') ?? '100.0') ?? 100,
+  );
 }

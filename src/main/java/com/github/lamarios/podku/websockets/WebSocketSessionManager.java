@@ -247,6 +247,7 @@ public class WebSocketSessionManager {
                     playerStatus.duration(),
                     playerStatus.playing(),
                     playerStatus.speed(),
+                    playerStatus.volume(),
                     true
             );
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {

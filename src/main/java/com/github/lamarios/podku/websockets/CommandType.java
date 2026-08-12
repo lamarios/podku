@@ -9,5 +9,6 @@ public enum CommandType {
     rewind,
     setEpisode,
     seek,
-    setSpeed
+    setSpeed,
+    setVolume
 }
