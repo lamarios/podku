@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:podku/utils/models/socket_message.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'models/socket_message.dart';
 
 class ReconnectableWebSocket {
   final Logger _log = Logger('Reconnectable Web Socket');
@@ -43,10 +44,16 @@ class ReconnectableWebSocket {
       _subscription = _channel!.stream.listen(
         (message) {
           _log.fine("Received web socket message: $message");
+          if (message == 'ping') {
+            return;
+          }
           final decoded = jsonDecode(message);
           controller.add(PodkuSocketMessage.fromJson(decoded));
         },
-        onDone: _handleDisconnect,
+        onDone: () {
+          _log.fine('onDone, reconnecting. ${_channel?.closeCode}, reason ${_channel?.closeReason}');
+          _handleDisconnect();
+        },
         onError: (error) {
           _log.info("WebSocket error: $error");
           _handleDisconnect();

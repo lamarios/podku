@@ -8,9 +8,9 @@ podku:
     cache-dir: ${EPISODE_CACHE_DIR:./episode-cache}
     cache-count: ${EPISODE_CACHE_COUNT:0}
 whisper:
-  url: ${WHISPER_URL}
+  url: ${WHISPER_URL:}
   model: ${WHISPER_MODEL:base}
-  apiKey: ${WHISPER_API_KEY}
+  apiKey: ${WHISPER_API_KEY:}
   episodeProcessCount: ${WHISPER_EPISODE_PROCESS_COUNT:0}
 spring:
   mvc:

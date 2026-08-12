@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PodkuSocketMessage {
 
- Map<String, dynamic> get message; PodkuSocketMessageType get type;
+ Map<String, dynamic>? get message; PodkuSocketMessageType get type;
 /// Create a copy of PodkuSocketMessage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $PodkuSocketMessageCopyWith<$Res>  {
   factory $PodkuSocketMessageCopyWith(PodkuSocketMessage value, $Res Function(PodkuSocketMessage) _then) = _$PodkuSocketMessageCopyWithImpl;
 @useResult
 $Res call({
- Map<String, dynamic> message, PodkuSocketMessageType type
+ Map<String, dynamic>? message, PodkuSocketMessageType type
 });
 
 
@@ -65,10 +65,10 @@ class _$PodkuSocketMessageCopyWithImpl<$Res>
 
 /// Create a copy of PodkuSocketMessage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? type = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? message = freezed,Object? type = null,}) {
   return _then(_self.copyWith(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as PodkuSocketMessageType,
   ));
 }
@@ -151,7 +151,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic> message,  PodkuSocketMessageType type)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic>? message,  PodkuSocketMessageType type)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PodkuSocketMessage() when $default != null:
 return $default(_that.message,_that.type);case _:
@@ -172,7 +172,7 @@ return $default(_that.message,_that.type);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic> message,  PodkuSocketMessageType type)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic>? message,  PodkuSocketMessageType type)  $default,) {final _that = this;
 switch (_that) {
 case _PodkuSocketMessage():
 return $default(_that.message,_that.type);}
@@ -189,7 +189,7 @@ return $default(_that.message,_that.type);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic> message,  PodkuSocketMessageType type)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic>? message,  PodkuSocketMessageType type)?  $default,) {final _that = this;
 switch (_that) {
 case _PodkuSocketMessage() when $default != null:
 return $default(_that.message,_that.type);case _:
@@ -204,14 +204,16 @@ return $default(_that.message,_that.type);case _:
 @JsonSerializable()
 
 class _PodkuSocketMessage implements PodkuSocketMessage {
-  const _PodkuSocketMessage({required final  Map<String, dynamic> message, required this.type}): _message = message;
+  const _PodkuSocketMessage({required final  Map<String, dynamic>? message, required this.type}): _message = message;
   factory _PodkuSocketMessage.fromJson(Map<String, dynamic> json) => _$PodkuSocketMessageFromJson(json);
 
- final  Map<String, dynamic> _message;
-@override Map<String, dynamic> get message {
+ final  Map<String, dynamic>? _message;
+@override Map<String, dynamic>? get message {
+  final value = _message;
+  if (value == null) return null;
   if (_message is EqualUnmodifiableMapView) return _message;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_message);
+  return EqualUnmodifiableMapView(value);
 }
 
 @override final  PodkuSocketMessageType type;
@@ -249,7 +251,7 @@ abstract mixin class _$PodkuSocketMessageCopyWith<$Res> implements $PodkuSocketM
   factory _$PodkuSocketMessageCopyWith(_PodkuSocketMessage value, $Res Function(_PodkuSocketMessage) _then) = __$PodkuSocketMessageCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, dynamic> message, PodkuSocketMessageType type
+ Map<String, dynamic>? message, PodkuSocketMessageType type
 });
 
 
@@ -266,10 +268,10 @@ class __$PodkuSocketMessageCopyWithImpl<$Res>
 
 /// Create a copy of PodkuSocketMessage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? type = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? message = freezed,Object? type = null,}) {
   return _then(_PodkuSocketMessage(
-message: null == message ? _self._message : message // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+message: freezed == message ? _self._message : message // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as PodkuSocketMessageType,
   ));
 }

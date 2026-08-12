@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +12,7 @@ import 'package:openapi/openapi.dart';
 import 'package:podku/main.dart';
 import 'package:podku/server/client/client.dart';
 import 'package:podku/utils/models/with_error.dart';
-import 'package:podku/utils/reconnectable_web_socket.dart';
+import 'package:podku_shared/podku_shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'server.freezed.dart';
@@ -20,8 +22,11 @@ final _log = Logger('ServerCubit');
 
 class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   final StreamController<PlaybackProgress> playbackStream = StreamController.broadcast();
+  final StreamController<RemoteCommand> remoteCommandsStream = StreamController.broadcast();
+  final StreamController<PlayerStatus> playerStatusStream = StreamController.broadcast();
+  final StreamController<TransferPlayback> transferPlaybackStream = StreamController.broadcast();
   final TextEditingController controller = TextEditingController();
-  StreamSubscription<PlaybackProgress>? _subscription;
+  StreamSubscription<PodkuSocketMessage>? _subscription;
 
   ReconnectableWebSocket? socket;
   InternetConnectionChecker? connectionChecker;
@@ -113,42 +118,86 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _subscribeToStream(Client client) async {
-    if (socket != null && socket!.isConnected) {
-      _log.fine('Already connected to socket');
-      return;
-    }
-
-    await socket?.close();
-    socket = ReconnectableWebSocket(uri: Uri.parse('${state.serverUrl}/ws'.replaceFirst('http', 'ws')));
-    socket?.connect();
-
-    _subscription = socket?.controller.stream
-        .where((event) => event.type == .playbackProgress)
-        .map((event) => PlaybackProgress.fromJson(event.message))
-        .where((event) => event.player != sessionId)
-        .listen((event) {
-          playbackStream.add(event);
+  void _handleSocketMessage(PodkuSocketMessage message) {
+    switch (message.type) {
+      case .remoteCommand:
+        if (message.message == null) {
+          return;
+        }
+        final remoteCommand = RemoteCommand.fromJson(message.message!);
+        _log.fine("Received remote command $remoteCommand}");
+        remoteCommandsStream.add(remoteCommand);
+        break;
+      case .clientList:
+        if (message.message == null) {
+          return;
+        }
+        final event = ClientList.fromJson(message.message!);
+        final clients = List<PlayerInfo>.from(event.clients);
+        clients.sort((a, b) {
+          if (a.id == sessionId) {
+            return -1;
+          } else if (b.id == sessionId) {
+            return 1;
+          } else {
+            return a.name.compareTo(b.name);
+          }
         });
-    /*
-    _log.fine('Connection to backend websocket');
-    _innerStream = client.episodes.playbackStream(sessionId).listen((event) {
-      _log.fine('Received new stream event: $event');
-      playbackStream.add(event);
-    });
-*/
 
-    /*
-    _innerStream?.onError((error) {
-      _log.severe('Disconnected from playback stream', error);
-      if (state.status != .disconnected) {
-        Future.delayed(Duration(seconds: 5), () => _subscribeToStream(client));
+        _log.fine('Received client list: $clients');
+
+        emit(state.copyWith(clients: clients));
+        break;
+      case .playerStatus:
+        if (message.message == null) {
+          _log.fine("Recieved null message, assuming the remote player closed its stream");
+          playerStatusStream.add(PlayerStatus(episode: null, position: 0, duration: 1, playing: false, speed: 1));
+        } else {
+          playerStatusStream.add(PlayerStatus.fromJson(message.message!));
+        }
+        break;
+      case .transferPlayback:
+        if (message.message != null) {
+          transferPlaybackStream.add(TransferPlayback.fromJson(message.message!));
+        }
+        break;
+      default:
+        _log.fine('Unhandled message, $message');
+    }
+  }
+
+  Future<void> _subscribeToStream(Client client) async {
+    EasyDebounce.debounce('websocket-connection', Duration(seconds: 1), () async {
+      if (socket != null && socket!.isConnected) {
+        _log.fine('Already connected to socket');
+        return;
       }
+
+      await socket?.close();
+
+      socket = ReconnectableWebSocket(uri: Uri.parse('${state.serverUrl}/ws'.replaceFirst('http', 'ws')));
+
+      socket?.onConnected = () {
+        final message = PodkuSocketMessage(
+          message: PlayerInfo(id: sessionId, name: deviceName).toJson(),
+          type: .playerInfo,
+        );
+        _log.fine("Sending device info");
+        // sending player info
+        socket?.send(jsonEncode(message));
+      };
+
+      _subscription = socket?.controller.stream.listen((event) {
+        _handleSocketMessage(event);
+      });
+
+      await socket?.connect();
     });
-*/
   }
 
   Future<void> _disconnectFromStream() async {
+    _log.fine('Disconnecting froms websocket');
+    emit(state.copyWith(clients: []));
     await _subscription?.cancel();
     await socket?.close();
   }
@@ -208,6 +257,7 @@ sealed class ServerState with _$ServerState implements WithError {
     Client? client,
     StackTrace? stackTrace,
     @Default(false) bool loading,
+    @Default([]) List<PlayerInfo> clients,
     dynamic error,
     @Default(InternetConnectionStatus.connected) InternetConnectionStatus status,
   }) = _ServerState;

@@ -21,6 +21,7 @@ import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/models/with_error.dart';
+import 'package:podku_shared/podku_shared.dart';
 
 part 'player.freezed.dart';
 
@@ -32,6 +33,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   WidgetsBinding get widgetsBinding => WidgetsBinding.instance;
 
   StreamSubscription<PlaybackProgress>? _streamSubscription;
+  StreamSubscription<RemoteCommand>? _remoteCommandSubscription;
+  StreamSubscription<PlayerStatus>? _playerStatusSubscription;
+  StreamSubscription<TransferPlayback>? _transferPlaybackSubscription;
 
   PlayerCubit(super.initialState) {
     /*
@@ -52,15 +56,94 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     var view = PlatformDispatcher.instance.views.first;
     _currentBreakPoint = BreakPoint.getFromSize((view.physicalSize / view.devicePixelRatio).width);
 
-    getIt.get<ServerCubit>().playbackStream.stream.where((e) => e.newPlayback ?? false).listen(onNewPlayback);
+    var serverCubit = getIt.get<ServerCubit>();
+    _streamSubscription = serverCubit.playbackStream.stream.where((e) => e.newPlayback ?? false).listen(onNewPlayback);
+    _remoteCommandSubscription = serverCubit.remoteCommandsStream.stream.listen(_handleRemoteCommand);
+    _playerStatusSubscription = serverCubit.playerStatusStream.stream.listen(_handleRemotePlayerStatus);
+    _transferPlaybackSubscription = serverCubit.transferPlaybackStream.stream.listen(_handleTransferPlayback);
   }
 
   @override
   Future<void> close() {
     widgetsBinding.removeObserver(this);
     _streamSubscription?.cancel();
+    _remoteCommandSubscription?.cancel();
+    _playerStatusSubscription?.cancel();
+    _transferPlaybackSubscription?.cancel();
     return super.close();
   }
+
+  void _handleRemoteCommand(RemoteCommand command) {
+    switch (command.type) {
+      case .play:
+        playPause();
+        break;
+      case .pause:
+        playPause();
+        break;
+      case .stop:
+        stop();
+        break;
+      case .rewind:
+        skip(-10);
+        break;
+      case .skipForward:
+        skip(30);
+        break;
+      case .seek:
+        if (command.position != null) {
+          seek(Duration(seconds: command.position!));
+        }
+      case .setSpeed:
+        if (command.speed != null) {
+          setSpeed(command.speed!);
+        }
+      case .setEpisode:
+        if (command.episode != null) {
+          playEpisode(command.episode!);
+        }
+        break;
+    }
+  }
+
+  void _handleRemotePlayerStatus(PlayerStatus playerStatus) {
+    emit(state.copyWith(currentPlayer: playerStatus.client));
+
+    if (playerStatus.client?.id != sessionId) {
+      if (playerStatus.episode == null) {
+        _log.fine("Received null episode from remote player, closing");
+        emit(
+          state.copyWith(
+            showMiniPlayer: false,
+            showBigPlayer: false,
+            episode: null,
+            position: .zero,
+            bufferPosition: .zero,
+            duration: .zero,
+            playing: false,
+            speed: 1,
+          ),
+        );
+      } else {
+        bool shouldShowPlayer = !state.showBigPlayer && !state.showMiniPlayer;
+
+        emit(
+          state.copyWith(
+            episode: playerStatus.episode,
+            playing: playerStatus.playing,
+            position: Duration(seconds: playerStatus.position),
+            duration: Duration(seconds: playerStatus.duration),
+            showMiniPlayer: shouldShowPlayer ? false : state.showMiniPlayer,
+            showBigPlayer: shouldShowPlayer ? true : state.showBigPlayer,
+            speed: playerStatus.speed,
+          ),
+        );
+      }
+      // this is a remote player we should display the player
+    }
+  }
+
+  bool get isPlayingLocally => state.currentPlayer?.id == null || state.currentPlayer?.id == sessionId;
 
   @override
   void didChangeMetrics() {
@@ -81,65 +164,122 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
 
-  Future<void> playEpisode(Episode episode, {bool offline = false, Duration? initialPosition}) async {
-    try {
-      if (state.episode != null && state.episode?.id == episode.id) {
-        if (state.episode?.id == episode.id) {
-          playPause();
+  Future<void> playEpisode(
+    Episode episode, {
+    bool offline = false,
+    Duration? initialPosition,
+    bool fromTransfer = false,
+  }) async {
+    if (!fromTransfer && !isPlayingLocally) {
+      _sendRemoteCommand(type: .setEpisode, episode: episode, position: initialPosition?.inSeconds ?? 0);
+    } else {
+      try {
+        if (!fromTransfer && (state.episode != null && state.episode?.id == episode.id)) {
+          if (state.episode?.id == episode.id) {
+            playPause();
+          }
+          return;
         }
-        return;
-      }
 
-      _log.fine('Playing episode: ${episode.title}, offline? $offline');
+        _log.fine('Playing episode: ${episode.title}, offline? $offline');
 
-      emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true, showTranscript: false));
-      var backendEpisode =
-          (!kIsWeb && offline) ||
-              episode.id ==
-                  null // we're playing from a podcast we're not subscribed
-          ? episode
-          : await client.episodes.getEpisode(id: episode.id ?? '').then((value) => value.data);
+        emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true, showTranscript: false));
+        var backendEpisode =
+            (!kIsWeb && offline) ||
+                episode.id ==
+                    null // we're playing from a podcast we're not subscribed
+            ? episode
+            : await client.episodes.getEpisode(id: episode.id ?? '').then((value) => value.data);
 
-      // at this point we're probably trying to play an episode of a podcast we're not subscribed to
-      if (!offline && backendEpisode == null) {
-        _log.fine('Playing episode from podcast we\'re not subscribed to: $episode');
-        backendEpisode = episode;
-      }
+        // at this point we're probably trying to play an episode of a podcast we're not subscribed to
+        if (!offline && backendEpisode == null) {
+          _log.fine('Playing episode from podcast we\'re not subscribed to: $episode');
+          backendEpisode = episode;
+        }
 
-      if (backendEpisode != null && episode.audioUrl != null) {
-        episode = backendEpisode;
-        emit(
-          state.copyWith(
-            episode: episode,
-            bufferPosition: Duration.zero,
-            position: Duration.zero,
-            duration: Duration(seconds: episode.durationSeconds ?? 1),
-          ),
-        );
-        await _player.stop();
-
-        await _player.playEpisode(episode, initialPosition: initialPosition);
-        emit(state.copyWith(loading: false));
-        if (!offline && episode.podcast?.id != unsubbedPodcastUuid) {
-          await client.episodes.startPlayback(
-            playbackProgress: PlaybackProgress(
-              episodeId: episode.id,
-              newPlayback: true,
-              progress: 0,
-              player: sessionId,
+        if (backendEpisode != null && episode.audioUrl != null) {
+          episode = backendEpisode;
+          emit(
+            state.copyWith(
+              episode: episode,
+              bufferPosition: Duration.zero,
+              position: Duration.zero,
+              duration: Duration(seconds: episode.durationSeconds ?? 1),
             ),
           );
+          await _player.stop();
+
+          await _player.playEpisode(episode, initialPosition: initialPosition);
+          emit(state.copyWith(loading: false));
+          if (!offline && episode.podcast?.id != unsubbedPodcastUuid) {
+            await client.episodes.startPlayback(
+              playbackProgress: PlaybackProgress(
+                episodeId: episode.id,
+                newPlayback: true,
+                progress: 0,
+                player: sessionId,
+              ),
+            );
+          }
+          await _player.play();
         }
-        await _player.play();
+      } catch (e, s) {
+        _log.severe('Failed to play episode', e, s);
+        emit(state.copyWith(error: e, stackTrace: s));
       }
-    } catch (e, s) {
-      _log.severe('Failed to play episode', e, s);
-      emit(state.copyWith(error: e, stackTrace: s));
+    }
+  }
+
+  void _handleTransferPlayback(TransferPlayback event) {
+    _log.fine('received player transfer event $event');
+    if (isPlayingLocally) {
+      _log.fine("playing locally");
+      if (event.playerId == sessionId) {
+        _log.fine("already playing, nothing to do");
+        // in case we transfer from here to here
+        return;
+      }
+      _log.fine('We stop playing');
+      // we stop
+      _player.stop();
+    } else if (event.playerId == sessionId) {
+      _log.fine("Starting playback from transfer");
+      // we start
+      playEpisode(event.episode, initialPosition: Duration(seconds: event.position), fromTransfer: true);
+    }
+  }
+
+  void _sendRemoteCommand({required CommandType type, Episode? episode, int? position, double? speed}) {
+    getIt.get<ServerCubit>().socket?.send(
+      jsonEncode(
+        PodkuSocketMessage(
+          message: RemoteCommand(type: type, episode: episode, speed: speed, position: position).toJson(),
+          type: .remoteCommand,
+        ),
+      ),
+    );
+  }
+
+  void initialPlaybackTransfer(String targetId) {
+    if (state.episode != null) {
+      PodkuSocketMessage message = PodkuSocketMessage(
+        message: TransferPlayback(
+          episode: state.episode!,
+          position: state.position.inSeconds,
+          playerId: targetId,
+        ).toJson(),
+        type: .transferPlayback,
+      );
+      getIt.get<ServerCubit>().socket?.send(jsonEncode(message));
     }
   }
 
   void playPause() {
-    _player.playbackState.value.playing ? _player.pause() : _player.play();
+    if (isPlayingLocally) {
+      _player.playbackState.value.playing ? _player.pause() : _player.play();
+    } else {
+      _sendRemoteCommand(type: .pause);
+    }
   }
 
   void showPlayers(bool miniPlayer, bool bigPlayer) {
@@ -147,16 +287,52 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void skip(int seconds) {
-    _player.seek(state.position + Duration(seconds: seconds));
+    if (isPlayingLocally) {
+      _player.seek(state.position + Duration(seconds: seconds));
+    } else {
+      _sendRemoteCommand(type: seconds > 0 ? .skipForward : .rewind);
+    }
   }
 
   void seek(Duration duration) {
-    _player.seek(duration);
+    if (isPlayingLocally) {
+      _player.seek(duration);
+    } else {
+      _sendRemoteCommand(type: .seek, position: duration.inSeconds);
+    }
   }
 
   Future<void> onStateChanged(PlaybackState event) async {
-    emit(state.copyWith(playing: event.playing, position: event.position, bufferPosition: event.bufferedPosition));
+    bool sendSocketUpdate = false;
+    if (event.playing != state.playing) {
+      sendSocketUpdate = true;
+    }
+    emit(
+      state.copyWith(
+        playing: event.playing,
+        position: event.position,
+        bufferPosition: event.bufferedPosition,
+        speed: event.speed,
+      ),
+    );
+    // we only want to update when there's a change in play status here, otherwise we're going to flood the websocket
+    if (sendSocketUpdate) {
+      _sendCurrentState(true);
+    }
     _updateProgress();
+  }
+
+  void _sendCurrentState(bool broadcast) {
+    final status = PlayerStatus(
+      episode: state.episode,
+      position: state.position.inSeconds,
+      duration: state.duration.inSeconds,
+      playing: state.playing,
+      speed: _player.playbackState.value.speed,
+      broadcast: broadcast,
+    );
+    final message = PodkuSocketMessage(message: status.toJson(), type: .playerStatus);
+    getIt.get<ServerCubit>().socket?.send(jsonEncode(message));
   }
 
   void _updateProgress() {
@@ -164,12 +340,17 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       final episode = state.episode!;
       final progress = state.position;
       final duration = state.duration;
+
+      if (progress == duration) {
+        stop();
+      }
+
       EasyThrottle.throttle('progress-update-${state.episode?.id}', Duration(seconds: 5), () async {
         await _updateProgressInner(episode, progress, duration);
       });
       // we do this so that whenever the episode stops playing, we save one last time
       EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
-        await _updateProgressInner(episode, progress, duration);
+        await _updateProgressInner(episode, progress, duration, broadcast: false);
         if (!kIsWeb) {
           await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
         }
@@ -177,17 +358,15 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _updateProgressInner(Episode episode, Duration progress, Duration totalDuration) async {
+  Future<void> _updateProgressInner(
+    Episode episode,
+    Duration progress,
+    Duration totalDuration, {
+    bool broadcast = true,
+  }) async {
     if (isOnline) {
       try {
-        await client.episodes.setProgress(
-          playbackProgress: PlaybackProgress(
-            episodeId: episode.id,
-            newPlayback: false,
-            player: sessionId,
-            progress: progress.inSeconds.toDouble(),
-          ),
-        );
+        _sendCurrentState(broadcast);
       } catch (e) {
         _log.warning("Could not update episode progress", e);
       }
@@ -221,7 +400,6 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void stop() {
-    _player.stop();
     emit(
       state.copyWith(
         showMiniPlayer: false,
@@ -233,6 +411,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         playing: false,
       ),
     );
+    if (isPlayingLocally) {
+      _player.stop();
+    } else {
+      _sendRemoteCommand(type: .stop);
+    }
   }
 
   Future<void> episodeChangedListener(MediaItem? event) async {
@@ -249,6 +432,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       if (!state.showBigPlayer && !state.showMiniPlayer) {
         emit(state.copyWith(showBigPlayer: true));
       }
+
+      _sendCurrentState(true);
     }
   }
 
@@ -261,7 +446,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void setSpeed(double speed) {
-    _player.setSpeed(speed);
+    if (isPlayingLocally) {
+      _player.setSpeed(speed);
+    } else {
+      _sendRemoteCommand(type: .setSpeed, speed: speed);
+    }
   }
 
   void onDurationChanged(Duration event) {
@@ -283,10 +472,12 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(Duration(seconds: 0)) Duration position,
     @Default(Duration(seconds: 0)) Duration bufferPosition,
     @Default(Duration(seconds: 1)) Duration duration,
+    @Default(1) double speed,
     @Default(false) bool playing,
     @Default(false) bool showMiniPlayer,
     @Default(false) bool showBigPlayer,
     @Default(false) bool showTranscript,
+    PlayerInfo? currentPlayer,
     dynamic error,
     StackTrace? stackTrace,
   }) = _PlayerState;

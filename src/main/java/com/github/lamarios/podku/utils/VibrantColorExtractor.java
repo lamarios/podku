@@ -1,21 +1,20 @@
+/* (C)2026 */
 package com.github.lamarios.podku.utils;
 
-import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 public class VibrantColorExtractor {
-
     // Mirrors Android Palette API / palette_generator's "vibrant" target constants
     private static final float MIN_SATURATION = 0.35f;
     private static final float TARGET_SATURATION = 1.0f;
     private static final float MIN_LUMA = 0.30f;
     private static final float MAX_LUMA = 0.70f;
     private static final float TARGET_LUMA = 0.50f;
-
     private static final float WEIGHT_SATURATION = 0.24f;
     private static final float WEIGHT_LUMA = 0.52f;
     private static final float WEIGHT_POPULATION = 0.24f;
@@ -23,7 +22,8 @@ public class VibrantColorExtractor {
     private static class Swatch {
         int r, g, b;
         int population;
-        float[] hsl; // 0: hue, 1: saturation, 2: lightness
+        // 0: hue, 1: saturation, 2: lightness
+        float[] hsl;
 
         Swatch(int r, int g, int b, int population) {
             this.r = r;
@@ -38,7 +38,9 @@ public class VibrantColorExtractor {
         }
     }
 
-    /** Downloads an image and returns the vibrant color as "#RRGGBB", or null if no color qualifies. */
+    /**
+     * Downloads an image and returns the vibrant color as "#RRGGBB", or null if no color qualifies.
+     */
     public static String extractVibrantColorHex(String imageUrl) throws Exception {
         BufferedImage image = ImageIO.read(new URL(imageUrl));
         if (image == null) {
@@ -50,9 +52,15 @@ public class VibrantColorExtractor {
 
     public static Color extractVibrantColor(BufferedImage image) {
         List<Swatch> swatches = quantize(downscale(image, 100));
-        if (swatches.isEmpty()) return null;
+        if (swatches.isEmpty()) {
+            return null;
+        }
 
-        int maxPopulation = swatches.stream().mapToInt(s -> s.population).max().orElse(1);
+        int maxPopulation = swatches
+            .stream()
+            .mapToInt(s -> s.population)
+            .max()
+            .orElse(1);
 
         Swatch best = null;
         float bestScore = -1f;
@@ -60,7 +68,6 @@ public class VibrantColorExtractor {
         for (Swatch s : swatches) {
             float saturation = s.hsl[1];
             float luma = s.hsl[2];
-
             // Hard filter: must fall inside the vibrant target's acceptable range
             if (saturation < MIN_SATURATION || luma < MIN_LUMA || luma > MAX_LUMA) {
                 continue;
@@ -72,13 +79,14 @@ public class VibrantColorExtractor {
                 best = s;
             }
         }
-
         // Fallback: relax the saturation constraint a bit if nothing qualified
         if (best == null) {
             for (Swatch s : swatches) {
                 float saturation = s.hsl[1];
                 float luma = s.hsl[2];
-                if (luma < MIN_LUMA || luma > MAX_LUMA) continue;
+                if (luma < MIN_LUMA || luma > MAX_LUMA) {
+                    continue;
+                }
                 float score = weightedScore(saturation, luma, s.population, maxPopulation);
                 if (score > bestScore) {
                     bestScore = score;
@@ -100,9 +108,12 @@ public class VibrantColorExtractor {
                 + (populationScore * WEIGHT_POPULATION);
     }
 
-    /** Quantizes pixels into color buckets with population counts, skipping transparent pixels. */
+    /**
+     * Quantizes pixels into color buckets with population counts, skipping transparent pixels.
+     */
     private static List<Swatch> quantize(BufferedImage image) {
-        int quantizeFactor = 16; // finer than pure-dominant extraction, so vibrant hues aren't lost
+        // finer than pure-dominant extraction, so vibrant hues aren't lost
+        int quantizeFactor = 16;
         java.util.Map<Integer, Integer> counts = new java.util.HashMap<>();
 
         int width = image.getWidth();
@@ -112,7 +123,9 @@ public class VibrantColorExtractor {
             for (int y = 0; y < height; y++) {
                 int argb = image.getRGB(x, y);
                 int alpha = (argb >> 24) & 0xFF;
-                if (alpha < 125) continue;
+                if (alpha < 125) {
+                    continue;
+                }
 
                 int r = (argb >> 16) & 0xFF;
                 int g = (argb >> 8) & 0xFF;
@@ -158,7 +171,7 @@ public class VibrantColorExtractor {
             }
             h /= 6f;
         }
-        return new float[]{h, s, l};
+        return new float[] {h, s, l};
     }
 
     private static BufferedImage downscale(BufferedImage original, int maxDimension) {
@@ -172,10 +185,9 @@ public class VibrantColorExtractor {
         int newHeight = Math.max(1, (int) (height * scale));
 
         BufferedImage scaled = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        scaled.getGraphics().drawImage(
-                original.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH),
-                0, 0, null
-        );
+        scaled
+            .getGraphics()
+            .drawImage(original.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
         return scaled;
     }
 

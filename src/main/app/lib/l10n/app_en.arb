@@ -40,5 +40,8 @@
   "yourEpisodes": "Your episodes",
   "openSearch": "Open full screen search",
   "searchForPodcasts": "Search for new podcasts",
-  "aiGeneratedTranscript": "AI generated transcript"
+  "aiGeneratedTranscript": "AI generated transcript",
+  "devices": "Connected devices",
+  "thisDevice": "This device",
+  "devicesExplanation": "Select which device should be playing audio"
 }

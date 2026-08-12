@@ -25,12 +25,15 @@ class MiniPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = M3ETheme.of(context).textTheme;
     final cubit = context.read<PlayerCubit>();
 
     return Builder(
       builder: (context) {
         final podcast = context.select((PlayerCubit c) => c.state.episode?.podcast);
         final isPlaying = context.select((PlayerCubit c) => c.state.playing);
+        final playingLocally = context.select((PlayerCubit c) => c.isPlayingLocally);
+        final currentPlayer = context.select((PlayerCubit c) => c.state.currentPlayer);
 
         return PodcastColorProvider(
           podcastLight: podcast,
@@ -115,11 +118,19 @@ class MiniPlayer extends StatelessWidget {
                                       Builder(
                                         builder: (context) {
                                           final title = context.select(
-                                            (PlayerCubit c) => c.state.episode?.title ?? 'nothing is player',
+                                            (PlayerCubit c) => c.state.episode?.title ?? 'nothing is playing',
                                           );
-                                          return Text(title, overflow: .ellipsis, maxLines: 2);
+                                          return Text(title, overflow: .ellipsis, maxLines: playingLocally ? 2 : 1);
                                         },
                                       ),
+                                      if (!playingLocally)
+                                        Row(
+                                          spacing: pu,
+                                          children: [
+                                            Icon(M3EIcons.devices_other, size: 15),
+                                            Text(currentPlayer?.name ?? '', style: textTheme.labelSmall),
+                                          ],
+                                        ),
                                       Gap(pu2),
                                       ProgressBar(height: 5),
                                     ],

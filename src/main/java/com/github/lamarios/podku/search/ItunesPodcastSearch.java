@@ -1,16 +1,10 @@
+/* (C)2026 */
 package com.github.lamarios.podku.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.lamarios.podku.urls.UrlService;
-import com.github.lamarios.podku.utils.DominantColorExtractor;
 import com.github.lamarios.podku.utils.VibrantColorExtractor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -21,20 +15,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Thin client for the iTunes Search API, scoped to podcasts.
  */
 @Service
 public class ItunesPodcastSearch {
-
     private final Logger log = LogManager.getLogger();
     private static final String SEARCH_URL = "https://itunes.apple.com/search";
     private static final String LOOKUP_URL = "https://itunes.apple.com/lookup";
-
     private final HttpClient client;
     private final ObjectMapper objectMapper;
-
     final UrlService urlService;
 
     @Autowired
@@ -48,23 +43,25 @@ public class ItunesPodcastSearch {
         this.urlService = urlService;
     }
 
-
     /**
      * Searches the iTunes podcast directory.
      *
-     * @param term    search string (name, author, etc.)
+     * @param term search string (name, author, etc.)
      * @param country ISO 2-letter country code, defaults to "US"
-     * @param limit   max results, defaults to 25 (Apple's API default is 50)
+     * @param limit max results, defaults to 25 (Apple's API default is 50)
      */
     public List<SearchResult> search(String term, String country, Integer limit) {
         String country_ = country != null ? country : "US";
         int limit_ = limit != null ? limit : 50;
 
-        String query = "term=" + encode(term)
+        String query = "term="
+                + encode(term)
                 + "&media=podcast"
                 + "&entity=podcast"
-                + "&country=" + encode(country_)
-                + "&limit=" + limit_;
+                + "&country="
+                + encode(country_)
+                + "&limit="
+                + limit_;
 
         JsonNode body = get(URI.create(SEARCH_URL + "?" + query), "iTunes search");
 
@@ -79,13 +76,16 @@ public class ItunesPodcastSearch {
         List<String> urls = new ArrayList<>(results.stream().map(SearchResult::getArtworkUrl).toList());
         urlService.storeUrls(urls);
 
-        return results.parallelStream().peek(r -> {
-            try {
-                r.setColor(VibrantColorExtractor.extractVibrantColorHex(r.getArtworkUrl()));
-            } catch (Exception e) {
-                log.error("Could not get image color", e);
-            }
-        }).collect(Collectors.toList());
+        return results
+            .parallelStream()
+            .peek(r -> {
+                try {
+                    r.setColor(VibrantColorExtractor.extractVibrantColorHex(r.getArtworkUrl()));
+                } catch (Exception e) {
+                    log.error("Could not get image color", e);
+                }
+            })
+            .collect(Collectors.toList());
     }
 
     public List<SearchResult> search(String term, int limit) {
@@ -108,14 +108,11 @@ public class ItunesPodcastSearch {
 
     private JsonNode get(URI uri, String context) {
         try {
-            HttpRequest request = HttpRequest.newBuilder(uri)
-                    .GET()
-                    .build();
+            HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                throw new ItunesSearchException(
-                        context + " failed with status " + response.statusCode());
+                throw new ItunesSearchException(context + " failed with status " + response.statusCode());
             }
             return objectMapper.readTree(response.body());
         } catch (IOException e) {

@@ -342,6 +342,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI generated transcript'**
   String get aiGeneratedTranscript;
+
+  /// No description provided for @devices.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected devices'**
+  String get devices;
+
+  /// No description provided for @thisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get thisDevice;
+
+  /// No description provided for @devicesExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select which device should be playing audio'**
+  String get devicesExplanation;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

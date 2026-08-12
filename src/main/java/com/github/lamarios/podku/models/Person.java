@@ -1,3 +1,4 @@
+/* (C)2026 */
 package com.github.lamarios.podku.models;
 
 public interface Person {

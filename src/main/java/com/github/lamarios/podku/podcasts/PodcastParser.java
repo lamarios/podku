@@ -1,27 +1,13 @@
+/* (C)2026 */
 package com.github.lamarios.podku.podcasts;
-
 
 import com.github.lamarios.podku.episodes.Episode;
 import com.github.lamarios.podku.episodes.EpisodeFile;
 import com.github.lamarios.podku.episodes.EpisodeFileType;
 import com.github.lamarios.podku.episodes.EpisodePerson;
-import com.github.lamarios.podku.podcasts.Podcast;
-import com.github.lamarios.podku.podcasts.PodcastPerson;
 import com.github.lamarios.podku.urls.UrlRepository;
 import com.github.lamarios.podku.urls.UrlService;
 import com.github.lamarios.podku.utils.VibrantColorExtractor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
@@ -35,6 +21,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * Parses podcast RSS/XML (with iTunes namespace extensions) into a Podcast.
@@ -42,7 +39,6 @@ import java.util.stream.Stream;
 @Service
 public class PodcastParser {
     private static final Logger log = LogManager.getLogger();
-
     private static final String ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd";
     private final UrlService urlService;
 
@@ -54,13 +50,12 @@ public class PodcastParser {
     public Podcast parseUrl(Podcast podcast) {
         HttpClient client = HttpClient.newHttpClient();
         try {
-            HttpRequest request = HttpRequest.newBuilder(URI.create(podcast.getUrl()))
-                    .GET()
-                    .build();
+            HttpRequest request = HttpRequest.newBuilder(URI.create(podcast.getUrl())).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 throw new PodcastFeedException(
-                        "Failed to fetch feed at " + podcast.getUrl() + " (status " + response.statusCode() + ")");
+                        "Failed to fetch feed at " + podcast.getUrl() + " (status " + response.statusCode() + ")"
+                );
             }
             return parse(podcast, response.body());
         } catch (IOException e) {
@@ -87,7 +82,10 @@ public class PodcastParser {
             if (podcast.getEpisodes() == null) {
                 podcast.setEpisodes(new ArrayList<>());
             }
-            if (podcast.getEpisodes().stream().noneMatch(episode -> episode.getGuid().equals(e.getGuid()))) {
+            if (podcast
+                .getEpisodes()
+                .stream()
+                .noneMatch(episode -> episode.getGuid().equals(e.getGuid()))) {
                 episodes.add(e);
             }
         }
@@ -124,8 +122,14 @@ public class PodcastParser {
         urls.add(podcast.getArtworkUrl());
         urls.addAll(podcast.getPeople().stream().map(PodcastPerson::getImage).filter(Objects::nonNull).toList());
 
-        podcast.getEpisodes().stream().flatMap(e -> Stream.concat(Stream.of(e.getAudioUrl()), e.getPeople().stream().map(EpisodePerson::getImage)))
-                .forEach(urls::add);
+        podcast
+            .getEpisodes()
+            .stream()
+            .flatMap(e -> Stream.concat(Stream.of(e.getAudioUrl()), e
+                .getPeople()
+                .stream()
+                .map(EpisodePerson::getImage)))
+            .forEach(urls::add);
 
         urlService.storeUrls(urls);
 
@@ -135,7 +139,8 @@ public class PodcastParser {
     private Document parseDocument(String xmlString) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(false); // keep literal "itunes:xxx" / "podcast:xxx" tag names
+            // keep literal "itunes:xxx" / "podcast:xxx" tag names
+            factory.setNamespaceAware(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             return builder.parse(new InputSource(new StringReader(xmlString)));
         } catch (Exception e) {
@@ -175,7 +180,6 @@ public class PodcastParser {
     }
 
     // --- helpers ------------------------------------------------------
-
     private List<EpisodePerson> getPeople(Episode episode, Element episodeRoot) {
         List<EpisodePerson> people = new ArrayList<>();
         for (Element e : directChildren(episodeRoot, "podcast:person")) {
@@ -248,7 +252,9 @@ public class PodcastParser {
         Element itunesImage = firstDirectChild(channel, "itunes:image");
         if (itunesImage != null) {
             String href = attr(itunesImage, "href");
-            if (href != null) return href;
+            if (href != null) {
+                return href;
+            }
         }
         Element rssImage = firstDirectChild(channel, "image");
         if (rssImage != null) {
@@ -263,7 +269,6 @@ public class PodcastParser {
     }
 
     // --- low-level DOM helpers ------------------------------------------------------
-
     private Element findFirstDescendant(Document doc, String tagName) {
         NodeList list = doc.getElementsByTagName(tagName);
         return list.getLength() > 0 ? (Element) list.item(0) : null;
@@ -295,7 +300,9 @@ public class PodcastParser {
     }
 
     private Long parseLongOrNull(String s) {
-        if (s == null || s.isEmpty()) return null;
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
@@ -304,7 +311,9 @@ public class PodcastParser {
     }
 
     private Integer parseIntOrNull(String s) {
-        if (s == null || s.isEmpty()) return null;
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -313,7 +322,6 @@ public class PodcastParser {
     }
 
     // --- date / duration parsing ------------------------------------------------------
-
     private static final Map<String, Integer> MONTHS_BY_ABBR = new HashMap<>();
     private static final Map<String, Integer> NAMED_TIMEZONE_OFFSET_MINUTES = new HashMap<>();
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
@@ -347,15 +355,16 @@ public class PodcastParser {
     }
 
     /**
-     * Parses an RSS pubDate (RFC 822/2822, e.g. "Wed, 02 Oct 2024 15:00:00 +0000"
-     * or "02 Oct 2024 15:00:00 GMT") into epoch milliseconds.
-     * <p>
-     * Hand-rolled because java.time's built-in RFC-1123 formatter is similarly
-     * strict about the exact "GMT"/offset layout that real-world feeds don't
-     * reliably follow.
+     * Parses an RSS pubDate (RFC 822/2822, e.g. "Wed, 02 Oct 2024 15:00:00 +0000" or "02 Oct 2024
+     * 15:00:00 GMT") into epoch milliseconds.
+     *
+     * <p>Hand-rolled because java.time's built-in RFC-1123 formatter is similarly strict about the
+     * exact "GMT"/offset layout that real-world feeds don't reliably follow.
      */
     private Long parseDateMillis(String raw) {
-        if (raw == null || raw.isEmpty()) return null;
+        if (raw == null || raw.isEmpty()) {
+            return null;
+        }
         String s = raw.trim();
 
         int commaIndex = s.indexOf(',');
@@ -364,7 +373,9 @@ public class PodcastParser {
         }
 
         String[] parts = WHITESPACE.split(s);
-        if (parts.length < 4) return null;
+        if (parts.length < 4) {
+            return null;
+        }
 
         Integer day = parseIntOrNull(parts[0]);
         String monthAbbrRaw = parts[1].toLowerCase();
@@ -378,11 +389,14 @@ public class PodcastParser {
             timeParts[i] = parseIntOrNull(timeStrings[i]);
         }
 
-        if (day == null || month == null || year == null || timeParts.length < 2) return null;
-        for (Integer p : timeParts) {
-            if (p == null) return null;
+        if (day == null || month == null || year == null || timeParts.length < 2) {
+            return null;
         }
-
+        for (Integer p : timeParts) {
+            if (p == null) {
+                return null;
+            }
+        }
         // Handle 2-digit years per RFC 2822 pivoting rules.
         if (year < 100) {
             year += year < 70 ? 2000 : 1900;
@@ -418,11 +432,13 @@ public class PodcastParser {
     }
 
     /**
-     * iTunes duration can be plain seconds ("1425") or HH:MM:SS / MM:SS.
-     * Returns the total duration in seconds.
+     * iTunes duration can be plain seconds ("1425") or HH:MM:SS / MM:SS. Returns the total duration
+     * in seconds.
      */
     private Long parseDurationSeconds(String raw) {
-        if (raw == null || raw.isEmpty()) return null;
+        if (raw == null || raw.isEmpty()) {
+            return null;
+        }
         if (!raw.contains(":")) {
             return parseLongOrNull(raw);
         }

@@ -1,9 +1,9 @@
+/* (C)2026 */
 package com.github.lamarios.podku.episodes;
 
 import java.util.List;
 
 public class Chapters {
-
     private String version;
     private List<Chapter> chapters;
 

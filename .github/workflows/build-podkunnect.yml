@@ -1,0 +1,69 @@
+name: Build podkunnect
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    tags:
+      - '*'
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Podkunnect
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+
+
+      - name: Extract tag name
+        id: extract_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Set build number
+        id: set_build_number
+        if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
+        run: echo "TAG_NAME=1" >> $GITHUB_ENV
+      # Build web app
+      - name: build podkunnect cli
+        working-directory: ./src/main/podkunnect
+        run: |
+          nix-shell --run "dart pub get" ../../../shell.nix
+          nix-shell --run "make compile-linux-x64" ../../../shell.nix
+          nix-shell --run "make compile-linux-arm" ../../../shell.nix
+          nix-shell --run "make compile-linux-arm64" ../../../shell.nix
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: podkunnect-x86_64.tar.gz
+          path: src/main/podkunnect/build/podkunnect-x86_64.tar.gz
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: podkunnect-arm.tar.gz
+          path: src/main/podkunnect/build/podkunnect-arm.tar.gz
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: podkunnect-arm64.tar.gz
+          path: src/main/podkunnect/build/podkunnect-arm64.tar.gz
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          repo_token: ${{ secrets.GH_TOKEN }}
+          file: src/main/podkunnect/build/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true

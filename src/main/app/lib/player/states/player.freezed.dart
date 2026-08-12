@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerState {
 
- bool get loading; Episode? get episode; Duration get position; Duration get bufferPosition; Duration get duration; bool get playing; bool get showMiniPlayer; bool get showBigPlayer; bool get showTranscript; dynamic get error; StackTrace? get stackTrace;
+ bool get loading; Episode? get episode; Duration get position; Duration get bufferPosition; Duration get duration; double get speed; bool get playing; bool get showMiniPlayer; bool get showBigPlayer; bool get showTranscript; PlayerInfo? get currentPlayer; dynamic get error; StackTrace? get stackTrace;
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PlayerStateCopyWith<PlayerState> get copyWith => _$PlayerStateCopyWithImpl<Play
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,episode,position,bufferPosition,duration,playing,showMiniPlayer,showBigPlayer,showTranscript,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode => Object.hash(runtimeType,loading,episode,position,bufferPosition,duration,speed,playing,showMiniPlayer,showBigPlayer,showTranscript,currentPlayer,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, playing: $playing, showMiniPlayer: $showMiniPlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, error: $error, stackTrace: $stackTrace)';
+  return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, speed: $speed, playing: $playing, showMiniPlayer: $showMiniPlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, currentPlayer: $currentPlayer, error: $error, stackTrace: $stackTrace)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $PlayerStateCopyWith<$Res>  {
   factory $PlayerStateCopyWith(PlayerState value, $Res Function(PlayerState) _then) = _$PlayerStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, Episode? episode, Duration position, Duration bufferPosition, Duration duration, bool playing, bool showMiniPlayer, bool showBigPlayer, bool showTranscript, dynamic error, StackTrace? stackTrace
+ bool loading, Episode? episode, Duration position, Duration bufferPosition, Duration duration, double speed, bool playing, bool showMiniPlayer, bool showBigPlayer, bool showTranscript, PlayerInfo? currentPlayer, dynamic error, StackTrace? stackTrace
 });
 
 
-
+$PlayerInfoCopyWith<$Res>? get currentPlayer;
 
 }
 /// @nodoc
@@ -62,23 +62,37 @@ class _$PlayerStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? duration = null,Object? playing = null,Object? showMiniPlayer = null,Object? showBigPlayer = null,Object? showTranscript = null,Object? error = freezed,Object? stackTrace = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? duration = null,Object? speed = null,Object? playing = null,Object? showMiniPlayer = null,Object? showBigPlayer = null,Object? showTranscript = null,Object? currentPlayer = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_self.copyWith(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as Duration,bufferPosition: null == bufferPosition ? _self.bufferPosition : bufferPosition // ignore: cast_nullable_to_non_nullable
 as Duration,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
-as Duration,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
+as Duration,speed: null == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
+as double,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
 as bool,showMiniPlayer: null == showMiniPlayer ? _self.showMiniPlayer : showMiniPlayer // ignore: cast_nullable_to_non_nullable
 as bool,showBigPlayer: null == showBigPlayer ? _self.showBigPlayer : showBigPlayer // ignore: cast_nullable_to_non_nullable
 as bool,showTranscript: null == showTranscript ? _self.showTranscript : showTranscript // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as bool,currentPlayer: freezed == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
+as PlayerInfo?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
 as StackTrace?,
   ));
 }
+/// Create a copy of PlayerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PlayerInfoCopyWith<$Res>? get currentPlayer {
+    if (_self.currentPlayer == null) {
+    return null;
+  }
 
+  return $PlayerInfoCopyWith<$Res>(_self.currentPlayer!, (value) {
+    return _then(_self.copyWith(currentPlayer: value));
+  });
+}
 }
 
 
@@ -157,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  Episode? episode,  Duration position,  Duration bufferPosition,  Duration duration,  bool playing,  bool showMiniPlayer,  bool showBigPlayer,  bool showTranscript,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  Episode? episode,  Duration position,  Duration bufferPosition,  Duration duration,  double speed,  bool playing,  bool showMiniPlayer,  bool showBigPlayer,  bool showTranscript,  PlayerInfo? currentPlayer,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlayerState() when $default != null:
-return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,_that.duration,_that.playing,_that.showMiniPlayer,_that.showBigPlayer,_that.showTranscript,_that.error,_that.stackTrace);case _:
+return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,_that.duration,_that.speed,_that.playing,_that.showMiniPlayer,_that.showBigPlayer,_that.showTranscript,_that.currentPlayer,_that.error,_that.stackTrace);case _:
   return orElse();
 
 }
@@ -178,10 +192,10 @@ return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  Episode? episode,  Duration position,  Duration bufferPosition,  Duration duration,  bool playing,  bool showMiniPlayer,  bool showBigPlayer,  bool showTranscript,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  Episode? episode,  Duration position,  Duration bufferPosition,  Duration duration,  double speed,  bool playing,  bool showMiniPlayer,  bool showBigPlayer,  bool showTranscript,  PlayerInfo? currentPlayer,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
 switch (_that) {
 case _PlayerState():
-return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,_that.duration,_that.playing,_that.showMiniPlayer,_that.showBigPlayer,_that.showTranscript,_that.error,_that.stackTrace);}
+return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,_that.duration,_that.speed,_that.playing,_that.showMiniPlayer,_that.showBigPlayer,_that.showTranscript,_that.currentPlayer,_that.error,_that.stackTrace);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,10 +209,10 @@ return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  Episode? episode,  Duration position,  Duration bufferPosition,  Duration duration,  bool playing,  bool showMiniPlayer,  bool showBigPlayer,  bool showTranscript,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  Episode? episode,  Duration position,  Duration bufferPosition,  Duration duration,  double speed,  bool playing,  bool showMiniPlayer,  bool showBigPlayer,  bool showTranscript,  PlayerInfo? currentPlayer,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
 switch (_that) {
 case _PlayerState() when $default != null:
-return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,_that.duration,_that.playing,_that.showMiniPlayer,_that.showBigPlayer,_that.showTranscript,_that.error,_that.stackTrace);case _:
+return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,_that.duration,_that.speed,_that.playing,_that.showMiniPlayer,_that.showBigPlayer,_that.showTranscript,_that.currentPlayer,_that.error,_that.stackTrace);case _:
   return null;
 
 }
@@ -210,7 +224,7 @@ return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,
 
 
 class _PlayerState implements PlayerState, WithError {
-  const _PlayerState({this.loading = false, this.episode, this.position = const Duration(seconds: 0), this.bufferPosition = const Duration(seconds: 0), this.duration = const Duration(seconds: 1), this.playing = false, this.showMiniPlayer = false, this.showBigPlayer = false, this.showTranscript = false, this.error, this.stackTrace});
+  const _PlayerState({this.loading = false, this.episode, this.position = const Duration(seconds: 0), this.bufferPosition = const Duration(seconds: 0), this.duration = const Duration(seconds: 1), this.speed = 1, this.playing = false, this.showMiniPlayer = false, this.showBigPlayer = false, this.showTranscript = false, this.currentPlayer, this.error, this.stackTrace});
   
 
 @override@JsonKey() final  bool loading;
@@ -218,10 +232,12 @@ class _PlayerState implements PlayerState, WithError {
 @override@JsonKey() final  Duration position;
 @override@JsonKey() final  Duration bufferPosition;
 @override@JsonKey() final  Duration duration;
+@override@JsonKey() final  double speed;
 @override@JsonKey() final  bool playing;
 @override@JsonKey() final  bool showMiniPlayer;
 @override@JsonKey() final  bool showBigPlayer;
 @override@JsonKey() final  bool showTranscript;
+@override final  PlayerInfo? currentPlayer;
 @override final  dynamic error;
 @override final  StackTrace? stackTrace;
 
@@ -235,16 +251,16 @@ _$PlayerStateCopyWith<_PlayerState> get copyWith => __$PlayerStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,episode,position,bufferPosition,duration,playing,showMiniPlayer,showBigPlayer,showTranscript,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode => Object.hash(runtimeType,loading,episode,position,bufferPosition,duration,speed,playing,showMiniPlayer,showBigPlayer,showTranscript,currentPlayer,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, playing: $playing, showMiniPlayer: $showMiniPlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, error: $error, stackTrace: $stackTrace)';
+  return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, speed: $speed, playing: $playing, showMiniPlayer: $showMiniPlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, currentPlayer: $currentPlayer, error: $error, stackTrace: $stackTrace)';
 }
 
 
@@ -255,11 +271,11 @@ abstract mixin class _$PlayerStateCopyWith<$Res> implements $PlayerStateCopyWith
   factory _$PlayerStateCopyWith(_PlayerState value, $Res Function(_PlayerState) _then) = __$PlayerStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, Episode? episode, Duration position, Duration bufferPosition, Duration duration, bool playing, bool showMiniPlayer, bool showBigPlayer, bool showTranscript, dynamic error, StackTrace? stackTrace
+ bool loading, Episode? episode, Duration position, Duration bufferPosition, Duration duration, double speed, bool playing, bool showMiniPlayer, bool showBigPlayer, bool showTranscript, PlayerInfo? currentPlayer, dynamic error, StackTrace? stackTrace
 });
 
 
-
+@override $PlayerInfoCopyWith<$Res>? get currentPlayer;
 
 }
 /// @nodoc
@@ -272,24 +288,38 @@ class __$PlayerStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? duration = null,Object? playing = null,Object? showMiniPlayer = null,Object? showBigPlayer = null,Object? showTranscript = null,Object? error = freezed,Object? stackTrace = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? duration = null,Object? speed = null,Object? playing = null,Object? showMiniPlayer = null,Object? showBigPlayer = null,Object? showTranscript = null,Object? currentPlayer = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_PlayerState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as Duration,bufferPosition: null == bufferPosition ? _self.bufferPosition : bufferPosition // ignore: cast_nullable_to_non_nullable
 as Duration,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
-as Duration,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
+as Duration,speed: null == speed ? _self.speed : speed // ignore: cast_nullable_to_non_nullable
+as double,playing: null == playing ? _self.playing : playing // ignore: cast_nullable_to_non_nullable
 as bool,showMiniPlayer: null == showMiniPlayer ? _self.showMiniPlayer : showMiniPlayer // ignore: cast_nullable_to_non_nullable
 as bool,showBigPlayer: null == showBigPlayer ? _self.showBigPlayer : showBigPlayer // ignore: cast_nullable_to_non_nullable
 as bool,showTranscript: null == showTranscript ? _self.showTranscript : showTranscript // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as bool,currentPlayer: freezed == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
+as PlayerInfo?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
 as StackTrace?,
   ));
 }
 
+/// Create a copy of PlayerState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PlayerInfoCopyWith<$Res>? get currentPlayer {
+    if (_self.currentPlayer == null) {
+    return null;
+  }
 
+  return $PlayerInfoCopyWith<$Res>(_self.currentPlayer!, (value) {
+    return _then(_self.copyWith(currentPlayer: value));
+  });
+}
 }
 
 // dart format on

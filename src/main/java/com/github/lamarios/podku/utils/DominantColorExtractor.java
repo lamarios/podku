@@ -1,22 +1,22 @@
+/* (C)2026 */
 package com.github.lamarios.podku.utils;
 
 import com.github.lamarios.podku.podcasts.Podcast;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
 
 public class DominantColorExtractor {
-
     public static String extractDominantColorHex(Podcast podcast) throws Exception {
         return extractDominantColorHex(podcast.getArtworkUrl());
     }
+
     /**
-     * Downloads an image from the given URL and returns its dominant color
-     * as a hex string (e.g. "#3A5F8C") suitable for storing in a DB.
+     * Downloads an image from the given URL and returns its dominant color as a hex string (e.g.
+     * "#3A5F8C") suitable for storing in a DB.
      */
     public static String extractDominantColorHex(String imageUrl) throws Exception {
         Color color = extractDominantColor(imageUrl);
@@ -43,13 +43,17 @@ public class DominantColorExtractor {
             for (int y = 0; y < height; y++) {
                 int argb = scaled.getRGB(x, y);
                 int alpha = (argb >> 24) & 0xFF;
-                if (alpha < 125) continue;
+                if (alpha < 125) {
+                    continue;
+                }
 
                 int r = (argb >> 16) & 0xFF;
                 int g = (argb >> 8) & 0xFF;
                 int b = argb & 0xFF;
 
-                if (isNearWhiteOrBlack(r, g, b)) continue;
+                if (isNearWhiteOrBlack(r, g, b)) {
+                    continue;
+                }
 
                 int quantR = (r / quantizeFactor) * quantizeFactor;
                 int quantG = (g / quantizeFactor) * quantizeFactor;
@@ -64,10 +68,7 @@ public class DominantColorExtractor {
             return averageColor(scaled);
         }
 
-        int dominantKey = colorCounts.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .orElseThrow()
-                .getKey();
+        int dominantKey = colorCounts.entrySet().stream().max(Map.Entry.comparingByValue()).orElseThrow().getKey();
 
         int r = (dominantKey >> 16) & 0xFF;
         int g = (dominantKey >> 8) & 0xFF;
@@ -100,10 +101,9 @@ public class DominantColorExtractor {
         int newHeight = Math.max(1, (int) (height * scale));
 
         BufferedImage scaled = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        scaled.getGraphics().drawImage(
-                original.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH),
-                0, 0, null
-        );
+        scaled
+            .getGraphics()
+            .drawImage(original.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
         return scaled;
     }
 
@@ -118,13 +118,18 @@ public class DominantColorExtractor {
                 count++;
             }
         }
-        if (count == 0) return Color.GRAY;
+        if (count == 0) {
+            return Color.GRAY;
+        }
         return new Color((int) (r / count), (int) (g / count), (int) (b / count));
     }
 
     // Example usage
     public static void main(String[] args) throws Exception {
-        String hex = extractDominantColorHex("https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/19411021/39a972f0779d74f2.jpeg");
-        System.out.println("Dominant color: " + hex); // e.g. "#3A5F8C"
+        String hex = extractDominantColorHex(
+                "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/19411021/39a972f0779d74f2.jpeg"
+        );
+        // e.g. "#3A5F8C"
+        System.out.println("Dominant color: " + hex);
     }
 }

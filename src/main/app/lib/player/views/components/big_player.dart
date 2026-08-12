@@ -13,6 +13,7 @@ import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/player_speed.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
+import 'package:podku/player/views/components/remote_players.dart';
 import 'package:podku/player/views/components/transcript_follower.dart';
 import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
@@ -20,7 +21,7 @@ import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/description.dart';
 
-const double _imageWidth = 200;
+const double _imageWidth = 170;
 
 class BigPlayer extends StatelessWidget {
   const BigPlayer({super.key});
@@ -225,6 +226,7 @@ class BigPlayer extends StatelessWidget {
                                                 );
                                               },
                                             ),
+                                            RemotePlayers(),
                                           ],
                                         ),
 

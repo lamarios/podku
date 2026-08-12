@@ -1,9 +1,9 @@
+/* (C)2026 */
 package com.github.lamarios.podku.transcripts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.lamarios.podku.episodes.Episode;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Entity
@@ -12,13 +12,10 @@ public class EpisodeTranscript {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "episode_id")
     @JsonIgnore
     private Episode episode;
-
-
     private String startTime;
     private String endTime;
     private String speaker;

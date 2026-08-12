@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +37,7 @@ bool get isOnline => connectionStatus == .connected || connectionStatus == .slow
 
 late final GoRouter _router;
 final sessionId = Uuid().v4();
+late final deviceName;
 
 void main() async {
   Logger.root.level = kDebugMode ? Level.FINEST : Level.INFO;
@@ -48,6 +52,15 @@ void main() async {
   });
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  if (kIsWeb) {
+    deviceName = await deviceInfo.webBrowserInfo.then((value) => value.appName ?? 'Unknown browser');
+  } else if (Platform.isAndroid) {
+    deviceName = await deviceInfo.androidInfo.then((value) => value.name);
+  } else {
+    deviceName = sessionId;
+  }
 
   final audioHandler = await AudioService.init(
     builder: () => PodkuAudioHandler(),
