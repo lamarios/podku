@@ -34,6 +34,7 @@ public class Episode {
     private Boolean explicit;
     private String link;
     private boolean processed = false;
+    private Long timeUpdated;
     @ManyToOne
     @JoinColumn(name = "podcast_id")
     @JsonIgnore
@@ -43,6 +44,12 @@ public class Episode {
 
     public boolean isProcessed() {
         return processed;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void onUpdate() {
+        timeUpdated = System.currentTimeMillis();
     }
 
     @Transient
@@ -248,5 +255,13 @@ public class Episode {
     @JsonIgnore
     public String getAudioUrlHash() {
         return Hashing.sha256().hashString(getAudioUrl(), StandardCharsets.UTF_8).toString();
+    }
+
+    public Long getTimeUpdated() {
+        return timeUpdated;
+    }
+
+    public void setTimeUpdated(Long timeUpdated) {
+        this.timeUpdated = timeUpdated;
     }
 }

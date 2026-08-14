@@ -5,6 +5,7 @@ import com.github.lamarios.podku.websockets.PlaybackProgress;
 import com.github.lamarios.podku.websockets.WebSocketSessionManager;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,10 @@ public class EpisodeController {
     @GetMapping("/search")
     public List<Episode> search(@RequestParam("query") String query, @RequestParam("limit") int limit) {
         return episodeService.searchPodcasts(query, limit);
+    }
+
+    @PostMapping("/setProgressesBatch")
+    public boolean updateProgresses(@RequestBody Map<String, OfflineProgress> progresses) {
+        return episodeService.updateProgresses(progresses);
     }
 }

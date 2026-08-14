@@ -16,6 +16,7 @@ import 'package:path/path.dart' as p;
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/main.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
+import 'package:podku/offline_episodes/utils.dart';
 import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
@@ -377,10 +378,16 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         final directory = await episode.episodeFolder(createIfMissing: true);
 
         final File data = File(p.join(directory.path, EpisodeDownloads.data));
-        await data.writeAsString(jsonEncode(episode.toJson()));
+        await data.writeAsString(jsonEncode(episode.copyWith(progress: progress.inSeconds.toDouble()).toJson()));
       }
     } catch (e) {
       _log.warning('Failed to update progress on downloaded podcast', e);
+    }
+
+    // we write to our "offline progress buffer"
+    // so if we're playing while offline, next time we connect, we will send to the backend
+    if (episode.id != null) {
+      OfflineProgressSaver.updateProgress(episodeId: episode.id!, progress: progress.inSeconds);
     }
   }
 

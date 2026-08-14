@@ -7,10 +7,7 @@ import com.github.lamarios.podku.transcripts.EpisodeTranscriptRepository;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.github.lamarios.podku.websockets.PlaybackProgress;
 import com.github.lamarios.podku.websockets.WebSocketSessionManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -244,5 +241,19 @@ public class EpisodeService {
             return List.of();
         }
         return episodeRepository.search(tsQuery, limit);
+    }
+
+    @Transactional
+    public boolean updateProgresses(Map<String, OfflineProgress> progresses) {
+        progresses.forEach((episodeId, offlineProgress) -> {
+            episodeRepository
+                .findById(UUID.fromString(episodeId))
+                .filter(e -> e.getTimeUpdated() == null || e.getTimeUpdated() < offlineProgress.getTimeOfProgress())
+                .ifPresent(e -> {
+                    e.setProgress(offlineProgress.getProgress());
+                    episodeRepository.save(e);
+                });
+        });
+        return true;
     }
 }

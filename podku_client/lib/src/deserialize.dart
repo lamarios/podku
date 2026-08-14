@@ -3,6 +3,7 @@ import 'package:openapi/src/model/episode.dart';
 import 'package:openapi/src/model/episode_file.dart';
 import 'package:openapi/src/model/episode_person.dart';
 import 'package:openapi/src/model/episode_transcript.dart';
+import 'package:openapi/src/model/offline_progress.dart';
 import 'package:openapi/src/model/playback_progress.dart';
 import 'package:openapi/src/model/podcast.dart';
 import 'package:openapi/src/model/podcast_light.dart';
@@ -37,6 +38,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return EpisodePerson.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'EpisodeTranscript':
           return EpisodeTranscript.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'OfflineProgress':
+          return OfflineProgress.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'PlaybackProgress':
           return PlaybackProgress.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Podcast':

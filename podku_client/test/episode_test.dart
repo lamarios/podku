@@ -92,6 +92,11 @@ void main() {
       // TODO
     });
 
+    // int timeUpdated
+    test('to test the property `timeUpdated`', () async {
+      // TODO
+    });
+
     // List<Chapter> chapters
     test('to test the property `chapters`', () async {
       // TODO

@@ -21,6 +21,7 @@ export 'package:openapi/src/model/episode.dart';
 export 'package:openapi/src/model/episode_file.dart';
 export 'package:openapi/src/model/episode_person.dart';
 export 'package:openapi/src/model/episode_transcript.dart';
+export 'package:openapi/src/model/offline_progress.dart';
 export 'package:openapi/src/model/playback_progress.dart';
 export 'package:openapi/src/model/podcast.dart';
 export 'package:openapi/src/model/podcast_light.dart';

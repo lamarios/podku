@@ -58,6 +58,8 @@ class Episode {
 
      this.processed,
 
+     this.timeUpdated,
+
      this.chapters,
 
      this.files,
@@ -273,6 +275,18 @@ class Episode {
 
   @JsonKey(
     
+    name: r'timeUpdated',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final int? timeUpdated;
+
+
+
+  @JsonKey(
+    
     name: r'chapters',
     required: false,
     includeIfNull: false,
@@ -340,6 +354,7 @@ class Episode {
       other.explicit == explicit &&
       other.link == link &&
       other.processed == processed &&
+      other.timeUpdated == timeUpdated &&
       other.chapters == chapters &&
       other.files == files &&
       other.people == people &&
@@ -364,6 +379,7 @@ class Episode {
         explicit.hashCode +
         link.hashCode +
         processed.hashCode +
+        timeUpdated.hashCode +
         chapters.hashCode +
         files.hashCode +
         people.hashCode +

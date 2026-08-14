@@ -17,14 +17,14 @@
                   <option name="pins">
                     <list>
                       <Pin>
-                        <option name="consoleUUID" value="678bd145-6183-476d-91ff-68ebefe91b47" />
+                        <option name="consoleUUID" value="a992cbdf-9737-4d55-a217-7019b16d0dee" />
                         <option name="contentType" value="ConsoleContent" />
                         <option name="grepCompositeModel">
                           <GrepCompositeModel>
                             <option name="models">
                               <list>
                                 <GrepModel>
-                                  <option name="expression" value="PlayerCubit" />
+                                  <option name="expression" value="ServerCubit" />
                                 </GrepModel>
                               </list>
                             </option>
@@ -32,14 +32,14 @@
                         </option>
                       </Pin>
                       <Pin>
-                        <option name="consoleUUID" value="c48b27f0-146d-47b8-a073-4edd53de4d24" />
+                        <option name="consoleUUID" value="b16dee4d-99e9-4624-9fc0-5e488fabe3f0" />
                         <option name="contentType" value="ConsoleContent" />
                         <option name="grepCompositeModel">
                           <GrepCompositeModel>
                             <option name="models">
                               <list>
                                 <GrepModel>
-                                  <option name="expression" value="Duration changed" />
+                                  <option name="expression" value="OfflineProgressSaver" />
                                 </GrepModel>
                               </list>
                             </option>

@@ -71,6 +71,7 @@ Class | Method | HTTP request | Description
 [*EpisodesApi*](doc/EpisodesApi.md) | [**search2**](doc/EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**setProgress**](doc/EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**startPlayback**](doc/EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
+[*EpisodesApi*](doc/EpisodesApi.md) | [**updateProgresses**](doc/EpisodesApi.md#updateprogresses) | **POST** /api/episodes/setProgressesBatch | 
 [*MediaApi*](doc/MediaApi.md) | [**getImage**](doc/MediaApi.md#getimage) | **GET** /media/image/{hash} | 
 [*MediaApi*](doc/MediaApi.md) | [**proxyAudio**](doc/MediaApi.md#proxyaudio) | **GET** /media/audio/{hash} | 
 [*PingApi*](doc/PingApi.md) | [**ping**](doc/PingApi.md#ping) | **GET** /api/ping | 
@@ -94,6 +95,7 @@ Class | Method | HTTP request | Description
  - [EpisodeFile](doc/EpisodeFile.md)
  - [EpisodePerson](doc/EpisodePerson.md)
  - [EpisodeTranscript](doc/EpisodeTranscript.md)
+ - [OfflineProgress](doc/OfflineProgress.md)
  - [PlaybackProgress](doc/PlaybackProgress.md)
  - [Podcast](doc/Podcast.md)
  - [PodcastLight](doc/PodcastLight.md)

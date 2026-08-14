@@ -41,6 +41,8 @@ abstract class _$EpisodeCWProxy {
 
   Episode processed(bool? processed);
 
+  Episode timeUpdated(int? timeUpdated);
+
   Episode chapters(List<Chapter>? chapters);
 
   Episode files(List<EpisodeFile>? files);
@@ -73,6 +75,7 @@ abstract class _$EpisodeCWProxy {
     bool? explicit,
     String? link,
     bool? processed,
+    int? timeUpdated,
     List<Chapter>? chapters,
     List<EpisodeFile>? files,
     List<EpisodePerson>? people,
@@ -142,6 +145,9 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
   Episode processed(bool? processed) => this(processed: processed);
 
   @override
+  Episode timeUpdated(int? timeUpdated) => this(timeUpdated: timeUpdated);
+
+  @override
   Episode chapters(List<Chapter>? chapters) => this(chapters: chapters);
 
   @override
@@ -178,6 +184,7 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
     Object? explicit = const $CopyWithPlaceholder(),
     Object? link = const $CopyWithPlaceholder(),
     Object? processed = const $CopyWithPlaceholder(),
+    Object? timeUpdated = const $CopyWithPlaceholder(),
     Object? chapters = const $CopyWithPlaceholder(),
     Object? files = const $CopyWithPlaceholder(),
     Object? people = const $CopyWithPlaceholder(),
@@ -252,6 +259,10 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
           ? _value.processed
           // ignore: cast_nullable_to_non_nullable
           : processed as bool?,
+      timeUpdated: timeUpdated == const $CopyWithPlaceholder()
+          ? _value.timeUpdated
+          // ignore: cast_nullable_to_non_nullable
+          : timeUpdated as int?,
       chapters: chapters == const $CopyWithPlaceholder()
           ? _value.chapters
           // ignore: cast_nullable_to_non_nullable
@@ -315,6 +326,7 @@ Episode _$EpisodeFromJson(
     explicit: $checkedConvert('explicit', (v) => v as bool?),
     link: $checkedConvert('link', (v) => v as String?),
     processed: $checkedConvert('processed', (v) => v as bool?),
+    timeUpdated: $checkedConvert('timeUpdated', (v) => (v as num?)?.toInt()),
     chapters: $checkedConvert(
       'chapters',
       (v) => (v as List<dynamic>?)
@@ -360,6 +372,7 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
   'explicit': ?instance.explicit,
   'link': ?instance.link,
   'processed': ?instance.processed,
+  'timeUpdated': ?instance.timeUpdated,
   'chapters': ?instance.chapters?.map((e) => e.toJson()).toList(),
   'files': ?instance.files?.map((e) => e.toJson()).toList(),
   'people': ?instance.people?.map((e) => e.toJson()).toList(),
