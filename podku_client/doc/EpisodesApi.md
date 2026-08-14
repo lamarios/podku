@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**search2**](EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [**setProgress**](EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [**startPlayback**](EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
+[**updateProgresses**](EpisodesApi.md#updateprogresses) | **POST** /api/episodes/setProgressesBatch | 
 
 
 # **getEpisode**
@@ -220,6 +221,47 @@ No authorization required
 
  - **Content-Type**: application/json
  - **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateProgresses**
+> bool updateProgresses(requestBody)
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getEpisodesApi();
+final Map<String, OfflineProgress> requestBody = Object; // Map<String, OfflineProgress> | 
+
+try {
+    final response = api.updateProgresses(requestBody);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling EpisodesApi->updateProgresses: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **requestBody** | [**Map&lt;String, OfflineProgress&gt;**](OfflineProgress.md)|  | 
+
+### Return type
+
+**bool**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

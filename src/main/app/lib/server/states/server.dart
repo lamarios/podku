@@ -10,6 +10,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logging/logging.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/main.dart';
+import 'package:podku/offline_episodes/utils.dart';
 import 'package:podku/server/client/client.dart';
 import 'package:podku/utils/models/with_error.dart';
 import 'package:podku_shared/podku_shared.dart';
@@ -173,11 +174,18 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
         return;
       }
 
+      _log.fine('Attempt to connect to socket');
+
       await socket?.close();
 
+      _log.fine('existing connection closed');
       socket = ReconnectableWebSocket(uri: Uri.parse('${state.serverUrl}/ws'.replaceFirst('http', 'ws')));
-
+      _log.fine('socket: ${socket?.uri}');
       socket?.onConnected = () {
+        // not really related to the websocket but we catch up in case we played episodes offline
+        OfflineProgressSaver.sendProgressToBackend();
+
+        _log.fine('Connected, sending device info');
         final message = PodkuSocketMessage(
           message: PlayerInfo(id: sessionId, name: deviceName).toJson(),
           type: .playerInfo,
@@ -187,11 +195,14 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
         socket?.send(jsonEncode(message));
       };
 
+      _log.fine('subscribing to stream');
       _subscription = socket?.controller.stream.listen((event) {
         _handleSocketMessage(event);
       });
 
+      _log.fine('Connecting...');
       await socket?.connect();
+      _log.fine('Connection complete');
     });
   }
 
@@ -200,6 +211,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
     emit(state.copyWith(clients: []));
     await _subscription?.cancel();
     await socket?.close();
+    socket = null;
   }
 
   @override

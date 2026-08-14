@@ -32,5 +32,10 @@ void main() {
       // TODO
     });
 
+    //Future<bool> updateProgresses(Map<String, OfflineProgress> requestBody) async
+    test('test updateProgresses', () async {
+      // TODO
+    });
+
   });
 }
