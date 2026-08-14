@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:background_downloader/background_downloader.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/src/api/platform_file.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
