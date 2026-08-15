@@ -14,6 +14,7 @@ _RemoteCommand _$RemoteCommandFromJson(Map<String, dynamic> json) =>
           : Episode.fromJson(json['episode'] as Map<String, dynamic>),
       position: (json['position'] as num?)?.toInt(),
       speed: (json['speed'] as num?)?.toDouble(),
+      volume: (json['volume'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$RemoteCommandToJson(_RemoteCommand instance) =>
@@ -22,6 +23,7 @@ Map<String, dynamic> _$RemoteCommandToJson(_RemoteCommand instance) =>
       'episode': instance.episode,
       'position': instance.position,
       'speed': instance.speed,
+      'volume': instance.volume,
     };
 
 const _$CommandTypeEnumMap = {
@@ -33,4 +35,5 @@ const _$CommandTypeEnumMap = {
   CommandType.setEpisode: 'setEpisode',
   CommandType.seek: 'seek',
   CommandType.setSpeed: 'setSpeed',
+  CommandType.setVolume: 'setVolume',
 };

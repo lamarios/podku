@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_3_expressive/components/menus/m3e_menus.dart';
+import 'package:material_3_expressive/components/sliders/m3e_sliders.dart';
 import 'package:material_3_expressive/components/toggle_button_group/m3e_toggle_button_group.dart';
 import 'package:material_3_expressive/components/toggle_button_group/models/m3e_button_group_action.dart';
+import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
@@ -37,6 +41,9 @@ class BigPlayer extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final podcast = context.select((PlayerCubit c) => c.state.episode?.podcast);
+          final showVolume = context.select((PlayerCubit c) => c.state.showVolume);
+          final volume = context.select((PlayerCubit c) => c.state.volume);
+
           var tabController = DefaultTabController.of(context);
           return PodcastColorProvider(
             podcastLight: podcast,
@@ -212,6 +219,17 @@ class BigPlayer extends StatelessWidget {
                                         Row(
                                           mainAxisAlignment: .center,
                                           children: [
+                                            IconButton(
+                                              onPressed: () => cubit.setShowVolume(!showVolume),
+                                              icon: Icon(
+                                                volume == 0
+                                                    ? Icons.volume_mute
+                                                    : volume < 30
+                                                    ? Icons.volume_down
+                                                    : Icons.volume_up,
+                                                color: showVolume ? colors.onSurface : colors.primary,
+                                              ),
+                                            ),
                                             PlayerSpeed(),
                                             FutureBuilder<bool>(
                                               future: episode.hasTranscript,
@@ -229,7 +247,36 @@ class BigPlayer extends StatelessWidget {
                                             RemotePlayers(),
                                           ],
                                         ),
+                                        SingleMotionBuilder(
+                                          motion: MaterialSpringMotion.expressiveSpatialFast(),
+                                          value: showVolume ? 1 : 0,
+                                          builder: (context, value, child) {
+                                            var sliderTheme = M3ETheme.of(context).sliderTheme;
+                                            return value < 0.1
+                                                ? SizedBox.shrink()
+                                                : SizedBox(
+                                                    height: lerpDouble(0, 45, value),
+                                                    child: Padding(
+                                                      padding: .symmetric(horizontal: pu16),
+                                                      child: M3ESlider(
+                                                        value: volume.clamp(0, 100),
+                                                        min: 0,
+                                                        max: 100,
+                                                        trackThickness: lerpDouble(0, sliderTheme.trackHeight, value),
+                                                        thumbLength: lerpDouble(0, sliderTheme.handleHeight, value),
 
+                                                        icon: Icon(M3EIcons.volume_up),
+                                                        iconPosition: .end,
+                                                        iconSize: lerpDouble(0, 15, value),
+                                                        onChangeEnd: (value) =>
+                                                            cubit.setVolume(value, onChangeEnd: true),
+                                                        onChanged: (value) =>
+                                                            cubit.setVolume(value, onChangeEnd: false),
+                                                      ),
+                                                    ),
+                                                  );
+                                          },
+                                        ),
                                         if (showTranscript) Expanded(child: TranscriptFollower()),
                                       ],
                                     ),

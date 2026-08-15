@@ -19,6 +19,7 @@ _PlayerStatus _$PlayerStatusFromJson(Map<String, dynamic> json) =>
       speed: (json['speed'] as num).toDouble(),
       playing: json['playing'] as bool? ?? false,
       broadcast: json['broadcast'] as bool? ?? true,
+      volume: (json['volume'] as num?)?.toDouble() ?? 100,
     );
 
 Map<String, dynamic> _$PlayerStatusToJson(_PlayerStatus instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$PlayerStatusToJson(_PlayerStatus instance) =>
       'speed': instance.speed,
       'playing': instance.playing,
       'broadcast': instance.broadcast,
+      'volume': instance.volume,
     };
