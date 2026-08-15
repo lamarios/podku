@@ -84,7 +84,7 @@
 
               serviceConfig = {
                 Type = "simple";
-                ExecStart = ''${cfg.package}/bin/podkunnect --name "${cfg.name}" --server "${cfg.server}" --volume ${cfg.volume}'';
+                ExecStart = ''${cfg.package}/bin/podkunnect --name "${cfg.name}" --server "${cfg.server}" --volume ${toString cfg.volume}'';
 
                   # Restart if the server drops or network hiccups occur during boot
                 Restart = "always";
