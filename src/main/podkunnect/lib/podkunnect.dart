@@ -23,6 +23,7 @@ class Podkunnect {
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<Duration>? _durationSubscription;
   StreamSubscription<bool>? _playingSubscription;
+  StreamSubscription<double>? _volumeSubscription;
 
   ReconnectableWebSocket? socket;
 
@@ -97,6 +98,7 @@ class Podkunnect {
     await _durationSubscription?.cancel();
     await _positionSubscription?.cancel();
     await _playingSubscription?.cancel();
+    await _volumeSubscription?.cancel();
     await _player?.stop();
     await _player?.dispose();
     _player = null;
@@ -105,6 +107,7 @@ class Podkunnect {
   Future<void> startPlayback({required Episode episode, required int position}) async {
     // if we were already playing at a certain volume, we keep it
     final volume = _player?.state.volume ?? this.volume;
+    _log.fine("Starting playback volume: $volume");
     _player ??= Player();
     _player?.setVolume(volume);
     _player?.open(Media(episode.audioProxyUrl(serverUrl), start: Duration(seconds: position)));
@@ -115,17 +118,22 @@ class Podkunnect {
       duration: episode.durationSeconds ?? 1,
       speed: 1,
       playing: true,
+      volume: volume,
     );
 
     _broadcastStatus(playbackStatus);
-    _playingSubscription = _player?.stream.playing.listen((event) {
-      playbackStatus = playbackStatus?.copyWith(playing: event);
-      _broadcastStatus(playbackStatus);
+    _playingSubscription = _player?.stream.playing.listen((event) async {
+      final toBroadcast = await _getCurrentPlayerStatus();
+      _broadcastStatus(toBroadcast);
     });
 
-    _positionSubscription = _player?.stream.position.listen((event) {
+    _volumeSubscription = _player?.stream.volume.listen((event) async {
+      final toBroadcast = await _getCurrentPlayerStatus();
+      _broadcastStatus(toBroadcast);
+    });
+    _positionSubscription = _player?.stream.position.listen((event) async {
       playbackStatus = playbackStatus?.copyWith(position: event.inSeconds);
-      final toBroadcast = playbackStatus?.copyWith();
+      final toBroadcast = await _getCurrentPlayerStatus();
       EasyThrottle.throttle('throttle-progress-update-${toBroadcast?.episode?.id}', Duration(seconds: 5), () {
         _broadcastStatus(toBroadcast);
       });
@@ -134,10 +142,29 @@ class Podkunnect {
       });
     });
 
-    _durationSubscription = _player?.stream.duration.listen((event) {
-      playbackStatus = playbackStatus?.copyWith(duration: event.inSeconds);
-      _broadcastStatus(playbackStatus);
+    _durationSubscription = _player?.stream.duration.listen((event) async {
+      final toBroadcast = await _getCurrentPlayerStatus();
+      _broadcastStatus(toBroadcast);
     });
+  }
+
+  Future<PlayerStatus?> _getCurrentPlayerStatus() async {
+    PlayerStatus? status;
+    if (_player?.state != null && playbackStatus?.episode != null) {
+      status = PlayerStatus(
+        episode: playbackStatus!.episode,
+        position: _player!.state.position.inSeconds,
+        duration: _player!.state.duration.inSeconds,
+        speed: _player!.state.rate,
+        volume: _player!.state.volume,
+        playing: _player!.state.playing,
+      );
+    } else {
+      status = playbackStatus;
+    }
+
+    playbackStatus = status;
+    return status;
   }
 
   Future<void> _handleRemoteCommand(RemoteCommand remoteCommand) async {
@@ -185,16 +212,8 @@ class Podkunnect {
       }
 
       final state = _player!.state;
-
-      _broadcastStatus(
-        playbackStatus?.copyWith(
-          position: newPosition?.inSeconds ?? state.position.inSeconds,
-          duration: state.duration.inSeconds,
-          speed: state.rate,
-          playing: state.playing,
-          volume: state.volume,
-        ),
-      );
+      _log.fine('Current volume: ${state.volume}');
+      _broadcastStatus(await _getCurrentPlayerStatus());
     }
   }
 

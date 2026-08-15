@@ -106,7 +106,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         break;
       case .setVolume:
         if (command.volume != null) {
-          setVolume(command.volume!);
+          setVolume(command.volume!, onChangeEnd: true);
         }
     }
   }
@@ -127,6 +127,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
             duration: .zero,
             playing: false,
             speed: 1,
+            volume: 100,
           ),
         );
       } else {
@@ -141,6 +142,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
             showMiniPlayer: shouldShowPlayer ? false : state.showMiniPlayer,
             showBigPlayer: shouldShowPlayer ? true : state.showBigPlayer,
             speed: playerStatus.speed,
+            volume: state.draggingVolume ? state.volume : playerStatus.volume,
           ),
         );
       }
@@ -324,6 +326,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         position: event.position,
         bufferPosition: event.bufferedPosition,
         speed: event.speed,
+        // volume: _player.getVolume() * 100,
       ),
     );
     // we only want to update when there's a change in play status here, otherwise we're going to flood the websocket
@@ -340,7 +343,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       duration: state.duration.inSeconds,
       playing: state.playing,
       speed: _player.playbackState.value.speed,
-      volume: _player.getVolume(),
+      volume: _player.getVolume() * 100,
       broadcast: broadcast,
     );
     final message = PodkuSocketMessage(message: status.toJson(), type: .playerStatus);
@@ -471,11 +474,14 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     }
   }
 
-  void setVolume(double volume) {
+  Future<void> setVolume(double volume, {required bool onChangeEnd}) async {
+    _log.fine('Setting volume to $volume');
+    emit(state.copyWith(volume: volume, draggingVolume: !onChangeEnd));
     if (isPlayingLocally) {
-      _player.setVolume(volume);
+      await _player.setVolume(volume);
       _sendCurrentState(true);
-    } else {
+    } else if (onChangeEnd) {
+      // if we're playing remotely, no need to flood the network and just change volume when the drag is over
       _sendRemoteCommand(type: .setVolume, volume: volume);
     }
   }
@@ -486,7 +492,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void showTranscript(bool show) {
-    emit(state.copyWith(showTranscript: show));
+    emit(state.copyWith(showTranscript: show, showVolume: show ? false : state.showVolume));
+  }
+
+  void setShowVolume(bool showVolume) {
+    emit(state.copyWith(showVolume: showVolume, showTranscript: showVolume ? false : state.showTranscript));
   }
 }
 
@@ -504,6 +514,9 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(false) bool showMiniPlayer,
     @Default(false) bool showBigPlayer,
     @Default(false) bool showTranscript,
+    @Default(false) bool showVolume,
+    @Default(false) bool draggingVolume,
+    @Default(1) double volume,
     PlayerInfo? currentPlayer,
     dynamic error,
     StackTrace? stackTrace,
