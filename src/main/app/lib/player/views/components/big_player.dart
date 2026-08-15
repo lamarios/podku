@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -245,20 +247,36 @@ class BigPlayer extends StatelessWidget {
                                             RemotePlayers(),
                                           ],
                                         ),
-                                        if (showVolume)
-                                          Padding(
-                                            padding: .symmetric(horizontal: pu16),
-                                            child: M3ESlider(
-                                              value: volume.clamp(0, 100),
-                                              min: 0,
-                                              max: 100,
-                                              icon: Icon(M3EIcons.volume_up),
-                                              iconPosition: .end,
-                                              iconSize: 15,
-                                              onChangeEnd: (value) => cubit.setVolume(value, onChangeEnd: true),
-                                              onChanged: (value) => cubit.setVolume(value, onChangeEnd: false),
-                                            ),
-                                          ),
+                                        SingleMotionBuilder(
+                                          motion: MaterialSpringMotion.expressiveSpatialFast(),
+                                          value: showVolume ? 1 : 0,
+                                          builder: (context, value, child) {
+                                            var sliderTheme = M3ETheme.of(context).sliderTheme;
+                                            return value < 0.1
+                                                ? SizedBox.shrink()
+                                                : SizedBox(
+                                                    height: lerpDouble(0, 45, value),
+                                                    child: Padding(
+                                                      padding: .symmetric(horizontal: pu16),
+                                                      child: M3ESlider(
+                                                        value: volume.clamp(0, 100),
+                                                        min: 0,
+                                                        max: 100,
+                                                        trackThickness: lerpDouble(0, sliderTheme.trackHeight, value),
+                                                        thumbLength: lerpDouble(0, sliderTheme.handleHeight, value),
+
+                                                        icon: Icon(M3EIcons.volume_up),
+                                                        iconPosition: .end,
+                                                        iconSize: lerpDouble(0, 15, value),
+                                                        onChangeEnd: (value) =>
+                                                            cubit.setVolume(value, onChangeEnd: true),
+                                                        onChanged: (value) =>
+                                                            cubit.setVolume(value, onChangeEnd: false),
+                                                      ),
+                                                    ),
+                                                  );
+                                          },
+                                        ),
                                         if (showTranscript) Expanded(child: TranscriptFollower()),
                                       ],
                                     ),
