@@ -72,8 +72,8 @@ Class | Method | HTTP request | Description
 [*EpisodesApi*](doc/EpisodesApi.md) | [**setProgress**](doc/EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**startPlayback**](doc/EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**updateProgresses**](doc/EpisodesApi.md#updateprogresses) | **POST** /api/episodes/setProgressesBatch | 
-[*MediaApi*](doc/MediaApi.md) | [**getImage**](doc/MediaApi.md#getimage) | **GET** /media/image/{hash} | 
-[*MediaApi*](doc/MediaApi.md) | [**proxyAudio**](doc/MediaApi.md#proxyaudio) | **GET** /media/audio/{hash} | 
+[*MediaApi*](doc/MediaApi.md) | [**getImage**](doc/MediaApi.md#getimage) | **GET** /media/image/{encryptedUrl} | 
+[*MediaApi*](doc/MediaApi.md) | [**proxyAudio**](doc/MediaApi.md#proxyaudio) | **GET** /media/audio/{encryptedUrl} | 
 [*PingApi*](doc/PingApi.md) | [**ping**](doc/PingApi.md#ping) | **GET** /api/ping | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**exportFeeds**](doc/PodcastsApi.md#exportfeeds) | **GET** /api/podcasts/export | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**getPodcast**](doc/PodcastsApi.md#getpodcast) | **GET** /api/podcasts/{id} | 

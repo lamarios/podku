@@ -265,9 +265,6 @@ class BigPlayer extends StatelessWidget {
                                                         trackThickness: lerpDouble(0, sliderTheme.trackHeight, value),
                                                         thumbLength: lerpDouble(0, sliderTheme.handleHeight, value),
 
-                                                        icon: Icon(M3EIcons.volume_up),
-                                                        iconPosition: .end,
-                                                        iconSize: lerpDouble(0, 15, value),
                                                         onChangeEnd: (value) =>
                                                             cubit.setVolume(value, onChangeEnd: true),
                                                         onChanged: (value) =>

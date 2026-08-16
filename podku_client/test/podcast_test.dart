@@ -57,5 +57,10 @@ void main() {
       // TODO
     });
 
+    // String artworkEncrypted
+    test('to test the property `artworkEncrypted`', () async {
+      // TODO
+    });
+
   });
 }

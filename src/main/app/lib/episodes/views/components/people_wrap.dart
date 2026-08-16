@@ -34,7 +34,7 @@ class PeopleList extends StatelessWidget {
             clipBehavior: .hardEdge,
             decoration: BoxDecoration(color: colors.secondaryContainer, shape: .circle),
             child: p.image != null
-                ? CachedNetworkImage(imageUrl: p.imageUrl, imageRenderMethodForWeb: .HttpGet)
+                ? CachedNetworkImage(imageUrl: p.imageUrl, imageRenderMethodForWeb: .HttpGet, cacheKey: p.image)
                 : Center(child: Text((p.name ?? '').substring(0, 1))),
           ),
           Text(p.name ?? '', style: nameStyle ?? textTheme.bodyMedium),

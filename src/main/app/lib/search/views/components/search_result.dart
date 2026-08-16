@@ -6,7 +6,6 @@ import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
-import 'package:podku/search/states/search.dart';
 import 'package:podku/utils.dart';
 
 const double _imageSize = 75;
@@ -30,9 +29,6 @@ class SearchResultView extends StatelessWidget {
         push.then((value) async {
           if (context.mounted) {
             await context.read<PodcastsCubit>().getPodcasts();
-            if (context.mounted) {
-              await context.read<SearchCubit>().search(force: true);
-            }
           }
         });
       },
@@ -44,6 +40,7 @@ class SearchResultView extends StatelessWidget {
                 podcast ??
                 PodcastLight(
                   artworkUrl: result!.artworkUrl600,
+                  artworkEncrypted: result!.artworkUrlEncrypted,
                   url: '',
                   name:
                       ''

@@ -7,6 +7,8 @@ part of 'search_result.dart';
 // **************************************************************************
 
 abstract class _$SearchResultCWProxy {
+  SearchResult artworkUrlEncrypted(String? artworkUrlEncrypted);
+
   SearchResult collectionId(int? collectionId);
 
   SearchResult collectionName(String? collectionName);
@@ -28,6 +30,7 @@ abstract class _$SearchResultCWProxy {
   /// SearchResult(...).copyWith(id: 12, name: "My name")
   /// ````
   SearchResult call({
+    String? artworkUrlEncrypted,
     int? collectionId,
     String? collectionName,
     String? artistName,
@@ -43,6 +46,10 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
   const _$SearchResultCWProxyImpl(this._value);
 
   final SearchResult _value;
+
+  @override
+  SearchResult artworkUrlEncrypted(String? artworkUrlEncrypted) =>
+      this(artworkUrlEncrypted: artworkUrlEncrypted);
 
   @override
   SearchResult collectionId(int? collectionId) =>
@@ -76,6 +83,7 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
   /// SearchResult(...).copyWith(id: 12, name: "My name")
   /// ````
   SearchResult call({
+    Object? artworkUrlEncrypted = const $CopyWithPlaceholder(),
     Object? collectionId = const $CopyWithPlaceholder(),
     Object? collectionName = const $CopyWithPlaceholder(),
     Object? artistName = const $CopyWithPlaceholder(),
@@ -85,6 +93,10 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
     Object? color = const $CopyWithPlaceholder(),
   }) {
     return SearchResult(
+      artworkUrlEncrypted: artworkUrlEncrypted == const $CopyWithPlaceholder()
+          ? _value.artworkUrlEncrypted
+          // ignore: cast_nullable_to_non_nullable
+          : artworkUrlEncrypted as String?,
       collectionId: collectionId == const $CopyWithPlaceholder()
           ? _value.collectionId
           // ignore: cast_nullable_to_non_nullable
@@ -130,6 +142,10 @@ extension $SearchResultCopyWith on SearchResult {
 SearchResult _$SearchResultFromJson(Map<String, dynamic> json) =>
     $checkedCreate('SearchResult', json, ($checkedConvert) {
       final val = SearchResult(
+        artworkUrlEncrypted: $checkedConvert(
+          'artworkUrlEncrypted',
+          (v) => v as String?,
+        ),
         collectionId: $checkedConvert(
           'collectionId',
           (v) => (v as num?)?.toInt(),
@@ -149,6 +165,7 @@ SearchResult _$SearchResultFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
     <String, dynamic>{
+      'artworkUrlEncrypted': ?instance.artworkUrlEncrypted,
       'collectionId': ?instance.collectionId,
       'collectionName': ?instance.collectionName,
       'artistName': ?instance.artistName,

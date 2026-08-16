@@ -9,12 +9,12 @@ All URIs are relative to *http://localhost:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getImage**](MediaApi.md#getimage) | **GET** /media/image/{hash} | 
-[**proxyAudio**](MediaApi.md#proxyaudio) | **GET** /media/audio/{hash} | 
+[**getImage**](MediaApi.md#getimage) | **GET** /media/image/{encryptedUrl} | 
+[**proxyAudio**](MediaApi.md#proxyaudio) | **GET** /media/audio/{encryptedUrl} | 
 
 
 # **getImage**
-> Object getImage(hash, ifNoneMatch)
+> Object getImage(encryptedUrl, ifNoneMatch)
 
 
 
@@ -23,11 +23,11 @@ Method | HTTP request | Description
 import 'package:openapi/api.dart';
 
 final api = Openapi().getMediaApi();
-final String hash = hash_example; // String | 
+final String encryptedUrl = encryptedUrl_example; // String | 
 final String ifNoneMatch = ifNoneMatch_example; // String | 
 
 try {
-    final response = api.getImage(hash, ifNoneMatch);
+    final response = api.getImage(encryptedUrl, ifNoneMatch);
     print(response);
 } on DioException catch (e) {
     print('Exception when calling MediaApi->getImage: $e\n');
@@ -38,7 +38,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hash** | **String**|  | 
+ **encryptedUrl** | **String**|  | 
  **ifNoneMatch** | **String**|  | [optional] 
 
 ### Return type
@@ -57,7 +57,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **proxyAudio**
-> Object proxyAudio(hash, range)
+> Object proxyAudio(encryptedUrl, range)
 
 
 
@@ -66,11 +66,11 @@ No authorization required
 import 'package:openapi/api.dart';
 
 final api = Openapi().getMediaApi();
-final String hash = hash_example; // String | 
+final String encryptedUrl = encryptedUrl_example; // String | 
 final String range = range_example; // String | 
 
 try {
-    final response = api.proxyAudio(hash, range);
+    final response = api.proxyAudio(encryptedUrl, range);
     print(response);
 } on DioException catch (e) {
     print('Exception when calling MediaApi->proxyAudio: $e\n');
@@ -81,7 +81,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hash** | **String**|  | 
+ **encryptedUrl** | **String**|  | 
  **range** | **String**|  | [optional] 
 
 ### Return type

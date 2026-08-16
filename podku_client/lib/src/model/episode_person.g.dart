@@ -19,6 +19,8 @@ abstract class _$EpisodePersonCWProxy {
 
   EpisodePerson id(String? id);
 
+  EpisodePerson imageEncrypted(String? imageEncrypted);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `EpisodePerson(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -32,6 +34,7 @@ abstract class _$EpisodePersonCWProxy {
     String? image,
     String? link,
     String? id,
+    String? imageEncrypted,
   });
 }
 
@@ -60,6 +63,10 @@ class _$EpisodePersonCWProxyImpl implements _$EpisodePersonCWProxy {
   EpisodePerson id(String? id) => this(id: id);
 
   @override
+  EpisodePerson imageEncrypted(String? imageEncrypted) =>
+      this(imageEncrypted: imageEncrypted);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `EpisodePerson(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -73,6 +80,7 @@ class _$EpisodePersonCWProxyImpl implements _$EpisodePersonCWProxy {
     Object? image = const $CopyWithPlaceholder(),
     Object? link = const $CopyWithPlaceholder(),
     Object? id = const $CopyWithPlaceholder(),
+    Object? imageEncrypted = const $CopyWithPlaceholder(),
   }) {
     return EpisodePerson(
       name: name == const $CopyWithPlaceholder()
@@ -99,6 +107,10 @@ class _$EpisodePersonCWProxyImpl implements _$EpisodePersonCWProxy {
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
           : id as String?,
+      imageEncrypted: imageEncrypted == const $CopyWithPlaceholder()
+          ? _value.imageEncrypted
+          // ignore: cast_nullable_to_non_nullable
+          : imageEncrypted as String?,
     );
   }
 }
@@ -122,6 +134,7 @@ EpisodePerson _$EpisodePersonFromJson(Map<String, dynamic> json) =>
         image: $checkedConvert('image', (v) => v as String?),
         link: $checkedConvert('link', (v) => v as String?),
         id: $checkedConvert('id', (v) => v as String?),
+        imageEncrypted: $checkedConvert('imageEncrypted', (v) => v as String?),
       );
       return val;
     });
@@ -134,4 +147,5 @@ Map<String, dynamic> _$EpisodePersonToJson(EpisodePerson instance) =>
       'image': ?instance.image,
       'link': ?instance.link,
       'id': ?instance.id,
+      'imageEncrypted': ?instance.imageEncrypted,
     };

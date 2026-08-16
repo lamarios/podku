@@ -8,6 +8,7 @@ import 'package:openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**artworkUrlEncrypted** | **String** |  | [optional] 
 **collectionId** | **int** |  | [optional] 
 **collectionName** | **String** |  | [optional] 
 **artistName** | **String** |  | [optional] 

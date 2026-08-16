@@ -18,6 +18,7 @@ class PodcastImage extends StatelessWidget {
       borderRadius: .circular(borderRadius ?? 0),
       child: CachedNetworkImage(
         imageUrl: podcast?.artUrl ?? podcastLight!.artUrl,
+        cacheKey: podcast?.artworkUrl ?? podcastLight!.artworkUrl,
         width: width,
         height: height,
         fit: .cover,

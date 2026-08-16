@@ -3,7 +3,6 @@ package com.github.lamarios.podku.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.lamarios.podku.urls.UrlService;
 import com.github.lamarios.podku.utils.VibrantColorExtractor;
 import java.io.IOException;
 import java.net.URI;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,17 +28,14 @@ public class ItunesPodcastSearch {
     private static final String LOOKUP_URL = "https://itunes.apple.com/lookup";
     private final HttpClient client;
     private final ObjectMapper objectMapper;
-    final UrlService urlService;
 
-    @Autowired
-    public ItunesPodcastSearch(UrlService urlService) {
-        this(HttpClient.newHttpClient(), new ObjectMapper(), urlService);
+    public ItunesPodcastSearch() {
+        this(HttpClient.newHttpClient(), new ObjectMapper());
     }
 
-    public ItunesPodcastSearch(HttpClient client, ObjectMapper objectMapper, UrlService urlService) {
+    public ItunesPodcastSearch(HttpClient client, ObjectMapper objectMapper) {
         this.client = client;
         this.objectMapper = objectMapper;
-        this.urlService = urlService;
     }
 
     /**
@@ -72,9 +67,6 @@ public class ItunesPodcastSearch {
                 results.add(objectMapper.convertValue(r, SearchResult.class));
             }
         }
-
-        List<String> urls = new ArrayList<>(results.stream().map(SearchResult::getArtworkUrl).toList());
-        urlService.storeUrls(urls);
 
         return results
             .parallelStream()

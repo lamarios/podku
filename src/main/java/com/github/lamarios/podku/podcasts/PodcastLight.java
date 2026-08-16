@@ -14,6 +14,7 @@ public class PodcastLight {
     private String link;
     private String color;
     private List<PodcastPerson> people;
+    private String artworkEncrypted;
 
     public PodcastLight() {
     }
@@ -28,6 +29,19 @@ public class PodcastLight {
         link = podcast.getLink();
         people = podcast.getPeople();
         color = podcast.getColor();
+        try {
+            artworkEncrypted = podcast.getArtworkEncrypted();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getArtworkEncrypted() {
+        return artworkEncrypted;
+    }
+
+    public void setArtworkEncrypted(String artworkEncrypted) {
+        this.artworkEncrypted = artworkEncrypted;
     }
 
     public String getColor() {

@@ -3,6 +3,7 @@ package com.github.lamarios.podku.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.lamarios.podku.utils.FastUrlCrypto;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,6 +22,10 @@ public class SearchResult {
     private List<String> genres;
     @JsonProperty("color")
     private String color;
+
+    public String getArtworkUrlEncrypted() throws Exception {
+        return FastUrlCrypto.instance.encrypt(artworkUrl);
+    }
 
     public String getColor() {
         return color;

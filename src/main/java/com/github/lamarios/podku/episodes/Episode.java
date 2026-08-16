@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.podcasts.PodcastLight;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
+import com.github.lamarios.podku.utils.FastUrlCrypto;
 import com.google.common.hash.Hashing;
 import jakarta.persistence.*;
 import java.nio.charset.StandardCharsets;
@@ -41,6 +42,8 @@ public class Episode {
     private Podcast podcast;
     @Transient
     private PodcastLight podcastLight;
+    @Transient
+    private String audioUrlEncrypted;
 
     public boolean isProcessed() {
         return processed;
@@ -59,6 +62,18 @@ public class Episode {
             return new PodcastLight(podcast);
         } else {
             return podcastLight;
+        }
+    }
+
+    public void setAudioUrlEncrypted(String audioUrlEncrypted) {
+        this.audioUrlEncrypted = audioUrlEncrypted;
+    }
+
+    public String getAudioUrlEncrypted() throws Exception {
+        if (audioUrlEncrypted != null) {
+            return audioUrlEncrypted;
+        } else {
+            return FastUrlCrypto.instance.encrypt(audioUrl);
         }
     }
 

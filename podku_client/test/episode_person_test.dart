@@ -37,5 +37,10 @@ void main() {
       // TODO
     });
 
+    // String imageEncrypted
+    test('to test the property `imageEncrypted`', () async {
+      // TODO
+    });
+
   });
 }

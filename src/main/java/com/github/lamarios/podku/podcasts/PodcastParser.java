@@ -5,8 +5,6 @@ import com.github.lamarios.podku.episodes.Episode;
 import com.github.lamarios.podku.episodes.EpisodeFile;
 import com.github.lamarios.podku.episodes.EpisodeFileType;
 import com.github.lamarios.podku.episodes.EpisodePerson;
-import com.github.lamarios.podku.urls.UrlRepository;
-import com.github.lamarios.podku.urls.UrlService;
 import com.github.lamarios.podku.utils.VibrantColorExtractor;
 import java.io.IOException;
 import java.io.StringReader;
@@ -18,14 +16,15 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,11 +39,8 @@ import org.xml.sax.InputSource;
 public class PodcastParser {
     private static final Logger log = LogManager.getLogger();
     private static final String ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd";
-    private final UrlService urlService;
 
-    @Autowired
-    public PodcastParser(UrlRepository urlRepository, UrlService urlService) {
-        this.urlService = urlService;
+    public PodcastParser() {
     }
 
     public Podcast parseUrl(Podcast podcast) {
@@ -117,21 +113,6 @@ public class PodcastParser {
                 log.error("Couldn't get podcast image color");
             }
         }
-
-        List<String> urls = new ArrayList<>();
-        urls.add(podcast.getArtworkUrl());
-        urls.addAll(podcast.getPeople().stream().map(PodcastPerson::getImage).filter(Objects::nonNull).toList());
-
-        podcast
-            .getEpisodes()
-            .stream()
-            .flatMap(e -> Stream.concat(Stream.of(e.getAudioUrl()), e
-                .getPeople()
-                .stream()
-                .map(EpisodePerson::getImage)))
-            .forEach(urls::add);
-
-        urlService.storeUrls(urls);
 
         return podcast;
     }

@@ -1,6 +1,8 @@
 /* (C)2026 */
 package com.github.lamarios.podku.urls;
 
+import com.github.lamarios.podku.utils.FastUrlCrypto;
+import com.google.common.hash.Hashing;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +35,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class UrlController {
     private final Logger log = LogManager.getLogger();
     private final Path cacheDir;
-    private final UrlService urlService;
 
     static {
         System.setProperty("jdk.httpclient.redirects.retrylimit", "50");
@@ -69,12 +71,10 @@ public class UrlController {
 
     public UrlController(
             @Value("${image-proxy.cache-dir:./image-cache}") String cacheDirPath,
-            UrlService urlService,
             @Value("${podku.episodes.cache-dir:./episode-cache}") String episodeCacheFolder
     ) throws IOException {
         this.cacheDir = Paths.get(cacheDirPath);
         Files.createDirectories(cacheDir);
-        this.urlService = urlService;
         Path p = Path.of(episodeCacheFolder);
         if (!p.toFile().exists()) {
             p.toFile().mkdirs();
@@ -83,19 +83,15 @@ public class UrlController {
         this.episodeCacheFolder = p;
     }
 
-    @GetMapping("/audio/{hash}")
+    @GetMapping("/audio/{encryptedUrl}")
     public ResponseEntity<StreamingResponseBody> proxyAudio(
-            @PathVariable("hash") String hash,
+            @PathVariable("encryptedUrl") String encryptedUrl,
             @RequestHeader(value = "Range", required = false) String rangeHeader,
             HttpServletRequest request
     ) throws InterruptedException {
         try {
-            var urlOpt = urlService.getUrl(hash);
-            if (urlOpt.isEmpty()) {
-                return ResponseEntity.status(404).build();
-            }
-
-            String audioUrl = urlOpt.get();
+            var audioUrl = FastUrlCrypto.instance.decrypt(encryptedUrl);
+            var hash = hashUrl(audioUrl);
             // we check if we have the file in cache first
             var filePath = episodeCacheFolder.resolve(hash);
             if (Files.exists(filePath)) {
@@ -207,17 +203,13 @@ public class UrlController {
         return ResponseEntity.status(status).headers(headers).body(body);
     }
 
-    @GetMapping("image/{hash}")
+    @GetMapping("image/{encryptedUrl}")
     public ResponseEntity<StreamingResponseBody> getImage(
-            @PathVariable("hash") String hash,
+            @PathVariable("encryptedUrl") String encryptedUrl,
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String clientEtag
-    ) throws IOException, InterruptedException {
-        var urlOpt = urlService.getUrl(hash);
-        if (urlOpt.isEmpty()) {
-            return ResponseEntity.status(404).build();
-        }
-
-        String imageUrl = urlOpt.get();
+    ) throws Exception {
+        var imageUrl = FastUrlCrypto.instance.decrypt(encryptedUrl);
+        var hash = hashUrl(imageUrl);
 
         URI uri;
         try {
@@ -339,4 +331,8 @@ public class UrlController {
     }
 
     private record CachedMetadata(String etag, String lastModified, String contentType) {}
+
+    private String hashUrl(String url) {
+        return Hashing.sha256().hashString(url, StandardCharsets.UTF_8).toString();
+    }
 }

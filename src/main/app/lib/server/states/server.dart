@@ -175,9 +175,12 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
       }
 
       _log.fine('Attempt to connect to socket');
-
-      await socket?.close();
-
+      try {
+        await _disconnectFromStream().timeout(Duration(seconds: 2));
+      } catch (e) {
+        _log.fine('failed to close socket connection, we move on');
+        socket = null;
+      }
       _log.fine('existing connection closed');
       socket = ReconnectableWebSocket(uri: Uri.parse('${state.serverUrl}/ws'.replaceFirst('http', 'ws')));
       _log.fine('socket: ${socket?.uri}');

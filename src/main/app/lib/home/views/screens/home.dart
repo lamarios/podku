@@ -255,7 +255,10 @@ class HomeScreen extends StatelessWidget {
         width: imageSize,
         height: imageSize,
         borderRadius: radius,
-        podcastLight: PodcastLight(artworkUrl: (result as GlobalSearchResult<SearchResult>).data.artworkUrl600),
+        podcastLight: PodcastLight(
+          artworkUrl: (result as GlobalSearchResult<SearchResult>).data.artworkUrl600,
+          artworkEncrypted: (result).data.artworkUrlEncrypted,
+        ),
       ),
       .podcast => PodcastImage(
         width: imageSize,

@@ -2,6 +2,7 @@
 package com.github.lamarios.podku.podcasts;
 
 import com.github.lamarios.podku.episodes.Episode;
+import com.github.lamarios.podku.utils.FastUrlCrypto;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,20 @@ public class Podcast {
     private List<Episode> episodes;
     @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PodcastPerson> people;
+    @Transient
+    private String artworkEncrypted;
+
+    public void setArtworkEncrypted(String artworkEncrypted) {
+        this.artworkEncrypted = artworkEncrypted;
+    }
+
+    public String getArtworkEncrypted() throws Exception {
+        if (artworkEncrypted != null) {
+            return artworkEncrypted;
+        } else {
+            return FastUrlCrypto.instance.encrypt(artworkUrl);
+        }
+    }
 
     public UUID getId() {
         return id;

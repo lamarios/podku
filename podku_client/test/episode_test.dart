@@ -97,6 +97,11 @@ void main() {
       // TODO
     });
 
+    // String audioUrlEncrypted
+    test('to test the property `audioUrlEncrypted`', () async {
+      // TODO
+    });
+
     // List<Chapter> chapters
     test('to test the property `chapters`', () async {
       // TODO

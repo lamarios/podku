@@ -20,6 +20,8 @@ class SearchResult {
   /// Returns a new [SearchResult] instance.
   SearchResult({
 
+     this.artworkUrlEncrypted,
+
      this.collectionId,
 
      this.collectionName,
@@ -34,6 +36,18 @@ class SearchResult {
 
      this.color,
   });
+
+  @JsonKey(
+    
+    name: r'artworkUrlEncrypted',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? artworkUrlEncrypted;
+
+
 
   @JsonKey(
     
@@ -123,6 +137,7 @@ class SearchResult {
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is SearchResult &&
+      other.artworkUrlEncrypted == artworkUrlEncrypted &&
       other.collectionId == collectionId &&
       other.collectionName == collectionName &&
       other.artistName == artistName &&
@@ -133,6 +148,7 @@ class SearchResult {
 
     @override
     int get hashCode =>
+        artworkUrlEncrypted.hashCode +
         collectionId.hashCode +
         collectionName.hashCode +
         artistName.hashCode +

@@ -20,7 +20,7 @@ class MediaApi {
   /// 
   ///
   /// Parameters:
-  /// * [hash] 
+  /// * [encryptedUrl] 
   /// * [ifNoneMatch] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -32,7 +32,7 @@ class MediaApi {
   /// Returns a [Future] containing a [Response] with a [Object] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<Object>> getImage({ 
-    required String hash,
+    required String encryptedUrl,
     String? ifNoneMatch,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -41,7 +41,7 @@ class MediaApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/media/image/{hash}'.replaceAll('{' r'hash' '}', hash.toString());
+    final _path = r'/media/image/{encryptedUrl}'.replaceAll('{' r'encryptedUrl' '}', encryptedUrl.toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -95,7 +95,7 @@ _responseData = rawData == null ? null : deserialize<Object, Object>(rawData, 'O
   /// 
   ///
   /// Parameters:
-  /// * [hash] 
+  /// * [encryptedUrl] 
   /// * [range] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -107,7 +107,7 @@ _responseData = rawData == null ? null : deserialize<Object, Object>(rawData, 'O
   /// Returns a [Future] containing a [Response] with a [Object] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<Object>> proxyAudio({ 
-    required String hash,
+    required String encryptedUrl,
     String? range,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -116,7 +116,7 @@ _responseData = rawData == null ? null : deserialize<Object, Object>(rawData, 'O
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/media/audio/{hash}'.replaceAll('{' r'hash' '}', hash.toString());
+    final _path = r'/media/audio/{encryptedUrl}'.replaceAll('{' r'encryptedUrl' '}', encryptedUrl.toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{

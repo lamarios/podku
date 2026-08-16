@@ -190,7 +190,15 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
         _log.fine('Playing episode: ${episode.title}, offline? $offline');
 
-        emit(state.copyWith(loading: true, showMiniPlayer: false, showBigPlayer: true, showTranscript: false));
+        emit(
+          state.copyWith(
+            loading: true,
+            showMiniPlayer: false,
+            showBigPlayer: true,
+            showTranscript: false,
+            volume: _player.getVolume() * 100,
+          ),
+        );
         var backendEpisode =
             (!kIsWeb && offline) ||
                 episode.id ==

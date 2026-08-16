@@ -31,6 +31,8 @@ class EpisodePerson {
      this.link,
 
      this.id,
+
+     this.imageEncrypted,
   });
 
   @JsonKey(
@@ -105,6 +107,18 @@ class EpisodePerson {
 
 
 
+  @JsonKey(
+    
+    name: r'imageEncrypted',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? imageEncrypted;
+
+
+
 
 
     @override
@@ -114,7 +128,8 @@ class EpisodePerson {
       other.group == group &&
       other.image == image &&
       other.link == link &&
-      other.id == id;
+      other.id == id &&
+      other.imageEncrypted == imageEncrypted;
 
     @override
     int get hashCode =>
@@ -123,7 +138,8 @@ class EpisodePerson {
         group.hashCode +
         image.hashCode +
         link.hashCode +
-        id.hashCode;
+        id.hashCode +
+        imageEncrypted.hashCode;
 
   factory EpisodePerson.fromJson(Map<String, dynamic> json) => _$EpisodePersonFromJson(json);
 

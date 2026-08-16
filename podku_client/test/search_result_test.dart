@@ -7,6 +7,11 @@ void main() {
   // TODO add properties to the entity
 
   group(SearchResult, () {
+    // String artworkUrlEncrypted
+    test('to test the property `artworkUrlEncrypted`', () async {
+      // TODO
+    });
+
     // int collectionId
     test('to test the property `collectionId`', () async {
       // TODO

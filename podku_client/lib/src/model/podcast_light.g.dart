@@ -25,6 +25,8 @@ abstract class _$PodcastLightCWProxy {
 
   PodcastLight people(List<PodcastPerson>? people);
 
+  PodcastLight artworkEncrypted(String? artworkEncrypted);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PodcastLight(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -41,6 +43,7 @@ abstract class _$PodcastLightCWProxy {
     String? link,
     String? color,
     List<PodcastPerson>? people,
+    String? artworkEncrypted,
   });
 }
 
@@ -79,6 +82,10 @@ class _$PodcastLightCWProxyImpl implements _$PodcastLightCWProxy {
   PodcastLight people(List<PodcastPerson>? people) => this(people: people);
 
   @override
+  PodcastLight artworkEncrypted(String? artworkEncrypted) =>
+      this(artworkEncrypted: artworkEncrypted);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PodcastLight(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -95,6 +102,7 @@ class _$PodcastLightCWProxyImpl implements _$PodcastLightCWProxy {
     Object? link = const $CopyWithPlaceholder(),
     Object? color = const $CopyWithPlaceholder(),
     Object? people = const $CopyWithPlaceholder(),
+    Object? artworkEncrypted = const $CopyWithPlaceholder(),
   }) {
     return PodcastLight(
       id: id == const $CopyWithPlaceholder()
@@ -133,6 +141,10 @@ class _$PodcastLightCWProxyImpl implements _$PodcastLightCWProxy {
           ? _value.people
           // ignore: cast_nullable_to_non_nullable
           : people as List<PodcastPerson>?,
+      artworkEncrypted: artworkEncrypted == const $CopyWithPlaceholder()
+          ? _value.artworkEncrypted
+          // ignore: cast_nullable_to_non_nullable
+          : artworkEncrypted as String?,
     );
   }
 }
@@ -164,6 +176,10 @@ PodcastLight _$PodcastLightFromJson(Map<String, dynamic> json) =>
               ?.map((e) => PodcastPerson.fromJson(e as Map<String, dynamic>))
               .toList(),
         ),
+        artworkEncrypted: $checkedConvert(
+          'artworkEncrypted',
+          (v) => v as String?,
+        ),
       );
       return val;
     });
@@ -179,4 +195,5 @@ Map<String, dynamic> _$PodcastLightToJson(PodcastLight instance) =>
       'link': ?instance.link,
       'color': ?instance.color,
       'people': ?instance.people?.map((e) => e.toJson()).toList(),
+      'artworkEncrypted': ?instance.artworkEncrypted,
     };

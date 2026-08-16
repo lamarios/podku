@@ -3,6 +3,7 @@ package com.github.lamarios.podku.episodes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.lamarios.podku.models.Person;
+import com.github.lamarios.podku.utils.FastUrlCrypto;
 import jakarta.persistence.*;
 import java.util.UUID;
 
@@ -22,6 +23,20 @@ public class EpisodePerson implements Person {
     @JoinColumn(name = "episode_id")
     @JsonIgnore
     private Episode episode;
+    @Transient
+    private String imageEncrypted;
+
+    public String getImageEncrypted() throws Exception {
+        if (imageEncrypted != null) {
+            return imageEncrypted;
+        } else {
+            return FastUrlCrypto.instance.encrypt(image);
+        }
+    }
+
+    public void setImageEncrypted(String imageEncrypted) {
+        this.imageEncrypted = imageEncrypted;
+    }
 
     public UUID getId() {
         return id;
