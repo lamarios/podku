@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -50,8 +48,8 @@ class PodcastEpisode extends StatelessWidget {
                 : index == 0
                 ? .first
                 : .middle,
-            outerRadius: lerpDouble(pu4, pu8 * 2, value)!,
-            innerRadius: lerpDouble(pu2, pu8 * 2, value)!,
+            outerRadius: isEpisodePlaying ? pu8 * 2 : pu4,
+            innerRadius: isEpisodePlaying ? pu8 * 2 : pu4,
             gap: pu,
             color: Color.lerp(
               isPlayerOnEpisode ? colors.secondaryContainer : colors.surfaceContainer,

@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
@@ -99,11 +101,43 @@ class BigPlayer extends StatelessWidget {
                                       crossAxisAlignment: .stretch,
                                       children: [
                                         Center(
-                                          child: PodcastImage(
-                                            podcastLight: episode.podcast!,
-                                            width: _imageWidth,
-                                            height: _imageWidth,
-                                            borderRadius: pu8,
+                                          child: SingleMotionBuilder(
+                                            motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                                            value: showTranscript ? 1 : 0,
+                                            builder: (context, value, child) {
+                                              return SingleMotionBuilder(
+                                                motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                                                value: playing ? 1 : 0,
+                                                builder: (context, playingValue, child) {
+                                                  return PodcastImage(
+                                                        podcastLight: episode.podcast!,
+                                                        width: lerpDouble(_imageWidth, _imageWidth * 0.6, value),
+                                                        height: lerpDouble(_imageWidth, _imageWidth * 0.6, value),
+                                                        borderRadius: lerpDouble(pu8, pu2, value),
+                                                      )
+                                                      .animate(onPlay: (controller) => controller.repeat(reverse: true))
+                                                      .boxShadow(
+                                                        borderRadius: .circular(pu8),
+                                                        begin: BoxShadow(
+                                                          color: colors.primary.withValues(
+                                                            alpha: lerpDouble(0, 0.2, max(0, playingValue))!,
+                                                          ),
+                                                          blurRadius: lerpDouble(0, 8, max(0, playingValue))!,
+                                                          spreadRadius: lerpDouble(0, 2, max(0, playingValue))!,
+                                                        ),
+                                                        end: BoxShadow(
+                                                          color: colors.primary.withValues(
+                                                            alpha: lerpDouble(0, 0.6, max(0, playingValue))!,
+                                                          ),
+                                                          blurRadius: lerpDouble(0, 20, max(0, playingValue))!,
+                                                          spreadRadius: lerpDouble(0, 4, max(0, playingValue))!,
+                                                        ),
+                                                        duration: 5.seconds,
+                                                        curve: Curves.easeInOut,
+                                                      );
+                                                },
+                                              );
+                                            },
                                           ),
                                         ),
                                         Gap(pu4),
@@ -274,7 +308,21 @@ class BigPlayer extends StatelessWidget {
                                                   );
                                           },
                                         ),
-                                        if (showTranscript) Expanded(child: TranscriptFollower()),
+                                        SingleMotionBuilder(
+                                          motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                                          value: showTranscript ? 1 : 0,
+                                          builder: (context, value, child) => value < 0.1
+                                              ? SizedBox.shrink()
+                                              : Flexible(
+                                                  child: ConstrainedBox(
+                                                    constraints: BoxConstraints(
+                                                      maxHeight: lerpDouble(0, 600, max(0, value))!,
+                                                    ),
+                                                    child: child,
+                                                  ),
+                                                ),
+                                          child: TranscriptFollower(),
+                                        ),
                                       ],
                                     ),
                                     Container(

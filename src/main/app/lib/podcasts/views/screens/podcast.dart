@@ -1,3 +1,4 @@
+import 'package:share_link/share_link.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,7 +8,8 @@ import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/components/cards/m3e_cards.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/components/icon_buttons/m3e_icon_buttons.dart';
+import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -64,6 +66,13 @@ class PodcastScreen extends StatelessWidget {
                           title: Text(state.podcast?.name ?? ''),
                           backgroundColor: Colors.transparent,
                           automaticallyImplyLeading: true,
+                          actions: [
+                            if (state.podcast?.url != null)
+                              M3EIconButton(
+                                icon: Icon(M3EIcons.share),
+                                onPressed: () => ShareLink.shareUri(Uri.parse(state.podcast!.url!)),
+                              ),
+                          ],
                         ),
                         backgroundColor: colorScheme.surface,
                         body: SafeArea(

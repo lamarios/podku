@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
               ),
               backgroundColor: Colors.transparent,
               centerTitle: true,
-              isFullScreen: false,
+              isFullScreen: isMobile,
               barBackgroundColor: WidgetStatePropertyAll(colors.surfaceContainerLowest),
               barHintText: locals.search,
               density: .compact,

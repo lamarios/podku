@@ -153,4 +153,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get devicesExplanation => 'Select which device should be playing audio';
+
+  @override
+  String get share => 'Share';
 }

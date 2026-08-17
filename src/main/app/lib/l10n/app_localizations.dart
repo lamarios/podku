@@ -360,6 +360,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select which device should be playing audio'**
   String get devicesExplanation;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

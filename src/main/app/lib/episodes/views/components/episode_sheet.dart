@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:share_link/share_link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
@@ -11,6 +11,7 @@ import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/views/components/bottom_sheet_title.dart';
 import 'package:podku/utils/views/components/description.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -65,20 +66,9 @@ class EpisodeSheet extends StatelessWidget {
           spacing: pu2,
           children: [
             if (showTitle)
-              Padding(
-                padding: const EdgeInsets.only(top: pu2, left: pu2, right: pu2),
-                child: Row(
-                  crossAxisAlignment: .center,
-                  spacing: pu,
-                  children: [
-                    if (episode.podcast != null)
-                      PodcastImage(podcastLight: episode.podcast!, width: 30, height: 30, borderRadius: pu),
-                    Gap(pu),
-                    Expanded(
-                      child: Text(episode.title ?? '', maxLines: 1, overflow: .ellipsis, style: textTheme.titleMedium),
-                    ),
-                  ],
-                ),
+              BottomSheetTitle(
+                title: episode.title ?? '',
+                icon: PodcastImage(podcastLight: episode.podcast!, width: 30, height: 30, borderRadius: pu),
               ),
             PeopleList(episode: episode, wrap: true, size: 50, nameStyle: textTheme.bodySmall),
             Flexible(
@@ -114,6 +104,11 @@ class EpisodeSheet extends StatelessWidget {
                     label: Text(locals.download),
                     icon: Icon(Icons.download),
                   ),
+                TextButton.icon(
+                  onPressed: () => ShareLink.shareUri(Uri.parse(episode.audioUrl!)),
+                  icon: Icon(Icons.share),
+                  label: Text(locals.share),
+                ),
               ],
             ),
           ],

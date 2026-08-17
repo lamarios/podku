@@ -1147,6 +1147,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.27.0"
+  share_link:
+    dependency: "direct main"
+    description:
+      name: share_link
+      sha256: fa17da71d478b36e5aaaa5f9cb8fd9fd569b20204ec440c8327122f30114637a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   shared_preferences:
     dependency: "direct main"
     description:

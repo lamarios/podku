@@ -11,6 +11,7 @@ import 'package:podku/player/views/components/remote_player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
+import 'package:podku/utils/views/components/bottom_sheet_title.dart';
 
 class RemotePlayers extends StatelessWidget {
   const RemotePlayers({super.key});
@@ -79,7 +80,6 @@ class RemotePlayersDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = M3ETheme.of(context).textTheme;
     final locals = AppLocalizations.of(context)!;
 
     return Builder(
@@ -93,14 +93,7 @@ class RemotePlayersDialog extends StatelessWidget {
             crossAxisAlignment: .stretch,
             mainAxisSize: .min,
             children: [
-              if (showTitle)
-                Row(
-                  spacing: pu2,
-                  children: [
-                    Icon(M3EIcons.devices_other),
-                    Text(locals.devices, style: textTheme.titleLarge),
-                  ],
-                ),
+              if (showTitle) BottomSheetTitle(title: locals.devices, icon: Icon(M3EIcons.devices_other)),
               Text(locals.devicesExplanation),
               Flexible(
                 child: ListView.builder(
