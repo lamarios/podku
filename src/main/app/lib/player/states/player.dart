@@ -37,6 +37,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   StreamSubscription<RemoteCommand>? _remoteCommandSubscription;
   StreamSubscription<PlayerStatus>? _playerStatusSubscription;
   StreamSubscription<TransferPlayback>? _transferPlaybackSubscription;
+  StreamSubscription<PlayerInfo?>? _currentPlayerSubscription;
+  StreamSubscription<PlaybackState>? _playbackStateSubscription;
+  StreamSubscription<MediaItem?>? _mediaItemSubscription;
+  StreamSubscription<Duration>? _durationChangedSubscription;
+  StreamSubscription<bool>? _showBigPlayerSubscription;
 
   PlayerCubit(super.initialState) {
     /*
@@ -49,29 +54,52 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       );
     }
 */
-    _player.playbackState.stream.listen(onStateChanged);
-    _player.mediaItem.stream.listen(episodeChangedListener);
-    _player.durationStream.stream.listen(onDurationChanged);
-    stream.map((event) => event.showBigPlayer).listen(handleBackButton);
+    listenToPlayerEvents();
+    _showBigPlayerSubscription = stream.map((event) => event.showBigPlayer).listen(handleBackButton);
     widgetsBinding.addObserver(this);
     var view = PlatformDispatcher.instance.views.first;
     _currentBreakPoint = BreakPoint.getFromSize((view.physicalSize / view.devicePixelRatio).width);
+    listenToEvents();
+  }
 
+  @override
+  Future<void> close() async {
+    widgetsBinding.removeObserver(this);
+    await _showBigPlayerSubscription?.cancel();
+    await stopListeningToEvents();
+    await stopListeningToPlayerEvents();
+    return super.close();
+  }
+
+  void listenToPlayerEvents() {
+    _playbackStateSubscription = _player.playbackState.stream.listen(onStateChanged);
+    _mediaItemSubscription = _player.mediaItem.stream.listen(episodeChangedListener);
+    _durationChangedSubscription = _player.durationStream.stream.listen(onDurationChanged);
+  }
+
+  Future<void> stopListeningToEvents() async {
+    await _streamSubscription?.cancel();
+    await _currentPlayerSubscription?.cancel();
+    await _remoteCommandSubscription?.cancel();
+    await _playerStatusSubscription?.cancel();
+    await _transferPlaybackSubscription?.cancel();
+  }
+
+  Future<void> stopListeningToPlayerEvents() async {
+    await _playbackStateSubscription?.cancel();
+    await _mediaItemSubscription?.cancel();
+    await _durationChangedSubscription?.cancel();
+  }
+
+  void listenToEvents() {
     var serverCubit = getIt.get<ServerCubit>();
     _streamSubscription = serverCubit.playbackStream.stream.where((e) => e.newPlayback ?? false).listen(onNewPlayback);
     _remoteCommandSubscription = serverCubit.remoteCommandsStream.stream.listen(_handleRemoteCommand);
     _playerStatusSubscription = serverCubit.playerStatusStream.stream.listen(_handleRemotePlayerStatus);
     _transferPlaybackSubscription = serverCubit.transferPlaybackStream.stream.listen(_handleTransferPlayback);
-  }
-
-  @override
-  Future<void> close() {
-    widgetsBinding.removeObserver(this);
-    _streamSubscription?.cancel();
-    _remoteCommandSubscription?.cancel();
-    _playerStatusSubscription?.cancel();
-    _transferPlaybackSubscription?.cancel();
-    return super.close();
+    _currentPlayerSubscription = serverCubit.currentPlayerStream.stream.listen((event) {
+      emit(state.copyWith(currentPlayer: event));
+    });
   }
 
   void _handleRemoteCommand(RemoteCommand command) {
@@ -112,8 +140,6 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void _handleRemotePlayerStatus(PlayerStatus playerStatus) {
-    emit(state.copyWith(currentPlayer: playerStatus.client));
-
     if (playerStatus.client?.id != sessionId) {
       if (playerStatus.episode == null) {
         _log.fine("Received null episode from remote player, closing");
@@ -187,8 +213,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           }
           return;
         }
+        await stopListeningToPlayerEvents();
 
-        _log.fine('Playing episode: ${episode.title}, offline? $offline');
+        _log.fine('Playing episode: ${episode.title}, offline? $offline, initial position: $initialPosition');
 
         emit(
           state.copyWith(
@@ -237,6 +264,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
             );
           }
           await _player.play();
+
+          listenToPlayerEvents();
         }
       } catch (e, s) {
         _log.severe('Failed to play episode', e, s);
@@ -368,11 +397,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         stop();
       }
 
-      EasyThrottle.throttle('progress-update-${state.episode?.id}', Duration(seconds: 5), () async {
+      EasyThrottle.throttle('progress-update-${episode.id}', Duration(seconds: 5), () async {
         await _updateProgressInner(episode, progress, duration);
       });
       // we do this so that whenever the episode stops playing, we save one last time
-      EasyDebounce.debounce('progress-update-debounce-${state.episode?.id}', Duration(seconds: 2), () async {
+      EasyDebounce.debounce('progress-update-debounce-${episode.id}', Duration(seconds: 2), () async {
         await _updateProgressInner(episode, progress, duration, broadcast: false);
         if (!kIsWeb) {
           await getIt.get<DownloadManagerCubit>().getOfflineEpisodes();
@@ -505,6 +534,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void setShowVolume(bool showVolume) {
     emit(state.copyWith(showVolume: showVolume, showTranscript: showVolume ? false : state.showTranscript));
+  }
+
+  void setCurrentPlayer(PlayerInfo? currentPlayer) {
+    emit(state.copyWith(currentPlayer: currentPlayer));
   }
 }
 

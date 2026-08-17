@@ -266,9 +266,13 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
     var audioProxyUrl = episode.audioProxyUrl;
 
+    _log.fine(
+      "Episode: ${episode.title}, initial position: $initialPosition, episode duration ${episode.durationSeconds}, episode progress: ${episode.progress}",
+    );
     initialPosition ??= episode.durationSeconds == null
         ? Duration.zero
         : Duration(seconds: (episode.progress ?? 0).floor());
+    _log.fine("Playing episode starting at $initialPosition");
 
     durationStream.add(Duration(seconds: episode.durationSeconds ?? 1));
 

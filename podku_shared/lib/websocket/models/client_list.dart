@@ -6,7 +6,9 @@ part 'client_list.g.dart';
 
 @freezed
 sealed class ClientList with _$ClientList {
-  const factory ClientList({@Default([]) List<PlayerInfo> clients}) = _ClientList;
+  const factory ClientList({
+    PlayerInfo? currentPlayer,
+    @Default([]) List<PlayerInfo> clients}) = _ClientList;
 
   factory ClientList.fromJson(Map<String, Object?> json) => _$ClientListFromJson(json);
 }

@@ -49,11 +49,17 @@ public class WebSocketSessionManager {
     }
 
     private ClientList getClientList() {
-        return new ClientList(sessions
-            .values()
-            .stream()
-            .filter(websocketClient -> websocketClient.id() != null)
-            .toList()
+        WebsocketClient currentPlayer = null;
+        if (playerStatus != null && playerStatus.client() != null) {
+            currentPlayer = playerStatus.client();
+        }
+        return new ClientList(
+                currentPlayer,
+                sessions
+                    .values()
+                    .stream()
+                    .filter(websocketClient -> websocketClient.id() != null)
+                    .toList()
         );
     }
 
@@ -234,42 +240,64 @@ public class WebSocketSessionManager {
      * A client starts playing or updates its playback status will be broadcasted to all other
      * connected clients
      */
-    private void handlePlayerStatus(WebSocketSession session, PlayerStatus playerStatus) throws IOException {
+    private void handlePlayerStatus(WebSocketSession session, PlayerStatus newPlayerStatus) throws IOException {
+        boolean broadcastClients = false;
+        if (Optional.ofNullable(newPlayerStatus).map(PlayerStatus::client).orElse(null) != Optional
+            .ofNullable(this.playerStatus)
+            .map(PlayerStatus::client)
+            .orElse(null)) {
+            broadcastClients = true;
+        }
         // we update the current status
-        if (playerStatus == null || playerStatus.episode() == null) {
+        if (newPlayerStatus == null || newPlayerStatus.episode() == null) {
             // playback stopped
             this.playerStatus = null;
-        } else if (playerStatus.episode().getId() != null) {
+        } else if (newPlayerStatus.episode().getId() != null) {
             this.playerStatus = new PlayerStatus(
                     sessions.get(session),
-                    playerStatus.episode(),
-                    playerStatus.position(),
-                    playerStatus.duration(),
-                    playerStatus.playing(),
-                    playerStatus.speed(),
-                    playerStatus.volume(),
+                    newPlayerStatus.episode(),
+                    newPlayerStatus.position(),
+                    newPlayerStatus.duration(),
+                    newPlayerStatus.playing(),
+                    newPlayerStatus.speed(),
+                    newPlayerStatus.volume(),
                     true
             );
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
                 episodeRepository
-                    .findById(playerStatus.episode().getId())
+                    .findById(newPlayerStatus.episode().getId())
                     .ifPresent(episode -> {
-                        episode.setProgress(playerStatus.position());
+                        log.info(
+                                "Saving progress for episode {} position: {}s",
+                                episode.getTitle(),
+                                newPlayerStatus.position()
+                        );
+                        episode.setProgress(newPlayerStatus.position());
                         episodeRepository.save(episode);
                     });
             });
         }
 
-        if (this.playerStatus == null || playerStatus.broadcast()) {
+        if (broadcastClients) {
+            testingSessions();
+        }
+
+        if (this.playerStatus == null || (newPlayerStatus != null && newPlayerStatus.broadcast())) {
             WebSocketMessage<PlayerStatus> message =
                     new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, this.playerStatus);
 
             for (Map.Entry<WebSocketSession, WebsocketClient> entry : sessions.entrySet()) {
                 WebSocketSession webSocketSession = entry.getKey();
                 WebsocketClient websocketClient = entry.getValue();
-                if (//                    || (this.playerStatus != null &&
-                // websocketClient.id().equalsIgnoreCase(this.playerStatus.client().id()))
-                websocketClient.id() == null) {
+                // we don't broadcast to empty clients and we don't broadcast to the session that sent the
+                // broadcast
+                if (websocketClient == null
+                        || webSocketSession == null
+                        || webSocketSession == session
+                        || websocketClient.id() == null) {
+                    if (websocketClient != null) {
+                        log.info("Skipping sending to {}", websocketClient.name());
+                    }
                     continue;
                 }
 

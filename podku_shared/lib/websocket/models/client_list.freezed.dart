@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ClientList {
 
- List<PlayerInfo> get clients;
+ PlayerInfo? get currentPlayer; List<PlayerInfo> get clients;
 /// Create a copy of ClientList
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ClientListCopyWith<ClientList> get copyWith => _$ClientListCopyWithImpl<ClientL
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClientList&&const DeepCollectionEquality().equals(other.clients, clients));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClientList&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.clients, clients));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(clients));
+int get hashCode => Object.hash(runtimeType,currentPlayer,const DeepCollectionEquality().hash(clients));
 
 @override
 String toString() {
-  return 'ClientList(clients: $clients)';
+  return 'ClientList(currentPlayer: $currentPlayer, clients: $clients)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $ClientListCopyWith<$Res>  {
   factory $ClientListCopyWith(ClientList value, $Res Function(ClientList) _then) = _$ClientListCopyWithImpl;
 @useResult
 $Res call({
- List<PlayerInfo> clients
+ PlayerInfo? currentPlayer, List<PlayerInfo> clients
 });
 
 
-
+$PlayerInfoCopyWith<$Res>? get currentPlayer;
 
 }
 /// @nodoc
@@ -65,13 +65,26 @@ class _$ClientListCopyWithImpl<$Res>
 
 /// Create a copy of ClientList
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? clients = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentPlayer = freezed,Object? clients = null,}) {
   return _then(_self.copyWith(
-clients: null == clients ? _self.clients : clients // ignore: cast_nullable_to_non_nullable
+currentPlayer: freezed == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
+as PlayerInfo?,clients: null == clients ? _self.clients : clients // ignore: cast_nullable_to_non_nullable
 as List<PlayerInfo>,
   ));
 }
+/// Create a copy of ClientList
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PlayerInfoCopyWith<$Res>? get currentPlayer {
+    if (_self.currentPlayer == null) {
+    return null;
+  }
 
+  return $PlayerInfoCopyWith<$Res>(_self.currentPlayer!, (value) {
+    return _then(_self.copyWith(currentPlayer: value));
+  });
+}
 }
 
 
@@ -150,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<PlayerInfo> clients)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PlayerInfo? currentPlayer,  List<PlayerInfo> clients)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ClientList() when $default != null:
-return $default(_that.clients);case _:
+return $default(_that.currentPlayer,_that.clients);case _:
   return orElse();
 
 }
@@ -171,10 +184,10 @@ return $default(_that.clients);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<PlayerInfo> clients)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PlayerInfo? currentPlayer,  List<PlayerInfo> clients)  $default,) {final _that = this;
 switch (_that) {
 case _ClientList():
-return $default(_that.clients);}
+return $default(_that.currentPlayer,_that.clients);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -188,10 +201,10 @@ return $default(_that.clients);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<PlayerInfo> clients)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PlayerInfo? currentPlayer,  List<PlayerInfo> clients)?  $default,) {final _that = this;
 switch (_that) {
 case _ClientList() when $default != null:
-return $default(_that.clients);case _:
+return $default(_that.currentPlayer,_that.clients);case _:
   return null;
 
 }
@@ -203,9 +216,10 @@ return $default(_that.clients);case _:
 @JsonSerializable()
 
 class _ClientList implements ClientList {
-  const _ClientList({final  List<PlayerInfo> clients = const []}): _clients = clients;
+  const _ClientList({this.currentPlayer, final  List<PlayerInfo> clients = const []}): _clients = clients;
   factory _ClientList.fromJson(Map<String, dynamic> json) => _$ClientListFromJson(json);
 
+@override final  PlayerInfo? currentPlayer;
  final  List<PlayerInfo> _clients;
 @override@JsonKey() List<PlayerInfo> get clients {
   if (_clients is EqualUnmodifiableListView) return _clients;
@@ -227,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClientList&&const DeepCollectionEquality().equals(other._clients, _clients));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClientList&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other._clients, _clients));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_clients));
+int get hashCode => Object.hash(runtimeType,currentPlayer,const DeepCollectionEquality().hash(_clients));
 
 @override
 String toString() {
-  return 'ClientList(clients: $clients)';
+  return 'ClientList(currentPlayer: $currentPlayer, clients: $clients)';
 }
 
 
@@ -247,11 +261,11 @@ abstract mixin class _$ClientListCopyWith<$Res> implements $ClientListCopyWith<$
   factory _$ClientListCopyWith(_ClientList value, $Res Function(_ClientList) _then) = __$ClientListCopyWithImpl;
 @override @useResult
 $Res call({
- List<PlayerInfo> clients
+ PlayerInfo? currentPlayer, List<PlayerInfo> clients
 });
 
 
-
+@override $PlayerInfoCopyWith<$Res>? get currentPlayer;
 
 }
 /// @nodoc
@@ -264,14 +278,27 @@ class __$ClientListCopyWithImpl<$Res>
 
 /// Create a copy of ClientList
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? clients = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currentPlayer = freezed,Object? clients = null,}) {
   return _then(_ClientList(
-clients: null == clients ? _self._clients : clients // ignore: cast_nullable_to_non_nullable
+currentPlayer: freezed == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
+as PlayerInfo?,clients: null == clients ? _self._clients : clients // ignore: cast_nullable_to_non_nullable
 as List<PlayerInfo>,
   ));
 }
 
+/// Create a copy of ClientList
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PlayerInfoCopyWith<$Res>? get currentPlayer {
+    if (_self.currentPlayer == null) {
+    return null;
+  }
 
+  return $PlayerInfoCopyWith<$Res>(_self.currentPlayer!, (value) {
+    return _then(_self.copyWith(currentPlayer: value));
+  });
+}
 }
 
 // dart format on

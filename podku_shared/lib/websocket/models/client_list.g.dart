@@ -7,6 +7,9 @@ part of 'client_list.dart';
 // **************************************************************************
 
 _ClientList _$ClientListFromJson(Map<String, dynamic> json) => _ClientList(
+  currentPlayer: json['currentPlayer'] == null
+      ? null
+      : PlayerInfo.fromJson(json['currentPlayer'] as Map<String, dynamic>),
   clients:
       (json['clients'] as List<dynamic>?)
           ?.map((e) => PlayerInfo.fromJson(e as Map<String, dynamic>))
@@ -15,4 +18,7 @@ _ClientList _$ClientListFromJson(Map<String, dynamic> json) => _ClientList(
 );
 
 Map<String, dynamic> _$ClientListToJson(_ClientList instance) =>
-    <String, dynamic>{'clients': instance.clients};
+    <String, dynamic>{
+      'currentPlayer': instance.currentPlayer,
+      'clients': instance.clients,
+    };

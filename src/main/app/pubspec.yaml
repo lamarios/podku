@@ -63,7 +63,7 @@ dependencies:
   podku_shared:
     path: ../../../podku_shared
   scrollview_observer: 1.27.0
-  share_link: 0.6.0
+  share_plus: 13.3.0
   shared_preferences: 2.5.5
   stupid_simple_sheet: 0.9.1+1
   url_launcher: 6.3.2

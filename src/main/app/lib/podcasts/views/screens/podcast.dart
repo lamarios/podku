@@ -1,4 +1,3 @@
-import 'package:share_link/share_link.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -23,6 +22,7 @@ import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 import 'package:podku/utils/views/components/description.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PodcastScreen extends StatelessWidget {
   final String? podcastId;
@@ -70,7 +70,8 @@ class PodcastScreen extends StatelessWidget {
                             if (state.podcast?.url != null)
                               M3EIconButton(
                                 icon: Icon(M3EIcons.share),
-                                onPressed: () => ShareLink.shareUri(Uri.parse(state.podcast!.url!)),
+                                onPressed: () =>
+                                    SharePlus.instance.share(ShareParams(uri: Uri.parse(state.podcast!.url!))),
                               ),
                           ],
                         ),

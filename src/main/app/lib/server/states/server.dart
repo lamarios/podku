@@ -26,6 +26,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   final StreamController<RemoteCommand> remoteCommandsStream = StreamController.broadcast();
   final StreamController<PlayerStatus> playerStatusStream = StreamController.broadcast();
   final StreamController<TransferPlayback> transferPlaybackStream = StreamController.broadcast();
+  final StreamController<PlayerInfo?> currentPlayerStream = StreamController.broadcast();
   final TextEditingController controller = TextEditingController();
   StreamSubscription<PodkuSocketMessage>? _subscription;
 
@@ -135,6 +136,9 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
         }
         final event = ClientList.fromJson(message.message!);
         final clients = List<PlayerInfo>.from(event.clients);
+
+        currentPlayerStream.add(event.currentPlayer);
+
         clients.sort((a, b) {
           if (a.id == sessionId) {
             return -1;
@@ -151,7 +155,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
         break;
       case .playerStatus:
         if (message.message == null) {
-          _log.fine("Recieved null message, assuming the remote player closed its stream");
+          _log.fine("Received null message, assuming the remote player closed its stream");
           playerStatusStream.add(PlayerStatus(episode: null, position: 0, duration: 1, playing: false, speed: 1));
         } else {
           playerStatusStream.add(PlayerStatus.fromJson(message.message!));

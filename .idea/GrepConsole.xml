@@ -61,6 +61,36 @@
                           </GrepCompositeModel>
                         </option>
                       </Pin>
+                      <Pin>
+                        <option name="consoleUUID" value="a02893d3-a315-4c0c-bb2d-1b7267059d09" />
+                        <option name="contentType" value="ConsoleContent" />
+                        <option name="grepCompositeModel">
+                          <GrepCompositeModel>
+                            <option name="models">
+                              <list>
+                                <GrepModel>
+                                  <option name="expression" value="playercubit" />
+                                </GrepModel>
+                              </list>
+                            </option>
+                          </GrepCompositeModel>
+                        </option>
+                      </Pin>
+                      <Pin>
+                        <option name="consoleUUID" value="0cc934ae-979d-4621-9c46-044c3db71700" />
+                        <option name="contentType" value="ConsoleContent" />
+                        <option name="grepCompositeModel">
+                          <GrepCompositeModel>
+                            <option name="models">
+                              <list>
+                                <GrepModel>
+                                  <option name="expression" value="AudioHandler" />
+                                </GrepModel>
+                              </list>
+                            </option>
+                          </GrepCompositeModel>
+                        </option>
+                      </Pin>
                     </list>
                   </option>
                 </Pins>
