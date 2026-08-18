@@ -118,7 +118,7 @@ public class WebSocketSessionManager {
 
     public void handleMessage(WebSocketSession session, TextMessage message) {
         try {
-            WebSocketMessage parsed = objectMapper.readValue(message.getPayload(), WebSocketMessage.class);
+            var parsed = objectMapper.readValue(message.getPayload(), WebSocketMessage.class);
 
             log.info("Received message of type: {}", parsed.getType());
 
@@ -184,7 +184,7 @@ public class WebSocketSessionManager {
         pingSessions();
     }
 
-    private void handleRemoteCommand(WebSocketMessage remoteCommand) {
+    private void handleRemoteCommand(WebSocketMessage<?> remoteCommand) {
         getCurrentPlayer().ifPresent(s -> {
             try {
                 s.sendMessage(new TextMessage(objectMapper.writeValueAsString(remoteCommand)));
@@ -278,19 +278,17 @@ public class WebSocketSessionManager {
 
                 this.currentPlayer = getClientForSession(session).orElse(null);
             }
-            TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
-                episodeRepository
-                    .findById(newPlayerStatus.episode().getId())
-                    .ifPresent(episode -> {
-                        log.info(
-                                "Saving progress for episode {} position: {}s",
-                                episode.getTitle(),
-                                newPlayerStatus.position()
-                        );
-                        episode.setProgress(newPlayerStatus.position());
-                        episodeRepository.save(episode);
-                    });
-            });
+            TransactionHelper.doInNewTransaction(transactionManager, false, () -> episodeRepository
+                .findById(newPlayerStatus.episode().getId())
+                .ifPresent(episode -> {
+                    log.info(
+                            "Saving progress for episode {} position: {}s",
+                            episode.getTitle(),
+                            newPlayerStatus.position()
+                    );
+                    episode.setProgress(newPlayerStatus.position());
+                    episodeRepository.save(episode);
+                }));
         }
 
         if (broadcastClients) {
