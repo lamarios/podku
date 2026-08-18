@@ -42,7 +42,7 @@ public class WebSocketSessionManager {
         try {
             cleanupSession(session);
             log.info("{} websocket sessions", sessions.size());
-            broadcastClients();
+            pingSessions();
         } catch (IOException e) {
             log.error("Couldn't clean session", e);
         }
@@ -64,7 +64,7 @@ public class WebSocketSessionManager {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    public void testingSessions() {
+    public void pingSessions() {
         List<WebSocketSession> toRemove = new ArrayList<>();
 
         var textMessage = new WebSocketMessage<>(WebSocketMessage.Type.clientList, getClientList());
@@ -177,14 +177,9 @@ public class WebSocketSessionManager {
         target.sendMessage(textMessage);
     }
 
-    private void broadcastClients() {
-        // we inform all clients of existing users
-        sendToUsers(getClientList());
-    }
-
     private void handlePlayerInfo(WebSocketSession session, WebsocketClient client) {
         sessions.put(session, client);
-        broadcastClients();
+        pingSessions();
     }
 
     private void handleRemoteCommand(WebSocketMessage remoteCommand) {
@@ -242,10 +237,16 @@ public class WebSocketSessionManager {
      */
     private void handlePlayerStatus(WebSocketSession session, PlayerStatus newPlayerStatus) throws IOException {
         boolean broadcastClients = false;
-        if (Optional.ofNullable(newPlayerStatus).map(PlayerStatus::client).orElse(null) != Optional
+
+        String newPlayerClient =
+                Optional.ofNullable(sessions.get(session)).map(WebsocketClient::id).orElse("no-new-player");
+        String currentPlayerClient = Optional
             .ofNullable(this.playerStatus)
             .map(PlayerStatus::client)
-            .orElse(null)) {
+            .map(WebsocketClient::id)
+            .orElse("no-current-player");
+        if (newPlayerStatus == null
+                || (newPlayerStatus.broadcast() && !newPlayerClient.equalsIgnoreCase(currentPlayerClient))) {
             broadcastClients = true;
         }
         // we update the current status
@@ -253,16 +254,19 @@ public class WebSocketSessionManager {
             // playback stopped
             this.playerStatus = null;
         } else if (newPlayerStatus.episode().getId() != null) {
-            this.playerStatus = new PlayerStatus(
-                    sessions.get(session),
-                    newPlayerStatus.episode(),
-                    newPlayerStatus.position(),
-                    newPlayerStatus.duration(),
-                    newPlayerStatus.playing(),
-                    newPlayerStatus.speed(),
-                    newPlayerStatus.volume(),
-                    true
-            );
+            // only if it's meant to be broadcasted, we save it as current player.
+            if (newPlayerStatus.broadcast()) {
+                this.playerStatus = new PlayerStatus(
+                        sessions.get(session),
+                        newPlayerStatus.episode(),
+                        newPlayerStatus.position(),
+                        newPlayerStatus.duration(),
+                        newPlayerStatus.playing(),
+                        newPlayerStatus.speed(),
+                        newPlayerStatus.volume(),
+                        true
+                );
+            }
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
                 episodeRepository
                     .findById(newPlayerStatus.episode().getId())
@@ -279,7 +283,7 @@ public class WebSocketSessionManager {
         }
 
         if (broadcastClients) {
-            testingSessions();
+            pingSessions();
         }
 
         if (this.playerStatus == null || (newPlayerStatus != null && newPlayerStatus.broadcast())) {
