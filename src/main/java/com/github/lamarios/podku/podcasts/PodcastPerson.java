@@ -10,93 +10,97 @@ import java.util.UUID;
 @Entity
 @Table(name = "podcast_people")
 public class PodcastPerson implements Person {
-    private String name;
-    private String role;
-    @Column(name = "`group`")
-    private String group;
-    private String image;
-    private String link;
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @ManyToOne
-    @JoinColumn(name = "podcast_id")
-    @JsonIgnore
-    private Podcast podcast;
-    @Transient
-    private String imageEncrypted;
+  private String name;
+  private String role;
 
-    public String getImageEncrypted() throws Exception {
-        if (imageEncrypted != null) {
-            return imageEncrypted;
-        } else {
-            return FastUrlCrypto.instance.encrypt(image);
-        }
-    }
+  @Column(name = "`group`")
+  private String group;
 
-    public UUID getId() {
-        return id;
-    }
+  private String image;
+  private String link;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public Podcast getPodcast() {
-        return podcast;
-    }
+  @ManyToOne
+  @JoinColumn(name = "podcast_id")
+  @JsonIgnore
+  private Podcast podcast;
 
-    public void setPodcast(Podcast podcast) {
-        this.podcast = podcast;
-    }
+  @Transient private String imageEncrypted;
 
-    @Override
-    public String getName() {
-        return name;
+  public String getImageEncrypted() throws Exception {
+    if (imageEncrypted != null) {
+      return imageEncrypted;
+    } else {
+      return FastUrlCrypto.instance.encrypt(image);
     }
+  }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    @Override
-    public String getRole() {
-        return role;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    @Override
-    public void setRole(String role) {
-        this.role = role;
-    }
+  public Podcast getPodcast() {
+    return podcast;
+  }
 
-    @Override
-    public String getGroup() {
-        return group;
-    }
+  public void setPodcast(Podcast podcast) {
+    this.podcast = podcast;
+  }
 
-    @Override
-    public void setGroup(String group) {
-        this.group = group;
-    }
+  @Override
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public String getImage() {
-        return image;
-    }
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Override
-    public void setImage(String image) {
-        this.image = image;
-    }
+  @Override
+  public String getRole() {
+    return role;
+  }
 
-    @Override
-    public String getLink() {
-        return link;
-    }
+  @Override
+  public void setRole(String role) {
+    this.role = role;
+  }
 
-    @Override
-    public void setLink(String link) {
-        this.link = link;
-    }
+  @Override
+  public String getGroup() {
+    return group;
+  }
+
+  @Override
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }
+
+  @Override
+  public void setImage(String image) {
+    this.image = image;
+  }
+
+  @Override
+  public String getLink() {
+    return link;
+  }
+
+  @Override
+  public void setLink(String link) {
+    this.link = link;
+  }
 }

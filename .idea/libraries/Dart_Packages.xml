@@ -6,8 +6,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-96.0.0/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-100.0.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-85.0.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-100.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -15,8 +15,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-10.2.0/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-13.0.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.7.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-13.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -139,8 +139,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.15.0/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.15.1/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.7.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.15.1/lib" />
             </list>
           </value>
         </entry>
@@ -1331,9 +1331,9 @@
         <entry key="test">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.1/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.2/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.26.3/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.2/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.1/lib" />
             </list>
           </value>
         </entry>
@@ -1341,17 +1341,17 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.12/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.13/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.7/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.13/lib" />
             </list>
           </value>
         </entry>
         <entry key="test_core">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.18/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.19/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.12/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.19/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.18/lib" />
             </list>
           </value>
         </entry>
@@ -1554,6 +1554,7 @@
         <entry key="web_socket_channel">
           <value>
             <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.4.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-3.0.3/lib" />
             </list>
           </value>
@@ -1875,6 +1876,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/watcher-1.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web-1.1.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket-1.0.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-2.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web_socket_channel-3.0.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webkit_inspection_protocol-1.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/webview_flutter-4.14.1/lib" />

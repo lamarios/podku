@@ -8,73 +8,77 @@ import java.util.UUID;
 @Entity
 @Table(name = "episode_files")
 public class EpisodeFile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String url;
-    @Enumerated(EnumType.STRING)
-    private EpisodeFileType type;
-    private String mime;
-    private String language;
-    private String rel;
-    @ManyToOne
-    @JoinColumn(name = "episode_id")
-    @JsonIgnore
-    private Episode episode;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public UUID getId() {
-        return id;
-    }
+  private String url;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+  @Enumerated(EnumType.STRING)
+  private EpisodeFileType type;
 
-    public String getUrl() {
-        return url;
-    }
+  private String mime;
+  private String language;
+  private String rel;
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  @ManyToOne
+  @JoinColumn(name = "episode_id")
+  @JsonIgnore
+  private Episode episode;
 
-    public EpisodeFileType getType() {
-        return type;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public void setType(EpisodeFileType type) {
-        this.type = type;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    public String getMime() {
-        return mime;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setMime(String mime) {
-        this.mime = mime;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public EpisodeFileType getType() {
+    return type;
+  }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+  public void setType(EpisodeFileType type) {
+    this.type = type;
+  }
 
-    public String getRel() {
-        return rel;
-    }
+  public String getMime() {
+    return mime;
+  }
 
-    public void setRel(String rel) {
-        this.rel = rel;
-    }
+  public void setMime(String mime) {
+    this.mime = mime;
+  }
 
-    public Episode getEpisode() {
-        return episode;
-    }
+  public String getLanguage() {
+    return language;
+  }
 
-    public void setEpisode(Episode episode) {
-        this.episode = episode;
-    }
+  public void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public String getRel() {
+    return rel;
+  }
+
+  public void setRel(String rel) {
+    this.rel = rel;
+  }
+
+  public Episode getEpisode() {
+    return episode;
+  }
+
+  public void setEpisode(Episode episode) {
+    this.episode = episode;
+  }
 }

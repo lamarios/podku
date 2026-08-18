@@ -16,48 +16,49 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/episodes")
 @Tag(name = "Episodes")
 public class EpisodeController {
-    private final Logger log = LogManager.getLogger();
-    private final EpisodeService episodeService;
-    private final WebSocketSessionManager webSocketSessionManager;
+  private final Logger log = LogManager.getLogger();
+  private final EpisodeService episodeService;
+  private final WebSocketSessionManager webSocketSessionManager;
 
-    @Autowired
-    public EpisodeController(EpisodeService episodeService, WebSocketSessionManager webSocketSessionManager) {
-        this.episodeService = episodeService;
-        this.webSocketSessionManager = webSocketSessionManager;
-    }
+  @Autowired
+  public EpisodeController(
+      EpisodeService episodeService, WebSocketSessionManager webSocketSessionManager) {
+    this.episodeService = episodeService;
+    this.webSocketSessionManager = webSocketSessionManager;
+  }
 
-    @GetMapping
-    public List<Episode> getEpisodes(
-            @RequestParam(required = false) Long before,
-            @RequestParam(required = false, defaultValue = "20") Integer pageSize
-    ) {
-        long effectiveDate = before != null ? before : System.currentTimeMillis();
+  @GetMapping
+  public List<Episode> getEpisodes(
+      @RequestParam(required = false) Long before,
+      @RequestParam(required = false, defaultValue = "20") Integer pageSize) {
+    long effectiveDate = before != null ? before : System.currentTimeMillis();
 
-        return episodeService.getEpisodes(effectiveDate, pageSize);
-    }
+    return episodeService.getEpisodes(effectiveDate, pageSize);
+  }
 
-    @GetMapping("{id}")
-    public Episode getEpisode(@PathVariable String id) {
-        return episodeService.getEpisode(id);
-    }
+  @GetMapping("{id}")
+  public Episode getEpisode(@PathVariable String id) {
+    return episodeService.getEpisode(id);
+  }
 
-    @PostMapping("setProgress")
-    public void setProgress(@RequestBody PlaybackProgress progress) {
-        episodeService.setProgress(progress);
-    }
+  @PostMapping("setProgress")
+  public void setProgress(@RequestBody PlaybackProgress progress) {
+    episodeService.setProgress(progress);
+  }
 
-    @PostMapping("startPlayback")
-    public void startPlayback(@RequestBody PlaybackProgress progress) {
-        webSocketSessionManager.sendToUsers(progress);
-    }
+  @PostMapping("startPlayback")
+  public void startPlayback(@RequestBody PlaybackProgress progress) {
+    webSocketSessionManager.sendToUsers(progress);
+  }
 
-    @GetMapping("/search")
-    public List<Episode> search(@RequestParam("query") String query, @RequestParam("limit") int limit) {
-        return episodeService.searchPodcasts(query, limit);
-    }
+  @GetMapping("/search")
+  public List<Episode> search(
+      @RequestParam("query") String query, @RequestParam("limit") int limit) {
+    return episodeService.searchPodcasts(query, limit);
+  }
 
-    @PostMapping("/setProgressesBatch")
-    public boolean updateProgresses(@RequestBody Map<String, OfflineProgress> progresses) {
-        return episodeService.updateProgresses(progresses);
-    }
+  @PostMapping("/setProgressesBatch")
+  public boolean updateProgresses(@RequestBody Map<String, OfflineProgress> progresses) {
+    return episodeService.updateProgresses(progresses);
+  }
 }

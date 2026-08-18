@@ -10,9 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface EpisodeRepository extends JpaRepository<Episode, UUID> {
-    List<Episode> getEpisodeByPubDateMillisBefore(Long pubDateMillisBefore, Sort sort, Limit limit);
+  List<Episode> getEpisodeByPubDateMillisBefore(Long pubDateMillisBefore, Sort sort, Limit limit);
 
-    @Query(value = """
+  @Query(
+      value =
+          """
             SELECT e.*
             FROM episodes e
             LEFT JOIN episode_transcripts et ON et.episode_id = e.id
@@ -24,8 +26,9 @@ public interface EpisodeRepository extends JpaRepository<Episode, UUID> {
                 COALESCE(MAX(TS_RANK(et.search_vector, TO_TSQUERY('english', :query))), 0)
             ) DESC
             LIMIT :limit
-            """, nativeQuery = true)
-    List<Episode> search(@Param("query") String query, @Param("limit") int limit);
+            """,
+      nativeQuery = true)
+  List<Episode> search(@Param("query") String query, @Param("limit") int limit);
 
-    List<Episode> streamAllByProcessed(boolean processed);
+  List<Episode> streamAllByProcessed(boolean processed);
 }

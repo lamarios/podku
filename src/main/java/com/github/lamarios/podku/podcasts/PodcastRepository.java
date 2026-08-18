@@ -9,18 +9,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PodcastRepository extends JpaRepository<Podcast, UUID> {
-    Optional<Podcast> findFirstByUrl(String url);
+  Optional<Podcast> findFirstByUrl(String url);
 
-    void deletePodcastById(UUID id);
+  void deletePodcastById(UUID id);
 
-    @Query(value = """
+  @Query(
+      value =
+          """
         SELECT * FROM podcasts
         WHERE search_vector @@ to_tsquery('english', :query)
         ORDER BY ts_rank(search_vector, to_tsquery('english', :query)) DESC
         LIMIT :limit
-        """, nativeQuery = true)
-    List<Podcast> searchPodcasts(@Param("query") String query, @Param("limit") int limit);
+        """,
+      nativeQuery = true)
+  List<Podcast> searchPodcasts(@Param("query") String query, @Param("limit") int limit);
 
-    @Query("select p.id from Podcast p")
-    List<UUID> findAllIds();
+  @Query("select p.id from Podcast p")
+  List<UUID> findAllIds();
 }

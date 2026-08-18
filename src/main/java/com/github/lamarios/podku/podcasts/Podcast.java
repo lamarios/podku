@@ -10,113 +10,116 @@ import java.util.UUID;
 @Entity
 @Table(name = "podcasts")
 public class Podcast {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String url;
-    private String name;
-    private String artworkUrl;
-    private String description;
-    private String author;
-    private String link;
-    private String color;
-    @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("pubDateMillis DESC")
-    private List<Episode> episodes;
-    @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PodcastPerson> people;
-    @Transient
-    private String artworkEncrypted;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public void setArtworkEncrypted(String artworkEncrypted) {
-        this.artworkEncrypted = artworkEncrypted;
-    }
+  private String url;
+  private String name;
+  private String artworkUrl;
+  private String description;
+  private String author;
+  private String link;
+  private String color;
 
-    public String getArtworkEncrypted() throws Exception {
-        if (artworkEncrypted != null) {
-            return artworkEncrypted;
-        } else {
-            return FastUrlCrypto.instance.encrypt(artworkUrl);
-        }
-    }
+  @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OrderBy("pubDateMillis DESC")
+  private List<Episode> episodes;
 
-    public UUID getId() {
-        return id;
-    }
+  @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<PodcastPerson> people;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+  @Transient private String artworkEncrypted;
 
-    public String getUrl() {
-        return url;
-    }
+  public void setArtworkEncrypted(String artworkEncrypted) {
+    this.artworkEncrypted = artworkEncrypted;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
+  public String getArtworkEncrypted() throws Exception {
+    if (artworkEncrypted != null) {
+      return artworkEncrypted;
+    } else {
+      return FastUrlCrypto.instance.encrypt(artworkUrl);
     }
+  }
 
-    public String getName() {
-        return name;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    public String getArtworkUrl() {
-        return artworkUrl;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setArtworkUrl(String artworkUrl) {
-        this.artworkUrl = artworkUrl;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getAuthor() {
-        return author;
-    }
+  public String getArtworkUrl() {
+    return artworkUrl;
+  }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+  public void setArtworkUrl(String artworkUrl) {
+    this.artworkUrl = artworkUrl;
+  }
 
-    public String getLink() {
-        return link;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setLink(String link) {
-        this.link = link;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public List<Episode> getEpisodes() {
-        return episodes;
-    }
+  public String getAuthor() {
+    return author;
+  }
 
-    public void setEpisodes(List<Episode> episodes) {
-        this.episodes = episodes;
-    }
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-    public List<PodcastPerson> getPeople() {
-        return people;
-    }
+  public String getLink() {
+    return link;
+  }
 
-    public void setPeople(List<PodcastPerson> people) {
-        this.people = people;
-    }
+  public void setLink(String link) {
+    this.link = link;
+  }
 
-    public String getColor() {
-        return color;
-    }
+  public List<Episode> getEpisodes() {
+    return episodes;
+  }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+  public void setEpisodes(List<Episode> episodes) {
+    this.episodes = episodes;
+  }
+
+  public List<PodcastPerson> getPeople() {
+    return people;
+  }
+
+  public void setPeople(List<PodcastPerson> people) {
+    this.people = people;
+  }
+
+  public String getColor() {
+    return color;
+  }
+
+  public void setColor(String color) {
+    this.color = color;
+  }
 }

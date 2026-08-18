@@ -10,97 +10,101 @@ import java.util.UUID;
 @Entity
 @Table(name = "episode_people")
 public class EpisodePerson implements Person {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String name;
-    private String role;
-    @Column(name = "`group`")
-    private String group;
-    private String image;
-    private String link;
-    @ManyToOne
-    @JoinColumn(name = "episode_id")
-    @JsonIgnore
-    private Episode episode;
-    @Transient
-    private String imageEncrypted;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public String getImageEncrypted() throws Exception {
-        if (imageEncrypted != null) {
-            return imageEncrypted;
-        } else {
-            return FastUrlCrypto.instance.encrypt(image);
-        }
-    }
+  private String name;
+  private String role;
 
-    public void setImageEncrypted(String imageEncrypted) {
-        this.imageEncrypted = imageEncrypted;
-    }
+  @Column(name = "`group`")
+  private String group;
 
-    public UUID getId() {
-        return id;
-    }
+  private String image;
+  private String link;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+  @ManyToOne
+  @JoinColumn(name = "episode_id")
+  @JsonIgnore
+  private Episode episode;
 
-    public Episode getEpisode() {
-        return episode;
-    }
+  @Transient private String imageEncrypted;
 
-    public void setEpisode(Episode episode) {
-        this.episode = episode;
+  public String getImageEncrypted() throws Exception {
+    if (imageEncrypted != null) {
+      return imageEncrypted;
+    } else {
+      return FastUrlCrypto.instance.encrypt(image);
     }
+  }
 
-    @Override
-    public String getName() {
-        return name;
-    }
+  public void setImageEncrypted(String imageEncrypted) {
+    this.imageEncrypted = imageEncrypted;
+  }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    @Override
-    public String getRole() {
-        return role;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    @Override
-    public void setRole(String role) {
-        this.role = role;
-    }
+  public Episode getEpisode() {
+    return episode;
+  }
 
-    @Override
-    public String getGroup() {
-        return group;
-    }
+  public void setEpisode(Episode episode) {
+    this.episode = episode;
+  }
 
-    @Override
-    public void setGroup(String group) {
-        this.group = group;
-    }
+  @Override
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public String getImage() {
-        return image;
-    }
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Override
-    public void setImage(String image) {
-        this.image = image;
-    }
+  @Override
+  public String getRole() {
+    return role;
+  }
 
-    @Override
-    public String getLink() {
-        return link;
-    }
+  @Override
+  public void setRole(String role) {
+    this.role = role;
+  }
 
-    @Override
-    public void setLink(String link) {
-        this.link = link;
-    }
+  @Override
+  public String getGroup() {
+    return group;
+  }
+
+  @Override
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }
+
+  @Override
+  public void setImage(String image) {
+    this.image = image;
+  }
+
+  @Override
+  public String getLink() {
+    return link;
+  }
+
+  @Override
+  public void setLink(String link) {
+    this.link = link;
+  }
 }

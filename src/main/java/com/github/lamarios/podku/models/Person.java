@@ -2,23 +2,23 @@
 package com.github.lamarios.podku.models;
 
 public interface Person {
-    String getName();
+  String getName();
 
-    void setName(String name);
+  void setName(String name);
 
-    String getRole();
+  String getRole();
 
-    void setRole(String role);
+  void setRole(String role);
 
-    String getGroup();
+  String getGroup();
 
-    void setGroup(String group);
+  void setGroup(String group);
 
-    String getImage();
+  String getImage();
 
-    void setImage(String image);
+  void setImage(String image);
 
-    String getLink();
+  String getLink();
 
-    void setLink(String link);
+  void setLink(String link);
 }

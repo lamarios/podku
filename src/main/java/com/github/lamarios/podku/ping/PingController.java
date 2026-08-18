@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/ping")
 @Tag(name = "Ping")
 public class PingController {
-    @GetMapping
-    public String ping() {
-        return "pong";
-    }
+  @GetMapping
+  public String ping() {
+    return "pong";
+  }
 }

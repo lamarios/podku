@@ -13,20 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/transcripts")
 @Tag(name = "Transcripts")
 public class TranscriptController {
-    private final TranscriptService transcriptService;
+  private final TranscriptService transcriptService;
 
-    @Autowired
-    public TranscriptController(TranscriptService transcriptService) {
-        this.transcriptService = transcriptService;
-    }
+  @Autowired
+  public TranscriptController(TranscriptService transcriptService) {
+    this.transcriptService = transcriptService;
+  }
 
-    @GetMapping("{id}/languages")
-    public List<String> getEpisodeLanguages(@PathVariable String id) {
-        return transcriptService.getLanguages(id);
-    }
+  @GetMapping("{id}/languages")
+  public List<String> getEpisodeLanguages(@PathVariable String id) {
+    return transcriptService.getLanguages(id);
+  }
 
-    @GetMapping("{id}/{language}")
-    public List<EpisodeTranscript> getTranscript(@PathVariable String id, @PathVariable String language) {
-        return transcriptService.getTranscript(id, language);
-    }
+  @GetMapping("{id}/{language}")
+  public List<EpisodeTranscript> getTranscript(
+      @PathVariable String id, @PathVariable String language) {
+    return transcriptService.getTranscript(id, language);
+  }
 }

@@ -12,21 +12,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/search")
 @Tag(name = "Search")
 public class SearchController {
-    private final PodcastService podcastService;
-    private final ItunesPodcastSearch itunesPodcastSearch;
+  private final PodcastService podcastService;
+  private final ItunesPodcastSearch itunesPodcastSearch;
 
-    @Autowired
-    public SearchController(PodcastService podcastService, ItunesPodcastSearch itunesPodcastSearch) {
-        this.podcastService = podcastService;
-        this.itunesPodcastSearch = itunesPodcastSearch;
-    }
+  @Autowired
+  public SearchController(PodcastService podcastService, ItunesPodcastSearch itunesPodcastSearch) {
+    this.podcastService = podcastService;
+    this.itunesPodcastSearch = itunesPodcastSearch;
+  }
 
-    @GetMapping
-    public List<SearchResult> search(@RequestParam("query") String query, @RequestParam("limit") int limit) {
-        var subscribedPodcasts = podcastService.getPodcasts().stream().map(Podcast::getUrl).toList();
+  @GetMapping
+  public List<SearchResult> search(
+      @RequestParam("query") String query, @RequestParam("limit") int limit) {
+    var subscribedPodcasts = podcastService.getPodcasts().stream().map(Podcast::getUrl).toList();
 
-        List<SearchResult> results = itunesPodcastSearch.search(query, limit);
-        results.removeIf(result -> subscribedPodcasts.contains(result.getFeedUrl()));
-        return results;
-    }
+    List<SearchResult> results = itunesPodcastSearch.search(query, limit);
+    results.removeIf(result -> subscribedPodcasts.contains(result.getFeedUrl()));
+    return results;
+  }
 }

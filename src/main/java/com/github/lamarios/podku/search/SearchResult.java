@@ -8,79 +8,85 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResult {
-    @JsonProperty("collectionId")
-    private Long collectionId;
-    @JsonProperty("collectionName")
-    private String collectionName;
-    @JsonProperty("artistName")
-    private String artistName;
-    @JsonProperty("feedUrl")
-    private String feedUrl;
-    @JsonProperty("artworkUrl600")
-    private String artworkUrl;
-    @JsonProperty("genres")
-    private List<String> genres;
-    @JsonProperty("color")
-    private String color;
+  @JsonProperty("collectionId")
+  private Long collectionId;
 
-    public String getArtworkUrlEncrypted() throws Exception {
-        return FastUrlCrypto.instance.encrypt(artworkUrl);
-    }
+  @JsonProperty("collectionName")
+  private String collectionName;
 
-    public String getColor() {
-        return color;
-    }
+  @JsonProperty("artistName")
+  private String artistName;
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+  @JsonProperty("feedUrl")
+  private String feedUrl;
 
-    // getters/setters
-    public Long getCollectionId() {
-        return collectionId;
-    }
+  @JsonProperty("artworkUrl600")
+  private String artworkUrl;
 
-    public void setCollectionId(Long collectionId) {
-        this.collectionId = collectionId;
-    }
+  @JsonProperty("genres")
+  private List<String> genres;
 
-    public String getCollectionName() {
-        return collectionName;
-    }
+  @JsonProperty("color")
+  private String color;
 
-    public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
-    }
+  public String getArtworkUrlEncrypted() throws Exception {
+    return FastUrlCrypto.instance.encrypt(artworkUrl);
+  }
 
-    public String getArtistName() {
-        return artistName;
-    }
+  public String getColor() {
+    return color;
+  }
 
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
-    }
+  public void setColor(String color) {
+    this.color = color;
+  }
 
-    public String getFeedUrl() {
-        return feedUrl;
-    }
+  // getters/setters
+  public Long getCollectionId() {
+    return collectionId;
+  }
 
-    public void setFeedUrl(String feedUrl) {
-        this.feedUrl = feedUrl;
-    }
+  public void setCollectionId(Long collectionId) {
+    this.collectionId = collectionId;
+  }
 
-    public String getArtworkUrl() {
-        return artworkUrl;
-    }
+  public String getCollectionName() {
+    return collectionName;
+  }
 
-    public void setArtworkUrl(String artworkUrl) {
-        this.artworkUrl = artworkUrl;
-    }
+  public void setCollectionName(String collectionName) {
+    this.collectionName = collectionName;
+  }
 
-    public java.util.List<String> getGenres() {
-        return genres;
-    }
+  public String getArtistName() {
+    return artistName;
+  }
 
-    public void setGenres(java.util.List<String> genres) {
-        this.genres = genres;
-    }
+  public void setArtistName(String artistName) {
+    this.artistName = artistName;
+  }
+
+  public String getFeedUrl() {
+    return feedUrl;
+  }
+
+  public void setFeedUrl(String feedUrl) {
+    this.feedUrl = feedUrl;
+  }
+
+  public String getArtworkUrl() {
+    return artworkUrl;
+  }
+
+  public void setArtworkUrl(String artworkUrl) {
+    this.artworkUrl = artworkUrl;
+  }
+
+  public java.util.List<String> getGenres() {
+    return genres;
+  }
+
+  public void setGenres(java.util.List<String> genres) {
+    this.genres = genres;
+  }
 }

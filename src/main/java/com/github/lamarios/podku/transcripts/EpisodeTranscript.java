@@ -9,72 +9,74 @@ import java.util.UUID;
 @Entity
 @Table(name = "episode_transcripts")
 public class EpisodeTranscript {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @ManyToOne
-    @JoinColumn(name = "episode_id")
-    @JsonIgnore
-    private Episode episode;
-    private String startTime;
-    private String endTime;
-    private String speaker;
-    private String content;
-    private String language;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public UUID getId() {
-        return id;
-    }
+  @ManyToOne
+  @JoinColumn(name = "episode_id")
+  @JsonIgnore
+  private Episode episode;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+  private String startTime;
+  private String endTime;
+  private String speaker;
+  private String content;
+  private String language;
 
-    public Episode getEpisode() {
-        return episode;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public void setEpisode(Episode episode) {
-        this.episode = episode;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    public String getStartTime() {
-        return startTime;
-    }
+  public Episode getEpisode() {
+    return episode;
+  }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
+  public void setEpisode(Episode episode) {
+    this.episode = episode;
+  }
 
-    public String getEndTime() {
-        return endTime;
-    }
+  public String getStartTime() {
+    return startTime;
+  }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
+  public void setStartTime(String startTime) {
+    this.startTime = startTime;
+  }
 
-    public String getSpeaker() {
-        return speaker;
-    }
+  public String getEndTime() {
+    return endTime;
+  }
 
-    public void setSpeaker(String speaker) {
-        this.speaker = speaker;
-    }
+  public void setEndTime(String endTime) {
+    this.endTime = endTime;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getSpeaker() {
+    return speaker;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setSpeaker(String speaker) {
+    this.speaker = speaker;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
 }

@@ -16,267 +16,270 @@ import java.util.UUID;
 @Entity
 @Table(name = "episodes")
 public class Episode {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String title;
-    private String description;
-    private String audioUrl;
-    private String audioType;
-    private Long audioLengthBytes;
-    private Long pubDateMillis;
-    private Long durationSeconds;
-    private double progress = 0;
-    private String guid;
-    private String imageUrl;
-    private Integer seasonNumber;
-    private Integer episodeNumber;
-    private String episodeType;
-    private Boolean explicit;
-    private String link;
-    private boolean processed = false;
-    private Long timeUpdated;
-    @ManyToOne
-    @JoinColumn(name = "podcast_id")
-    @JsonIgnore
-    private Podcast podcast;
-    @Transient
-    private PodcastLight podcastLight;
-    @Transient
-    private String audioUrlEncrypted;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    public boolean isProcessed() {
-        return processed;
+  private String title;
+  private String description;
+  private String audioUrl;
+  private String audioType;
+  private Long audioLengthBytes;
+  private Long pubDateMillis;
+  private Long durationSeconds;
+  private double progress = 0;
+  private String guid;
+  private String imageUrl;
+  private Integer seasonNumber;
+  private Integer episodeNumber;
+  private String episodeType;
+  private Boolean explicit;
+  private String link;
+  private boolean processed = false;
+  private Long timeUpdated;
+
+  @ManyToOne
+  @JoinColumn(name = "podcast_id")
+  @JsonIgnore
+  private Podcast podcast;
+
+  @Transient private PodcastLight podcastLight;
+  @Transient private String audioUrlEncrypted;
+
+  public boolean isProcessed() {
+    return processed;
+  }
+
+  @PrePersist
+  @PreUpdate
+  public void onUpdate() {
+    timeUpdated = System.currentTimeMillis();
+  }
+
+  @Transient
+  @JsonProperty("podcast")
+  public PodcastLight getPodcastLight() {
+    if (podcast != null) {
+      return new PodcastLight(podcast);
+    } else {
+      return podcastLight;
     }
+  }
 
-    @PrePersist
-    @PreUpdate
-    public void onUpdate() {
-        timeUpdated = System.currentTimeMillis();
+  public void setAudioUrlEncrypted(String audioUrlEncrypted) {
+    this.audioUrlEncrypted = audioUrlEncrypted;
+  }
+
+  public String getAudioUrlEncrypted() throws Exception {
+    if (audioUrlEncrypted != null) {
+      return audioUrlEncrypted;
+    } else {
+      return FastUrlCrypto.instance.encrypt(audioUrl);
     }
+  }
 
-    @Transient
-    @JsonProperty("podcast")
-    public PodcastLight getPodcastLight() {
-        if (podcast != null) {
-            return new PodcastLight(podcast);
-        } else {
-            return podcastLight;
-        }
-    }
+  @Transient
+  @JsonProperty("podcast")
+  public void setPodcastLight(PodcastLight podcastLight) {
+    this.podcastLight = podcastLight;
+  }
 
-    public void setAudioUrlEncrypted(String audioUrlEncrypted) {
-        this.audioUrlEncrypted = audioUrlEncrypted;
-    }
+  public void setProcessed(boolean processed) {
+    this.processed = processed;
+  }
 
-    public String getAudioUrlEncrypted() throws Exception {
-        if (audioUrlEncrypted != null) {
-            return audioUrlEncrypted;
-        } else {
-            return FastUrlCrypto.instance.encrypt(audioUrl);
-        }
-    }
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Chapter> chapters;
 
-    @Transient
-    @JsonProperty("podcast")
-    public void setPodcastLight(PodcastLight podcastLight) {
-        this.podcastLight = podcastLight;
-    }
+  public double getProgress() {
+    return progress;
+  }
 
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
-    }
+  public void setProgress(double progress) {
+    this.progress = progress;
+  }
 
-    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chapter> chapters;
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<EpisodeFile> files;
 
-    public double getProgress() {
-        return progress;
-    }
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<EpisodeTranscript> transcripts;
 
-    public void setProgress(double progress) {
-        this.progress = progress;
-    }
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<EpisodePerson> people;
 
-    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EpisodeFile> files;
-    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<EpisodeTranscript> transcripts;
-    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EpisodePerson> people;
+  public Integer getEpisodeNumber() {
+    return episodeNumber;
+  }
 
-    public Integer getEpisodeNumber() {
-        return episodeNumber;
-    }
+  public void setEpisodeNumber(Integer episodeNumber) {
+    this.episodeNumber = episodeNumber;
+  }
 
-    public void setEpisodeNumber(Integer episodeNumber) {
-        this.episodeNumber = episodeNumber;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public UUID getId() {
-        return id;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getAudioUrl() {
+    return audioUrl;
+  }
 
-    public String getAudioUrl() {
-        return audioUrl;
-    }
+  public void setAudioUrl(String audioUrl) {
+    this.audioUrl = audioUrl;
+  }
 
-    public void setAudioUrl(String audioUrl) {
-        this.audioUrl = audioUrl;
-    }
+  public String getAudioType() {
+    return audioType;
+  }
 
-    public String getAudioType() {
-        return audioType;
-    }
+  public void setAudioType(String audioType) {
+    this.audioType = audioType;
+  }
 
-    public void setAudioType(String audioType) {
-        this.audioType = audioType;
-    }
+  public Long getAudioLengthBytes() {
+    return audioLengthBytes;
+  }
 
-    public Long getAudioLengthBytes() {
-        return audioLengthBytes;
-    }
+  public void setAudioLengthBytes(Long audioLengthBytes) {
+    this.audioLengthBytes = audioLengthBytes;
+  }
 
-    public void setAudioLengthBytes(Long audioLengthBytes) {
-        this.audioLengthBytes = audioLengthBytes;
-    }
+  public Long getPubDateMillis() {
+    return pubDateMillis;
+  }
 
-    public Long getPubDateMillis() {
-        return pubDateMillis;
-    }
+  public void setPubDateMillis(Long pubDateMillis) {
+    this.pubDateMillis = pubDateMillis;
+  }
 
-    public void setPubDateMillis(Long pubDateMillis) {
-        this.pubDateMillis = pubDateMillis;
-    }
+  public Long getDurationSeconds() {
+    return durationSeconds;
+  }
 
-    public Long getDurationSeconds() {
-        return durationSeconds;
-    }
+  public void setDurationSeconds(Long durationSeconds) {
+    this.durationSeconds = durationSeconds;
+  }
 
-    public void setDurationSeconds(Long durationSeconds) {
-        this.durationSeconds = durationSeconds;
-    }
+  public String getGuid() {
+    return guid;
+  }
 
-    public String getGuid() {
-        return guid;
-    }
+  public void setGuid(String guid) {
+    this.guid = guid;
+  }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+  public String getImageUrl() {
+    return imageUrl;
+  }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+  public Integer getSeasonNumber() {
+    return seasonNumber;
+  }
 
-    public Integer getSeasonNumber() {
-        return seasonNumber;
-    }
+  public void setSeasonNumber(Integer seasonNumber) {
+    this.seasonNumber = seasonNumber;
+  }
 
-    public void setSeasonNumber(Integer seasonNumber) {
-        this.seasonNumber = seasonNumber;
-    }
+  public String getEpisodeType() {
+    return episodeType;
+  }
 
-    public String getEpisodeType() {
-        return episodeType;
-    }
+  public void setEpisodeType(String episodeType) {
+    this.episodeType = episodeType;
+  }
 
-    public void setEpisodeType(String episodeType) {
-        this.episodeType = episodeType;
-    }
+  public Boolean getExplicit() {
+    return explicit;
+  }
 
-    public Boolean getExplicit() {
-        return explicit;
-    }
+  public void setExplicit(Boolean explicit) {
+    this.explicit = explicit;
+  }
 
-    public void setExplicit(Boolean explicit) {
-        this.explicit = explicit;
-    }
+  public String getLink() {
+    return link;
+  }
 
-    public String getLink() {
-        return link;
-    }
+  public void setLink(String link) {
+    this.link = link;
+  }
 
-    public void setLink(String link) {
-        this.link = link;
-    }
+  public Podcast getPodcast() {
+    return podcast;
+  }
 
-    public Podcast getPodcast() {
-        return podcast;
-    }
+  public void setPodcast(Podcast podcast) {
+    this.podcast = podcast;
+  }
 
-    public void setPodcast(Podcast podcast) {
-        this.podcast = podcast;
-    }
+  public List<Chapter> getChapters() {
+    return chapters;
+  }
 
-    public List<Chapter> getChapters() {
-        return chapters;
-    }
+  public void setChapters(List<Chapter> chapters) {
+    this.chapters = chapters;
+  }
 
-    public void setChapters(List<Chapter> chapters) {
-        this.chapters = chapters;
-    }
+  public List<EpisodeFile> getFiles() {
+    return files;
+  }
 
-    public List<EpisodeFile> getFiles() {
-        return files;
-    }
+  public void setFiles(List<EpisodeFile> files) {
+    this.files = files;
+  }
 
-    public void setFiles(List<EpisodeFile> files) {
-        this.files = files;
-    }
+  public List<EpisodeTranscript> getTranscripts() {
+    return transcripts;
+  }
 
-    public List<EpisodeTranscript> getTranscripts() {
-        return transcripts;
-    }
+  public void setTranscripts(List<EpisodeTranscript> transcripts) {
+    this.transcripts = transcripts;
+  }
 
-    public void setTranscripts(List<EpisodeTranscript> transcripts) {
-        this.transcripts = transcripts;
-    }
+  public List<EpisodePerson> getPeople() {
+    return people;
+  }
 
-    public List<EpisodePerson> getPeople() {
-        return people;
-    }
+  public void setPeople(List<EpisodePerson> people) {
+    this.people = people;
+  }
 
-    public void setPeople(List<EpisodePerson> people) {
-        this.people = people;
-    }
+  @Transient
+  @JsonIgnore
+  public String getAudioUrlHash() {
+    return Hashing.sha256().hashString(getAudioUrl(), StandardCharsets.UTF_8).toString();
+  }
 
-    @Transient
-    @JsonIgnore
-    public String getAudioUrlHash() {
-        return Hashing.sha256().hashString(getAudioUrl(), StandardCharsets.UTF_8).toString();
-    }
+  public Long getTimeUpdated() {
+    return timeUpdated;
+  }
 
-    public Long getTimeUpdated() {
-        return timeUpdated;
-    }
-
-    public void setTimeUpdated(Long timeUpdated) {
-        this.timeUpdated = timeUpdated;
-    }
+  public void setTimeUpdated(Long timeUpdated) {
+    this.timeUpdated = timeUpdated;
+  }
 }
