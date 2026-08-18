@@ -8,9 +8,6 @@ part of 'player_status.dart';
 
 _PlayerStatus _$PlayerStatusFromJson(Map<String, dynamic> json) =>
     _PlayerStatus(
-      client: json['client'] == null
-          ? null
-          : PlayerInfo.fromJson(json['client'] as Map<String, dynamic>),
       episode: json['episode'] == null
           ? null
           : Episode.fromJson(json['episode'] as Map<String, dynamic>),
@@ -24,7 +21,6 @@ _PlayerStatus _$PlayerStatusFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$PlayerStatusToJson(_PlayerStatus instance) =>
     <String, dynamic>{
-      'client': instance.client,
       'episode': instance.episode,
       'position': instance.position,
       'duration': instance.duration,

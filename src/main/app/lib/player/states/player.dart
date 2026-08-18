@@ -140,28 +140,22 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void _handleRemotePlayerStatus(PlayerStatus playerStatus) {
-    if (playerStatus.client?.id != sessionId) {
+    if (!isPlayingLocally) {
       if (playerStatus.episode == null) {
-        if (!isPlayingLocally) {
-          _log.fine("Received null episode from remote player, closing");
-          emit(
-            state.copyWith(
-              showMiniPlayer: false,
-              showBigPlayer: false,
-              episode: null,
-              position: .zero,
-              bufferPosition: .zero,
-              duration: .zero,
-              playing: false,
-              speed: 1,
-              volume: 100,
-            ),
-          );
-        } else {
-          _log.fine(
-            'Received null episode from remote player but we were not playing remotely, we probably went offline, and came back',
-          );
-        }
+        _log.fine("Received null episode from remote player, closing");
+        emit(
+          state.copyWith(
+            showMiniPlayer: false,
+            showBigPlayer: false,
+            episode: null,
+            position: .zero,
+            bufferPosition: .zero,
+            duration: .zero,
+            playing: false,
+            speed: 1,
+            volume: 100,
+          ),
+        );
       } else {
         bool shouldShowPlayer = !state.showBigPlayer && !state.showMiniPlayer;
 
@@ -209,14 +203,20 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     Duration? initialPosition,
     bool fromTransfer = false,
   }) async {
+    bool isAlreadyPlayingEpisode = state.episode?.id == episode.id;
+
     _log.fine('Starting new episode playback, playing locally? $isPlayingLocally, from transfer: $fromTransfer');
     if (!fromTransfer && !isPlayingLocally) {
       _log.fine("Sending remote command to start new episode remotely");
-      _sendRemoteCommand(type: .setEpisode, episode: episode, position: initialPosition?.inSeconds ?? 0);
+      if (isAlreadyPlayingEpisode) {
+        _sendRemoteCommand(type: state.playing ? .pause : .play);
+      } else {
+        _sendRemoteCommand(type: .setEpisode, episode: episode, position: initialPosition?.inSeconds ?? 0);
+      }
     } else {
       try {
         if (!fromTransfer && (state.episode != null && state.episode?.id == episode.id)) {
-          if (state.episode?.id == episode.id) {
+          if (isAlreadyPlayingEpisode) {
             playPause();
           }
           return;

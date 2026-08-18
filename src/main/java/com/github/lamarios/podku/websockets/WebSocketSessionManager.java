@@ -2,12 +2,16 @@
 package com.github.lamarios.podku.websockets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +30,11 @@ public class WebSocketSessionManager {
     private final EpisodeRepository episodeRepository;
     private final PlatformTransactionManager transactionManager;
     private PlayerStatus playerStatus = null;
+    private WebsocketClient currentPlayer = null;
 
     public WebSocketSessionManager(EpisodeRepository episodeRepository, PlatformTransactionManager transactionManager) {
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         this.episodeRepository = episodeRepository;
         this.transactionManager = transactionManager;
     }
@@ -49,12 +55,8 @@ public class WebSocketSessionManager {
     }
 
     private ClientList getClientList() {
-        WebsocketClient currentPlayer = null;
-        if (playerStatus != null && playerStatus.client() != null) {
-            currentPlayer = playerStatus.client();
-        }
         return new ClientList(
-                currentPlayer,
+                this.currentPlayer,
                 sessions
                     .values()
                     .stream()
@@ -193,6 +195,14 @@ public class WebSocketSessionManager {
     }
 
     private Optional<WebSocketSession> getCurrentPlayer() {
+        return getSessionForClient(currentPlayer);
+    }
+
+    private Optional<WebSocketSession> getSessionForClient(WebsocketClient client) {
+        if (client == null) {
+            return Optional.empty();
+        }
+
         for (Map.Entry<WebSocketSession, WebsocketClient> entry : sessions.entrySet()) {
             WebSocketSession webSocketSession = entry.getKey();
             WebsocketClient websocketClient = entry.getValue();
@@ -200,7 +210,7 @@ public class WebSocketSessionManager {
                 continue;
             }
 
-            if (websocketClient.id().equalsIgnoreCase(playerStatus.client().id())) {
+            if (websocketClient.id().equalsIgnoreCase(client.id())) {
                 return Optional.ofNullable(webSocketSession);
             }
         }
@@ -208,14 +218,16 @@ public class WebSocketSessionManager {
         return Optional.empty();
     }
 
+    private Optional<WebsocketClient> getClientForSession(WebSocketSession session) {
+        return Optional.ofNullable(sessions.get(session));
+    }
+
     private void cleanupSession(WebSocketSession session) throws IOException {
         var remoteSession = sessions.get(session);
 
         WebSocketMessage<PlayerStatus> message = null;
 
-        if (remoteSession != null
-                && playerStatus != null
-                && remoteSession.id().equalsIgnoreCase(playerStatus.client().id())) {
+        if (remoteSession != null && playerStatus != null && remoteSession.id().equalsIgnoreCase(currentPlayer.id())) {
             playerStatus = null;
 
             message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, null);
@@ -240,11 +252,8 @@ public class WebSocketSessionManager {
 
         String newPlayerClient =
                 Optional.ofNullable(sessions.get(session)).map(WebsocketClient::id).orElse("no-new-player");
-        String currentPlayerClient = Optional
-            .ofNullable(this.playerStatus)
-            .map(PlayerStatus::client)
-            .map(WebsocketClient::id)
-            .orElse("no-current-player");
+        String currentPlayerClient =
+                Optional.ofNullable(this.currentPlayer).map(WebsocketClient::id).orElse("no-current-player");
         if (newPlayerStatus == null
                 || (newPlayerStatus.broadcast() && !newPlayerClient.equalsIgnoreCase(currentPlayerClient))) {
             broadcastClients = true;
@@ -253,11 +262,11 @@ public class WebSocketSessionManager {
         if (newPlayerStatus == null || newPlayerStatus.episode() == null) {
             // playback stopped
             this.playerStatus = null;
+            this.currentPlayer = null;
         } else if (newPlayerStatus.episode().getId() != null) {
             // only if it's meant to be broadcasted, we save it as current player.
             if (newPlayerStatus.broadcast()) {
                 this.playerStatus = new PlayerStatus(
-                        sessions.get(session),
                         newPlayerStatus.episode(),
                         newPlayerStatus.position(),
                         newPlayerStatus.duration(),
@@ -266,6 +275,8 @@ public class WebSocketSessionManager {
                         newPlayerStatus.volume(),
                         true
                 );
+
+                this.currentPlayer = getClientForSession(session).orElse(null);
             }
             TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
                 episodeRepository
