@@ -147,8 +147,8 @@ public class WebSocketSessionManager {
      * We send the same message to both the current player and the new one the new player will have to
      * stop it's current playback while the new one will have to take over
      *
-     * @param transfer
-     * @throws IOException
+     * @param transfer the playback transfer data
+     * @throws IOException if anything goes wrong during the transfer
      */
     private void handlePlaybackTransfer(TransferPlayback transfer) throws IOException {
         WebSocketMessage<TransferPlayback> message =
