@@ -16,7 +16,9 @@ import com.github.lamarios.podku.search.SearchResult;
 import com.github.lamarios.podku.transcripts.WhisperService;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.google.common.hash.Hashing;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +32,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -119,24 +123,36 @@ public class PodcastService {
         podcastRepository.deletePodcastById(UUID.fromString(id));
     }
 
+    @EventListener(ApplicationReadyEvent.class)
+    public void onStartup() {
+        refreshPodcasts();
+    }
+
     @Scheduled(cron = "@hourly")
     public void refreshPodcasts() {
-        List<Podcast> podcasts = TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {
-            List<Podcast> result = new ArrayList<>();
-            var toProcess = podcastRepository.findAll();
-            for (var podcast : toProcess) {
+        List<UUID> toProcess =
+                TransactionHelper.doInNewTransaction(platformTransactionManager, true, podcastRepository::findAllIds);
+
+        List<Podcast> podcasts = new ArrayList<>();
+        for (var p : toProcess) {
+            try {
                 TransactionHelper.doInNewTransaction(platformTransactionManager, false, () -> {
+                    var podcast = podcastRepository
+                        .findById(p)
+                        .orElseThrow(() -> new PodcastFeedException("not found"));
+
                     Podcast parsed = null;
                     log.info("Refreshing podcast {}", podcast.getName());
 
                     parsed = podcastParser.parseUrl(podcast);
                     podcastRepository.save(parsed);
-                    result.add(parsed);
+                    podcasts.add(parsed);
+                    log.info("Done refreshing {}", podcast.getName());
                 });
+            } catch (Exception e) {
+                log.error("Failed to process podcast: {}, continuing process", p, e);
             }
-
-            return result;
-        });
+        }
 
         log.info("Episode refresh done");
         try {
@@ -254,6 +270,7 @@ public class PodcastService {
     }
 
     public void downloadEpisodes() {
+        log.info("Starting to cache episodes locally");
         TransactionHelper.doInNewTransaction(platformTransactionManager, true, () -> {
             var episodes = episodeRepository.getEpisodeByPubDateMillisBefore(
                     System.currentTimeMillis(),

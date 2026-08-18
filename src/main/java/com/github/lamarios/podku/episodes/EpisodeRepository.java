@@ -10,10 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface EpisodeRepository extends JpaRepository<Episode, UUID> {
-    List<Episode> findAllByProcessed(boolean processed);
-
-    List<Episode> getEpisodeByPubDateMillisBefore(Long pubDateMillisBefore);
-
     List<Episode> getEpisodeByPubDateMillisBefore(Long pubDateMillisBefore, Sort sort, Limit limit);
 
     @Query(value = """
@@ -30,4 +26,6 @@ public interface EpisodeRepository extends JpaRepository<Episode, UUID> {
             LIMIT :limit
             """, nativeQuery = true)
     List<Episode> search(@Param("query") String query, @Param("limit") int limit);
+
+    List<Episode> streamAllByProcessed(boolean processed);
 }

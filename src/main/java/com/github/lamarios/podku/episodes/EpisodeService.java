@@ -75,17 +75,16 @@ public class EpisodeService {
 
     @Scheduled(cron = "@daily")
     public void processEpisodes() {
-        TransactionHelper.doInNewTransaction(transactionManager, true, () -> {
-            var toProcess = episodeRepository.findAllByProcessed(false);
-            exec.submit(() -> {
-                log.info("Starting scheduled episode processing, {} episodes to process", toProcess.size());
-                for (Episode episode : toProcess) {
+        exec.submit(() -> {
+            log.info("Starting scheduled episode processing");
+            episodeRepository
+                .streamAllByProcessed(false)
+                .forEach(episode -> {
                     TransactionHelper.doInNewTransaction(transactionManager, false, () -> {
                         var e = episodeRepository.findById(episode.getId());
                         e.ifPresent(this::processEpisode);
                     });
-                }
-            });
+                });
         });
     }
 

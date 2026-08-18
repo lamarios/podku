@@ -49,6 +49,7 @@ public class TransactionHelper {
                 transactionManager.rollback(status);
                 log.error("Failed to run operation within a transaction, rolling back", e);
             }
+            log.error("Failed to run operation within a transaction", e);
             // handle exception
             throw e;
         }

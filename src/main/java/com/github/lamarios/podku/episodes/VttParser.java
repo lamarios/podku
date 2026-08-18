@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class VttParser {
     // Matches lines like: 00:00:11.447 --> 00:00:16.131 (optional cue settings after)
+    // Matches lines like: 00:00:11.447 --> 00:00:16.131 (optional cue settings after)
     private static final Pattern TIME_LINE_PATTERN = Pattern.compile(
             "^(\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3}|\\\\d{2}:\\\\d{2}\\\\.\\\\d{3})\\\\s*--"
             + ">\\\\s*(\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3}|\\\\d{2}:\\\\d{2}\\\\.\\\\d{3})"

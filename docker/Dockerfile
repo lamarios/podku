@@ -1,4 +1,5 @@
-FROM amazoncorretto:25
+# Use the minimal JRE image
+FROM ibm-semeru-runtimes:open-25-jre
 
 RUN mkdir /app
 

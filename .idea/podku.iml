@@ -552,6 +552,12 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/device_info_plus/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/device_info_plus/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/device_info_plus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/file_picker_linux/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/file_picker_linux/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/file_picker_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/windows_file_picker/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/windows_file_picker/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/windows_file_picker/build" />
     </content>
   </component>
 </module>

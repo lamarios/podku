@@ -11,8 +11,6 @@ import org.springframework.data.repository.query.Param;
 public interface PodcastRepository extends JpaRepository<Podcast, UUID> {
     Optional<Podcast> findFirstByUrl(String url);
 
-    long countPodcastsByUrl(String url);
-
     void deletePodcastById(UUID id);
 
     @Query(value = """
@@ -22,4 +20,7 @@ public interface PodcastRepository extends JpaRepository<Podcast, UUID> {
         LIMIT :limit
         """, nativeQuery = true)
     List<Podcast> searchPodcasts(@Param("query") String query, @Param("limit") int limit);
+
+    @Query("select p.id from Podcast p")
+    List<UUID> findAllIds();
 }
