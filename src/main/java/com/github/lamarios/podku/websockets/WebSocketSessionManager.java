@@ -75,12 +75,9 @@ public class WebSocketSessionManager {
         .forEach(
             s -> {
               try {
-                // we broadcast the clients as a test
-                s.sendMessage(new TextMessage(objectMapper.writeValueAsString(textMessage)));
-
-              } catch (Exception e) {
-                log.warn("Failed to communicate with client, might be disconnected");
-                testSessionAndCleanIfNeeded(s);
+                sendMessage(s, objectMapper.writeValueAsString(textMessage));
+              } catch (JsonProcessingException e) {
+                log.error("Couldn't serialize object", e);
               }
             });
   }
@@ -138,7 +135,7 @@ public class WebSocketSessionManager {
     for (WebSocketSession session : sessions.keySet()) {
       if (session != null && session.isOpen()) {
         try {
-          session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+          sendMessage(session, objectMapper.writeValueAsString(message));
         } catch (IOException e) {
           log.error("Error sending message:", e);
         }
@@ -156,7 +153,7 @@ public class WebSocketSessionManager {
         case playerInfo ->
             handlePlayerInfo(
                 session, objectMapper.convertValue(parsed.getMessage(), WebsocketClient.class));
-        case getPlayerStatus -> session.sendMessage(getCurrentPlayerStatus());
+        case getPlayerStatus -> sendMessage(session, getCurrentPlayerStatus());
         case playerStatus ->
             handlePlayerStatus(
                 session, objectMapper.convertValue(parsed.getMessage(), PlayerStatus.class));
@@ -218,8 +215,22 @@ public class WebSocketSessionManager {
     }
 
     var currentPlayer = currentPlayerOpt.get();
-    currentPlayer.sendMessage(textMessage);
-    target.sendMessage(textMessage);
+    sendMessage(currentPlayer, textMessage);
+    sendMessage(target, textMessage);
+  }
+
+  private void sendMessage(
+      WebSocketSession session, org.springframework.web.socket.WebSocketMessage message) {
+    try {
+      session.sendMessage(message);
+    } catch (Exception e) {
+      log.warn("Failed to communicate with client, might be disconnected");
+      testSessionAndCleanIfNeeded(session);
+    }
+  }
+
+  private void sendMessage(WebSocketSession session, String message) {
+    sendMessage(session, new TextMessage(message));
   }
 
   private void handlePlayerInfo(WebSocketSession session, WebsocketClient client) {
@@ -232,7 +243,7 @@ public class WebSocketSessionManager {
         .ifPresent(
             s -> {
               try {
-                s.sendMessage(new TextMessage(objectMapper.writeValueAsString(remoteCommand)));
+                sendMessage(s, new TextMessage(objectMapper.writeValueAsString(remoteCommand)));
               } catch (IOException e) {
                 throw new RuntimeException(e);
               }
@@ -285,7 +296,7 @@ public class WebSocketSessionManager {
     if (message != null) {
       var textMessage = new TextMessage(objectMapper.writeValueAsString(message));
       for (WebSocketSession webSocketSession : sessions.keySet()) {
-        webSocketSession.sendMessage(textMessage);
+        sendMessage(webSocketSession, textMessage);
       }
     }
   }
@@ -369,7 +380,7 @@ public class WebSocketSessionManager {
           continue;
         }
 
-        webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+        sendMessage(webSocketSession, new TextMessage(objectMapper.writeValueAsString(message)));
       }
     }
   }
