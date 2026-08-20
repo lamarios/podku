@@ -84,10 +84,6 @@ public class WebSocketSessionManager {
             });
   }
 
-  /**
-   * @param s
-   * @return true if needs to be removed
-   */
   public void testSessionAndCleanIfNeeded(WebSocketSession s) {
     Instant now = Instant.now();
     try {
