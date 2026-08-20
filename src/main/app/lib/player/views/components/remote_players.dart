@@ -8,7 +8,6 @@ import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/remote_player.dart';
-import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/bottom_sheet_title.dart';
@@ -21,7 +20,7 @@ class RemotePlayers extends StatelessWidget {
     final colors = M3ETheme.of(context).colorScheme;
     return Builder(
       builder: (context) {
-        final clients = context.select((ServerCubit c) => c.state.clients);
+        final clients = context.select((PlayerCubit c) => c.state.clients);
         final playingLocally = context.select((PlayerCubit c) => c.isPlayingLocally);
         final currentPlayer = context.select((PlayerCubit c) => c.state.currentPlayer);
         if (clients.length > 1) {
@@ -84,7 +83,7 @@ class RemotePlayersDialog extends StatelessWidget {
 
     return Builder(
       builder: (context) {
-        final clients = context.select((ServerCubit c) => c.state.clients);
+        final clients = context.select((PlayerCubit c) => c.state.clients);
         final currentPlayer = context.select((PlayerCubit c) => c.state.currentPlayer);
         return Padding(
           padding: .symmetric(vertical: pu2, horizontal: pu6),

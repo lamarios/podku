@@ -59,7 +59,7 @@ class Podkunnect {
     await socket?.connect();
   }
 
-  void _handleSocketMessage(PodkuSocketMessage event) {
+  Future<void> _handleSocketMessage(PodkuSocketMessage event) async {
     switch (event.type) {
       case .transferPlayback:
         if (event.message != null) {
@@ -70,6 +70,13 @@ class Podkunnect {
         if (event.message != null) {
           _handleRemoteCommand(RemoteCommand.fromJson(event.message!));
         }
+        break;
+      case .clientList:
+        // we return our current status
+        final status =
+            await _getCurrentPlayerStatus() ?? PlayerStatus(episode: null, position: 0, duration: 0, speed: 1);
+        final message = PodkuSocketMessage(message: status.toJson(), type: .pong);
+        socket?.send(jsonEncode(message));
         break;
       default:
         _log.fine('Received event of type ${event.type}');

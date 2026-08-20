@@ -42,6 +42,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   StreamSubscription<MediaItem?>? _mediaItemSubscription;
   StreamSubscription<Duration>? _durationChangedSubscription;
   StreamSubscription<bool>? _showBigPlayerSubscription;
+  StreamSubscription<List<PlayerInfo>>? _clientsSubscription;
 
   PlayerCubit(super.initialState) {
     /*
@@ -83,6 +84,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     await _remoteCommandSubscription?.cancel();
     await _playerStatusSubscription?.cancel();
     await _transferPlaybackSubscription?.cancel();
+    await _clientsSubscription?.cancel();
   }
 
   Future<void> stopListeningToPlayerEvents() async {
@@ -97,6 +99,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     _remoteCommandSubscription = serverCubit.remoteCommandsStream.stream.listen(_handleRemoteCommand);
     _playerStatusSubscription = serverCubit.playerStatusStream.stream.listen(_handleRemotePlayerStatus);
     _transferPlaybackSubscription = serverCubit.transferPlaybackStream.stream.listen(_handleTransferPlayback);
+    _clientsSubscription = serverCubit.clientsStream.stream.listen(handleClients);
     _currentPlayerSubscription = serverCubit.currentPlayerStream.stream.listen((event) {
       emit(state.copyWith(currentPlayer: event));
     });
@@ -196,6 +199,24 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
+
+  void handleClients(List<PlayerInfo> clients) {
+    emit(state.copyWith(clients: clients));
+
+    PodkuSocketMessage message = PodkuSocketMessage(
+      message: PlayerStatus(
+        // most of teh data here does not matter, only if we're actually playing an episode locally
+        episode: isPlayingLocally ? state.episode : null,
+        position: state.position.inSeconds,
+        duration: state.duration.inSeconds,
+        speed: state.speed,
+      ).toJson(),
+      type: .pong,
+    );
+
+    // we send a pong with our current status, in case the server is stuck on a wrong client playing
+    getIt.get<ServerCubit>().socket?.send(jsonEncode(message));
+  }
 
   Future<void> playEpisode(
     Episode episode, {
@@ -566,6 +587,7 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(false) bool showVolume,
     @Default(false) bool draggingVolume,
     @Default(1) double volume,
+    @Default([]) List<PlayerInfo> clients,
     PlayerInfo? currentPlayer,
     dynamic error,
     StackTrace? stackTrace,

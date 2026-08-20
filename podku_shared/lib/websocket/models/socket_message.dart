@@ -12,6 +12,7 @@ enum PodkuSocketMessageType {
   playerStatus,
   clientList,
   transferPlayback,
+  pong
 }
 
 @freezed

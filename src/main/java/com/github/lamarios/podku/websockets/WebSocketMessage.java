@@ -11,6 +11,7 @@ public class WebSocketMessage<T> {
     playerInfo(WebsocketClient.class),
     clientList(ClientList.class),
     transferPlayback(TransferPlayback.class),
+    pong(PlayerStatus.class),
     playbackProgress(PlaybackProgress.class);
     private final Class<?> clazz;
 

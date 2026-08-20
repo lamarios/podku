@@ -26,4 +26,5 @@ const _$PodkuSocketMessageTypeEnumMap = {
   PodkuSocketMessageType.playerStatus: 'playerStatus',
   PodkuSocketMessageType.clientList: 'clientList',
   PodkuSocketMessageType.transferPlayback: 'transferPlayback',
+  PodkuSocketMessageType.pong: 'pong',
 };

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,8 @@ public class WebSocketSessionManager {
   private final PlatformTransactionManager transactionManager;
   private PlayerStatus playerStatus = null;
   private WebsocketClient currentPlayer = null;
+  private final Map<WebSocketSession, Instant> lastPong = new ConcurrentHashMap<>();
+  private static final Duration PONG_TIMEOUT = Duration.ofSeconds(70);
 
   public WebSocketSessionManager(
       EpisodeRepository episodeRepository, PlatformTransactionManager transactionManager) {
@@ -76,6 +80,7 @@ public class WebSocketSessionManager {
               try {
                 // we broadcast the clients as a test
                 s.sendMessage(new TextMessage(objectMapper.writeValueAsString(textMessage)));
+
               } catch (Exception e) {
                 log.warn("Failed to communicate with client, might be disconnected");
                 try {
@@ -83,12 +88,58 @@ public class WebSocketSessionManager {
                 } catch (Exception ex) {
                   log.info("Couldn't close session properly, most likely gone");
                 }
-
                 toRemove.add(s);
               }
             });
 
-    log.info("Removed {} inactive sessions", toRemove.size());
+    if (!toRemove.isEmpty()) {
+      log.info("Removed {} inactive sessions", toRemove.size());
+    }
+
+    for (WebSocketSession webSocketSession : toRemove) {
+      try {
+        cleanupSession(webSocketSession);
+      } catch (IOException e) {
+        log.error("Couldn't clean up session", e);
+      }
+    }
+  }
+
+  @Scheduled(cron = "30 * * * * *")
+  public void cleanTimedOutSessions() {
+    List<WebSocketSession> toRemove = new ArrayList<>();
+    Instant now = Instant.now();
+    sessions
+        .keySet()
+        .forEach(
+            s -> {
+              try {
+                Instant last = lastPong.getOrDefault(s, Instant.EPOCH);
+                if (Duration.between(last, now).compareTo(PONG_TIMEOUT) > 0) {
+                  log.info("Did not receive pong in time, cleaning up");
+                  try {
+                    s.close(CloseStatus.SESSION_NOT_RELIABLE);
+                  } catch (IOException e) {
+                    // already dead
+                  } finally {
+                    toRemove.add(s);
+                  }
+                }
+
+              } catch (Exception e) {
+                log.warn("Failed to communicate with client, might be disconnected");
+                try {
+                  s.close(CloseStatus.GOING_AWAY);
+                } catch (Exception ex) {
+                  log.info("Couldn't close session properly, most likely gone");
+                }
+                toRemove.add(s);
+              }
+            });
+
+    if (!toRemove.isEmpty()) {
+      log.info("Removed {} timed out sessions", toRemove.size());
+    }
 
     for (WebSocketSession webSocketSession : toRemove) {
       try {
@@ -133,10 +184,29 @@ public class WebSocketSessionManager {
         case transferPlayback ->
             handlePlaybackTransfer(
                 objectMapper.convertValue(parsed.getMessage(), TransferPlayback.class));
+        case pong ->
+            handlePong(session, objectMapper.convertValue(parsed.getMessage(), PlayerStatus.class));
       }
     } catch (Exception e) {
       log.error("Couldn't parse websocket message", e);
     }
+  }
+
+  private void handlePong(WebSocketSession session, PlayerStatus status) {
+    if (sessions.containsKey(session)) {
+      lastPong.put(session, Instant.now());
+      boolean isCurrentPlayer =
+          currentPlayer != null && sessions.get(session).id().equalsIgnoreCase(currentPlayer.id());
+      log.info("Received pong, is current player? {}", isCurrentPlayer);
+      if (isCurrentPlayer) {
+        if (status.episode() == null) {
+          currentPlayer = null;
+          pingSessions();
+        }
+      }
+    }
+    // session does not exist, might be a brand new one
+
   }
 
   /**

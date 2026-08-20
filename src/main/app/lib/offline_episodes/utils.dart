@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:openapi/openapi.dart';
 
@@ -11,6 +12,8 @@ class OfflineProgressSaver {
   static final String _filePath = "offline_progress.json";
 
   static Future<void> updateProgress({required String episodeId, required int progress}) async {
+    if (kIsWeb) return;
+
     final f = await _getSaveFile();
     final contentStr = await f.readAsString();
     final content = _readContent(contentStr);
@@ -30,6 +33,7 @@ class OfflineProgressSaver {
   }
 
   static Future<void> sendProgressToBackend() async {
+    if (kIsWeb) return;
     _log.fine('Sending catch-up progress to backend');
     final f = await _getSaveFile();
     final content = _readContent(await f.readAsString());

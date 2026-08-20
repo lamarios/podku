@@ -27,6 +27,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
   final StreamController<PlayerStatus> playerStatusStream = StreamController.broadcast();
   final StreamController<TransferPlayback> transferPlaybackStream = StreamController.broadcast();
   final StreamController<PlayerInfo?> currentPlayerStream = StreamController.broadcast();
+  final StreamController<List<PlayerInfo>> clientsStream = StreamController.broadcast();
   final TextEditingController controller = TextEditingController();
   StreamSubscription<PodkuSocketMessage>? _subscription;
 
@@ -151,7 +152,7 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
 
         _log.fine('Received client list: $clients');
 
-        emit(state.copyWith(clients: clients));
+        clientsStream.add(clients);
         break;
       case .playerStatus:
         if (message.message == null) {
@@ -215,7 +216,6 @@ class ServerCubit extends Cubit<ServerState> with WidgetsBindingObserver {
 
   Future<void> _disconnectFromStream() async {
     _log.fine('Disconnecting froms websocket');
-    emit(state.copyWith(clients: []));
     await _subscription?.cancel();
     await socket?.close();
     socket = null;
@@ -276,7 +276,6 @@ sealed class ServerState with _$ServerState implements WithError {
     Client? client,
     StackTrace? stackTrace,
     @Default(false) bool loading,
-    @Default([]) List<PlayerInfo> clients,
     dynamic error,
     @Default(InternetConnectionStatus.connected) InternetConnectionStatus status,
   }) = _ServerState;
