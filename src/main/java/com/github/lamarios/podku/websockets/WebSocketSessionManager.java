@@ -153,7 +153,10 @@ public class WebSocketSessionManager {
     try {
       var parsed = objectMapper.readValue(message.getPayload(), WebSocketMessage.class);
 
-      log.info("Received message of type: {}", parsed.getType());
+      log.info(
+          "Received message of type: {} from {}",
+          parsed.getType(),
+          getClientForSession(session).map(WebsocketClient::name).orElse("unknown"));
 
       switch (parsed.getType()) {
         case playerInfo ->
