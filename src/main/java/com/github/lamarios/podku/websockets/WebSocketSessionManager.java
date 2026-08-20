@@ -10,8 +10,6 @@ import com.github.lamarios.podku.utils.TransactionHelper;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +32,7 @@ public class WebSocketSessionManager {
   private PlayerStatus playerStatus = null;
   private WebsocketClient currentPlayer = null;
   private final Map<WebSocketSession, Instant> lastPong = new ConcurrentHashMap<>();
-  private static final Duration PONG_TIMEOUT = Duration.ofSeconds(70);
+  private static final Duration PONG_TIMEOUT = Duration.ofSeconds(35);
 
   public WebSocketSessionManager(
       EpisodeRepository episodeRepository, PlatformTransactionManager transactionManager) {
@@ -67,9 +65,8 @@ public class WebSocketSessionManager {
             .toList());
   }
 
-  @Scheduled(cron = "0 * * * * *")
+  @Scheduled(cron = "0,30 * * * * *")
   public void pingSessions() {
-    List<WebSocketSession> toRemove = new ArrayList<>();
 
     var textMessage = new WebSocketMessage<>(WebSocketMessage.Type.clientList, getClientList());
 
@@ -82,71 +79,57 @@ public class WebSocketSessionManager {
                 s.sendMessage(new TextMessage(objectMapper.writeValueAsString(textMessage)));
 
               } catch (Exception e) {
-                log.warn("Failed to communicate with client, might be disconnected");
-                try {
-                  s.close(CloseStatus.GOING_AWAY);
-                } catch (Exception ex) {
-                  log.info("Couldn't close session properly, most likely gone");
-                }
-                toRemove.add(s);
+                log.warn("Failed to communicate with client, might be disconnected", e);
               }
             });
+  }
 
-    if (!toRemove.isEmpty()) {
-      log.info("Removed {} inactive sessions", toRemove.size());
-    }
+  /**
+   * @param s
+   * @return true if needs to be removed
+   */
+  public void testSessionAndCleanIfNeeded(WebSocketSession s) {
+    Instant now = Instant.now();
+    try {
+      Instant last = lastPong.getOrDefault(s, Instant.EPOCH);
+      if (Duration.between(last, now).compareTo(PONG_TIMEOUT) > 0) {
+        log.info("Did not receive pong in time, cleaning up");
+        try {
+          s.close(CloseStatus.SESSION_NOT_RELIABLE);
+        } catch (IOException e) {
+          // already dead
+        } finally {
+          cleanupSession(s);
+        }
+      } else {
+        // otherwise, we try to send a message and see if it still responds
+        s.sendMessage(new TextMessage("ping"));
+      }
 
-    for (WebSocketSession webSocketSession : toRemove) {
+    } catch (Exception e) {
+      log.warn("Failed to communicate with client, might be disconnected", e);
       try {
-        cleanupSession(webSocketSession);
-      } catch (IOException e) {
-        log.error("Couldn't clean up session", e);
+        s.close(CloseStatus.GOING_AWAY);
+      } catch (Exception ex) {
+        log.info("Couldn't close session properly, most likely gone");
+      }
+      try {
+        cleanupSession(s);
+      } catch (IOException ex) {
+        log.error("Failed to cleanup session", ex);
       }
     }
   }
 
-  @Scheduled(cron = "30 * * * * *")
+  @Scheduled(cron = "15,54 * * * * *")
   public void cleanTimedOutSessions() {
-    List<WebSocketSession> toRemove = new ArrayList<>();
-    Instant now = Instant.now();
-    sessions
-        .keySet()
-        .forEach(
-            s -> {
-              try {
-                Instant last = lastPong.getOrDefault(s, Instant.EPOCH);
-                if (Duration.between(last, now).compareTo(PONG_TIMEOUT) > 0) {
-                  log.info("Did not receive pong in time, cleaning up");
-                  try {
-                    s.close(CloseStatus.SESSION_NOT_RELIABLE);
-                  } catch (IOException e) {
-                    // already dead
-                  } finally {
-                    toRemove.add(s);
-                  }
-                }
-
-              } catch (Exception e) {
-                log.warn("Failed to communicate with client, might be disconnected");
-                try {
-                  s.close(CloseStatus.GOING_AWAY);
-                } catch (Exception ex) {
-                  log.info("Couldn't close session properly, most likely gone");
-                }
-                toRemove.add(s);
-              }
-            });
-
-    if (!toRemove.isEmpty()) {
-      log.info("Removed {} timed out sessions", toRemove.size());
+    for (WebSocketSession webSocketSession : sessions.keySet()) {
+      testSessionAndCleanIfNeeded(webSocketSession);
     }
 
-    for (WebSocketSession webSocketSession : toRemove) {
-      try {
-        cleanupSession(webSocketSession);
-      } catch (IOException e) {
-        log.error("Couldn't clean up session", e);
-      }
+    if (currentPlayer != null) {
+      var player = getCurrentPlayer();
+      player.ifPresent(this::testSessionAndCleanIfNeeded);
     }
   }
 
@@ -197,16 +180,13 @@ public class WebSocketSessionManager {
       lastPong.put(session, Instant.now());
       boolean isCurrentPlayer =
           currentPlayer != null && sessions.get(session).id().equalsIgnoreCase(currentPlayer.id());
-      log.info("Received pong, is current player? {}", isCurrentPlayer);
-      if (isCurrentPlayer) {
-        if (status.episode() == null) {
-          currentPlayer = null;
-          pingSessions();
-        }
+      if (isCurrentPlayer && status.episode() != null) {
+        log.debug(
+            "Current player is not playing stuff, there is discrepancy, clearing current player");
+        currentPlayer = null;
+        pingSessions();
       }
     }
-    // session does not exist, might be a brand new one
-
   }
 
   /**
