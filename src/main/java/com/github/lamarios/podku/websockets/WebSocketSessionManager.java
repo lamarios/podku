@@ -286,24 +286,26 @@ public class WebSocketSessionManager {
 
   private void cleanupSession(WebSocketSession session) throws IOException {
     var remoteSession = sessions.get(session);
+    if (remoteSession != null) {
 
-    WebSocketMessage<PlayerStatus> message = null;
+      WebSocketMessage<PlayerStatus> message = null;
 
-    if (remoteSession != null
-        && currentPlayer != null
-        && remoteSession.id().equalsIgnoreCase(currentPlayer.id())) {
-      playerStatus = null;
-      currentPlayer = null;
+      if (remoteSession != null
+          && currentPlayer != null
+          && remoteSession.id().equalsIgnoreCase(currentPlayer.id())) {
+        playerStatus = null;
+        currentPlayer = null;
 
-      message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, null);
-    }
+        message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, null);
+      }
 
-    sessions.remove(session);
+      sessions.remove(session);
 
-    if (message != null) {
-      var textMessage = new TextMessage(objectMapper.writeValueAsString(message));
-      for (WebSocketSession webSocketSession : sessions.keySet()) {
-        sendMessage(webSocketSession, textMessage);
+      if (message != null) {
+        var textMessage = new TextMessage(objectMapper.writeValueAsString(message));
+        for (WebSocketSession webSocketSession : sessions.keySet()) {
+          sendMessage(webSocketSession, textMessage);
+        }
       }
     }
   }
