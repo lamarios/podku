@@ -115,7 +115,7 @@ public class WebSocketSessionManager {
     }
   }
 
-  @Scheduled(cron = "15,54 * * * * *")
+  @Scheduled(cron = "15,45 * * * * *")
   public void cleanTimedOutSessions() {
     for (WebSocketSession webSocketSession : sessions.keySet()) {
       testSessionAndCleanIfNeeded(webSocketSession);
@@ -124,6 +124,12 @@ public class WebSocketSessionManager {
     if (currentPlayer != null) {
       var player = getCurrentPlayer();
       player.ifPresent(this::testSessionAndCleanIfNeeded);
+
+      // we can't find a session of the current player, yet it exists, we clean stuff up, client
+      // might have been disconnected
+      if (player.isEmpty()) {
+        currentPlayer = null;
+      }
     }
   }
 
@@ -284,9 +290,10 @@ public class WebSocketSessionManager {
     WebSocketMessage<PlayerStatus> message = null;
 
     if (remoteSession != null
-        && playerStatus != null
+        && currentPlayer != null
         && remoteSession.id().equalsIgnoreCase(currentPlayer.id())) {
       playerStatus = null;
+      currentPlayer = null;
 
       message = new WebSocketMessage<>(WebSocketMessage.Type.playerStatus, null);
     }
