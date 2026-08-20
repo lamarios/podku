@@ -79,7 +79,8 @@ public class WebSocketSessionManager {
                 s.sendMessage(new TextMessage(objectMapper.writeValueAsString(textMessage)));
 
               } catch (Exception e) {
-                log.warn("Failed to communicate with client, might be disconnected", e);
+                log.warn("Failed to communicate with client, might be disconnected");
+                testSessionAndCleanIfNeeded(s);
               }
             });
   }
@@ -103,7 +104,7 @@ public class WebSocketSessionManager {
       }
 
     } catch (Exception e) {
-      log.warn("Failed to communicate with client, might be disconnected", e);
+      log.warn("Failed to communicate with client, might be disconnected");
       try {
         s.close(CloseStatus.GOING_AWAY);
       } catch (Exception ex) {
