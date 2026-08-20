@@ -1,264 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Podku — Your podcasts. Your server.</title>
-<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg-deep:#0a1c1c;
-    --bg-mid:#0f2626;
-    --panel:#12302f;
-    --panel-line:#1e433f;
-    --teal-bright:#5fc9c0;
-    --teal-mid:#3f8f88;
-    --teal-line:#2f6e68;
-    --amber:#ffb454;
-    --amber-soft:#ffcf8a;
-    --text:#f4f7f6;
-    --text-dim:#a9c9c4;
-    --text-faint:#6f948e;
-    --radius-lg:28px;
-    --radius-md:18px;
-    --radius-sm:10px;
-    --maxw:1180px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podku — Your podcasts. Your server.</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-deep:#0e1a19;
+      --bg-mid:#12211f;
+      --panel:#172928;
+      --panel-line:#233d3a;
+      --teal-bright:#7fbdb4;
+      --teal-mid:#588e86;
+      --teal-line:#3d5f5a;
+      --amber:#ffb454;
+      --amber-soft:#ffcf8a;
+      --text:#f2f5f4;
+      --text-dim:#a8beb9;
+      --text-faint:#71918b;
+      --radius-lg:28px;
+      --radius-md:18px;
+      --radius-sm:10px;
+      --maxw:1180px;
+    }
 
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--bg-deep);
-    color:var(--text);
-    font-family:'Poppins',sans-serif;
-    font-weight:400;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  img{max-width:100%;display:block;}
-  a{color:inherit;}
-  .mono{font-family:'JetBrains Mono',monospace;}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+    *{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0;
+      background:var(--bg-deep);
+      color:var(--text);
+      font-family:'Poppins',sans-serif;
+      font-weight:400;
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+    }
+    img{max-width:100%;display:block;}
+    a{color:inherit;}
+    .mono{font-family:'JetBrains Mono',monospace;}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
 
-  /* ---------- Background texture ---------- */
-  .bg-fade{
-    position:fixed;inset:0;z-index:-1;
-    background:
-      radial-gradient(700px 420px at 82% -6%, rgba(95,201,192,0.14), transparent 60%),
-      radial-gradient(600px 500px at -6% 40%, rgba(255,180,84,0.06), transparent 60%),
-      linear-gradient(180deg,#0a1c1c 0%, #0a1c1c 100%);
-  }
+    /* ---------- Background texture ---------- */
+    .bg-fade{
+      position:fixed;inset:0;z-index:-1;
+      background:
+              radial-gradient(700px 420px at 82% -6%, rgba(127,189,180,0.11), transparent 60%),
+              radial-gradient(600px 500px at -6% 40%, rgba(255,180,84,0.05), transparent 60%),
+              linear-gradient(180deg,#0e1a19 0%, #0e1a19 100%);
+    }
 
-  /* ---------- Nav ---------- */
-  header{
-    position:sticky;top:0;z-index:50;
-    background:rgba(10,28,28,0.82);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(95,201,192,0.12);
-  }
-  .nav{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:18px 32px;
-    max-width:var(--maxw);margin:0 auto;
-  }
-  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
-  .brand img{width:36px;height:36px;}
-  .brand span{font-weight:700;font-size:20px;letter-spacing:0.2px;}
-  .navlinks{display:flex;align-items:center;gap:28px;}
-  .navlinks a.textlink{
-    font-size:15px;color:var(--text-dim);text-decoration:none;
-    display:flex;align-items:center;gap:6px;
-    transition:color .15s ease;
-  }
-  .navlinks a.textlink:hover{color:var(--teal-bright);}
-  .badge-soon{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10.5px;letter-spacing:0.5px;
-    color:var(--text-faint);
-    background:rgba(255,255,255,0.04);
-    border:1px solid var(--panel-line);
-    padding:2px 7px;border-radius:20px;
-  }
-  .btn{
-    display:inline-flex;align-items:center;gap:9px;
-    padding:11px 20px;border-radius:100px;
-    font-size:15px;font-weight:600;text-decoration:none;
-    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-    border:1px solid transparent;
-    white-space:nowrap;
-  }
-  .btn-primary{
-    background:linear-gradient(135deg,#6fd6cc,#3f8f88);
-    color:#062120;
-  }
-  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(95,201,192,0.25);}
-  .btn-ghost{
-    background:rgba(255,255,255,0.03);
-    border-color:var(--panel-line);
-    color:var(--text);
-  }
-  .btn-ghost:hover{border-color:var(--teal-mid);background:rgba(95,201,192,0.06);}
-  .btn svg{width:18px;height:18px;flex-shrink:0;}
+    /* ---------- Nav ---------- */
+    header{
+      position:sticky;top:0;z-index:50;
+      background:rgba(14,26,25,0.82);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(127,189,180,0.10);
+    }
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:18px 32px;
+      max-width:var(--maxw);margin:0 auto;
+    }
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+    .brand img{width:36px;height:36px;}
+    .brand span{font-weight:700;font-size:20px;letter-spacing:0.2px;}
+    .navlinks{display:flex;align-items:center;gap:28px;}
+    .navlinks a.textlink{
+      font-size:15px;color:var(--text-dim);text-decoration:none;
+      display:flex;align-items:center;gap:6px;
+      transition:color .15s ease;
+    }
+    .navlinks a.textlink:hover{color:var(--teal-bright);}
+    .badge-soon{
+      font-family:'JetBrains Mono',monospace;
+      font-size:10.5px;letter-spacing:0.5px;
+      color:var(--text-faint);
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--panel-line);
+      padding:2px 7px;border-radius:20px;
+    }
+    .btn{
+      display:inline-flex;align-items:center;gap:9px;
+      padding:11px 20px;border-radius:100px;
+      font-size:15px;font-weight:600;text-decoration:none;
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,#93c9c0,#588e86);
+      color:#0a1c1a;
+    }
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(127,189,180,0.22);}
+    .btn-ghost{
+      background:rgba(255,255,255,0.03);
+      border-color:var(--panel-line);
+      color:var(--text);
+    }
+    .btn-ghost:hover{border-color:var(--teal-mid);background:rgba(127,189,180,0.05);}
+    .btn svg{width:18px;height:18px;flex-shrink:0;}
 
-  /* ---------- Hero ---------- */
-  .hero{
-    padding:88px 32px 40px;
-    max-width:var(--maxw);margin:0 auto;
-    display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;
-  }
-  .eyebrow{
-    font-family:'JetBrains Mono',monospace;
-    font-size:13px;letter-spacing:3px;color:var(--amber);
-    margin:0 0 18px;
-  }
-  h1{
-    font-size:52px;line-height:1.08;font-weight:700;margin:0 0 22px;letter-spacing:-0.5px;
-  }
-  h1 .accent{color:var(--teal-bright);}
-  .hero p.lede{
-    font-size:18px;color:var(--text-dim);max-width:480px;margin:0 0 32px;
-  }
-  .hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
-  .hero-meta{
-    font-family:'JetBrains Mono',monospace;
-    font-size:12.5px;color:var(--text-faint);letter-spacing:0.3px;
-    display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-  }
-  .dot{width:4px;height:4px;border-radius:50%;background:var(--text-faint);flex:none;}
+    /* ---------- Hero ---------- */
+    .hero{
+      padding:88px 32px 40px;
+      max-width:var(--maxw);margin:0 auto;
+      display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;
+    }
+    .eyebrow{
+      font-family:'JetBrains Mono',monospace;
+      font-size:13px;letter-spacing:3px;color:var(--amber);
+      margin:0 0 18px;
+    }
+    h1{
+      font-size:52px;line-height:1.08;font-weight:700;margin:0 0 22px;letter-spacing:-0.5px;
+    }
+    h1 .accent{color:var(--teal-bright);}
+    .hero p.lede{
+      font-size:18px;color:var(--text-dim);max-width:480px;margin:0 0 32px;
+    }
+    .hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
+    .hero-meta{
+      font-family:'JetBrains Mono',monospace;
+      font-size:12.5px;color:var(--text-faint);letter-spacing:0.3px;
+      display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+    }
+    .dot{width:4px;height:4px;border-radius:50%;background:var(--text-faint);flex:none;}
 
-  .hero-visual{position:relative;display:flex;justify-content:center;}
-  .phone-frame{
-    position:relative;width:250px;border-radius:34px;
-    background:#04100f;border:1px solid var(--panel-line);
-    padding:8px;box-shadow:0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(95,201,192,0.05);
-    transform:rotate(-3deg);
-  }
-  .phone-frame img{border-radius:26px;}
-  .hero-eq{
-    position:absolute;right:-70px;top:50%;transform:translateY(-50%);
-    display:flex;align-items:center;gap:4px;height:170px;
-    opacity:0.65;
-  }
-  .hero-eq span{width:6px;border-radius:4px;background:var(--teal-mid);display:block;}
-  .hero-eq span.amber{background:var(--amber);}
+    .hero-visual{position:relative;display:flex;justify-content:center;}
+    .phone-frame{
+      position:relative;width:250px;border-radius:34px;
+      background:#081512;border:1px solid var(--panel-line);
+      padding:8px;box-shadow:0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(127,189,180,0.05);
+      transform:rotate(-3deg);
+    }
+    .phone-frame img{border-radius:26px;}
+    .hero-eq{
+      position:absolute;right:-70px;top:50%;transform:translateY(-50%);
+      display:flex;align-items:center;gap:4px;height:170px;
+      opacity:0.65;
+    }
+    .hero-eq span{width:6px;border-radius:4px;background:var(--teal-mid);display:block;}
+    .hero-eq span.amber{background:var(--amber);}
 
-  /* ---------- Section shared ---------- */
-  section{padding:76px 0;}
-  .section-head{max-width:620px;margin:0 0 44px;}
-  .section-head .eyebrow{margin-bottom:12px;}
-  .section-head h2{font-size:34px;font-weight:700;margin:0 0 14px;letter-spacing:-0.3px;}
-  .section-head p{color:var(--text-dim);font-size:16.5px;margin:0;}
+    /* ---------- Section shared ---------- */
+    section{padding:76px 0;}
+    .section-head{max-width:620px;margin:0 0 44px;}
+    .section-head .eyebrow{margin-bottom:12px;}
+    .section-head h2{font-size:34px;font-weight:700;margin:0 0 14px;letter-spacing:-0.3px;}
+    .section-head p{color:var(--text-dim);font-size:16.5px;margin:0;}
 
-  /* ---------- Showcase ---------- */
-  .showcase-grid{
-    display:grid;
-    grid-template-columns:0.7fr 1.3fr;
-    gap:24px;
-  }
-  .showcase-col{display:flex;flex-direction:column;gap:24px;}
-  .shot-card{
-    background:var(--panel);
-    border:1px solid var(--panel-line);
-    border-radius:var(--radius-md);
-    overflow:hidden;
-  }
-  .shot-card .cap{
-    padding:16px 20px;
-    display:flex;align-items:center;justify-content:space-between;
-    border-top:1px solid var(--panel-line);
-  }
-  .shot-card .cap .t{font-weight:600;font-size:14.5px;}
-  .shot-card .cap .n{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-faint);}
-  .shot-card.phone{max-width:280px;margin:0 auto;}
-  .shot-card.wide img{width:100%;height:auto;display:block;}
+    /* ---------- Showcase ---------- */
+    .showcase-grid{
+      display:grid;
+      grid-template-columns:0.7fr 1.3fr;
+      gap:24px;
+    }
+    .showcase-col{display:flex;flex-direction:column;gap:24px;}
+    .shot-card{
+      background:var(--panel);
+      border:1px solid var(--panel-line);
+      border-radius:var(--radius-md);
+      overflow:hidden;
+    }
+    .shot-card .cap{
+      padding:16px 20px;
+      display:flex;align-items:center;justify-content:space-between;
+      border-top:1px solid var(--panel-line);
+    }
+    .shot-card .cap .t{font-weight:600;font-size:14.5px;}
+    .shot-card .cap .n{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-faint);}
+    .shot-card.phone{max-width:280px;margin:0 auto;}
+    .shot-card.wide img{width:100%;height:auto;display:block;}
 
-  /* ---------- Features ---------- */
-  .feature-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
-  }
-  .feature-card{
-    background:var(--panel);border:1px solid var(--panel-line);
-    border-radius:var(--radius-md);padding:28px 26px;
-  }
-  .feature-icon{
-    width:42px;height:42px;border-radius:12px;
-    background:rgba(95,201,192,0.08);
-    display:flex;align-items:center;justify-content:center;
-    margin-bottom:18px;
-  }
-  .feature-icon svg{width:20px;height:20px;}
-  .feature-card h3{font-size:17.5px;margin:0 0 8px;font-weight:600;}
-  .feature-card p{margin:0;color:var(--text-dim);font-size:14.5px;}
+    /* ---------- Features ---------- */
+    .feature-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+    }
+    .feature-card{
+      background:var(--panel);border:1px solid var(--panel-line);
+      border-radius:var(--radius-md);padding:28px 26px;
+    }
+    .feature-icon{
+      width:42px;height:42px;border-radius:12px;
+      background:rgba(127,189,180,0.07);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:18px;
+    }
+    .feature-icon svg{width:20px;height:20px;}
+    .feature-card h3{font-size:17.5px;margin:0 0 8px;font-weight:600;}
+    .feature-card p{margin:0;color:var(--text-dim);font-size:14.5px;}
 
-  /* ---------- Architecture ---------- */
-  .arch-panel{
-    background:var(--panel);border:1px solid var(--panel-line);
-    border-radius:var(--radius-lg);padding:48px;
-    display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:18px;
-  }
-  .arch-node{text-align:center;}
-  .arch-box{
-    background:var(--bg-mid);border:1px solid var(--teal-line);
-    border-radius:var(--radius-md);padding:22px 18px;
-  }
-  .arch-box .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:1.5px;margin-bottom:8px;}
-  .arch-box .v{font-weight:600;font-size:15.5px;}
-  .arch-box .d{font-size:12.5px;color:var(--text-faint);margin-top:6px;}
-  .arch-arrow{color:var(--teal-mid);font-size:20px;}
-  .arch-caption{
-    margin-top:24px;color:var(--text-dim);font-size:14.5px;text-align:center;
-  }
+    /* ---------- Architecture ---------- */
+    .arch-panel{
+      background:var(--panel);border:1px solid var(--panel-line);
+      border-radius:var(--radius-lg);padding:48px;
+      display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:18px;
+    }
+    .arch-node{text-align:center;}
+    .arch-box{
+      background:var(--bg-mid);border:1px solid var(--teal-line);
+      border-radius:var(--radius-md);padding:22px 18px;
+    }
+    .arch-box .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:1.5px;margin-bottom:8px;}
+    .arch-box .v{font-weight:600;font-size:15.5px;}
+    .arch-box .d{font-size:12.5px;color:var(--text-faint);margin-top:6px;}
+    .arch-arrow{color:var(--teal-mid);font-size:20px;}
+    .arch-caption{
+      margin-top:24px;color:var(--text-dim);font-size:14.5px;text-align:center;
+    }
 
-  /* ---------- Download CTA ---------- */
-  .cta-panel{
-    background:linear-gradient(135deg, rgba(95,201,192,0.10), rgba(255,180,84,0.05));
-    border:1px solid var(--teal-line);
-    border-radius:var(--radius-lg);
-    padding:56px;text-align:center;
-  }
-  .cta-panel h2{font-size:30px;margin:0 0 12px;font-weight:700;}
-  .cta-panel p{color:var(--text-dim);margin:0 0 28px;font-size:16px;}
-  .cta-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+    /* ---------- Download CTA ---------- */
+    .cta-panel{
+      background:linear-gradient(135deg, rgba(127,189,180,0.08), rgba(255,180,84,0.04));
+      border:1px solid var(--teal-line);
+      border-radius:var(--radius-lg);
+      padding:56px;text-align:center;
+    }
+    .cta-panel h2{font-size:30px;margin:0 0 12px;font-weight:700;}
+    .cta-panel p{color:var(--text-dim);margin:0 0 28px;font-size:16px;}
+    .cta-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
 
-  /* ---------- Footer ---------- */
-  footer{border-top:1px solid var(--panel-line);padding:36px 0;}
-  .foot-row{
-    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
-  }
-  .foot-left{display:flex;align-items:center;gap:12px;color:var(--text-faint);font-size:13.5px;}
-  .foot-left img{width:22px;height:22px;}
-  .foot-links{display:flex;gap:22px;}
-  .foot-links a{font-size:13.5px;color:var(--text-dim);text-decoration:none;}
-  .foot-links a:hover{color:var(--teal-bright);}
+    /* ---------- Footer ---------- */
+    footer{border-top:1px solid var(--panel-line);padding:36px 0;}
+    .foot-row{
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+    }
+    .foot-left{display:flex;align-items:center;gap:12px;color:var(--text-faint);font-size:13.5px;}
+    .foot-left img{width:22px;height:22px;}
+    .foot-links{display:flex;gap:22px;}
+    .foot-links a{font-size:13.5px;color:var(--text-dim);text-decoration:none;}
+    .foot-links a:hover{color:var(--teal-bright);}
 
-  /* ---------- Responsive ---------- */
-  @media (max-width:920px){
-    .hero{grid-template-columns:1fr;padding-top:56px;text-align:left;}
-    .hero-visual{order:-1;margin-bottom:12px;}
-    h1{font-size:38px;}
-    .showcase-grid{grid-template-columns:1fr;}
-    .feature-grid{grid-template-columns:1fr;}
-    .arch-panel{grid-template-columns:1fr;text-align:center;}
-    .arch-arrow{transform:rotate(90deg);}
-    .navlinks{gap:16px;}
-    .navlinks .textlink span.label{display:none;}
-    .cta-panel{padding:36px 22px;}
-    .hero-eq{display:none;}
-  }
-  @media (max-width:600px){
-    .wrap,.nav,.hero{padding-left:20px;padding-right:20px;}
-    .btn{padding:10px 16px;font-size:14px;}
-  }
+    /* ---------- Responsive ---------- */
+    @media (max-width:920px){
+      .hero{grid-template-columns:1fr;padding-top:56px;text-align:left;}
+      .hero-visual{order:-1;margin-bottom:12px;}
+      h1{font-size:38px;}
+      .showcase-grid{grid-template-columns:1fr;}
+      .feature-grid{grid-template-columns:1fr;}
+      .arch-panel{grid-template-columns:1fr;text-align:center;}
+      .arch-arrow{transform:rotate(90deg);}
+      .navlinks{gap:16px;}
+      .navlinks .textlink span.label{display:none;}
+      .cta-panel{padding:36px 22px;}
+      .hero-eq{display:none;}
+    }
+    @media (max-width:600px){
+      .wrap,.nav,.hero{padding-left:20px;padding-right:20px;}
+      .btn{padding:10px 16px;font-size:14px;}
+    }
 
-  @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto;}
-    *{transition:none !important;}
-  }
-</style>
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto;}
+      *{transition:none !important;}
+    }
+  </style>
 </head>
 <body>
 <div class="bg-fade"></div>
@@ -304,8 +304,7 @@
       </div>
       <div class="hero-meta">
         <span>GPL-3.0 licensed</span><span class="dot"></span>
-        <span>Flutter client</span><span class="dot"></span>
-        <span>Serverpod backend</span><span class="dot"></span>
+        <span>Self-hosted</span><span class="dot"></span>
         <span>Android · Web</span>
       </div>
     </div>
@@ -361,32 +360,32 @@
     </div>
     <div class="feature-grid">
       <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5fc9c0" stroke-width="2" stroke-linecap="round"><path d="M4 12h2m3-6v12m3-9v6m3-9v12m3-6h2"/></svg></div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7fbdb4" stroke-width="2" stroke-linecap="round"><path d="M4 12h2m3-6v12m3-9v6m3-9v12m3-6h2"/></svg></div>
         <h3>Fast by default</h3>
         <p>Instant playback and smooth scrolling through thousands of episodes, even on modest hardware.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5fc9c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg></div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7fbdb4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg></div>
         <h3>Own your library</h3>
         <p>Subscriptions, play state, and downloads live on your server — not in a company's database.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5fc9c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a7 7 0 0 1 14 0"/><path d="M12 13v6M8 21h8"/><circle cx="12" cy="4" r="2"/></svg></div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7fbdb4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a7 7 0 0 1 14 0"/><path d="M12 13v6M8 21h8"/><circle cx="12" cy="4" r="2"/></svg></div>
         <h3>Real background playback</h3>
-        <p>Full media notifications and lock-screen controls, built on Android's audio service, not a webview.</p>
+        <p>Full media notifications and lock-screen controls that behave like a proper podcast app, not a player bolted onto a browser tab.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5fc9c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6v12M2 10h4M2 14h4"/></svg></div>
-        <h3>Works everywhere</h3>
-        <p>One Flutter codebase running natively across phone, tablet, and desktop layouts.</p>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7fbdb4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a4 4 0 0 1 4-4h1"/><path d="M20 9a4 4 0 0 1-4 4h-1"/><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="7" r="2.5"/></svg></div>
+        <h3>Throw playback to another device</h3>
+        <p>With Podkunnect, start an episode on your phone and send playback to a speaker or box elsewhere in the house — the same idea as Spotify Connect. A companion CLI lets it run unattended on a headless server or a small always-on box.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5fc9c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
-        <h3>Sync that stays out of the way</h3>
-        <p>Progress and subscriptions sync straight through your own Serverpod backend, no polling gimmicks.</p>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7fbdb4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></div>
+        <h3>Search inside every episode</h3>
+        <p>Turn on optional transcription and Podku can search what was actually said, not just titles and descriptions — so a search for a phrase can surface the exact episode it was mentioned in.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5fc9c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7fbdb4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
         <h3>Free and open source</h3>
         <p>Podku is GPL-3.0 licensed. Read the code, self-host it, change what you don't like.</p>
       </div>
@@ -405,7 +404,7 @@
         <div class="arch-box">
           <div class="k">CLIENT</div>
           <div class="v">Podku app</div>
-          <div class="d">Flutter · Android / Web</div>
+          <div class="d">Android · Web</div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
@@ -413,7 +412,7 @@
         <div class="arch-box">
           <div class="k">YOUR SERVER</div>
           <div class="v">Podku backend</div>
-          <div class="d">Serverpod · your infrastructure</div>
+          <div class="d">Runs on your own infrastructure</div>
         </div>
       </div>
       <div class="arch-arrow">→</div>
@@ -421,7 +420,7 @@
         <div class="arch-box">
           <div class="k">SOURCES</div>
           <div class="v">Podcast feeds</div>
-          <div class="d">RSS, fetched and proxied by your server</div>
+          <div class="d">Fetched and proxied by your server</div>
         </div>
       </div>
     </div>
