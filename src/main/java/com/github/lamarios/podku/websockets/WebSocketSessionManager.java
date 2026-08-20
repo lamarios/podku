@@ -174,7 +174,7 @@ public class WebSocketSessionManager {
       lastPong.put(session, Instant.now());
       boolean isCurrentPlayer =
           currentPlayer != null && sessions.get(session).id().equalsIgnoreCase(currentPlayer.id());
-      if (isCurrentPlayer && status.episode() != null) {
+      if (isCurrentPlayer && status.episode() == null) {
         log.debug(
             "Current player is not playing stuff, there is discrepancy, clearing current player");
         currentPlayer = null;
@@ -220,7 +220,7 @@ public class WebSocketSessionManager {
   }
 
   private void sendMessage(
-      WebSocketSession session, org.springframework.web.socket.WebSocketMessage message) {
+      WebSocketSession session, org.springframework.web.socket.WebSocketMessage<?> message) {
     try {
       session.sendMessage(message);
     } catch (Exception e) {
