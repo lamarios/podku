@@ -19,6 +19,8 @@ abstract class _$EpisodeTranscriptCWProxy {
 
   EpisodeTranscript language(String? language);
 
+  EpisodeTranscript highlightedContent(String? highlightedContent);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `EpisodeTranscript(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -32,6 +34,7 @@ abstract class _$EpisodeTranscriptCWProxy {
     String? speaker,
     String? content,
     String? language,
+    String? highlightedContent,
   });
 }
 
@@ -60,6 +63,10 @@ class _$EpisodeTranscriptCWProxyImpl implements _$EpisodeTranscriptCWProxy {
   EpisodeTranscript language(String? language) => this(language: language);
 
   @override
+  EpisodeTranscript highlightedContent(String? highlightedContent) =>
+      this(highlightedContent: highlightedContent);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `EpisodeTranscript(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -73,6 +80,7 @@ class _$EpisodeTranscriptCWProxyImpl implements _$EpisodeTranscriptCWProxy {
     Object? speaker = const $CopyWithPlaceholder(),
     Object? content = const $CopyWithPlaceholder(),
     Object? language = const $CopyWithPlaceholder(),
+    Object? highlightedContent = const $CopyWithPlaceholder(),
   }) {
     return EpisodeTranscript(
       id: id == const $CopyWithPlaceholder()
@@ -99,6 +107,10 @@ class _$EpisodeTranscriptCWProxyImpl implements _$EpisodeTranscriptCWProxy {
           ? _value.language
           // ignore: cast_nullable_to_non_nullable
           : language as String?,
+      highlightedContent: highlightedContent == const $CopyWithPlaceholder()
+          ? _value.highlightedContent
+          // ignore: cast_nullable_to_non_nullable
+          : highlightedContent as String?,
     );
   }
 }
@@ -123,6 +135,10 @@ EpisodeTranscript _$EpisodeTranscriptFromJson(Map<String, dynamic> json) =>
         speaker: $checkedConvert('speaker', (v) => v as String?),
         content: $checkedConvert('content', (v) => v as String?),
         language: $checkedConvert('language', (v) => v as String?),
+        highlightedContent: $checkedConvert(
+          'highlightedContent',
+          (v) => v as String?,
+        ),
       );
       return val;
     });
@@ -135,4 +151,5 @@ Map<String, dynamic> _$EpisodeTranscriptToJson(EpisodeTranscript instance) =>
       'speaker': ?instance.speaker,
       'content': ?instance.content,
       'language': ?instance.language,
+      'highlightedContent': ?instance.highlightedContent,
     };

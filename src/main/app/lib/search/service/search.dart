@@ -28,17 +28,17 @@ class SearchService {
     return results.map((e) => GlobalSearchResult<PodcastLight>(type: .podcast, title: e.name ?? '', data: e)).toList();
   }
 
-  Future<List<GlobalSearchResult<Episode>>> _searchEpisodes(String query) async {
+  Future<List<GlobalSearchResult<EpisodeSearchResult>>> _searchEpisodes(String query) async {
     return client.episodes
         .search2(query: query, limit: limit)
-        .then((value) => value.data ?? <Episode>[])
+        .then((value) => value.data ?? <EpisodeSearchResult>[])
         .then(
           (value) => value
               .map(
-                (e) => GlobalSearchResult<Episode>(
+                (e) => GlobalSearchResult<EpisodeSearchResult>(
                   type: .episode,
-                  title: e.title ?? '',
-                  subtitle: e.podcast?.name,
+                  title: e.episode?.title ?? '',
+                  subtitle: e.episode?.podcast?.name,
                   data: e,
                 ),
               )

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchState {
 
- String get query; bool get loadingDiscover; bool get loadingPodcasts; bool get loadingEpisodes; List<SearchResult> get discoverResults; List<PodcastLight> get podcastResults; List<Episode> get episodeResults;
+ String get query; bool get loadingDiscover; bool get loadingPodcasts; bool get loadingEpisodes; List<SearchResult> get discoverResults; List<PodcastLight> get podcastResults; List<EpisodeSearchResult> get episodeResults;
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $SearchStateCopyWith<$Res>  {
   factory $SearchStateCopyWith(SearchState value, $Res Function(SearchState) _then) = _$SearchStateCopyWithImpl;
 @useResult
 $Res call({
- String query, bool loadingDiscover, bool loadingPodcasts, bool loadingEpisodes, List<SearchResult> discoverResults, List<PodcastLight> podcastResults, List<Episode> episodeResults
+ String query, bool loadingDiscover, bool loadingPodcasts, bool loadingEpisodes, List<SearchResult> discoverResults, List<PodcastLight> podcastResults, List<EpisodeSearchResult> episodeResults
 });
 
 
@@ -71,7 +71,7 @@ as bool,loadingEpisodes: null == loadingEpisodes ? _self.loadingEpisodes : loadi
 as bool,discoverResults: null == discoverResults ? _self.discoverResults : discoverResults // ignore: cast_nullable_to_non_nullable
 as List<SearchResult>,podcastResults: null == podcastResults ? _self.podcastResults : podcastResults // ignore: cast_nullable_to_non_nullable
 as List<PodcastLight>,episodeResults: null == episodeResults ? _self.episodeResults : episodeResults // ignore: cast_nullable_to_non_nullable
-as List<Episode>,
+as List<EpisodeSearchResult>,
   ));
 }
 
@@ -153,7 +153,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<Episode> episodeResults)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<EpisodeSearchResult> episodeResults)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
 return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.loadingEpisodes,_that.discoverResults,_that.podcastResults,_that.episodeResults);case _:
@@ -174,7 +174,7 @@ return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.lo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<Episode> episodeResults)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<EpisodeSearchResult> episodeResults)  $default,) {final _that = this;
 switch (_that) {
 case _SearchState():
 return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.loadingEpisodes,_that.discoverResults,_that.podcastResults,_that.episodeResults);}
@@ -191,7 +191,7 @@ return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.lo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<Episode> episodeResults)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  bool loadingDiscover,  bool loadingPodcasts,  bool loadingEpisodes,  List<SearchResult> discoverResults,  List<PodcastLight> podcastResults,  List<EpisodeSearchResult> episodeResults)?  $default,) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
 return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.loadingEpisodes,_that.discoverResults,_that.podcastResults,_that.episodeResults);case _:
@@ -206,7 +206,7 @@ return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.lo
 
 
 class _SearchState implements SearchState {
-  const _SearchState({this.query = "", this.loadingDiscover = false, this.loadingPodcasts = false, this.loadingEpisodes = false, final  List<SearchResult> discoverResults = const [], final  List<PodcastLight> podcastResults = const [], final  List<Episode> episodeResults = const []}): _discoverResults = discoverResults,_podcastResults = podcastResults,_episodeResults = episodeResults;
+  const _SearchState({this.query = "", this.loadingDiscover = false, this.loadingPodcasts = false, this.loadingEpisodes = false, final  List<SearchResult> discoverResults = const [], final  List<PodcastLight> podcastResults = const [], final  List<EpisodeSearchResult> episodeResults = const []}): _discoverResults = discoverResults,_podcastResults = podcastResults,_episodeResults = episodeResults;
   
 
 @override@JsonKey() final  String query;
@@ -227,8 +227,8 @@ class _SearchState implements SearchState {
   return EqualUnmodifiableListView(_podcastResults);
 }
 
- final  List<Episode> _episodeResults;
-@override@JsonKey() List<Episode> get episodeResults {
+ final  List<EpisodeSearchResult> _episodeResults;
+@override@JsonKey() List<EpisodeSearchResult> get episodeResults {
   if (_episodeResults is EqualUnmodifiableListView) return _episodeResults;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_episodeResults);
@@ -265,7 +265,7 @@ abstract mixin class _$SearchStateCopyWith<$Res> implements $SearchStateCopyWith
   factory _$SearchStateCopyWith(_SearchState value, $Res Function(_SearchState) _then) = __$SearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- String query, bool loadingDiscover, bool loadingPodcasts, bool loadingEpisodes, List<SearchResult> discoverResults, List<PodcastLight> podcastResults, List<Episode> episodeResults
+ String query, bool loadingDiscover, bool loadingPodcasts, bool loadingEpisodes, List<SearchResult> discoverResults, List<PodcastLight> podcastResults, List<EpisodeSearchResult> episodeResults
 });
 
 
@@ -291,7 +291,7 @@ as bool,loadingEpisodes: null == loadingEpisodes ? _self.loadingEpisodes : loadi
 as bool,discoverResults: null == discoverResults ? _self._discoverResults : discoverResults // ignore: cast_nullable_to_non_nullable
 as List<SearchResult>,podcastResults: null == podcastResults ? _self._podcastResults : podcastResults // ignore: cast_nullable_to_non_nullable
 as List<PodcastLight>,episodeResults: null == episodeResults ? _self._episodeResults : episodeResults // ignore: cast_nullable_to_non_nullable
-as List<Episode>,
+as List<EpisodeSearchResult>,
   ));
 }
 

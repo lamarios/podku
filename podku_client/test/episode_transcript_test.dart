@@ -37,5 +37,10 @@ void main() {
       // TODO
     });
 
+    // String highlightedContent
+    test('to test the property `highlightedContent`', () async {
+      // TODO
+    });
+
   });
 }

@@ -10,6 +10,7 @@ import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/search/states/search.dart';
+import 'package:podku/search/views/components/result_transcript.dart';
 import 'package:podku/search/views/components/search_result.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -202,7 +203,13 @@ class SearchScreen extends StatelessWidget {
                               itemCount: state.episodeResults.length,
                               itemBuilder: (context, index) {
                                 final e = state.episodeResults[index];
-                                return EpisodeInList(episode: e, offline: false);
+                                return Column(
+                                  mainAxisSize: .min,
+                                  children: [
+                                    EpisodeInList(episode: e.episode!, offline: false),
+                                    if (e.matchedTranscripts?.isNotEmpty ?? false) ResultTranscript(result: e),
+                                  ],
+                                );
                               },
                             ),
                           ),

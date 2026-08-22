@@ -19,6 +19,7 @@ import 'package:podku/episodes/views/components/episode_sheet.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
+import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/search/model/global_search_result.dart';
@@ -62,6 +63,8 @@ class HomeScreen extends StatelessWidget {
               barBackgroundColor: WidgetStatePropertyAll(colors.surfaceContainerLowest),
               barHintText: locals.search,
               density: .compact,
+              onOpen: () => context.read<PlayerCubit>().setHidePlayers(true),
+              onClose: () => context.read<PlayerCubit>().setHidePlayers(false),
               actions: [
                 if (!kIsWeb) IconButton(onPressed: () => context.push('/offline'), icon: Icon(Icons.download)),
                 if (!kIsWeb || kDebugMode)
@@ -235,7 +238,7 @@ class HomeScreen extends StatelessWidget {
         });
         break;
       case .episode:
-        EpisodeSheet.open(context, (r as GlobalSearchResult<Episode>).data, false);
+        EpisodeSheet.open(context, (r as GlobalSearchResult<EpisodeSearchResult>).data.episode!, false);
         break;
       case .discovert:
         context.push('/search/result', extra: (r as GlobalSearchResult<SearchResult>).data).then((value) {
@@ -270,7 +273,7 @@ class HomeScreen extends StatelessWidget {
         width: imageSize,
         height: imageSize,
         borderRadius: radius,
-        podcastLight: (result as GlobalSearchResult<Episode>).data.podcast,
+        podcastLight: (result as GlobalSearchResult<EpisodeSearchResult>).data.episode?.podcast,
       ),
     };
   }

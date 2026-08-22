@@ -94,6 +94,7 @@ Class | Method | HTTP request | Description
  - [Episode](doc/Episode.md)
  - [EpisodeFile](doc/EpisodeFile.md)
  - [EpisodePerson](doc/EpisodePerson.md)
+ - [EpisodeSearchResult](doc/EpisodeSearchResult.md)
  - [EpisodeTranscript](doc/EpisodeTranscript.md)
  - [OfflineProgress](doc/OfflineProgress.md)
  - [PlaybackProgress](doc/PlaybackProgress.md)

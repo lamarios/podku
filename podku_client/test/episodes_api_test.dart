@@ -17,7 +17,7 @@ void main() {
       // TODO
     });
 
-    //Future<List<Episode>> search2(String query, int limit) async
+    //Future<List<EpisodeSearchResult>> search2(String query, int limit) async
     test('test search2', () async {
       // TODO
     });

@@ -2,6 +2,7 @@ import 'package:openapi/src/model/chapter.dart';
 import 'package:openapi/src/model/episode.dart';
 import 'package:openapi/src/model/episode_file.dart';
 import 'package:openapi/src/model/episode_person.dart';
+import 'package:openapi/src/model/episode_search_result.dart';
 import 'package:openapi/src/model/episode_transcript.dart';
 import 'package:openapi/src/model/offline_progress.dart';
 import 'package:openapi/src/model/playback_progress.dart';
@@ -36,6 +37,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return EpisodeFile.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'EpisodePerson':
           return EpisodePerson.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'EpisodeSearchResult':
+          return EpisodeSearchResult.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'EpisodeTranscript':
           return EpisodeTranscript.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OfflineProgress':

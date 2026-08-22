@@ -58,7 +58,7 @@ class SearchCubit extends Cubit<SearchState> {
           .then((value) => emit(state.copyWith(loadingPodcasts: false, podcastResults: value)));
       client.episodes
           .search2(query: query, limit: _limit)
-          .then((value) => value.data ?? <Episode>[])
+          .then((value) => value.data ?? <EpisodeSearchResult>[])
           .then((value) => emit(state.copyWith(loadingEpisodes: false, episodeResults: value)));
     });
   }
@@ -73,6 +73,6 @@ sealed class SearchState with _$SearchState {
     @Default(false) bool loadingEpisodes,
     @Default([]) List<SearchResult> discoverResults,
     @Default([]) List<PodcastLight> podcastResults,
-    @Default([]) List<Episode> episodeResults,
+    @Default([]) List<EpisodeSearchResult> episodeResults,
   }) = _SearchState;
 }

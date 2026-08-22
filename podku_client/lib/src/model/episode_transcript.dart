@@ -31,6 +31,8 @@ class EpisodeTranscript {
      this.content,
 
      this.language,
+
+     this.highlightedContent,
   });
 
   @JsonKey(
@@ -105,6 +107,18 @@ class EpisodeTranscript {
 
 
 
+  @JsonKey(
+    
+    name: r'highlightedContent',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? highlightedContent;
+
+
+
 
 
     @override
@@ -114,7 +128,8 @@ class EpisodeTranscript {
       other.endTime == endTime &&
       other.speaker == speaker &&
       other.content == content &&
-      other.language == language;
+      other.language == language &&
+      other.highlightedContent == highlightedContent;
 
     @override
     int get hashCode =>
@@ -123,7 +138,8 @@ class EpisodeTranscript {
         endTime.hashCode +
         speaker.hashCode +
         content.hashCode +
-        language.hashCode;
+        language.hashCode +
+        highlightedContent.hashCode;
 
   factory EpisodeTranscript.fromJson(Map<String, dynamic> json) => _$EpisodeTranscriptFromJson(json);
 

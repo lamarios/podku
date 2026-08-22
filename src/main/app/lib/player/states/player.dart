@@ -238,7 +238,11 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       try {
         if (!fromTransfer && (state.episode != null && state.episode?.id == episode.id)) {
           if (isAlreadyPlayingEpisode) {
-            playPause();
+            if (initialPosition != null) {
+              seek(initialPosition);
+            } else {
+              playPause();
+            }
           }
           return;
         }
@@ -568,6 +572,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   void setCurrentPlayer(PlayerInfo? currentPlayer) {
     emit(state.copyWith(currentPlayer: currentPlayer));
   }
+
+  void setHidePlayers(bool hide) {
+    emit(state.copyWith(hidePlayer: hide));
+  }
 }
 
 @freezed
@@ -582,6 +590,7 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(1) double speed,
     @Default(false) bool playing,
     @Default(false) bool showMiniPlayer,
+    @Default(false) bool hidePlayer,
     @Default(false) bool showBigPlayer,
     @Default(false) bool showTranscript,
     @Default(false) bool showVolume,

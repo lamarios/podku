@@ -102,7 +102,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **search2**
-> List<Episode> search2(query, limit)
+> List<EpisodeSearchResult> search2(query, limit)
 
 
 
@@ -131,7 +131,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;Episode&gt;**](Episode.md)
+[**List&lt;EpisodeSearchResult&gt;**](EpisodeSearchResult.md)
 
 ### Authorization
 

@@ -233,7 +233,8 @@ public class EpisodeService {
     }
   }
 
-  public List<Episode> searchPodcasts(String query, int limit) {
+  @Transactional(readOnly = true)
+  public List<EpisodeSearchResult> searchPodcasts(String query, int limit) {
     String tsQuery =
         Arrays.stream(query.trim().split("\\s+"))
             .filter(s -> !s.isBlank())
@@ -243,7 +244,63 @@ public class EpisodeService {
     if (tsQuery.isBlank()) {
       return List.of();
     }
-    return episodeRepository.search(tsQuery, limit);
+    List<Episode> searchResult = episodeRepository.search(tsQuery, limit);
+
+    List<UUID> episodeIds = searchResult.stream().map(Episode::getId).toList();
+    System.out.println(episodeIds.stream().map(UUID::toString).collect(Collectors.joining("','")));
+
+    if (!episodeIds.isEmpty()) {
+      var mapped =
+          episodeTranscriptRepository.search(tsQuery, episodeIds.toArray(new UUID[0])).stream()
+              .map(
+                  t -> {
+                    EpisodeTranscript transcript = new EpisodeTranscript();
+                    transcript.setId((UUID) t.get("id"));
+                    if (t.get("content") != null) {
+                      transcript.setContent((String) t.get("content"));
+                    }
+                    if (t.get("start_time") != null) {
+                      transcript.setStartTime((String) t.get("start_time"));
+                    }
+
+                    if (t.get("end_time") != null) {
+                      transcript.setEndTime((String) t.get("end_time"));
+                    }
+
+                    if (t.get("speaker") != null) transcript.setSpeaker((String) t.get("speaker"));
+                    if (t.get("content") != null) transcript.setContent((String) t.get("content"));
+                    if (t.get("language") != null)
+                      transcript.setLanguage((String) t.get("language"));
+                    if (t.get("episode_id") != null) {
+                      Episode episode = new Episode();
+                      episode.setId((UUID) t.get("episode_id"));
+                      transcript.setEpisode(episode);
+                    }
+                    if (t.get("highlighted_content") != null)
+                      transcript.setHighlightedContent((String) t.get("highlighted_content"));
+
+                    return transcript;
+                  })
+              .collect(Collectors.groupingBy(t -> t.getEpisode().getId().toString()));
+      /*
+                          .stream()
+                          .collect(Collectors.groupingBy(episodeTranscript ->
+                                  episodeTranscript.
+                                  episodeTranscript.getEpisode()
+                                  .getId().toString()));
+      */
+      return searchResult.stream()
+          .map(
+              episode ->
+                  new EpisodeSearchResult(
+                      episode,
+                      mapped.getOrDefault(episode.getId().toString(), Collections.emptyList())))
+          .toList();
+      //            return searchResult.stream().map(episode -> new EpisodeSearchResult(episode,
+      // Collections.emptyList())).toList();
+    } else {
+      return Collections.emptyList();
+    }
   }
 
   @Transactional

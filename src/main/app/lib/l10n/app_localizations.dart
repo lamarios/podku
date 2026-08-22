@@ -366,6 +366,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get share;
+
+  /// No description provided for @fromTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'From transcript'**
+  String get fromTranscript;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

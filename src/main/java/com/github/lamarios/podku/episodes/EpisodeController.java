@@ -52,7 +52,7 @@ public class EpisodeController {
   }
 
   @GetMapping("/search")
-  public List<Episode> search(
+  public List<EpisodeSearchResult> search(
       @RequestParam("query") String query, @RequestParam("limit") int limit) {
     return episodeService.searchPodcasts(query, limit);
   }

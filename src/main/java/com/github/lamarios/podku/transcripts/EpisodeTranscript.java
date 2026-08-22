@@ -24,6 +24,16 @@ public class EpisodeTranscript {
   private String content;
   private String language;
 
+  @Transient private String highlightedContent;
+
+  public String getHighlightedContent() {
+    return highlightedContent;
+  }
+
+  public void setHighlightedContent(String highlightedContent) {
+    this.highlightedContent = highlightedContent;
+  }
+
   public UUID getId() {
     return id;
   }

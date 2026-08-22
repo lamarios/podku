@@ -32,6 +32,7 @@ class PlayerWrapper extends StatelessWidget {
       builder: (context) {
         final connectionStatus = context.select((ServerCubit c) => c.state.status);
         final isOnline = connectionStatus == .connected;
+        final hidePlayer = context.select((PlayerCubit c) => c.state.hidePlayer);
         return ErrorHandler<PlayerCubit, PlayerState>(
           showAsSnack: true,
           child: Container(
@@ -45,7 +46,7 @@ class PlayerWrapper extends StatelessWidget {
                       final showBigPlayer = context.select((PlayerCubit c) => c.state.showBigPlayer);
                       return SingleMotionBuilder(
                         motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                        value: showBigPlayer ? 1 : 0,
+                        value: !hidePlayer && showBigPlayer ? 1 : 0,
                         from: 0,
                         builder: (context, value, child) {
                           return Positioned(
@@ -85,7 +86,7 @@ class PlayerWrapper extends StatelessWidget {
 
                       return SingleMotionBuilder(
                         motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                        value: showMiniPlayer ? 1 : 0,
+                        value: !hidePlayer && showMiniPlayer ? 1 : 0,
                         from: 0,
                         builder: (context, value, child) {
                           var isHome = routerState.fullPath?.startsWith("/home") ?? false;

@@ -44,5 +44,6 @@
   "devices": "Connected devices",
   "thisDevice": "This device",
   "devicesExplanation": "Select which device should be playing audio",
-  "share": "Share"
+  "share": "Share",
+  "fromTranscript": "From transcript"
 }

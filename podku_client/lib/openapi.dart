@@ -20,6 +20,7 @@ export 'package:openapi/src/model/chapter.dart';
 export 'package:openapi/src/model/episode.dart';
 export 'package:openapi/src/model/episode_file.dart';
 export 'package:openapi/src/model/episode_person.dart';
+export 'package:openapi/src/model/episode_search_result.dart';
 export 'package:openapi/src/model/episode_transcript.dart';
 export 'package:openapi/src/model/offline_progress.dart';
 export 'package:openapi/src/model/playback_progress.dart';

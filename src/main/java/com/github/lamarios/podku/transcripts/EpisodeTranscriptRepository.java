@@ -2,11 +2,13 @@
 package com.github.lamarios.podku.transcripts;
 
 import com.github.lamarios.podku.episodes.Episode;
+import jakarta.persistence.Tuple;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface EpisodeTranscriptRepository extends JpaRepository<EpisodeTranscript, UUID> {
   Object findFirstByEpisodeEqualsAndLanguage(Episode episode, String language);
@@ -17,4 +19,21 @@ public interface EpisodeTranscriptRepository extends JpaRepository<EpisodeTransc
   List<EpisodeTranscript> findAllByEpisode(Episode episode, Sort sort);
 
   List<EpisodeTranscript> findAllByEpisodeAndLanguage(Episode episode, String language, Sort sort);
+
+  @Query(
+      value =
+          """
+            SELECT et.*,
+            TS_HEADLINE(
+                'english',
+                et.content,
+                TO_TSQUERY('english', :query),
+                'StartSel=§, StopSel=§, HighlightAll=true'
+            ) AS highlighted_content
+            FROM  episode_transcripts et
+            WHERE  et.search_vector @@ TO_TSQUERY('english', :query)
+            AND et.episode_id = ANY(:episodes)
+            """,
+      nativeQuery = true)
+  List<Tuple> search(@Param("query") String query, @Param("episodes") UUID[] episodeIds);
 }

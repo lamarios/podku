@@ -10,6 +10,7 @@ import 'package:openapi/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:openapi/src/model/episode.dart';
+import 'package:openapi/src/model/episode_search_result.dart';
 import 'package:openapi/src/model/offline_progress.dart';
 import 'package:openapi/src/model/playback_progress.dart';
 
@@ -184,9 +185,9 @@ _responseData = rawData == null ? null : deserialize<List<Episode>, Episode>(raw
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<Episode>] as data
+  /// Returns a [Future] containing a [Response] with a [List<EpisodeSearchResult>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<Episode>>> search2({ 
+  Future<Response<List<EpisodeSearchResult>>> search2({ 
     required String query,
     required int limit,
     CancelToken? cancelToken,
@@ -223,11 +224,11 @@ _responseData = rawData == null ? null : deserialize<List<Episode>, Episode>(raw
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<Episode>? _responseData;
+    List<EpisodeSearchResult>? _responseData;
 
     try {
 final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<List<Episode>, Episode>(rawData, 'List<Episode>', growable: true);
+_responseData = rawData == null ? null : deserialize<List<EpisodeSearchResult>, EpisodeSearchResult>(rawData, 'List<EpisodeSearchResult>', growable: true);
 
     } catch (error, stackTrace) {
       throw DioException(
@@ -239,7 +240,7 @@ _responseData = rawData == null ? null : deserialize<List<Episode>, Episode>(raw
       );
     }
 
-    return Response<List<Episode>>(
+    return Response<List<EpisodeSearchResult>>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
