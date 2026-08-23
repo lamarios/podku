@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/search/controllers/m3e_search_controller.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/bookmarks/views/screens/bookmark_screen.dart';
+import 'package:podku/bookmarks/views/screens/bookmarks_screen.dart';
 import 'package:podku/episodes/views/screens/episodes.dart';
 import 'package:podku/home/states/home.dart';
 import 'package:podku/home/views/screens/home.dart';
@@ -49,6 +51,10 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
           routes: [GoRoute(path: '/settings', builder: (context, state) => DownloadSettingsScreen())],
         ),
         GoRoute(
+          path: '/bookmark/:id',
+          builder: (context, state) => BookmarkScreen(bookmarkId: state.pathParameters['id']),
+        ),
+        GoRoute(
           name: 'Search',
           path: '/search',
           builder: (context, state) => SearchScreen(query: state.extra != null ? state.extra as String : null),
@@ -67,6 +73,11 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
             StatefulShellBranch(
               routes: [
                 GoRoute(name: 'Podcasts', path: '/home/podcasts', builder: (context, state) => PodcastsScreen()),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(name: 'Bookmarks', path: '/home/bookmarks', builder: (context, state) => BookmarksScreen()),
               ],
             ),
           ],

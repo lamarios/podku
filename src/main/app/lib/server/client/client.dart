@@ -8,6 +8,7 @@ class Client {
   late final SearchApi search;
   late final MediaApi media;
   late final Openapi _client;
+  late final BookmarksApi bookmarks;
   final String serverUrl;
 
   Client(this.serverUrl) {
@@ -26,5 +27,6 @@ class Client {
     transcripts = _client.getTranscriptsApi();
     search = _client.getSearchApi();
     media = _client.getMediaApi();
+    bookmarks = _client.getBookmarksApi();
   }
 }

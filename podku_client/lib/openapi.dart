@@ -9,6 +9,7 @@ export 'package:openapi/src/auth/bearer_auth.dart';
 export 'package:openapi/src/auth/oauth.dart';
 
 
+export 'package:openapi/src/api/bookmarks_api.dart';
 export 'package:openapi/src/api/episodes_api.dart';
 export 'package:openapi/src/api/media_api.dart';
 export 'package:openapi/src/api/ping_api.dart';
@@ -16,6 +17,8 @@ export 'package:openapi/src/api/podcasts_api.dart';
 export 'package:openapi/src/api/search_api.dart';
 export 'package:openapi/src/api/transcripts_api.dart';
 
+export 'package:openapi/src/model/bookmark.dart';
+export 'package:openapi/src/model/bookmark_with_transcript.dart';
 export 'package:openapi/src/model/chapter.dart';
 export 'package:openapi/src/model/episode.dart';
 export 'package:openapi/src/model/episode_file.dart';

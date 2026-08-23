@@ -1,3 +1,5 @@
+import 'package:openapi/src/model/bookmark.dart';
+import 'package:openapi/src/model/bookmark_with_transcript.dart';
 import 'package:openapi/src/model/chapter.dart';
 import 'package:openapi/src/model/episode.dart';
 import 'package:openapi/src/model/episode_file.dart';
@@ -29,6 +31,10 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return (valueString == 'true' || valueString == '1') as ReturnType;
         case 'double':
           return (value is double ? value : double.parse('$value')) as ReturnType;
+        case 'Bookmark':
+          return Bookmark.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'BookmarkWithTranscript':
+          return BookmarkWithTranscript.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Chapter':
           return Chapter.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Episode':

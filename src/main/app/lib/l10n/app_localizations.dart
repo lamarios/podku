@@ -372,6 +372,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From transcript'**
   String get fromTranscript;
+
+  /// No description provided for @bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarks;
+
+  /// No description provided for @bookmarkAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark saved'**
+  String get bookmarkAdded;
+
+  /// No description provided for @addBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Add bookmark'**
+  String get addBookmark;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

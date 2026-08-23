@@ -7,6 +7,11 @@ void main() {
   // TODO add properties to the entity
 
   group(PodcastPerson, () {
+    // String id
+    test('to test the property `id`', () async {
+      // TODO
+    });
+
     // String name
     test('to test the property `name`', () async {
       // TODO
@@ -29,11 +34,6 @@ void main() {
 
     // String link
     test('to test the property `link`', () async {
-      // TODO
-    });
-
-    // String id
-    test('to test the property `id`', () async {
       // TODO
     });
 

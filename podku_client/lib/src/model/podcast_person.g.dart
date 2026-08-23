@@ -7,6 +7,8 @@ part of 'podcast_person.dart';
 // **************************************************************************
 
 abstract class _$PodcastPersonCWProxy {
+  PodcastPerson id(String? id);
+
   PodcastPerson name(String? name);
 
   PodcastPerson role(String? role);
@@ -17,8 +19,6 @@ abstract class _$PodcastPersonCWProxy {
 
   PodcastPerson link(String? link);
 
-  PodcastPerson id(String? id);
-
   PodcastPerson imageEncrypted(String? imageEncrypted);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PodcastPerson(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -28,12 +28,12 @@ abstract class _$PodcastPersonCWProxy {
   /// PodcastPerson(...).copyWith(id: 12, name: "My name")
   /// ````
   PodcastPerson call({
+    String? id,
     String? name,
     String? role,
     String? group,
     String? image,
     String? link,
-    String? id,
     String? imageEncrypted,
   });
 }
@@ -43,6 +43,9 @@ class _$PodcastPersonCWProxyImpl implements _$PodcastPersonCWProxy {
   const _$PodcastPersonCWProxyImpl(this._value);
 
   final PodcastPerson _value;
+
+  @override
+  PodcastPerson id(String? id) => this(id: id);
 
   @override
   PodcastPerson name(String? name) => this(name: name);
@@ -60,9 +63,6 @@ class _$PodcastPersonCWProxyImpl implements _$PodcastPersonCWProxy {
   PodcastPerson link(String? link) => this(link: link);
 
   @override
-  PodcastPerson id(String? id) => this(id: id);
-
-  @override
   PodcastPerson imageEncrypted(String? imageEncrypted) =>
       this(imageEncrypted: imageEncrypted);
 
@@ -74,15 +74,19 @@ class _$PodcastPersonCWProxyImpl implements _$PodcastPersonCWProxy {
   /// PodcastPerson(...).copyWith(id: 12, name: "My name")
   /// ````
   PodcastPerson call({
+    Object? id = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
     Object? role = const $CopyWithPlaceholder(),
     Object? group = const $CopyWithPlaceholder(),
     Object? image = const $CopyWithPlaceholder(),
     Object? link = const $CopyWithPlaceholder(),
-    Object? id = const $CopyWithPlaceholder(),
     Object? imageEncrypted = const $CopyWithPlaceholder(),
   }) {
     return PodcastPerson(
+      id: id == const $CopyWithPlaceholder()
+          ? _value.id
+          // ignore: cast_nullable_to_non_nullable
+          : id as String?,
       name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
@@ -103,10 +107,6 @@ class _$PodcastPersonCWProxyImpl implements _$PodcastPersonCWProxy {
           ? _value.link
           // ignore: cast_nullable_to_non_nullable
           : link as String?,
-      id: id == const $CopyWithPlaceholder()
-          ? _value.id
-          // ignore: cast_nullable_to_non_nullable
-          : id as String?,
       imageEncrypted: imageEncrypted == const $CopyWithPlaceholder()
           ? _value.imageEncrypted
           // ignore: cast_nullable_to_non_nullable
@@ -128,12 +128,12 @@ extension $PodcastPersonCopyWith on PodcastPerson {
 PodcastPerson _$PodcastPersonFromJson(Map<String, dynamic> json) =>
     $checkedCreate('PodcastPerson', json, ($checkedConvert) {
       final val = PodcastPerson(
+        id: $checkedConvert('id', (v) => v as String?),
         name: $checkedConvert('name', (v) => v as String?),
         role: $checkedConvert('role', (v) => v as String?),
         group: $checkedConvert('group', (v) => v as String?),
         image: $checkedConvert('image', (v) => v as String?),
         link: $checkedConvert('link', (v) => v as String?),
-        id: $checkedConvert('id', (v) => v as String?),
         imageEncrypted: $checkedConvert('imageEncrypted', (v) => v as String?),
       );
       return val;
@@ -141,11 +141,11 @@ PodcastPerson _$PodcastPersonFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$PodcastPersonToJson(PodcastPerson instance) =>
     <String, dynamic>{
+      'id': ?instance.id,
       'name': ?instance.name,
       'role': ?instance.role,
       'group': ?instance.group,
       'image': ?instance.image,
       'link': ?instance.link,
-      'id': ?instance.id,
       'imageEncrypted': ?instance.imageEncrypted,
     };

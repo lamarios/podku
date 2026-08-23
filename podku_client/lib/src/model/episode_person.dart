@@ -20,6 +20,8 @@ class EpisodePerson {
   /// Returns a new [EpisodePerson] instance.
   EpisodePerson({
 
+     this.id,
+
      this.name,
 
      this.role,
@@ -30,10 +32,20 @@ class EpisodePerson {
 
      this.link,
 
-     this.id,
-
      this.imageEncrypted,
   });
+
+  @JsonKey(
+    
+    name: r'id',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? id;
+
+
 
   @JsonKey(
     
@@ -97,18 +109,6 @@ class EpisodePerson {
 
   @JsonKey(
     
-    name: r'id',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final String? id;
-
-
-
-  @JsonKey(
-    
     name: r'imageEncrypted',
     required: false,
     includeIfNull: false,
@@ -123,22 +123,22 @@ class EpisodePerson {
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is EpisodePerson &&
+      other.id == id &&
       other.name == name &&
       other.role == role &&
       other.group == group &&
       other.image == image &&
       other.link == link &&
-      other.id == id &&
       other.imageEncrypted == imageEncrypted;
 
     @override
     int get hashCode =>
+        id.hashCode +
         name.hashCode +
         role.hashCode +
         group.hashCode +
         image.hashCode +
         link.hashCode +
-        id.hashCode +
         imageEncrypted.hashCode;
 
   factory EpisodePerson.fromJson(Map<String, dynamic> json) => _$EpisodePersonFromJson(json);

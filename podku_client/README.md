@@ -48,14 +48,13 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:openapi/openapi.dart';
 
 
-final api = Openapi().getEpisodesApi();
-final String id = id_example; // String | 
+final api = Openapi().getBookmarksApi();
 
 try {
-    final response = await api.getEpisode(id);
+    final response = await api.callGet();
     print(response);
 } on DioException catch (e) {
-    print("Exception when calling EpisodesApi->getEpisode: $e\n");
+    print("Exception when calling BookmarksApi->callGet: $e\n");
 }
 
 ```
@@ -66,6 +65,10 @@ All URIs are relative to *http://localhost:8080*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*BookmarksApi*](doc/BookmarksApi.md) | [**callGet**](doc/BookmarksApi.md#callget) | **GET** /api/bookmarks | 
+[*BookmarksApi*](doc/BookmarksApi.md) | [**delete**](doc/BookmarksApi.md#delete) | **DELETE** /api/bookmarks/{id} | 
+[*BookmarksApi*](doc/BookmarksApi.md) | [**get1**](doc/BookmarksApi.md#get1) | **GET** /api/bookmarks/{id} | 
+[*BookmarksApi*](doc/BookmarksApi.md) | [**saveBookmark**](doc/BookmarksApi.md#savebookmark) | **PUT** /api/bookmarks | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**getEpisode**](doc/EpisodesApi.md#getepisode) | **GET** /api/episodes/{id} | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**getEpisodes**](doc/EpisodesApi.md#getepisodes) | **GET** /api/episodes | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**search2**](doc/EpisodesApi.md#search2) | **GET** /api/episodes/search | 
@@ -90,6 +93,8 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [Bookmark](doc/Bookmark.md)
+ - [BookmarkWithTranscript](doc/BookmarkWithTranscript.md)
  - [Chapter](doc/Chapter.md)
  - [Episode](doc/Episode.md)
  - [EpisodeFile](doc/EpisodeFile.md)
