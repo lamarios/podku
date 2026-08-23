@@ -45,5 +45,8 @@
   "thisDevice": "This device",
   "devicesExplanation": "Select which device should be playing audio",
   "share": "Share",
-  "fromTranscript": "From transcript"
+  "fromTranscript": "From transcript",
+  "bookmarks": "Bookmarks",
+  "bookmarkAdded" : "Bookmark saved",
+  "addBookmark": "Add bookmark"
 }

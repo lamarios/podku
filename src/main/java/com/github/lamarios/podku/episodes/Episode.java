@@ -3,6 +3,7 @@ package com.github.lamarios.podku.episodes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.lamarios.podku.bookmarks.Bookmark;
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.podcasts.PodcastLight;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
@@ -46,6 +47,31 @@ public class Episode {
   @Transient private PodcastLight podcastLight;
   @Transient private String audioUrlEncrypted;
 
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Chapter> chapters;
+
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<EpisodeFile> files;
+
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<EpisodeTranscript> transcripts;
+
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<EpisodePerson> people;
+
+  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<Bookmark> bookmarks;
+
+  public double getProgress() {
+    return progress;
+  }
+
+  public void setProgress(double progress) {
+    this.progress = progress;
+  }
+
   public boolean isProcessed() {
     return processed;
   }
@@ -88,26 +114,13 @@ public class Episode {
     this.processed = processed;
   }
 
-  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Chapter> chapters;
-
-  public double getProgress() {
-    return progress;
+  public List<Bookmark> getBookmarks() {
+    return bookmarks;
   }
 
-  public void setProgress(double progress) {
-    this.progress = progress;
+  public void setBookmarks(List<Bookmark> bookmarks) {
+    this.bookmarks = bookmarks;
   }
-
-  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EpisodeFile> files;
-
-  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnore
-  private List<EpisodeTranscript> transcripts;
-
-  @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EpisodePerson> people;
 
   public Integer getEpisodeNumber() {
     return episodeNumber;

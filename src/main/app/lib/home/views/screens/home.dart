@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final locals = AppLocalizations.of(context)!;
     final colors = M3ETheme.of(context).colorScheme;
-    final titles = [locals.episodes, locals.podcasts, locals.search];
+    final titles = [locals.episodes, locals.podcasts, locals.bookmarks];
 
     bool isMobile = BreakPoint.of(context) == .mobile;
     return MultiBlocProvider(
@@ -134,6 +134,10 @@ class HomeScreen extends StatelessWidget {
                                           icon: Icon(M3EIcons.podcasts),
                                           label: locals.podcasts,
                                         ),
+                                        M3ENavigationRailDestination(
+                                          icon: Icon(M3EIcons.bookmarks),
+                                          label: locals.bookmarks,
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -161,6 +165,7 @@ class HomeScreen extends StatelessWidget {
                     destinations: [
                       M3ENavigationBarDestination(icon: Icon(M3EIcons.playlist_play), label: locals.episodes),
                       M3ENavigationBarDestination(icon: Icon(M3EIcons.podcasts), label: locals.podcasts),
+                      M3ENavigationBarDestination(icon: Icon(M3EIcons.bookmarks), label: locals.bookmarks),
                     ],
                     onDestinationSelected: (value) {
                       navigationShell.goBranch(value);

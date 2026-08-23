@@ -159,4 +159,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fromTranscript => 'From transcript';
+
+  @override
+  String get bookmarks => 'Bookmarks';
+
+  @override
+  String get bookmarkAdded => 'Bookmark saved';
+
+  @override
+  String get addBookmark => 'Add bookmark';
 }

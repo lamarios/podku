@@ -7,6 +7,7 @@ import 'package:openapi/src/auth/api_key_auth.dart';
 import 'package:openapi/src/auth/basic_auth.dart';
 import 'package:openapi/src/auth/bearer_auth.dart';
 import 'package:openapi/src/auth/oauth.dart';
+import 'package:openapi/src/api/bookmarks_api.dart';
 import 'package:openapi/src/api/episodes_api.dart';
 import 'package:openapi/src/api/media_api.dart';
 import 'package:openapi/src/api/ping_api.dart';
@@ -103,6 +104,12 @@ class Openapi {
     if (this.dio.interceptors.any((i) => i is ApiKeyAuthInterceptor)) {
       (this.dio.interceptors.firstWhere((element) => element is ApiKeyAuthInterceptor) as ApiKeyAuthInterceptor).apiKeys.remove(name);
     }
+  }
+
+  /// Get BookmarksApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  BookmarksApi getBookmarksApi() {
+    return BookmarksApi(dio);
   }
 
   /// Get EpisodesApi instance, base route and serializer can be overridden by a given but be careful,

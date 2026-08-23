@@ -3,6 +3,7 @@ package com.github.lamarios.podku.transcripts;
 
 import com.github.lamarios.podku.episodes.Episode;
 import jakarta.persistence.Tuple;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Sort;
@@ -36,4 +37,9 @@ public interface EpisodeTranscriptRepository extends JpaRepository<EpisodeTransc
             """,
       nativeQuery = true)
   List<Tuple> search(@Param("query") String query, @Param("episodes") UUID[] episodeIds);
+
+  List<EpisodeTranscript> findAllByEpisodeIn(Collection<Episode> episodes);
+
+  List<EpisodeTranscript> findByStartTimeBeforeAndEndTimeAfterAndEpisode(
+      String startTimeBefore, String endTimeAfter, Episode episode);
 }

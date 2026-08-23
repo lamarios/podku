@@ -8,14 +8,18 @@ import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_3_expressive/components/menus/m3e_menus.dart';
 import 'package:material_3_expressive/components/sliders/m3e_sliders.dart';
+import 'package:material_3_expressive/components/snackbar/m3e_snackbar.dart';
 import 'package:material_3_expressive/components/toggle_button_group/m3e_toggle_button_group.dart';
 import 'package:material_3_expressive/components/toggle_button_group/models/m3e_button_group_action.dart';
 import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
+import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_transcript.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
+import 'package:podku/l10n/app_localizations.dart';
+import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/player_speed.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
@@ -37,6 +41,7 @@ class BigPlayer extends StatelessWidget {
     final textTheme = M3ETheme.of(context).textTheme;
     final cubit = context.read<PlayerCubit>();
     final isMobile = BreakPoint.of(context) == .mobile || BreakPoint.of(context) == .tablet;
+    final locals = AppLocalizations.of(context)!;
 
     return DefaultTabController(
       length: 2,
@@ -265,6 +270,31 @@ class BigPlayer extends StatelessWidget {
                                               ),
                                             ),
                                             PlayerSpeed(),
+                                            InkWell(
+                                              onTap: () async {
+                                                var playerCubit = context.read<PlayerCubit>();
+                                                if (playerCubit.state.episode != null) {
+                                                  await client.bookmarks.saveBookmark(
+                                                    bookmark: Bookmark(
+                                                      time: playerCubit.state.position.inSeconds,
+                                                      episode: playerCubit.state.episode,
+                                                    ),
+                                                  );
+
+                                                  if (context.mounted) {
+                                                    M3ESnackbar.show(context, message: locals.bookmarkAdded);
+                                                  }
+                                                }
+                                              },
+                                              child: Row(
+                                                crossAxisAlignment: .center,
+                                                mainAxisSize: .min,
+                                                children: [
+                                                  Icon(M3EIcons.bookmark, color: colors.primary),
+                                                  Icon(M3EIcons.add, size: 12, color: colors.primary),
+                                                ],
+                                              ),
+                                            ),
                                             FutureBuilder<bool>(
                                               future: episode.hasTranscript,
                                               builder: (context, snapshot) {

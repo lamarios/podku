@@ -62,7 +62,7 @@ class TranscriptCubit extends Cubit<TranscriptState> {
   }
 
   void onPositionChanged(Duration event) {
-    var newIndex = findCurrentTranscriptIndex(event);
+    var newIndex = findCurrentTranscriptIndex(state.transcript, event);
     if (newIndex != state.index && newIndex != -1) {
       emit(state.copyWith(index: newIndex));
       observerController.animateTo(
@@ -75,13 +75,13 @@ class TranscriptCubit extends Cubit<TranscriptState> {
     }
   }
 
-  int findCurrentTranscriptIndex(Duration position) {
+  static int findCurrentTranscriptIndex(List<EpisodeTranscript> transcript, Duration position) {
     int low = 0;
-    int high = state.transcript.length - 1;
+    int high = transcript.length - 1;
 
     while (low <= high) {
       final mid = (low + high) ~/ 2;
-      final entry = state.transcript[mid];
+      final entry = transcript[mid];
 
       if (position < entry.startDuration) {
         high = mid - 1;
