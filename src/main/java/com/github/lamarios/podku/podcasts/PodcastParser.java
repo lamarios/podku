@@ -92,6 +92,7 @@ public class PodcastParser {
                     ep ->
                         episode.getFiles().stream()
                             .anyMatch(ep1 -> ep1.getUrl().equalsIgnoreCase(ep.getUrl())))) {
+          log.info("Episode data changed in a way that it needs reprocessing");
           episode.setProcessed(false);
         }
 
@@ -102,11 +103,20 @@ public class PodcastParser {
         episode.setDescription(e.getDescription());
         episode.setDurationSeconds(e.getDurationSeconds());
         episode.setEpisodeType(e.getEpisodeType());
-        episode.setFiles(e.getFiles());
+        episode.getFiles().clear();
+        episode.getFiles().addAll(e.getFiles());
         episode.setPubDateMillis(e.getPubDateMillis());
         episode.setEpisodeNumber(e.getEpisodeNumber());
         episode.setSeasonNumber(e.getSeasonNumber());
-        episode.setPeople(e.getPeople());
+        episode.getPeople().clear();
+        episode.getPeople().addAll(e.getPeople());
+        for (EpisodePerson person : episode.getPeople()) {
+          person.setEpisode(episode);
+        }
+
+        for (EpisodeFile file : episode.getFiles()) {
+          file.setEpisode(episode);
+        }
       } else {
         episodes.add(e);
       }
