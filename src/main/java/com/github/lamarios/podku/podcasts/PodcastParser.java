@@ -77,8 +77,37 @@ public class PodcastParser {
       if (podcast.getEpisodes() == null) {
         podcast.setEpisodes(new ArrayList<>());
       }
-      if (podcast.getEpisodes().stream()
-          .noneMatch(episode -> episode.getGuid().equals(e.getGuid()))) {
+      var episodeOpt =
+          podcast.getEpisodes().stream()
+              .filter(episode -> episode.getGuid().equals(e.getGuid()))
+              .findFirst();
+      if (episodeOpt.isPresent()) {
+        // episode data might have been updated
+        var episode = episodeOpt.get();
+
+        if (!e.getAudioUrl().equalsIgnoreCase(episode.getAudioUrl())
+            || e.getFiles().size() != episode.getFiles().size()
+            || !e.getFiles().stream()
+                .allMatch(
+                    ep ->
+                        episode.getFiles().stream()
+                            .anyMatch(ep1 -> ep1.getUrl().equalsIgnoreCase(ep.getUrl())))) {
+          episode.setProcessed(false);
+        }
+
+        episode.setTitle(e.getTitle());
+        episode.setImageUrl(e.getImageUrl());
+        episode.setAudioUrl(e.getAudioUrl());
+        episode.setAudioLengthBytes(e.getAudioLengthBytes());
+        episode.setDescription(e.getDescription());
+        episode.setDurationSeconds(e.getDurationSeconds());
+        episode.setEpisodeType(e.getEpisodeType());
+        episode.setFiles(e.getFiles());
+        episode.setPubDateMillis(e.getPubDateMillis());
+        episode.setEpisodeNumber(e.getEpisodeNumber());
+        episode.setSeasonNumber(e.getSeasonNumber());
+        episode.setPeople(e.getPeople());
+      } else {
         episodes.add(e);
       }
     }
@@ -89,6 +118,7 @@ public class PodcastParser {
     podcast.setArtworkUrl(channelImage(channel));
     podcast.setAuthor(itunesText(channel, "author"));
     podcast.setLink(text(channel, "link"));
+
     if (podcast.getEpisodes() == null) {
       podcast.setEpisodes(episodes);
     } else {

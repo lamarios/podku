@@ -31,7 +31,10 @@ class ResultTranscript extends StatelessWidget {
     }
 
     final colors = M3ETheme.of(context).colorScheme;
-    var cardColor = darken(colors.secondaryContainer, 0.5);
+
+    var cardColor = Theme.brightnessOf(context) == .dark
+        ? darken(colors.secondaryContainer, 0.5)
+        : lighten(colors.secondaryContainer, 0.5);
     final textTheme = Theme.of(context).textTheme;
     final locals = AppLocalizations.of(context)!;
 
@@ -72,19 +75,26 @@ class ResultTranscript extends StatelessWidget {
                 ),
                 Expanded(
                   child: M3ECard(
-                    padding: .only(bottom: pu4, left: pu2, right: pu2),
+                    padding: .zero,
                     color: cardColor,
+                    elevation: lerpDouble(1, 4, max(0, value)),
                     child: SizedBox(
                       height: lerpDouble(60, 300, value),
                       child: Stack(
                         clipBehavior: .none,
                         children: [
-                          ListView.builder(
-                            itemCount: result.matchedTranscripts?.length ?? 0,
-                            physics: !expanded! ? NeverScrollableScrollPhysics() : null,
-                            itemBuilder: (context, index) => Padding(
-                              padding: .only(bottom: index == result.matchedTranscripts!.length - 1 ? 30 : 0),
-                              child: _TranscriptLine(line: result.matchedTranscripts![index], episode: result.episode!),
+                          Padding(
+                            padding: .symmetric(horizontal: pu),
+                            child: ListView.builder(
+                              itemCount: result.matchedTranscripts?.length ?? 0,
+                              physics: !expanded! ? NeverScrollableScrollPhysics() : null,
+                              itemBuilder: (context, index) => Padding(
+                                padding: .only(bottom: index == result.matchedTranscripts!.length - 1 ? 50 : 0),
+                                child: _TranscriptLine(
+                                  line: result.matchedTranscripts![index],
+                                  episode: result.episode!,
+                                ),
+                              ),
                             ),
                           ),
 
@@ -105,12 +115,14 @@ class ResultTranscript extends StatelessWidget {
                             ),
                           ),
                           Positioned(
-                            bottom: -pu5,
+                            bottom: 0,
                             right: 0,
                             child: Transform.rotate(
                               angle: lerpDouble(0, pi, value)!,
                               child: M3EIconButton(
                                 icon: Icon(M3EIcons.expand_more),
+                                size: .xs,
+                                variant: .tonal,
                                 onPressed: () => context.read<SimpleCubit<bool>>().set(!expanded),
                               ),
                             ),
