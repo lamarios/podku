@@ -40,7 +40,7 @@ jobs:
         run: |
           export APP_VERSION=${TAG_NAME}
           export BUILD_NUMBER=${{ github.run_number }}
-          echo "Building podkunnect ${APP_VERSION}+${BUILD_NUMBER}
+          echo "Building podkunnect ${APP_VERSION}+${BUILD_NUMBER}"
           nix-shell --run "dart pub get" ../../../shell.nix
           nix-shell --run "make compile-linux-x64" ../../../shell.nix
           nix-shell --run "make compile-linux-arm" ../../../shell.nix
