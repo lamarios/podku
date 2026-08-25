@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:podkunnect/podkunnect.dart';
 
 final _log = Logger('main');
+
+const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: 'dev');
+const int buildNumber = int.fromEnvironment('BUILD_NUMBER', defaultValue: 0);
 
 void main(List<String> arguments) {
   MediaKit.ensureInitialized();
@@ -28,12 +33,14 @@ void main(List<String> arguments) {
 
   try {
     _log.info(
-      "Starting podkunnect with name: ${result.option("name")} and server: ${result.option('server')}, default volume: ${result.option('volume')}, debug? ${result.flag('debug')}",
+      "Starting Podkunnect ($appVersion+$buildNumber) with name: ${result.option("name")} and server: ${result.option('server')}, default volume: ${result.option('volume')}, debug? ${result.flag('debug')}",
     );
   } catch (e) {
-    _log.info(parser.usage);
+    print("Podkunnect version $appVersion+$buildNumber");
+    print(parser.usage);
     return;
   }
+
   Podkunnect(
     name: result.option('name')!,
     serverUrl: result.option('server')!,
