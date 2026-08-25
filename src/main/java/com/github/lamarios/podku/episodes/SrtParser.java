@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Parses SubRip (SRT) subtitle files into a list of {@link EpisodeTranscript} cues, extracting
+ * speaker info from optional {@code <v Speaker>} tags when present.
+ */
 public class SrtParser {
   // SRT timestamps use commas instead of dots: 00:00:11,447 --> 00:00:16,131
   private static final Pattern TIME_LINE_PATTERN =
@@ -16,6 +20,14 @@ public class SrtParser {
   // A line that's just a number (the cue index).
   private static final Pattern INDEX_LINE_PATTERN = Pattern.compile("^\\d+$");
 
+  /**
+   * Parses the raw SRT content into transcript cues.
+   *
+   * @param srtContent the full text of the SRT file
+   * @param episode the owning episode to link each cue to
+   * @param language language tag for the resulting transcripts
+   * @return the parsed transcript cues, in file order
+   */
   public List<EpisodeTranscript> parse(String srtContent, Episode episode, String language) {
     List<EpisodeTranscript> cues = new ArrayList<>();
     String[] lines = srtContent.replace("\r\n", "\n").split("\n", -1);

@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Parses WebVTT subtitle files into a list of {@link EpisodeTranscript} cues, extracting speaker
+ * info from leading {@code <v Speaker>} tags when present.
+ */
 public class VttParser {
   private static final Pattern TIME_LINE_PATTERN =
       Pattern.compile(
@@ -15,6 +19,14 @@ public class VttParser {
   // Matches a leading <v Speaker> tag, capturing the speaker name.
   private static final Pattern VOICE_TAG_PATTERN = Pattern.compile("^<v\\s+([^>]+)>\\s*");
 
+  /**
+   * Parses the raw WebVTT content into transcript cues.
+   *
+   * @param vttContent the full text of the WebVTT file
+   * @param episode the owning episode to link each cue to
+   * @param language language tag for the resulting transcripts
+   * @return the parsed transcript cues, in file order
+   */
   public List<EpisodeTranscript> parse(String vttContent, Episode episode, String language) {
     List<EpisodeTranscript> cues = new ArrayList<>();
     // Normalize line endings and split into lines.
@@ -78,6 +90,13 @@ public class VttParser {
     return cues;
   }
 
+  /**
+   * Parses WebVTT content without an explicit language.
+   *
+   * @param vttContent the full text of the WebVTT file
+   * @param episode the owning episode to link each cue to
+   * @return the parsed transcript cues, in file order
+   */
   public List<EpisodeTranscript> parse(String vttContent, Episode episode) {
     return parse(vttContent, episode, null);
   }

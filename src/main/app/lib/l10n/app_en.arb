@@ -48,5 +48,9 @@
   "fromTranscript": "From transcript",
   "bookmarks": "Bookmarks",
   "bookmarkAdded" : "Bookmark saved",
-  "addBookmark": "Add bookmark"
+  "addBookmark": "Add bookmark",
+  "deleteBookmark": "Delete bookmark?",
+  "cannotBeUndone": "This action cannot be undone",
+  "noBookmarks": "No bookmarks, tap ",
+  "noBookmarksEnd": "when playing a podcast."
 }

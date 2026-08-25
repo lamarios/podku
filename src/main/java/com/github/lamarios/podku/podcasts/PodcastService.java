@@ -279,53 +279,55 @@ public class PodcastService {
   }
 
   public void downloadEpisodes() {
-    log.info("Starting to cache episodes locally");
-    TransactionHelper.doInNewTransaction(
-        platformTransactionManager,
-        true,
-        () -> {
-          var episodes =
-              episodeRepository.getEpisodeByPubDateMillisBefore(
-                  System.currentTimeMillis(),
-                  Sort.by(Sort.Direction.DESC, "pubDateMillis"),
-                  Limit.of(episodeCacheCount));
+    if (episodeCacheCount > 0) {
+      log.info("Starting to cache episodes locally");
+      TransactionHelper.doInNewTransaction(
+          platformTransactionManager,
+          true,
+          () -> {
+            var episodes =
+                episodeRepository.getEpisodeByPubDateMillisBefore(
+                    System.currentTimeMillis(),
+                    Sort.by(Sort.Direction.DESC, "pubDateMillis"),
+                    Limit.of(episodeCacheCount));
 
-          for (var e : episodes) {
-            try {
-              EpisodeUtils.downloadEpisode(e, episodeCacheFolder);
-            } catch (IOException ex) {
-              log.error("Failed to download episode {}", e.getTitle(), ex);
+            for (var e : episodes) {
+              try {
+                EpisodeUtils.downloadEpisode(e, episodeCacheFolder);
+              } catch (IOException ex) {
+                log.error("Failed to download episode {}", e.getTitle(), ex);
+              }
             }
-          }
 
-          List<String> episodeHashes =
-              episodes.stream()
-                  .map(
-                      e ->
-                          Hashing.sha256()
-                              .hashString(e.getAudioUrl(), StandardCharsets.UTF_8)
-                              .toString())
-                  .toList();
+            List<String> episodeHashes =
+                episodes.stream()
+                    .map(
+                        e ->
+                            Hashing.sha256()
+                                .hashString(e.getAudioUrl(), StandardCharsets.UTF_8)
+                                .toString())
+                    .toList();
 
-          try {
-            Files.list(episodeCacheFolder)
-                .forEach(
-                    path -> {
-                      File file = path.getFileName().toFile();
-                      String name = file.getName();
-                      if (!episodeHashes.contains(name)) {
-                        log.info("Deleting episode: {}", name);
-                        try {
-                          Files.deleteIfExists(path);
-                        } catch (IOException e) {
-                          log.error("Couldn't delete episode {}", name, e);
+            try {
+              Files.list(episodeCacheFolder)
+                  .forEach(
+                      path -> {
+                        File file = path.getFileName().toFile();
+                        String name = file.getName();
+                        if (!episodeHashes.contains(name)) {
+                          log.info("Deleting episode: {}", name);
+                          try {
+                            Files.deleteIfExists(path);
+                          } catch (IOException e) {
+                            log.error("Couldn't delete episode {}", name, e);
+                          }
                         }
-                      }
-                    });
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-        });
+                      });
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+          });
+    }
   }
 
   @Transactional(readOnly = true)

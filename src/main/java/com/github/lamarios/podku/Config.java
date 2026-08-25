@@ -9,8 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Application-wide configuration: CORS rules for the REST endpoints and the Flyway migration setup.
+ */
 @Configuration
 public class Config {
+  /**
+   * Registers the CORS policy: the health endpoint is reachable with GET/OPTIONS only, while every
+   * other path accepts the full set of methods used by the frontends.
+   */
   @Bean
   public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {
@@ -33,6 +40,15 @@ public class Config {
     };
   }
 
+  /**
+   * Creates the Flyway instance and runs pending migrations immediately so the schema is ready
+   * before any repository is used.
+   *
+   * @param dataSource the JDBC data source migrations apply to
+   * @param locations Flyway migration script locations (classpath paths)
+   * @param baselineOnMigrate whether to baseline an existing database before migrating
+   * @return the configured {@link Flyway} instance, already migrated
+   */
   @Bean(name = "flyway")
   public Flyway flyway(
       DataSource dataSource,

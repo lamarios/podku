@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
+import 'package:material_3_expressive/components/dialogs/m3e_dialogs.dart';
 import 'package:material_3_expressive/components/icon_buttons/m3e_icon_buttons.dart';
 import 'package:material_3_expressive/components/toggle_button_group/m3e_toggle_button_group.dart';
 import 'package:material_3_expressive/components/toggle_button_group/models/m3e_button_group_action.dart';
@@ -20,6 +22,7 @@ import 'package:podku/utils/views/components/error_listener.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 const double _imageSize = 150;
+final _log = Logger('BookmarkScreen');
 
 class BookmarkScreen extends StatelessWidget {
   final String? bookmarkId;
@@ -32,14 +35,58 @@ class BookmarkScreen extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: M3EAppBar.top(automaticallyImplyLeading: true, backgroundColor: Colors.transparent),
-      body: SafeArea(
-        bottom: false,
-        child: bookmarkId == null
-            ? Center(child: Icon(M3EIcons.emoji_emotions_outlined))
-            : BlocProvider(
-                create: (context) => BookmarkCubit(BookmarkState(), bookmarkId: bookmarkId!),
+    return bookmarkId == null
+        ? Center(child: Icon(M3EIcons.emoji_emotions_outlined))
+        : BlocProvider(
+            create: (context) => BookmarkCubit(BookmarkState(), bookmarkId: bookmarkId!),
+            child: Scaffold(
+              appBar: M3EAppBar.top(
+                automaticallyImplyLeading: true,
+                backgroundColor: Colors.transparent,
+                actions: [
+                  Builder(
+                    builder: (context) {
+                      return M3EIconButton(
+                        icon: Icon(M3EIcons.delete),
+                        onPressed: () async {
+                          final delete = await M3EDialog.show<bool>(
+                            context,
+                            dialog: Builder(
+                              builder: (context) {
+                                return M3EDialog(
+                                  title: locals.deleteBookmark,
+                                  content: Text(locals.cannotBeUndone),
+                                  actions: [
+                                    M3EButton(
+                                      style: .text,
+                                      child: Text(locals.cancel),
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                    ),
+                                    M3EButton(
+                                      style: .text,
+                                      child: Text(locals.ok),
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          );
+                          _log.fine('Delete bookmark? $delete');
+                          if (context.mounted && (delete ?? false)) {
+                            await context.read<BookmarkCubit>().delete();
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              body: SafeArea(
+                bottom: false,
                 child: ErrorHandler<BookmarkCubit, BookmarkState>(
                   child: BlocBuilder<BookmarkCubit, BookmarkState>(
                     builder: (context, state) {
@@ -136,8 +183,8 @@ class BookmarkScreen extends StatelessWidget {
                   ),
                 ),
               ),
-      ),
-    );
+            ),
+          );
   }
 }
 

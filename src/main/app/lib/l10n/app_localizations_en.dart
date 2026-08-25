@@ -168,4 +168,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addBookmark => 'Add bookmark';
+
+  @override
+  String get deleteBookmark => 'Delete bookmark?';
+
+  @override
+  String get cannotBeUndone => 'This action cannot be undone';
+
+  @override
+  String get noBookmarks => 'No bookmarks, tap ';
+
+  @override
+  String get noBookmarksEnd => 'when playing a podcast.';
 }

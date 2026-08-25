@@ -390,6 +390,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add bookmark'**
   String get addBookmark;
+
+  /// No description provided for @deleteBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete bookmark?'**
+  String get deleteBookmark;
+
+  /// No description provided for @cannotBeUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone'**
+  String get cannotBeUndone;
+
+  /// No description provided for @noBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks, tap '**
+  String get noBookmarks;
+
+  /// No description provided for @noBookmarksEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'when playing a podcast.'**
+  String get noBookmarksEnd;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

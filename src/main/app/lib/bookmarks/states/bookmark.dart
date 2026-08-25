@@ -51,6 +51,10 @@ class BookmarkCubit extends Cubit<BookmarkState> {
   void setLanguage(String? language) {
     emit(state.copyWith(selectedLanguage: language));
   }
+
+  Future<void> delete() async {
+    await client.bookmarks.delete(id: bookmarkId);
+  }
 }
 
 @freezed

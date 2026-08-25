@@ -23,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Core business logic around episodes: processing feeds into chapters and transcripts,
+ * playback-progress sync, and full-text search.
+ */
 @Service
 public class EpisodeService {
   private final Logger log = LogManager.getLogger();
@@ -35,6 +39,13 @@ public class EpisodeService {
   private final PlatformTransactionManager transactionManager;
   private final WebSocketSessionManager webSocketSessionManager;
 
+  /**
+   * @param chapterRepository repository for episode chapters
+   * @param episodeTranscriptRepository repository for episode transcripts
+   * @param episodeRepository repository for episodes
+   * @param transactionManager used to run each episode in its own transaction
+   * @param webSocketSessionManager broadcasts playback updates to connected clients
+   */
   @Autowired
   public EpisodeService(
       ChapterRepository chapterRepository,
@@ -53,6 +64,7 @@ public class EpisodeService {
    * Process a podcast in a separated queue
    *
    * @param podcast the podcast to process
+   * @return a future that completes with the podcast once every episode has been processed
    */
   public CompletableFuture<Podcast> processPodcast(Podcast podcast) {
     CompletableFuture<Podcast> future = new CompletableFuture<>();
@@ -76,6 +88,10 @@ public class EpisodeService {
     return future;
   }
 
+  /**
+   * Daily job that processes every episode that still has no transcripts or chapters, each in its
+   * own transaction so one failure does not block the rest.
+   */
   @Scheduled(cron = "@daily")
   public void processEpisodes() {
     exec.submit(
@@ -221,7 +237,7 @@ public class EpisodeService {
   /**
    * Set user progress on episode and transmit it to other connect clients if any
    *
-   * @param progress
+   * @param progress the playback state (episode id and new progress) to persist and relay
    */
   @Transactional
   public void setProgress(PlaybackProgress progress) {
@@ -233,6 +249,14 @@ public class EpisodeService {
     }
   }
 
+  /**
+   * Full-text search over episodes and their transcripts. Each matched episode is paired with its
+   * highlighted transcript segments.
+   *
+   * @param query free-text search term (tokenized into a Postgres tsquery)
+   * @param limit maximum number of episodes to return
+   * @return matching episodes with their best transcript matches, or an empty list
+   */
   @Transactional(readOnly = true)
   public List<EpisodeSearchResult> searchPodcasts(String query, int limit) {
     String tsQuery =
@@ -303,6 +327,13 @@ public class EpisodeService {
     }
   }
 
+  /**
+   * Applies a batch of offline playback-progress updates, only overwriting an episode's progress
+   * when the incoming update is newer than the stored one.
+   *
+   * @param progresses map of episode id (string UUID) to the offline progress to apply
+   * @return {@code true} when the batch was applied
+   */
   @Transactional
   public boolean updateProgresses(Map<String, OfflineProgress> progresses) {
     progresses.forEach(

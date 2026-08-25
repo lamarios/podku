@@ -83,12 +83,14 @@ public class WhisperService {
 
   @Scheduled(cron = "0 0 4 * * *")
   public void processEpisodeCron() {
-    var episodes =
-        episodeRepository.getEpisodeByPubDateMillisBefore(
-            System.currentTimeMillis(),
-            Sort.by(Sort.Direction.DESC, "pubDateMillis"),
-            Limit.of(episodeProcessCount));
-    episodes.forEach(this::processEpisode);
+    if (episodeProcessCount > 0) {
+      var episodes =
+          episodeRepository.getEpisodeByPubDateMillisBefore(
+              System.currentTimeMillis(),
+              Sort.by(Sort.Direction.DESC, "pubDateMillis"),
+              Limit.of(episodeProcessCount));
+      episodes.forEach(this::processEpisode);
+    }
   }
 
   private void processEpisodeInner(Episode e) {

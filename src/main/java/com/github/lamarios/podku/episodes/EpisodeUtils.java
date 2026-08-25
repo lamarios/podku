@@ -11,9 +11,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/** Static helpers for working with episode audio files. */
 public class EpisodeUtils {
   private static final Logger log = LogManager.getLogger();
 
+  /**
+   * Downloads the episode audio into the cache folder, reusing an existing complete file when
+   * present. The cache key is the episode's audio-URL hash.
+   *
+   * @param e the episode whose audio should be fetched
+   * @param episodeCacheFolder directory used to store downloaded audio files
+   * @return the local path of the downloaded (or already cached) audio file
+   * @throws IOException if the download fails or the file size does not match
+   */
   public static Path downloadEpisode(Episode e, Path episodeCacheFolder) throws IOException {
     var episodeHash = e.getAudioUrlHash();
 

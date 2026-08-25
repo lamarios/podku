@@ -28,6 +28,7 @@ import 'package:podku/player/views/components/transcript_follower.dart';
 import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/models/app_action.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/description.dart';
 
@@ -280,6 +281,8 @@ class BigPlayer extends StatelessWidget {
                                                       episode: playerCubit.state.episode,
                                                     ),
                                                   );
+
+                                                  actionStream.add(.refreshBookmarks);
 
                                                   if (context.mounted) {
                                                     M3ESnackbar.show(context, message: locals.bookmarkAdded);
