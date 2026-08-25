@@ -41,7 +41,9 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Extract tag name
         id: extract_tag
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/:-1.0.0}" >> $GITHUB_ENV
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=${TAG:-1.0.0}" >> $GITHUB_ENV
       - name: Decode and write keystore file
         # to crate the base64, use cat <file> | base64 -w 0
         run: echo ${{ secrets.ANDROID_KEYSTORE_BASE64 }} | base64 --decode > /tmp/keystore.jks
