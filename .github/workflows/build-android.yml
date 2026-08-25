@@ -41,7 +41,6 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Extract tag name
         id: extract_tag
-        if: startsWith(github.ref, 'refs/tags/')
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/:-1.0.0}" >> $GITHUB_ENV
       - name: Decode and write keystore file
         # to crate the base64, use cat <file> | base64 -w 0
@@ -64,7 +63,7 @@ jobs:
       - name: Build app
         working-directory: src/main/app/
         run: |
-          echo "Building ${TAG_NAME}:${{ github.run_number }}
+          echo "Building ${TAG_NAME}:${{ github.run_number }}"
           nix-shell --run "flutter doctor" ../../../shell.nix
           nix-shell --run "flutter build apk --split-per-abi --build-name ${TAG_NAME} --build-number ${{ github.run_number }}" ../../../shell.nix
           nix-shell --run "flutter build appbundle  --build-name ${TAG_NAME} --build-number ${{ github.run_number }}" ../../../shell.nix
