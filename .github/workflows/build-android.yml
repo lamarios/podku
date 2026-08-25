@@ -66,8 +66,8 @@ jobs:
         run: |
           echo "Building ${TAG_NAME}:${{ github.run_number }}
           nix-shell --run "flutter doctor" ../../../shell.nix
-          nix-shell --run "flutter build apk --split-per-abi --build-name ${TAG_NAME} --build-number ${{ gihub.run_number }}" ../../../shell.nix
-          nix-shell --run "flutter build appbundle  --build-name ${TAG_NAME} --build-number ${{ gihub.run_number }}" ../../../shell.nix
+          nix-shell --run "flutter build apk --split-per-abi --build-name ${TAG_NAME} --build-number ${{ github.run_number }}" ../../../shell.nix
+          nix-shell --run "flutter build appbundle  --build-name ${TAG_NAME} --build-number ${{ github.run_number }}" ../../../shell.nix
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
