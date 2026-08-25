@@ -67,10 +67,11 @@ jobs:
 #        working-directory: podku_flutter
 #        run: |
 #          nix-shell --run "flutter test"
+      - name: Build version
+        run: echo "Building ${TAG_NAME}:${{ github.run_number }}"
       - name: Build app
         working-directory: src/main/app/
         run: |
-          echo "Building ${TAG_NAME}:${{ github.run_number }}"
           nix-shell --run "flutter doctor" ../../../shell.nix
           nix-shell --run "flutter build apk --split-per-abi --build-name ${TAG_NAME} --build-number ${{ github.run_number }}" ../../../shell.nix
           nix-shell --run "flutter build appbundle  --build-name ${TAG_NAME} --build-number ${{ github.run_number }}" ../../../shell.nix
