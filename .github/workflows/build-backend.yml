@@ -75,9 +75,7 @@ jobs:
           file: docker/Dockerfile
 
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/podku:${{ github.sha }}
-            ${{ secrets.DOCKER_USERNAME }}/podku:dev
-
+            ${{ secrets.DOCKER_USERNAME }}/podku:${{ github.run_number }}
       - name: Build and push Docker image (Release)
         uses: docker/build-push-action@v4
         if: startsWith(github.ref, 'refs/tags/')
