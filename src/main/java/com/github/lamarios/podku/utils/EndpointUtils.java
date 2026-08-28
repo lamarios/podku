@@ -10,7 +10,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+/** Small helper for serving files as HTTP responses. */
 public class EndpointUtils {
+  /**
+   * Builds a streaming HTTP response that serves the contents of {@code filePath} with its detected
+   * content type and length. Falls back to {@code application/octet-stream} when the content type
+   * cannot be determined.
+   *
+   * @param filePath the file to serve
+   * @return a 200 OK response whose body streams the file bytes (8 KB buffer) to the client
+   * @throws IOException if the file cannot be read or its size cannot be determined
+   */
   public static ResponseEntity<StreamingResponseBody> serveFile(Path filePath) throws IOException {
     String contentType = Files.probeContentType(filePath);
     if (contentType == null) {

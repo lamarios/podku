@@ -8,9 +8,19 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+/** Helper for running a block of work inside an explicit Spring-managed database transaction. */
 public class TransactionHelper {
   private static final Logger log = LogManager.getLogger();
 
+  /**
+   * Runs {@code runnable} in a new transaction, committing on success and rolling back (then
+   * rethrowing) if it throws. If the transaction is already completed when an exception occurs, no
+   * rollback is attempted.
+   *
+   * @param transactionManager the manager that owns the transaction
+   * @param readonly whether the transaction should be marked read-only
+   * @param runnable the work to execute inside the transaction
+   */
   public static void doInNewTransaction(
       PlatformTransactionManager transactionManager, boolean readonly, Runnable runnable) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -29,6 +39,17 @@ public class TransactionHelper {
     }
   }
 
+  /**
+   * Runs {@code runnable} in a new transaction, committing on success and rolling back (then
+   * rethrowing) if it throws. If the transaction is already completed when an exception occurs, no
+   * rollback is attempted.
+   *
+   * @param transactionManager the manager that owns the transaction
+   * @param readonly whether the transaction should be marked read-only
+   * @param runnable the work to execute inside the transaction; its result is returned on success
+   * @param <T> the type of the operation's result
+   * @return the value produced by {@code runnable}
+   */
   public static <T> T doInNewTransaction(
       PlatformTransactionManager transactionManager, boolean readonly, Supplier<T> runnable) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();

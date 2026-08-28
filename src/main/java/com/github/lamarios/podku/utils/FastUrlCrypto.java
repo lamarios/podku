@@ -9,6 +9,12 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Encrypts and decrypts URLs using AES-128 in CTR mode with a random per-message IV. The secret is
+ * derived from a SHA-256 hash so the same key is reproduced across restarts (from the {@code SALT}
+ * environment variable). The ciphertext is stored as a URL-safe Base64 string with the IV
+ * prepended.
+ */
 public class FastUrlCrypto {
   private static final String ALGORITHM = "AES/CTR/NoPadding";
   private static final int IV_LENGTH = 16;
@@ -40,7 +46,12 @@ public class FastUrlCrypto {
     this.keySpec = new SecretKeySpec(aesKey, "AES");
   }
 
-  /** Encrypts a URL into a URL-safe Base64 string. */
+  /**
+   * Encrypts {@code plainUrl} into a URL-safe Base64 string, prepending a fresh random IV.
+   *
+   * @param plainUrl the plaintext URL; returned unchanged when {@code null} or empty
+   * @return the encrypted, URL-safe Base64 representation of the input URL
+   */
   public String encrypt(String plainUrl) throws Exception {
     // 1. ADD THIS NULL CHECK
     if (plainUrl == null || plainUrl.isEmpty()) {
@@ -64,7 +75,13 @@ public class FastUrlCrypto {
     return Base64.getUrlEncoder().withoutPadding().encodeToString(buffer.array());
   }
 
-  /** Decrypts a URL-safe Base64 string back to the original URL. */
+  /**
+   * Reverses {@link #encrypt(String)}: extracts the IV, decrypts the remainder and returns the
+   * original plaintext URL.
+   *
+   * @param encryptedUrlSafe the URL-safe Base64 string produced by {@link #encrypt(String)}
+   * @return the original plaintext URL
+   */
   public String decrypt(String encryptedUrlSafe) throws Exception {
     byte[] decoded = Base64.getUrlDecoder().decode(encryptedUrlSafe);
 

@@ -558,6 +558,18 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/windows_file_picker/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/windows_file_picker/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/windows_file_picker/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/share_plus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/share_plus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/share_plus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/share_plus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/share_plus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/share_plus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/example/build" />
     </content>
   </component>
 </module>

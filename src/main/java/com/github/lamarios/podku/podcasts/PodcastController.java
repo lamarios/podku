@@ -26,6 +26,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+/**
+ * REST API for managing subscriptions: listing, subscribing, importing/exporting feeds (OPML),
+ * parsing a feed without subscribing, and searching.
+ */
 @RestController
 @RequestMapping("/api/podcasts")
 @Tag(name = "Podcasts")
@@ -35,6 +39,12 @@ public class PodcastController {
   private final PodcastParser podcastParser;
   private final WhisperService whisperService;
 
+  /**
+   * @param podcastService subscription and feed management logic
+   * @param episodeService used to kick off processing of newly imported podcasts
+   * @param podcastParser parses raw feed content into {@link Podcast} objects
+   * @param whisperService triggers transcription of processed episodes after import
+   */
   @Autowired
   public PodcastController(
       PodcastService podcastService,
@@ -47,11 +57,22 @@ public class PodcastController {
     this.whisperService = whisperService;
   }
 
+  /**
+   * Lists all subscribed podcasts as lightweight summaries.
+   *
+   * @return the list of subscribed podcasts (trimmed)
+   */
   @GetMapping
   public List<PodcastLight> getPodcasts() {
     return podcastService.getPodcasts().stream().map(PodcastLight::new).toList();
   }
 
+  /**
+   * Subscribes to a podcast described by the given search result.
+   *
+   * @param result the search result describing the feed to subscribe to
+   * @return the newly created {@link Podcast}
+   */
   @PostMapping
   public Podcast subscribeToPodcast(@RequestBody SearchResult result) {
     Podcast newPodcast = null;
@@ -59,6 +80,13 @@ public class PodcastController {
     return newPodcast;
   }
 
+  /**
+   * Parses a feed described by the given search result without persisting a subscription, returning
+   * the populated {@link Podcast}.
+   *
+   * @param result the search result whose feed URL/collection should be parsed
+   * @return the parsed podcast (not saved)
+   */
   @PostMapping("/parse")
   public Podcast parsePodcast(@RequestBody SearchResult result) {
     Podcast podcast = new Podcast();
@@ -69,16 +97,34 @@ public class PodcastController {
     return podcastParser.parseUrl(podcast);
   }
 
+  /**
+   * Unsubscribes from the podcast with the given identifier.
+   *
+   * @param id identifier of the podcast to unsubscribe
+   */
   @DeleteMapping("{id}")
   public void unsubsribe(@PathVariable String id) {
     podcastService.unsubscribe(id);
   }
 
+  /**
+   * Fetches a single full podcast by identifier.
+   *
+   * @param id path identifier of the podcast
+   * @return the matching podcast, or {@code null} when none exists
+   */
   @GetMapping("{id}")
   public Podcast getPodcast(@PathVariable String id) {
     return podcastService.getPodcast(id);
   }
 
+  /**
+   * Exports all subscribed feeds as an OPML document served as a downloadable file.
+   *
+   * @return the OPML export streamed as a file attachment
+   * @throws IOException if the temporary export file cannot be written or served
+   * @throws OpmlWriteException if the OPML document could not be produced
+   */
   @GetMapping("/export")
   public ResponseEntity<@NotNull StreamingResponseBody> exportFeeds()
       throws IOException, OpmlWriteException {
@@ -91,6 +137,16 @@ public class PodcastController {
     return serveFile(p);
   }
 
+  /**
+   * Imports podcasts from an uploaded OPML file. Each imported podcast is queued for processing
+   * and, once all have finished, Whisper transcription is triggered.
+   *
+   * @param file the OPML upload to import
+   * @return the list of newly added podcasts (lightweight summaries)
+   * @throws SQLException if a database error occurs during import
+   * @throws OpmlParseException if the uploaded file is not valid OPML
+   * @throws IOException if the uploaded file cannot be read
+   */
   @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public List<PodcastLight> importFeed(@RequestParam("file") MultipartFile file)
       throws SQLException, OpmlParseException, IOException {
@@ -111,6 +167,13 @@ public class PodcastController {
     }
   }
 
+  /**
+   * Searches for podcasts by name/collection.
+   *
+   * @param query free-text search term
+   * @param limit maximum number of results to return
+   * @return matching podcasts (lightweight summaries)
+   */
   @GetMapping("/search")
   public List<PodcastLight> search(
       @RequestParam("query") String query, @RequestParam("limit") int limit) {
