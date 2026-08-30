@@ -4,13 +4,12 @@ package com.github.lamarios.podku.episodes;
 import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
 import com.github.lamarios.podku.transcripts.EpisodeTranscriptRepository;
+import com.github.lamarios.podku.utils.BackgroundTasks;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import com.github.lamarios.podku.websockets.PlaybackProgress;
 import com.github.lamarios.podku.websockets.WebSocketSessionManager;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import kong.unirest.core.Unirest;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +34,6 @@ public class EpisodeService {
   private final ChapterRepository chapterRepository;
   private final EpisodeTranscriptRepository episodeTranscriptRepository;
   private final EpisodeRepository episodeRepository;
-  private final ExecutorService exec = Executors.newSingleThreadExecutor();
   private final PlatformTransactionManager transactionManager;
   private final WebSocketSessionManager webSocketSessionManager;
 
@@ -68,7 +66,7 @@ public class EpisodeService {
    */
   public CompletableFuture<Podcast> processPodcast(Podcast podcast) {
     CompletableFuture<Podcast> future = new CompletableFuture<>();
-    exec.submit(
+    BackgroundTasks.submitBackgroundTask(
         () -> {
           try {
             for (Episode episode : podcast.getEpisodes()) {
@@ -94,7 +92,7 @@ public class EpisodeService {
    */
   @Scheduled(cron = "@daily")
   public void processEpisodes() {
-    exec.submit(
+    BackgroundTasks.submitBackgroundTask(
         () -> {
           log.info("Starting scheduled episode processing");
           episodeRepository

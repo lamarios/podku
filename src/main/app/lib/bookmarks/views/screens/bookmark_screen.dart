@@ -126,6 +126,22 @@ class BookmarkScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                              if (bookmark.bookmark?.topic?.isNotEmpty ?? false)
+                                Padding(
+                                  padding: .symmetric(vertical: pu),
+                                  child: Row(
+                                    spacing: pu,
+                                    children: [
+                                      Icon(M3EIcons.auto_awesome, size: 17, color: colors.primary),
+                                      Expanded(
+                                        child: Text(
+                                          bookmark.bookmark?.topic ?? '',
+                                          style: textTheme.bodyMedium?.copyWith(color: colors.primary),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               if (bookmark.transcripts?.values.any((element) => element.isNotEmpty) ?? false) ...[
                                 M3EButtonGroup(
                                   size: .xs,

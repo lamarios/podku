@@ -57,6 +57,22 @@ class BookmarkInList extends StatelessWidget {
                 ),
               ],
             ),
+            if (bookmark.bookmark?.topic?.isNotEmpty ?? false)
+              Padding(
+                padding: .symmetric(vertical: pu),
+                child: Row(
+                  spacing: pu,
+                  children: [
+                    Icon(M3EIcons.auto_awesome, size: 17, color: colors.primary),
+                    Expanded(
+                      child: Text(
+                        bookmark.bookmark?.topic ?? '',
+                        style: textTheme.bodyMedium?.copyWith(color: colors.primary),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             if (bookmark.transcripts?.values.firstOrNull?.isNotEmpty ?? false)
               M3ECardListItem(
                 // headline: bookmark.transcripts!.values.first.first.content ?? '',

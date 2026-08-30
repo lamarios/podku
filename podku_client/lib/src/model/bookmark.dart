@@ -25,6 +25,8 @@ class Bookmark {
 
      this.time,
 
+     this.topic,
+
      this.episode,
   });
 
@@ -54,6 +56,18 @@ class Bookmark {
 
   @JsonKey(
     
+    name: r'topic',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? topic;
+
+
+
+  @JsonKey(
+    
     name: r'episode',
     required: false,
     includeIfNull: false,
@@ -70,12 +84,14 @@ class Bookmark {
     bool operator ==(Object other) => identical(this, other) || other is Bookmark &&
       other.id == id &&
       other.time == time &&
+      other.topic == topic &&
       other.episode == episode;
 
     @override
     int get hashCode =>
         id.hashCode +
         time.hashCode +
+        topic.hashCode +
         episode.hashCode;
 
   factory Bookmark.fromJson(Map<String, dynamic> json) => _$BookmarkFromJson(json);

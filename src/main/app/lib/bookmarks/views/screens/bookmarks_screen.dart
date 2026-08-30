@@ -7,6 +7,7 @@ import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/bookmarks/states/bookmarks.dart';
 import 'package:podku/bookmarks/views/components/bookmark_in_list.dart';
 import 'package:podku/l10n/app_localizations.dart';
+import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
 
@@ -45,20 +46,25 @@ class BookmarksScreen extends StatelessWidget {
               );
             } else {
               return M3ERefreshIndicator.contained(
-                onRefresh: () => context.read<BookmarksCubit>().getBookmarks(),
-                child: ListView.builder(
-                  itemCount: state.bookmarks.length,
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: () => context.push('/bookmark/${state.bookmarks[index].bookmark!.id}').then((value) {
-                      if (context.mounted) {
-                        context.read<BookmarksCubit>().getBookmarks(showLoading: false);
-                      }
-                    }),
-                    child: BookmarkInList(
-                      key: ValueKey(state.bookmarks[index].bookmark?.id ?? ''),
-                      bookmark: state.bookmarks[index],
+                onRefresh: () => context.read<BookmarksCubit>().getBookmarks(showLoading: false),
+                child: CustomScrollView(
+                  slivers: [
+                    SliverList.builder(
+                      itemCount: state.bookmarks.length,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () => context.push('/bookmark/${state.bookmarks[index].bookmark!.id}').then((value) {
+                          if (context.mounted) {
+                            context.read<BookmarksCubit>().getBookmarks(showLoading: false);
+                          }
+                        }),
+                        child: BookmarkInList(
+                          key: ValueKey(state.bookmarks[index].bookmark?.id ?? ''),
+                          bookmark: state.bookmarks[index],
+                        ),
+                      ),
                     ),
-                  ),
+                    MiniPlayer.miniPlayerPadding(),
+                  ],
                 ),
               );
             }

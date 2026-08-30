@@ -42,4 +42,7 @@ public interface EpisodeTranscriptRepository extends JpaRepository<EpisodeTransc
 
   List<EpisodeTranscript> findByStartTimeBeforeAndEndTimeAfterAndEpisode(
       String startTimeBefore, String endTimeAfter, Episode episode);
+
+  List<EpisodeTranscript> findAllByEpisodeAndLanguageAndStartTimeGreaterThanAndEndTimeLessThanEqual(
+      Episode episode, String language, String startTimeIsGreaterThan, String endTimeIsLessThan);
 }

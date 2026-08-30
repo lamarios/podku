@@ -17,6 +17,11 @@ void main() {
       // TODO
     });
 
+    // String topic
+    test('to test the property `topic`', () async {
+      // TODO
+    });
+
     // Episode episode
     test('to test the property `episode`', () async {
       // TODO

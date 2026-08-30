@@ -12,7 +12,9 @@ public class Bookmark {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  private long time;
+  private Long time;
+
+  private String topic;
 
   @ManyToOne
   @JoinColumn(name = "episode_id")
@@ -26,11 +28,19 @@ public class Bookmark {
     this.id = id;
   }
 
-  public long getTime() {
+  public Long getTime() {
     return time;
   }
 
-  public void setTime(long time) {
+  public String getTopic() {
+    return topic;
+  }
+
+  public void setTopic(String topic) {
+    this.topic = topic;
+  }
+
+  public void setTime(Long time) {
     this.time = time;
   }
 

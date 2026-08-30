@@ -5,6 +5,7 @@ import com.github.lamarios.podku.episodes.Episode;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.episodes.EpisodeUtils;
 import com.github.lamarios.podku.episodes.VttParser;
+import com.github.lamarios.podku.utils.BackgroundTasks;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,8 +13,6 @@ import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestInstance;
@@ -32,7 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 @Service
 public class WhisperService {
-  private final ExecutorService exec = Executors.newSingleThreadExecutor();
   private final PlatformTransactionManager transactionManager;
   private final EpisodeTranscriptRepository episodeTranscriptRepository;
   private final TranscriptService transcriptService;
@@ -75,7 +73,7 @@ public class WhisperService {
 
   public void processEpisode(Episode e) {
     if (isWhisperEnabled()) {
-      exec.submit(() -> processEpisodeInner(e));
+      BackgroundTasks.submitBackgroundTask(() -> processEpisodeInner(e));
     } else {
       log.info("Whisper is not enable for transcript processing");
     }

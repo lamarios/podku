@@ -144,6 +144,14 @@
             <version>1.21.4</version>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.openai</groupId>
+            <artifactId>openai-java</artifactId>
+            <version>4.52.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

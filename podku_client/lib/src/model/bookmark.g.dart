@@ -11,6 +11,8 @@ abstract class _$BookmarkCWProxy {
 
   Bookmark time(int? time);
 
+  Bookmark topic(String? topic);
+
   Bookmark episode(Episode? episode);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Bookmark(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -19,7 +21,7 @@ abstract class _$BookmarkCWProxy {
   /// ```dart
   /// Bookmark(...).copyWith(id: 12, name: "My name")
   /// ````
-  Bookmark call({String? id, int? time, Episode? episode});
+  Bookmark call({String? id, int? time, String? topic, Episode? episode});
 }
 
 /// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfBookmark.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfBookmark.copyWith.fieldName(...)`
@@ -35,6 +37,9 @@ class _$BookmarkCWProxyImpl implements _$BookmarkCWProxy {
   Bookmark time(int? time) => this(time: time);
 
   @override
+  Bookmark topic(String? topic) => this(topic: topic);
+
+  @override
   Bookmark episode(Episode? episode) => this(episode: episode);
 
   @override
@@ -47,6 +52,7 @@ class _$BookmarkCWProxyImpl implements _$BookmarkCWProxy {
   Bookmark call({
     Object? id = const $CopyWithPlaceholder(),
     Object? time = const $CopyWithPlaceholder(),
+    Object? topic = const $CopyWithPlaceholder(),
     Object? episode = const $CopyWithPlaceholder(),
   }) {
     return Bookmark(
@@ -58,6 +64,10 @@ class _$BookmarkCWProxyImpl implements _$BookmarkCWProxy {
           ? _value.time
           // ignore: cast_nullable_to_non_nullable
           : time as int?,
+      topic: topic == const $CopyWithPlaceholder()
+          ? _value.topic
+          // ignore: cast_nullable_to_non_nullable
+          : topic as String?,
       episode: episode == const $CopyWithPlaceholder()
           ? _value.episode
           // ignore: cast_nullable_to_non_nullable
@@ -81,6 +91,7 @@ Bookmark _$BookmarkFromJson(Map<String, dynamic> json) =>
       final val = Bookmark(
         id: $checkedConvert('id', (v) => v as String?),
         time: $checkedConvert('time', (v) => (v as num?)?.toInt()),
+        topic: $checkedConvert('topic', (v) => v as String?),
         episode: $checkedConvert(
           'episode',
           (v) => v == null ? null : Episode.fromJson(v as Map<String, dynamic>),
@@ -92,5 +103,6 @@ Bookmark _$BookmarkFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$BookmarkToJson(Bookmark instance) => <String, dynamic>{
   'id': ?instance.id,
   'time': ?instance.time,
+  'topic': ?instance.topic,
   'episode': ?instance.episode?.toJson(),
 };
