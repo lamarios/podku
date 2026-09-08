@@ -188,11 +188,11 @@ public class EpisodeService {
       }
       //            episodeTranscriptRepository.saveAll(transcript);
       if (episode.getTranscripts() == null) {
-        episode.setTranscripts(transcript);
+        episode.setTranscripts(new ArrayList<>());
       } else {
-        episode.getTranscripts().clear();
-        episode.getTranscripts().addAll(transcript);
+        episode.getTranscripts().removeIf(t -> Objects.equals(t.getLanguage(), f.getLanguage()));
       }
+      episode.getTranscripts().addAll(transcript);
       log.info(
           "inserted {} transcript lines for episode {}", transcript.size(), episode.getTitle());
     }

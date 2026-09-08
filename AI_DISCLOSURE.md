@@ -9,3 +9,4 @@ LLM chat bots (claude, chatgpt) have been used to help finding a solution to som
 - Implemented backend transcript parsers
 - Implemented backend podcast feed parser and iTunes search
 - Implemented backend FastUrlCrypto
+- Implemented first batch of unit tests for the backend
