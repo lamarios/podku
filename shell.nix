@@ -38,11 +38,15 @@ pkgs.mkShell {
     git submodule init
     git submodule update
 
-    echo "Setting up pre-commit hook"
-    dart run tools/setup_git_hooks.dart
+    if "${toString ./.}/submodules/flutter/bin/flutter" --version >/dev/null 2>&1; then
+      echo "Adding flutter submodule to path"
+      export PATH="${toString ./.}/submodules/flutter/bin:$PATH"
+    fi
 
-    echo "Adding flutter submodule to path"
-    export PATH="${toString ./.}/submodules/flutter/bin:$PATH"
+    echo "Setting up pre-commit hook"
+    if dart --version >/dev/null 2>&1; then
+      dart run tools/setup_git_hooks.dart
+    fi
     export JAVA_HOME="${pkgs.jdk25_headless}"
 
     flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
