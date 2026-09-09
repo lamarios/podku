@@ -1,8 +1,6 @@
-import 'dart:io';
-
-import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:podkunnect/cli.dart';
 import 'package:podkunnect/podkunnect.dart';
 
 final _log = Logger('main');
@@ -12,12 +10,7 @@ const int buildNumber = int.fromEnvironment('BUILD_NUMBER', defaultValue: 0);
 
 void main(List<String> arguments) {
   MediaKit.ensureInitialized();
-  var parser = ArgParser();
-
-  parser.addOption("server", abbr: 's', mandatory: true, help: 'The podku server URL');
-  parser.addOption("name", abbr: 'n', mandatory: true, help: 'The name of this device');
-  parser.addOption("volume", abbr: 'v', mandatory: false, defaultsTo: "100", help: "Default volume");
-  parser.addFlag('debug', abbr: 'd', help: 'Debug mode (more verbose logs)', negatable: false);
+  final parser = buildArgParser();
   var result = parser.parse(arguments);
 
   Logger.root.level = result.flag('debug') ? Level.FINEST : Level.INFO;

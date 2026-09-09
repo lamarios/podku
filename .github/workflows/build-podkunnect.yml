@@ -34,6 +34,11 @@ jobs:
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           echo "TAG_NAME=${TAG:-1.0.0}" >> $GITHUB_ENV
+      - name: Run podkunnect tests
+        working-directory: ./src/main/podkunnect
+        run: |
+          nix-shell --run "dart pub get" ../../../shell.nix
+          nix-shell --run "dart test" ../../../shell.nix
       # Build web app
       - name: build podkunnect cli
         working-directory: ./src/main/podkunnect

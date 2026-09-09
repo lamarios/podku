@@ -14,10 +14,12 @@ import 'package:uuid/uuid.dart';
 class Podkunnect {
   static final String sessionId = Uuid().v4();
   static final _log = Logger('Podkunnect');
+  final String id;
   final String name;
   final String serverUrl;
   final double volume;
   Player? _player;
+  final Player Function()? _playerFactory;
   late final Client client;
   PlayerStatus? playbackStatus;
   StreamSubscription<Duration>? _positionSubscription;
@@ -27,10 +29,44 @@ class Podkunnect {
 
   ReconnectableWebSocket? socket;
 
-  Podkunnect({required this.name, required this.serverUrl, this.volume = 100.0}) {
-    client = Client(serverUrl);
-    _subscribeToStream();
+  Player? get player => _player;
+
+  Podkunnect({
+    required this.name,
+    required this.serverUrl,
+    this.volume = 100.0,
+    String? id,
+    Client? client,
+    ReconnectableWebSocket? socket,
+    this._playerFactory,
+    this._player,
+    bool autoConnect = true,
+  }) : id = id ?? sessionId {
+    this.client = client ?? Client(serverUrl);
+    if (socket != null) {
+      this.socket = socket;
+    }
+    if (autoConnect) {
+      connect();
+    }
   }
+
+  Future<void> connect() => _subscribeToStream();
+
+  Future<void> dispose() async {
+    await disposePlayer();
+    await socket?.close();
+  }
+
+  Future<void> handleSocketMessage(PodkuSocketMessage event) => _handleSocketMessage(event);
+
+  Future<void> handleRemoteCommand(RemoteCommand remoteCommand) => _handleRemoteCommand(remoteCommand);
+
+  void handlePlaybackTransfer(TransferPlayback transfer) => _handlePlaybackTransfer(transfer);
+
+  Future<PlayerStatus?> getCurrentPlayerStatus() => _getCurrentPlayerStatus();
+
+  void broadcastStatus(PlayerStatus? status, {bool broadcast = true}) => _broadcastStatus(status, broadcast: broadcast);
 
   Future<void> _subscribeToStream() async {
     if (socket != null && socket!.isConnected) {
@@ -40,11 +76,11 @@ class Podkunnect {
 
     await socket?.close();
 
-    socket = ReconnectableWebSocket(uri: Uri.parse('$serverUrl/ws'.replaceFirst('http', 'ws')));
+    socket ??= ReconnectableWebSocket(uri: Uri.parse('$serverUrl/ws'.replaceFirst('http', 'ws')));
 
     socket?.onConnected = () {
       final message = PodkuSocketMessage(
-        message: PlayerInfo(id: sessionId, name: name).toJson(),
+        message: PlayerInfo(id: id, name: name).toJson(),
         type: .playerInfo,
       );
       _log.fine("Sending device info");
@@ -84,7 +120,7 @@ class Podkunnect {
   }
 
   void _handlePlaybackTransfer(TransferPlayback transfer) {
-    if (transfer.playerId == sessionId) {
+    if (transfer.playerId == id) {
       _log.info("Starting playback of episode ${transfer.episode.title}");
       startPlayback(episode: transfer.episode, position: transfer.position);
     } else {
@@ -115,7 +151,7 @@ class Podkunnect {
     // if we were already playing at a certain volume, we keep it
     final volume = _player?.state.volume ?? this.volume;
     _log.fine("Starting playback volume: $volume");
-    _player ??= Player();
+    _player ??= _playerFactory != null ? _playerFactory() : Player();
     _player?.setVolume(volume);
     _player?.open(Media(episode.audioProxyUrl(serverUrl), start: Duration(seconds: position)));
 
@@ -232,7 +268,7 @@ class Podkunnect {
 
     final volume = _player?.state.volume ?? this.volume;
     backendEpisode ??= episode;
-    _player ??= Player();
+    _player ??= _playerFactory != null ? _playerFactory() : Player();
 
     _player?.open(
       Media(backendEpisode.audioProxyUrl(serverUrl), start: Duration(seconds: backendEpisode.progress?.toInt() ?? 0)),
