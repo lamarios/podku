@@ -9,6 +9,7 @@ import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/home/views/screens/home.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/mini_player.dart';
@@ -188,6 +189,7 @@ class EpisodeScreen extends StatelessWidget {
               child: RefreshIndicator(
                 onRefresh: () => context.read<EpisodesCubit>().getEpisodes(refresh: true),
                 child: CustomScrollView(
+                  controller: context.read<EpisodesCubit>().scrollController,
                   slivers: [
                     if (state.episodes.isNotEmpty)
                       isMobile ? buildSliverList(context) : buildSliverGrid(context)
@@ -200,6 +202,7 @@ class EpisodeScreen extends StatelessWidget {
                     ],
                     if (state.loading) SliverToBoxAdapter(child: Center(child: LoadingIndicator())),
                     MiniPlayer.miniPlayerPadding(),
+                    HomeScreen.mobileNavigationPadding(context),
                   ],
                 ),
               ),

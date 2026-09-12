@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:easy_debounce/easy_debounce.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -15,11 +17,20 @@ const int _pageSize = 100;
 
 class EpisodesCubit extends Cubit<EpisodesState> {
   late final StreamSubscription<InternetConnectionStatus>? connectionSub;
+  final ScrollController scrollController = ScrollController();
 
   EpisodesCubit(super.initialState) {
     getEpisodes();
 
     connectionSub = getIt.get<ServerCubit>().stream.map((event) => event.status).listen(onConnectionStatusChange);
+
+    scrollController.addListener(onScrollChange);
+  }
+
+  @override
+  Future<void> close() async {
+    scrollController.dispose();
+    super.close();
   }
 
   Future<void> getEpisodes({bool refresh = false}) async {
@@ -90,6 +101,12 @@ class EpisodesCubit extends Cubit<EpisodesState> {
       getEpisodes(refresh: true);
     } else {
       emit(state.copyWith(episodes: []));
+    }
+  }
+
+  void onScrollChange() {
+    if (scrollController.position.extentAfter < 300 && state.episodes.length % _pageSize == 0) {
+      EasyDebounce.debounce('load-more-episodes', Duration(milliseconds: 250), loadMore);
     }
   }
 }

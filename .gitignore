@@ -13,3 +13,4 @@ pubspec_overrides.yaml
 /src/main/podkunnect/bin/podkunnect.exe
 /src/main/podkunnect/build/
 /result/
+/src/main/app/test/widgets/failures/

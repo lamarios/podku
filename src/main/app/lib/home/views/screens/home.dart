@@ -34,6 +34,12 @@ import 'package:podku/utils/views/components/error_listener.dart';
 Timer? _debounce;
 
 class HomeScreen extends StatelessWidget {
+  static double navigationPadding(BuildContext context) => BreakPoint.of(context) == .mobile ? 120 : 0;
+
+  static SliverPadding mobileNavigationPadding(BuildContext context) {
+    return SliverPadding(padding: .only(bottom: navigationPadding(context)));
+  }
+
   final StatefulNavigationShell navigationShell;
 
   const HomeScreen({super.key, required this.navigationShell});
@@ -114,51 +120,95 @@ class HomeScreen extends StatelessWidget {
                 return ErrorHandler<PodcastsCubit, PodcastState>(
                   showAsSnack: true,
                   child: SafeArea(
+                    bottom: false,
                     child: state.client == null
                         ? Center(child: LoadingIndicator())
                         : ConditionalWrap(
-                            wrapIf: !isMobile,
-                            wrapper: (child) => Row(
-                              crossAxisAlignment: .stretch,
+                            wrapIf: isMobile,
+                            wrapper: (child) => Stack(
                               children: [
-                                M3ENavigationRail(
-                                  labelBehavior: .alwaysShow,
-                                  sections: [
-                                    M3ENavigationRailSection(
+                                child,
+                                Positioned(
+                                  left: pu4,
+                                  right: pu4,
+                                  bottom: pu2,
+                                  child: SafeArea(
+                                    child: M3ENavigationBar(
+                                      // density: .compact,
+                                      // size: .small,
+                                      shapeFamily: .round,
+                                      selectedIndex: navigationShell.currentIndex,
                                       destinations: [
-                                        M3ENavigationRailDestination(
+                                        M3ENavigationBarDestination(
                                           icon: Icon(M3EIcons.playlist_play),
                                           label: locals.episodes,
                                         ),
-                                        M3ENavigationRailDestination(
+                                        M3ENavigationBarDestination(
                                           icon: Icon(M3EIcons.podcasts),
                                           label: locals.podcasts,
                                         ),
-                                        M3ENavigationRailDestination(
+                                        M3ENavigationBarDestination(
                                           icon: Icon(M3EIcons.bookmarks),
                                           label: locals.bookmarks,
                                         ),
                                       ],
+                                      onDestinationSelected: (value) {
+                                        navigationShell.goBranch(value);
+                                        context.read<HomeCubit>().setIndex(value);
+                                      },
                                     ),
-                                  ],
-                                  selectedIndex: navigationShell.currentIndex,
-                                  onDestinationSelected: (value) {
-                                    navigationShell.goBranch(value);
-                                    context.read<HomeCubit>().setIndex(value);
-                                  },
+                                  ),
                                 ),
-                                Expanded(child: child),
                               ],
                             ),
-                            child: Padding(
-                              padding: .symmetric(horizontal: pu2),
-                              child: KeyedSubtree(key: ValueKey(navigationShell.currentIndex), child: navigationShell),
+                            child: ConditionalWrap(
+                              wrapIf: !isMobile,
+                              wrapper: (child) => Row(
+                                crossAxisAlignment: .stretch,
+                                children: [
+                                  M3ENavigationRail(
+                                    labelBehavior: .alwaysShow,
+                                    sections: [
+                                      M3ENavigationRailSection(
+                                        destinations: [
+                                          M3ENavigationRailDestination(
+                                            icon: Icon(M3EIcons.playlist_play),
+                                            label: locals.episodes,
+                                          ),
+                                          M3ENavigationRailDestination(
+                                            icon: Icon(M3EIcons.podcasts),
+                                            label: locals.podcasts,
+                                          ),
+                                          M3ENavigationRailDestination(
+                                            icon: Icon(M3EIcons.bookmarks),
+                                            label: locals.bookmarks,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                    selectedIndex: navigationShell.currentIndex,
+                                    onDestinationSelected: (value) {
+                                      navigationShell.goBranch(value);
+                                      context.read<HomeCubit>().setIndex(value);
+                                    },
+                                  ),
+                                  Expanded(child: child),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: .symmetric(horizontal: pu2),
+                                child: KeyedSubtree(
+                                  key: ValueKey(navigationShell.currentIndex),
+                                  child: navigationShell,
+                                ),
+                              ),
                             ),
                           ),
                   ),
                 );
               },
             ),
+            /*
             bottomNavigationBar: isMobile
                 ? M3ENavigationBar(
                     selectedIndex: navigationShell.currentIndex,
@@ -173,6 +223,7 @@ class HomeScreen extends StatelessWidget {
                     },
                   )
                 : null,
+*/
           );
         },
       ),

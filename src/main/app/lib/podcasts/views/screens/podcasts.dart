@@ -9,6 +9,7 @@ import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/home/views/screens/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/mini_player.dart';
@@ -73,8 +74,9 @@ class PodcastsScreen extends StatelessWidget {
                 motion: MaterialSpringMotion.expressiveSpatialFast(),
                 value: hasMiniPlayer ? 1 : 0,
                 builder: (context, value, child) {
+                  final navigationPadding = HomeScreen.navigationPadding(context);
                   return Positioned(
-                    bottom: lerpDouble(pu3, pu8 + MiniPlayer.playerSize, value),
+                    bottom: lerpDouble(pu3 + navigationPadding, pu8 + MiniPlayer.playerSize + navigationPadding, value),
                     right: pu3,
                     child: child!,
                   );

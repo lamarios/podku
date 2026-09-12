@@ -6,6 +6,7 @@ import 'package:material_3_expressive/foundations/m3e_icons.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/bookmarks/states/bookmarks.dart';
 import 'package:podku/bookmarks/views/components/bookmark_in_list.dart';
+import 'package:podku/home/views/screens/home.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/utils.dart';
@@ -64,6 +65,7 @@ class BookmarksScreen extends StatelessWidget {
                       ),
                     ),
                     MiniPlayer.miniPlayerPadding(),
+                    HomeScreen.mobileNavigationPadding(context),
                   ],
                 ),
               );
