@@ -5,9 +5,9 @@ LLM chat bots (claude, chatgpt) have been used to help finding a solution to som
 
 # List of tasks done using AI
 
+- The app website (https://lamarios.github.io/podku/)
 - Generated Javadoc for the backend code
 - Implemented backend transcript parsers
 - Implemented backend podcast feed parser and iTunes search
 - Implemented backend FastUrlCrypto
-- Implemented first batch of unit tests for the backend
-- Implemented first batch of unit tests for the front end
+- Implemented first batch of unit tests for the backend, frontend and podkunnect
