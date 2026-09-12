@@ -25,6 +25,7 @@ pkgs.mkShell {
         fastlane
         jdk25_headless
         maven
+        python313Packages.pip
         (pkgs.callPackage ./openapi-generator-cli.nix { })
       ]
     ];
@@ -33,6 +34,11 @@ pkgs.mkShell {
   # clipiousNix.prepareShell is a helper function to sort things properly. It returns a string so it's possible to just concatenate stuff afterwards
   # to run CI or DB migrations
   shellHook = ''
+     echo "Setting up mkdocs"
+     python -m venv --clear mkdocs/venv
+     source mkdocs/venv/bin/activate
+     pip install -r mkdocs/requirements.txt
+
 
     echo "Setting up submodules"
     git submodule init
