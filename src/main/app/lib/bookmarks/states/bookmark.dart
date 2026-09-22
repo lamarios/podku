@@ -1,3 +1,4 @@
+import 'package:anchored_list/anchored_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -6,20 +7,23 @@ import 'package:openapi/openapi.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/transcript.dart';
 import 'package:podku/utils/models/with_error.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 part 'bookmark.freezed.dart';
 
 final _log = Logger('BookmarkCubit');
 
 class BookmarkCubit extends Cubit<BookmarkState> {
-  final ScrollController scrollController = ScrollController();
-  late final ListObserverController observerController;
+  final AnchoredListController listController = AnchoredListController();
   final String bookmarkId;
 
   BookmarkCubit(super.initialState, {required this.bookmarkId}) {
-    observerController = ListObserverController(controller: scrollController);
     getBookmark();
+  }
+
+  @override
+  Future<void> close() async {
+    listController.dispose();
+    super.close();
   }
 
   Future<void> getBookmark() async {
@@ -40,7 +44,7 @@ class BookmarkCubit extends Cubit<BookmarkState> {
         _log.fine('index: $index');
         if (index != -1) {
           await Future.delayed(Duration(seconds: 1));
-          observerController.jumpTo(index: index);
+          listController.animateToIndex(index, alignment: 0.5, curve: Curves.easeInOutQuint);
         }
       }
     } catch (e, s) {

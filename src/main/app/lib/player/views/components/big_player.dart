@@ -82,6 +82,8 @@ class BigPlayer extends StatelessWidget {
                         IconButton(onPressed: () => context.read<PlayerCubit>().stop(), icon: Icon(Icons.close)),
                       ],
                       title: TabBar(
+                        isScrollable: false,
+                        physics: NeverScrollableScrollPhysics(),
                         tabs: [
                           Tab(icon: Icon(Icons.play_arrow)),
                           Tab(icon: Icon(Icons.info_outline)),
@@ -101,6 +103,7 @@ class BigPlayer extends StatelessWidget {
                           child: episode == null || loading
                               ? Center(child: LoadingIndicator())
                               : TabBarView(
+                                  physics: NeverScrollableScrollPhysics(),
                                   children: [
                                     Column(
                                       mainAxisAlignment: .center,

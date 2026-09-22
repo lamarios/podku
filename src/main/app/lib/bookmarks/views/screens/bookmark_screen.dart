@@ -1,3 +1,4 @@
+import 'package:anchored_list/anchored_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +20,6 @@ import 'package:podku/utils.dart';
 import 'package:podku/utils/duration_utils.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 const double _imageSize = 150;
 final _log = Logger('BookmarkScreen');
@@ -165,20 +165,17 @@ class BookmarkScreen extends StatelessWidget {
                                       <M3EButtonGroupAction>[],
                                 ),
                                 Expanded(
-                                  child: ListViewObserver(
-                                    controller: cubit.observerController,
-                                    child: ListView.builder(
-                                      controller: cubit.scrollController,
-                                      itemCount: bookmark.transcripts?[state.selectedLanguage]?.length ?? 0,
-                                      itemBuilder: (context, index) {
-                                        var line = bookmark.transcripts?[state.selectedLanguage]?[index];
-                                        return _TranscriptLine(
-                                          transcript: line!,
-                                          isBookmark: state.timeIndex == index,
-                                          episode: bookmark.bookmark!.episode!,
-                                        );
-                                      },
-                                    ),
+                                  child: AnchoredList.builder(
+                                    controller: cubit.listController,
+                                    itemCount: bookmark.transcripts?[state.selectedLanguage]?.length ?? 0,
+                                    itemBuilder: (context, index) {
+                                      var line = bookmark.transcripts?[state.selectedLanguage]?[index];
+                                      return _TranscriptLine(
+                                        transcript: line!,
+                                        isBookmark: state.timeIndex == index,
+                                        episode: bookmark.bookmark!.episode!,
+                                      );
+                                    },
                                   ),
                                 ),
                               ] else

@@ -24,6 +24,7 @@ environment:
 dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  anchored_list: 0.3.0
   audio_service: 0.18.19
   back_button_interceptor: 8.0.4
   background_downloader: 9.5.8
@@ -62,7 +63,6 @@ dependencies:
   path_provider: 2.1.6
   podku_shared:
     path: ../../../podku_shared
-  scrollview_observer: 1.27.0
   share_plus: 13.3.0
   shared_preferences: 2.5.5
   stupid_simple_sheet: 0.9.1+1

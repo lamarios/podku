@@ -1,3 +1,4 @@
+import 'package:anchored_list/anchored_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
@@ -8,7 +9,6 @@ import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/states/transcript.dart';
 import 'package:podku/utils.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 class TranscriptFollower extends StatelessWidget {
   const TranscriptFollower({super.key});
@@ -43,16 +43,14 @@ class TranscriptFollower extends StatelessWidget {
                             ],
                           ),
                         Expanded(
-                          child: ListViewObserver(
-                            controller: cubit.observerController,
-                            child: ListView.builder(
-                              controller: cubit.scrollController,
-                              itemCount: state.transcript.length,
-                              itemBuilder: (context, index) => _TranscriptLine(
-                                line: state.transcript[index],
-                                lineIndex: index,
-                                currentIndex: state.index,
-                              ),
+                          child: AnchoredList.builder(
+                            controller: cubit.listController,
+                            itemCount: state.transcript.length,
+                            scrollDirection: .vertical,
+                            itemBuilder: (context, index) => _TranscriptLine(
+                              line: state.transcript[index],
+                              lineIndex: index,
+                              currentIndex: state.index,
                             ),
                           ),
                         ),

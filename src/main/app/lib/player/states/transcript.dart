@@ -1,27 +1,22 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:anchored_list/anchored_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/parsed_transcript.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
-import 'package:podku/utils.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 part 'transcript.freezed.dart';
 
 class TranscriptCubit extends Cubit<TranscriptState> {
   StreamSubscription<Duration>? playerPositionStream;
-  final ScrollController scrollController = ScrollController();
-  late final ListObserverController observerController;
-
+  final AnchoredListController listController = AnchoredListController();
   final PlayerCubit playerCubit;
 
   TranscriptCubit(super.initialState, {required this.playerCubit}) {
     init();
-    observerController = ListObserverController(controller: scrollController);
   }
 
   Future<void> init() async {
@@ -32,7 +27,7 @@ class TranscriptCubit extends Cubit<TranscriptState> {
   @override
   Future<void> close() async {
     playerPositionStream?.cancel();
-    scrollController.dispose();
+    listController.dispose();
     super.close();
   }
 
@@ -65,12 +60,12 @@ class TranscriptCubit extends Cubit<TranscriptState> {
     var newIndex = findCurrentTranscriptIndex(state.transcript, event);
     if (newIndex != state.index && newIndex != -1) {
       emit(state.copyWith(index: newIndex));
-      observerController.animateTo(
-        index: newIndex,
-        duration: animationDuration,
-        curve: Curves.easeInOutQuint,
-        padding: .all(pu4),
-        alignment: 0,
+      listController.jumpToIndex(
+        newIndex,
+        alignment: 0.5,
+        // duration: Duration.zero,
+        // curve: Curves.easeInOutQuint,
+        // alignment: 0,
       );
     }
   }
