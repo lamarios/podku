@@ -1,5 +1,4 @@
 import 'package:anchored_list/anchored_list.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -218,11 +217,11 @@ class _TranscriptLine extends StatelessWidget {
         child: child,
       ),
       child: Row(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: .center,
         children: [
           M3EButton.icon(
             style: .text,
-            size: .xs,
+            size: .sm,
             label: Text(transcript.startTime?.split('.')[0] ?? '00:00:00'),
             onPressed: () => context.read<PlayerCubit>().playEpisode(
               episode,
@@ -231,8 +230,8 @@ class _TranscriptLine extends StatelessWidget {
             icon: Icon(M3EIcons.play_arrow),
           ),
           Expanded(
-            child: Padding(
-              padding: .only(top: kIsWeb ? 0 : pu3, bottom: isBookmark ? pu3 : 9),
+            child: Align(
+              alignment: .centerLeft,
               child: Text('${transcript.speaker != null ? '${transcript.speaker}: ' : ''}${transcript.content}'),
             ),
           ),
