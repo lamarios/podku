@@ -74,18 +74,25 @@ public class EpisodeService {
     BackgroundTasks.submitBackgroundTask(
         () -> {
           try {
-            Optional<Podcast> podcast = podcastRepository.findById(podcastId);
-            if (podcast.isPresent()) {
-              for (Episode episode : podcast.get().getEpisodes()) {
-                TransactionHelper.doInNewTransaction(
-                    transactionManager,
-                    false,
-                    () -> {
-                      var e = episodeRepository.findById(episode.getId());
-                      e.ifPresent(this::processEpisode);
-                    });
-              }
-            }
+            TransactionHelper.doInNewTransaction(
+                transactionManager,
+                false,
+                () -> {
+                  Optional<Podcast> podcast = podcastRepository.findById(podcastId);
+                  if (podcast.isPresent()) {
+                    for (Episode episode : podcast.get().getEpisodes()) {
+                      TransactionHelper.doInNewTransaction(
+                          transactionManager,
+                          false,
+                          () -> {
+                            var e = episodeRepository.findById(episode.getId());
+                            e.ifPresent(this::processEpisode);
+                          });
+                    }
+                  }
+                });
+          } catch (Exception e) {
+            log.error("failed to process podcast {}", podcastId, e);
           } finally {
             future.complete(podcastId);
           }
