@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +81,7 @@ public class PodcastController {
    */
   @PostMapping
   public Podcast subscribeToPodcast(@RequestBody SearchResult result) {
-    Podcast newPodcast = null;
-    newPodcast = podcastService.subscribe(result);
-    return newPodcast;
+    return podcastService.subscribe(result);
   }
 
   /**
@@ -166,8 +165,8 @@ public class PodcastController {
 
       return added.stream().map(PodcastLight::new).toList();
     } finally {
-      List<CompletableFuture<Podcast>> futures =
-          added.stream().map(episodeService::processPodcast).toList();
+      List<CompletableFuture<UUID>> futures =
+          added.stream().map(Podcast::getId).map(episodeService::processPodcast).toList();
       CompletableFuture<Void> combined =
           CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
