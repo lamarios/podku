@@ -6,22 +6,22 @@ import 'package:gap/gap.dart';
 import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/episodes/views/components/episode_grid_sub_text.dart';
 import 'package:podku/episodes/views/components/episode_play_button.dart';
 import 'package:podku/episodes/views/components/episode_sheet.dart';
-import 'package:podku/episodes/views/components/episode_sub_title.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/views/components/shape_clipper.dart';
 
-const double _imageSize = 175;
+const double _imageSize = 250;
 
 class EpisodeInGrid extends StatelessWidget {
-  static const double mainAxisExtent = 240;
-  static const double crossAxisExtent = 230;
-  static const double crossAxisSpacing = pu4;
-  static const double mainAxisSpacing = pu3;
+  static const double mainAxisExtent = 450;
+  static const double crossAxisExtent = 450;
+  static const double crossAxisSpacing = pu6;
+  static const double mainAxisSpacing = pu6;
 
   final Episode episode;
   final bool offline;
@@ -31,6 +31,7 @@ class EpisodeInGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Builder(
       builder: (context) {
         final isPlayerOnEpisode = context.select(
@@ -39,16 +40,12 @@ class EpisodeInGrid extends StatelessWidget {
         );
         final isEpisodePlaying = context.select((PlayerCubit c) => c.state.playing && isPlayerOnEpisode);
         return PodcastColorProvider(
-          podcastLight: isPlayerOnEpisode ? episode.podcast : null,
+          podcastLight: episode.podcast,
           builder: (context, colors) => SingleMotionBuilder(
             motion: MaterialSpringMotion.expressiveSpatialFast(),
             value: isEpisodePlaying ? 1 : 0,
             builder: (context, value, child) {
-              final backgroundColor = Color.lerp(
-                isPlayerOnEpisode ? colors.secondaryContainer : Colors.transparent,
-                colors.primaryContainer,
-                value,
-              )!;
+              final backgroundColor = Color.lerp(colors.secondaryContainer, colors.primaryContainer, value)!;
 
               final clipper2 = MorphClipper(
                 Morph(
@@ -74,17 +71,26 @@ class EpisodeInGrid extends StatelessWidget {
                     color: backgroundColor,
                     borderRadius: .circular(lerpDouble(pu4, pu8, value) ?? pu),
                   ),
-                  padding: .all(pu2),
+                  padding: .all(pu6),
                   child: Column(
                     crossAxisAlignment: .stretch,
                     children: [
+                      Text(
+                        episode.title ?? '',
+                        maxLines: 2,
+                        overflow: .ellipsis,
+                        textAlign: .start,
+                        style: textTheme.titleLarge?.copyWith(fontWeight: .bold),
+                      ),
+                      Text(episode.podcast?.name ?? ''),
+                      Gap(pu4),
                       Expanded(
                         child: Center(
                           child: SizedBox(
                             width: pictureSize,
                             height: pictureSize,
                             child: ClipRRect(
-                              borderRadius: .circular(pu4),
+                              borderRadius: .circular(pu2),
                               child: Stack(
                                 alignment: .center,
                                 children: [
@@ -97,7 +103,7 @@ class EpisodeInGrid extends StatelessWidget {
                                                 podcastLight: episode.podcast!,
                                                 width: pictureSize,
                                                 height: pictureSize,
-                                                borderRadius: pu4,
+                                                borderRadius: pu2,
                                               )
                                             : Container(
                                                 width: pictureSize,
@@ -146,27 +152,8 @@ class EpisodeInGrid extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Gap(pu2),
-                      Row(
-                        crossAxisAlignment: .center,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: .stretch,
-                              children: [
-                                Text(episode.title ?? '', maxLines: 2, overflow: .ellipsis, textAlign: .center),
-                                Center(
-                                  child: EpisodeSubTitle(
-                                    episode: episode,
-                                    offline: offline,
-                                    mainAxisAlignment: .center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      Gap(pu4),
+                      EpisodeGridSubText(episode: episode, offline: offline),
                     ],
                   ),
                 ),

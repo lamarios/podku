@@ -62,8 +62,8 @@ class EpisodeScreen extends StatelessWidget {
               children: [
                 EpisodeInGrid(episode: e),
                 Positioned(
-                  top: pu2,
-                  right: pu8,
+                  top: pu,
+                  right: pu,
                   child: MenuAnchor(
                     animated: true,
                     menuChildren: [
@@ -87,7 +87,7 @@ class EpisodeScreen extends StatelessWidget {
                     ],
                     builder: (context, controller, child) {
                       return IconButton(
-                        style: ButtonStyle(backgroundColor: .all(colors.surface.withValues(alpha: 0.5))),
+                        style: ButtonStyle(backgroundColor: .all(colors.surface.withValues(alpha: 0.0))),
                         visualDensity: .compact,
                         icon: Icon(Icons.more_vert, size: 17),
                         onPressed: () => controller.isOpen ? controller.close() : controller.open(),

@@ -17,6 +17,7 @@ import 'package:podku/player/states/player.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/duration_utils.dart';
+import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/conditional_wrap.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
 
@@ -86,112 +87,117 @@ class BookmarkScreen extends StatelessWidget {
               ),
               body: SafeArea(
                 bottom: false,
-                child: ErrorHandler<BookmarkCubit, BookmarkState>(
-                  child: BlocBuilder<BookmarkCubit, BookmarkState>(
-                    builder: (context, state) {
-                      var cubit = context.read<BookmarkCubit>();
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: BreakPoint.tablet.maxWidth),
+                    child: ErrorHandler<BookmarkCubit, BookmarkState>(
+                      child: BlocBuilder<BookmarkCubit, BookmarkState>(
+                        builder: (context, state) {
+                          var cubit = context.read<BookmarkCubit>();
 
-                      if (state.loading || state.bookmark == null) {
-                        return Center(child: LoadingIndicator());
-                      } else {
-                        var bookmark = state.bookmark!;
-                        var time = Duration(seconds: bookmark.bookmark?.time ?? 0);
-                        return Padding(
-                          padding: .symmetric(horizontal: pu4),
-                          child: Column(
-                            spacing: pu2,
-                            crossAxisAlignment: .stretch,
-                            children: [
-                              if (bookmark.bookmark?.episode?.podcast != null)
-                                Center(
-                                  child: PodcastImage(
-                                    podcastLight: bookmark.bookmark?.episode?.podcast,
-                                    width: _imageSize,
-                                    height: _imageSize,
-                                    borderRadius: pu4,
-                                  ),
-                                ),
-                              Text(bookmark.bookmark?.episode?.title ?? '', style: textTheme.titleMedium),
-                              if ((bookmark.bookmark?.time ?? 0) > 0)
-                                Row(
-                                  mainAxisSize: .max,
-                                  mainAxisAlignment: .center,
-                                  spacing: pu2,
-                                  children: [
-                                    Icon(M3EIcons.access_time, size: 20, color: colors.primary),
-                                    Text(
-                                      printDuration(time),
-                                      style: textTheme.bodyLarge?.copyWith(color: colors.primary),
-                                    ),
-                                  ],
-                                ),
-                              if (bookmark.bookmark?.topic?.isNotEmpty ?? false)
-                                Padding(
-                                  padding: .symmetric(vertical: pu),
-                                  child: Row(
-                                    spacing: pu,
-                                    children: [
-                                      Icon(M3EIcons.auto_awesome, size: 17, color: colors.primary),
-                                      Expanded(
-                                        child: Text(
-                                          bookmark.bookmark?.topic ?? '',
-                                          style: textTheme.bodyMedium?.copyWith(color: colors.primary),
-                                        ),
+                          if (state.loading || state.bookmark == null) {
+                            return Center(child: LoadingIndicator());
+                          } else {
+                            var bookmark = state.bookmark!;
+                            var time = Duration(seconds: bookmark.bookmark?.time ?? 0);
+                            return Padding(
+                              padding: .symmetric(horizontal: pu4),
+                              child: Column(
+                                spacing: pu2,
+                                crossAxisAlignment: .stretch,
+                                children: [
+                                  if (bookmark.bookmark?.episode?.podcast != null)
+                                    Center(
+                                      child: PodcastImage(
+                                        podcastLight: bookmark.bookmark?.episode?.podcast,
+                                        width: _imageSize,
+                                        height: _imageSize,
+                                        borderRadius: pu4,
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              if (bookmark.transcripts?.values.any((element) => element.isNotEmpty) ?? false) ...[
-                                M3EButtonGroup(
-                                  size: .xs,
-                                  style: .tonal,
-                                  overflow: .scroll,
-                                  onSelectedIndexChanged: (value) {
-                                    return cubit.setLanguage(bookmark.transcripts?.keys.elementAt(value ?? 0));
-                                  },
-                                  selectedIndex: bookmark.transcripts?.keys.toList().indexOf(
-                                    state.selectedLanguage ?? '',
-                                  ),
-                                  actions:
-                                      bookmark.transcripts?.keys
-                                          .map(
-                                            (e) => M3EButtonGroupAction(
-                                              icon: e == 'a.i' ? Icon(M3EIcons.auto_awesome) : null,
-                                              label: Text(e == 'a.i' ? locals.aiGeneratedTranscript : e),
+                                    ),
+                                  Text(bookmark.bookmark?.episode?.title ?? '', style: textTheme.titleMedium),
+                                  if ((bookmark.bookmark?.time ?? 0) > 0)
+                                    Row(
+                                      mainAxisSize: .max,
+                                      mainAxisAlignment: .center,
+                                      spacing: pu2,
+                                      children: [
+                                        Icon(M3EIcons.access_time, size: 20, color: colors.primary),
+                                        Text(
+                                          printDuration(time),
+                                          style: textTheme.bodyLarge?.copyWith(color: colors.primary),
+                                        ),
+                                      ],
+                                    ),
+                                  if (bookmark.bookmark?.topic?.isNotEmpty ?? false)
+                                    Padding(
+                                      padding: .symmetric(vertical: pu),
+                                      child: Row(
+                                        spacing: pu,
+                                        children: [
+                                          Icon(M3EIcons.auto_awesome, size: 17, color: colors.primary),
+                                          Expanded(
+                                            child: Text(
+                                              bookmark.bookmark?.topic ?? '',
+                                              style: textTheme.bodyMedium?.copyWith(color: colors.primary),
                                             ),
-                                          )
-                                          .toList() ??
-                                      <M3EButtonGroupAction>[],
-                                ),
-                                Expanded(
-                                  child: AnchoredList.builder(
-                                    controller: cubit.listController,
-                                    itemCount: bookmark.transcripts?[state.selectedLanguage]?.length ?? 0,
-                                    itemBuilder: (context, index) {
-                                      var line = bookmark.transcripts?[state.selectedLanguage]?[index];
-                                      return _TranscriptLine(
-                                        transcript: line!,
-                                        isBookmark: state.timeIndex == index,
-                                        episode: bookmark.bookmark!.episode!,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ] else
-                                M3EIconButton(
-                                  icon: Icon(M3EIcons.play_arrow),
-                                  size: .lg,
-                                  variant: .tonal,
-                                  onPressed: () => context.read<PlayerCubit>().playEpisode(
-                                    bookmark.bookmark!.episode!,
-                                    initialPosition: Duration(seconds: bookmark.bookmark?.time ?? 0),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  if (bookmark.transcripts?.values.any((element) => element.isNotEmpty) ?? false) ...[
+                                    M3EButtonGroup(
+                                      size: .xs,
+                                      style: .tonal,
+                                      overflow: .scroll,
+                                      onSelectedIndexChanged: (value) {
+                                        return cubit.setLanguage(bookmark.transcripts?.keys.elementAt(value ?? 0));
+                                      },
+                                      selectedIndex: bookmark.transcripts?.keys.toList().indexOf(
+                                        state.selectedLanguage ?? '',
+                                      ),
+                                      actions:
+                                          bookmark.transcripts?.keys
+                                              .map(
+                                                (e) => M3EButtonGroupAction(
+                                                  icon: e == 'a.i' ? Icon(M3EIcons.auto_awesome) : null,
+                                                  label: Text(e == 'a.i' ? locals.aiGeneratedTranscript : e),
+                                                ),
+                                              )
+                                              .toList() ??
+                                          <M3EButtonGroupAction>[],
+                                    ),
+                                    Expanded(
+                                      child: AnchoredList.builder(
+                                        controller: cubit.listController,
+                                        itemCount: bookmark.transcripts?[state.selectedLanguage]?.length ?? 0,
+                                        itemBuilder: (context, index) {
+                                          var line = bookmark.transcripts?[state.selectedLanguage]?[index];
+                                          return _TranscriptLine(
+                                            transcript: line!,
+                                            isBookmark: state.timeIndex == index,
+                                            episode: bookmark.bookmark!.episode!,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ] else
+                                    M3EIconButton(
+                                      icon: Icon(M3EIcons.play_arrow),
+                                      size: .lg,
+                                      variant: .tonal,
+                                      onPressed: () => context.read<PlayerCubit>().playEpisode(
+                                        bookmark.bookmark!.episode!,
+                                        initialPosition: Duration(seconds: bookmark.bookmark?.time ?? 0),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),
