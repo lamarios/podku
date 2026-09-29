@@ -31,28 +31,67 @@ class TranscriptFollower extends StatelessWidget {
                 ? Center(child: LoadingIndicator())
                 : Padding(
                     padding: .symmetric(horizontal: pu8),
-                    child: Column(
-                      spacing: pu,
+                    child: Stack(
                       children: [
-                        if (state.selectedLanguage == 'a.i')
-                          Row(
-                            spacing: pu,
-                            children: [
-                              Icon(Icons.auto_awesome, size: 15, color: colors.secondary),
-                              Text(locals.aiGeneratedTranscript, style: textTheme.labelSmall),
-                            ],
-                          ),
-                        Expanded(
-                          child: AnchoredList.builder(
-                            controller: cubit.listController,
-                            itemCount: state.transcript.length,
-                            scrollDirection: .vertical,
-                            itemBuilder: (context, index) => _TranscriptLine(
-                              line: state.transcript[index],
-                              lineIndex: index,
-                              currentIndex: state.index,
+                        Column(
+                          spacing: pu,
+                          children: [
+                            if (state.selectedLanguage == 'a.i')
+                              Row(
+                                spacing: pu,
+                                children: [
+                                  Icon(Icons.auto_awesome, size: 15, color: colors.secondary),
+                                  Text(locals.aiGeneratedTranscript, style: textTheme.labelSmall),
+                                ],
+                              ),
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  AnchoredList.builder(
+                                    controller: cubit.listController,
+                                    itemCount: state.transcript.length,
+                                    scrollDirection: .vertical,
+                                    itemBuilder: (context, index) => _TranscriptLine(
+                                      line: state.transcript[index],
+                                      lineIndex: index,
+                                      currentIndex: state.index,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 100,
+
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [colors.surface, colors.surface.withValues(alpha: 0)],
+                                          begin: .bottomCenter,
+                                          end: .topCenter,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [colors.surface, colors.surface.withValues(alpha: 0)],
+                                          end: .bottomCenter,
+                                          begin: .topCenter,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),

@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:anchored_list/anchored_list.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/parsed_transcript.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
+import 'package:podku/utils.dart';
 
 part 'transcript.freezed.dart';
 
@@ -60,12 +62,11 @@ class TranscriptCubit extends Cubit<TranscriptState> {
     var newIndex = findCurrentTranscriptIndex(state.transcript, event);
     if (newIndex != state.index && newIndex != -1) {
       emit(state.copyWith(index: newIndex));
-      listController.jumpToIndex(
+      listController.animateToIndex(
         newIndex,
         alignment: 0.5,
-        // duration: Duration.zero,
-        // curve: Curves.easeInOutQuint,
-        // alignment: 0,
+        duration: animationDuration,
+        curve: Curves.easeInOutQuint,
       );
     }
   }

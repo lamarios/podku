@@ -116,7 +116,7 @@ class BigPlayer extends StatelessWidget {
                                             builder: (context, value, child) {
                                               return SingleMotionBuilder(
                                                 motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                                                value: playing ? 1 : 0,
+                                                value: playing && !showTranscript ? 1 : 0,
                                                 builder: (context, playingValue, child) {
                                                   return PodcastImage(
                                                         podcastLight: episode.podcast!,

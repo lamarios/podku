@@ -21,10 +21,10 @@ packages:
     dependency: "direct main"
     description:
       name: anchored_list
-      sha256: "35b94220349ad7a7298b0e425c825530a1611e1f475f751177eb977926b8abf4"
+      sha256: "366c5c32a152ed7ffeeefb02511bd06aeccbf5ec0e8f47faf2df95619d067236"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   android_file_picker:
     dependency: transitive
     description:

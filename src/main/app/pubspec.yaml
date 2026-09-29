@@ -24,7 +24,7 @@ environment:
 dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  anchored_list: 0.3.0
+  anchored_list: 0.3.1
   audio_service: 0.18.19
   back_button_interceptor: 8.0.4
   background_downloader: 9.5.8
