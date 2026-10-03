@@ -303,6 +303,9 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   Future<Uri?> getImageContentUri(Episode episode, {bool offline = false}) async {
+    if (kIsWeb) {
+      return episode.podcast?.artUri;
+    }
     var offlineFiles = kIsWeb ? [] : await episode.offlineFiles;
 
     String? imageFile = offlineFiles.where((n) => n.endsWith(episode.imageFile)).firstOrNull;
