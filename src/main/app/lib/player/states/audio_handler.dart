@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:logging/logging.dart';
 import 'package:openapi/openapi.dart';
@@ -146,7 +147,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
       final episodes = await client.episodes.getEpisodes(pageSize: 100).then((value) => value.data ?? []);
 
       for (final episode in episodes) {
-        items.add(_episodeForAndroidAuto(episode));
+        items.add(await _episodeForAndroidAuto(episode));
       }
     } else if (parentMediaId.startsWith(_autoPodcast)) {
       final podcast = await client.podcasts
@@ -154,35 +155,29 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
           .then((value) => value.data);
 
       if (podcast != null) {
-        items.addAll(podcast.episodes?.map((e) => _episodeForAndroidAuto(e.copyWith(podcast: podcast.light))) ?? []);
+        for (var e in (podcast.episodes ?? []).take(100)) {
+          items.add(await _episodeForAndroidAuto(e.copyWith(podcast: podcast.light)));
+        }
       }
     } else if (parentMediaId.startsWith(_autoOfflineList)) {
       final episodes = getIt.get<DownloadManagerCubit>().state.offlineEpisodes;
 
       for (final e in episodes) {
-        var imageFile = await e.offlineFiles.then((value) => value.where((n) => n.endsWith(e.imageFile)).firstOrNull);
-
-        final artUri = imageFile == null
-            ? e.podcast?.artUri
-            : await AndroidFileProvider.getContentUriForFile(imageFile);
-
-        _log.fine('file uri: $artUri');
-        final media = _episodeForAndroidAuto(e).copyWith(id: '$_autoOffline${e.id}', artUri: artUri);
-
+        final media = (await _episodeForAndroidAuto(e)).copyWith(id: '$_autoOffline${e.id}');
         items.add(media);
       }
     }
     return items; // no deeper nesting needed
   }
 
-  MediaItem _episodeForAndroidAuto(Episode episode) {
+  Future<MediaItem> _episodeForAndroidAuto(Episode episode, {bool offline = false}) async {
     return MediaItem(
       id: episode.id ?? '',
       title: episode.title ?? '',
       artist: episode.podcast?.name,
       duration: Duration(seconds: episode.durationSeconds ?? 1),
       playable: true,
-      artUri: Uri.tryParse(episode.podcast?.artUrl ?? ''),
+      artUri: await getImageContentUri(episode, offline: offline),
 
       extras: {
         // Completion status — key AND value are different from what I said earlier
@@ -244,25 +239,23 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }
 
-  Future<void> playEpisode(Episode episode, {Duration? initialPosition}) async {
+  Future<void> playEpisode(Episode episode, {Duration? initialPosition, bool offline = false}) async {
     playbackState.add(playbackState.value.copyWith(processingState: .loading));
 
     // we should try to get the latest version of the episode for up to date progress
-    try {
-      episode = await client.episodes.getEpisode(id: episode.id ?? '').then((value) => value.data) ?? episode;
-    } catch (e) {
-      _log.warning("Couldn't get the episode before playing, we're probably offline");
+    if (!offline) {
+      try {
+        episode = await client.episodes.getEpisode(id: episode.id ?? '').then((value) => value.data) ?? episode;
+      } catch (e) {
+        _log.warning("Couldn't get the episode before playing, we're probably offline");
+      }
     }
 
     var offlineFiles = kIsWeb ? [] : await episode.offlineFiles;
 
-    final offlineFile = offlineFiles.where((s) => s.endsWith(episode.episodeFile)).firstOrNull;
+    String? offlineFile = offlineFiles.where((s) => s.endsWith(episode.episodeFile)).firstOrNull;
 
-    var imageFile = offlineFiles.where((n) => n.endsWith(episode.imageFile)).firstOrNull;
-
-    final artUri = imageFile == null
-        ? episode.podcast?.artUri
-        : await AndroidFileProvider.getContentUriForFile(imageFile);
+    final artUri = await getImageContentUri(episode, offline: offline);
 
     var audioProxyUrl = episode.audioProxyUrl;
 
@@ -307,6 +300,26 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
         speed: playbackState.value.speed,
       ),
     );
+  }
+
+  Future<Uri?> getImageContentUri(Episode episode, {bool offline = false}) async {
+    var offlineFiles = kIsWeb ? [] : await episode.offlineFiles;
+
+    String? imageFile = offlineFiles.where((n) => n.endsWith(episode.imageFile)).firstOrNull;
+
+    if (!offline && imageFile == null) {
+      // downloading the image
+      if (episode.podcast?.artUri != null) {
+        var image = await episode.podcast?.imageFile;
+        if (image != null && !(await image.exists())) {
+          final imageResponse = await http.get(episode.podcast!.artUri);
+          await image.writeAsBytes(imageResponse.bodyBytes);
+        }
+
+        imageFile = image?.path;
+      }
+    }
+    return imageFile == null ? null : await AndroidFileProvider.getContentUriForFile(imageFile);
   }
 
   void updatePlayerState(PlayerState event) {

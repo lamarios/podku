@@ -284,7 +284,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           );
           await _player.stop();
 
-          await _player.playEpisode(episode, initialPosition: initialPosition);
+          await _player.playEpisode(episode, initialPosition: initialPosition, offline: offline);
           emit(state.copyWith(loading: false));
           if (!offline && episode.podcast?.id != unsubbedPodcastUuid) {
             await client.episodes.startPlayback(
