@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
@@ -9,10 +11,12 @@ import 'package:path_provider/path_provider.dart';
 
 const String _podcastsFolders = 'podcasts';
 
-Future<Directory> _podcastFolder(String id, {bool createIfMissing = false}) async {
+Future<Directory> _podcastFolder(String url, {bool createIfMissing = false}) async {
   final downloads = await getApplicationDocumentsDirectory();
 
-  final episodeDirectory = Directory(p.join(downloads.path, _podcastsFolders, id));
+  final episodeDirectory = Directory(
+    p.join(downloads.path, _podcastsFolders, md5.convert(utf8.encode(url)).toString()),
+  );
 
   if (createIfMissing && !(await episodeDirectory.exists())) {
     await episodeDirectory.create(recursive: true);
@@ -36,7 +40,7 @@ extension PodcastExtension on Podcast {
 
   PodcastLight get light => PodcastLight.fromJson(toJson());
 
-  Future<File> get imageFile async => await _getPodcastImage(id ?? url!, podcast: this);
+  Future<File> get imageFile async => await _getPodcastImage(url!, podcast: this);
 }
 
 extension PodcastLightExtension on PodcastLight {
@@ -44,5 +48,5 @@ extension PodcastLightExtension on PodcastLight {
 
   Uri get artUri => Uri.parse(artUrl);
 
-  Future<File> get imageFile async => await _getPodcastImage(id ?? url!, podcastLight: this);
+  Future<File> get imageFile async => await _getPodcastImage(url!, podcastLight: this);
 }
