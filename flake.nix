@@ -44,7 +44,7 @@
         // nixpkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           podku = pkgs.flutter.buildFlutterApplication rec {
             pname = "podku";
-            version = "1.1.1";
+            version = "1.3.5";
 
             # Include the entire repository so relative path dependencies (podku_shared, podku_client) are available
             src = builtins.path { path = ./.; name = "source"; };
