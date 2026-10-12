@@ -10,6 +10,9 @@
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       pkgsFor = system: import nixpkgs { inherit system; };
+
+      # Versions come from the pubspec files, which are bumped by the bump-version workflow on each tag
+      pubspecVersion = path: builtins.head (builtins.match ".*\nversion: *([0-9.]+).*" (builtins.readFile path));
     in {
       packages = forAllSystems (system:
         let
@@ -17,7 +20,7 @@
         in {
           default = pkgs.buildDartApplication {
             pname = "podkunnect";
-            version = "unstable";
+            version = pubspecVersion ./src/main/podkunnect/pubspec.yaml;
 
             # Include the entire repository so relative path dependencies (like podku_shared) are available
             src = builtins.path { path = ./.; name = "source"; };
@@ -44,7 +47,7 @@
         // nixpkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           podku = pkgs.flutter.buildFlutterApplication rec {
             pname = "podku";
-            version = "1.3.5";
+            version = pubspecVersion ./src/main/app/pubspec.yaml;
 
             # Include the entire repository so relative path dependencies (podku_shared, podku_client) are available
             src = builtins.path { path = ./.; name = "source"; };

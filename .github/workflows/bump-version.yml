@@ -1,0 +1,39 @@
+name: Bump version
+# Sets the version of the app and podkunnect pubspec files on main to the tag that was just pushed.
+# flake.nix reads its package versions from those files.
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    name: Bump version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Update pubspec versions
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          if ! echo "$TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Tag $TAG is not a x.y.z version, nothing to do"
+            exit 0
+          fi
+          # the app keeps its +build suffix, CI sets the real build number at build time
+          sed -i -E "s/^version: *[^+]*(\+.*)?$/version: ${TAG}\1/" src/main/app/pubspec.yaml src/main/podkunnect/pubspec.yaml
+          grep -H '^version:' src/main/app/pubspec.yaml src/main/podkunnect/pubspec.yaml
+      - name: Commit and push
+        run: |
+          if git diff --quiet; then
+            echo "Versions already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "bump version to ${GITHUB_REF#refs/tags/}"
+          git push origin main
