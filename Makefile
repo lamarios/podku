@@ -16,3 +16,19 @@ docs-build:
 	 mkdocs build -f mkdocs/mkdocs.yml -c -d ../docs/documentation
 docs-serve:
 	mkdocs serve -f mkdocs/mkdocs.yml
+
+# Version of the flatpak, defaults to the one in the app pubspec. Override with APP_VERSION=1.2.3 BUILD_NUMBER=4 make flatpak
+APP_VERSION ?= $(shell sed -n 's/^version: *\([^+]*\).*/\1/p' src/main/app/pubspec.yaml)
+BUILD_NUMBER ?= $(shell sed -n 's/^version: *[^+]*+\(.*\)/\1/p' src/main/app/pubspec.yaml)
+
+# Builds the desktop app as a flatpak bundle (flatpak/podku.flatpak). Needs the flathub remote for the runtime and sdk.
+flatpak:
+	printf 'APP_VERSION=%s\nBUILD_NUMBER=%s\nBUILD_DATE=%s\n' "$(APP_VERSION)" "$(BUILD_NUMBER)" "$$(date +%F)" > flatpak/version.env
+	flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+	flatpak-builder --user --force-clean --disable-rofiles-fuse --install-deps-from=flathub --state-dir=flatpak/.flatpak-builder --repo=flatpak/repo flatpak/build flatpak/com.github.lamarios.podku.yml
+	flatpak build-bundle flatpak/repo flatpak/podku.flatpak com.github.lamarios.podku --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo
+
+flatpak-install: flatpak
+	flatpak install --user --reinstall -y flatpak/podku.flatpak
+
+.PHONY: flatpak flatpak-install

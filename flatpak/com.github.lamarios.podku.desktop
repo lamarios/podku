@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Podku
+Comment=A simple podcast application
+Exec=podku
+Icon=com.github.lamarios.podku
+Terminal=false
+Categories=AudioVideo;Audio;Player;
+StartupWMClass=com.github.lamarios.podku

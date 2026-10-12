@@ -1,0 +1,60 @@
+name: Build flatpak
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    tags:
+      - '*'
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Flatpak
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Set default version
+        id: set_base_version
+        run: |
+          echo "TAG_NAME=0.0.1" >> $GITHUB_ENV
+      - name: Extract tag name
+        id: extract_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=${TAG:-1.0.0}" >> $GITHUB_ENV
+      - name: Allow unprivileged user namespaces
+        # flatpak-builder sandboxes the build with bubblewrap, which ubuntu's apparmor blocks for binaries coming from nix
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Build flatpak
+        run: |
+          export APP_VERSION=${TAG_NAME}
+          export BUILD_NUMBER=${{ github.run_number }}
+          echo "Building podku flatpak ${APP_VERSION}+${BUILD_NUMBER}"
+          nix-shell --run "make flatpak"
+          mv flatpak/podku.flatpak flatpak/podku-${APP_VERSION}-x86_64.flatpak
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: podku-x86_64.flatpak
+          path: flatpak/podku-*.flatpak
+      - name: Upload flatpak to release
+        uses: svenstaro/upload-release-action@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          repo_token: ${{ secrets.GH_TOKEN }}
+          file: flatpak/podku-*.flatpak
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true

@@ -40,6 +40,47 @@
               '';
           };
         }
+        # The flutter desktop app, linux only
+        // nixpkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+          podku = pkgs.flutter.buildFlutterApplication rec {
+            pname = "podku";
+            version = "1.1.1";
+
+            # Include the entire repository so relative path dependencies (podku_shared, podku_client) are available
+            src = builtins.path { path = ./.; name = "source"; };
+            sourceRoot = "source/src/main/app";
+
+            autoPubspecLock = ./src/main/app/pubspec.lock;
+
+            nativeBuildInputs = [ pkgs.pkg-config pkgs.copyDesktopItems ];
+            buildInputs = [ pkgs.mpv-unwrapped ];
+
+            # just_audio plays through libmpv (media_kit), which is loaded at runtime
+            extraWrapProgramArgs = ''--prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.mpv-unwrapped ]}"'';
+
+            desktopItems = [
+              (pkgs.makeDesktopItem {
+                name = "podku";
+                desktopName = "Podku";
+                comment = "A simple podcast application";
+                exec = "podku";
+                icon = "podku";
+                categories = [ "AudioVideo" "Audio" "Player" ];
+                startupWMClass = "com.github.lamarios.podku";
+              })
+            ];
+
+            postInstall = ''
+              install -Dm644 assets/podku-icon.svg $out/share/icons/hicolor/scalable/apps/podku.svg
+            '';
+
+            meta = {
+              description = "Podku podcast application";
+              mainProgram = "podku";
+              platforms = pkgs.lib.platforms.linux;
+            };
+          };
+        }
       );
 
       nixosModules.default = { config, lib, pkgs, ... }:

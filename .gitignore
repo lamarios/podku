@@ -14,3 +14,9 @@ pubspec_overrides.yaml
 /src/main/podkunnect/build/
 /result/
 /src/main/app/test/widgets/failures/
+/result/
+/flatpak/.flatpak-builder/
+/flatpak/build/
+/flatpak/repo/
+/flatpak/*.flatpak
+/flatpak/version.env

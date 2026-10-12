@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:logging/logging.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -60,6 +61,11 @@ void main() async {
     deviceName = await deviceInfo.androidInfo.then((value) => value.name);
   } else {
     deviceName = sessionId;
+  }
+
+  // just_audio has no native linux implementation, use mpv through media_kit there
+  if (!kIsWeb && Platform.isLinux) {
+    JustAudioMediaKit.ensureInitialized(linux: true, windows: false);
   }
 
   final audioHandler = await AudioService.init(

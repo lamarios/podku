@@ -1,0 +1,128 @@
+# Flatpak manifest for the Podku desktop app.
+# Build with `make flatpak` from the repository root (inside the nix shell).
+#
+# The app is built from the local checkout, using the same flutter version as submodules/flutter.
+# Flutter downloads its engine artifacts and the pub packages during the build, so the build
+# needs network access.
+app-id: com.github.lamarios.podku
+runtime: org.freedesktop.Platform
+runtime-version: '26.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.llvm22
+command: podku
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --device=dri
+  # Offline episodes and podcast images are stored in the documents folder
+  - --filesystem=xdg-documents
+
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/doc
+  - /share/man
+  - '*.a'
+  - '*.la'
+
+modules:
+  # just_audio plays through libmpv (media_kit) which isn't part of the runtime. Audio only build.
+  - name: libass
+    config-opts:
+      - --disable-static
+    sources:
+      - type: git
+        url: https://github.com/libass/libass.git
+        tag: 0.17.4
+        commit: bbb3c7f1570a4a021e52683f3fbdf74fe492ae84
+
+  - name: libplacebo
+    buildsystem: meson
+    config-opts:
+      - -Dvulkan=disabled
+      - -Dopengl=disabled
+      - -Dshaderc=disabled
+      - -Dglslang=disabled
+      - -Dlcms=disabled
+      - -Ddovi=disabled
+      - -Dlibdovi=disabled
+      - -Dxxhash=disabled
+      - -Dunwind=disabled
+      - -Ddemos=false
+      - -Dtests=false
+    sources:
+      - type: git
+        url: https://code.videolan.org/videolan/libplacebo.git
+        tag: v7.360.1
+        commit: cee9b076f2c63104ccfd497fa79c39a867293ec4
+
+  - name: mpv
+    buildsystem: meson
+    config-opts:
+      - --auto-features=disabled
+      - -Dlibmpv=true
+      - -Dcplayer=false
+      - -Dbuild-date=false
+      - -Dgl=disabled
+      - -Dpulse=enabled
+    sources:
+      - type: git
+        url: https://github.com/mpv-player/mpv.git
+        tag: v0.41.0
+        commit: 41f6a645068483470267271e1d09966ca3b9f413
+
+  - name: podku
+    buildsystem: simple
+    build-options:
+      build-args:
+        - --share=network
+      append-path: /usr/lib/sdk/llvm22/bin:/run/build/podku/flutter/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm22/lib
+      env:
+        PUB_CACHE: /run/build/podku/.pub-cache
+        FLUTTER_SUPPRESS_ANALYTICS: 'true'
+    build-commands:
+      # version.env is written by `make flatpak`
+      - . ./version.env && cd src/main/app && flutter build linux --release --build-name "$APP_VERSION" --build-number "$BUILD_NUMBER"
+      - . ./version.env && sed -i "s/@VERSION@/$APP_VERSION/; s/@DATE@/$BUILD_DATE/" com.github.lamarios.podku.metainfo.xml
+      - mkdir -p /app/bin /app/podku
+      - cp -r src/main/app/build/linux/*/release/bundle/. /app/podku/
+      - ln -s /app/podku/podku /app/bin/podku
+      - install -Dm644 src/main/app/assets/podku-icon.svg /app/share/icons/hicolor/scalable/apps/com.github.lamarios.podku.svg
+      - install -Dm644 com.github.lamarios.podku.desktop /app/share/applications/com.github.lamarios.podku.desktop
+      - install -Dm644 com.github.lamarios.podku.metainfo.xml /app/share/metainfo/com.github.lamarios.podku.metainfo.xml
+    sources:
+      - type: dir
+        path: ../src/main/app
+        dest: src/main/app
+        skip:
+          - build
+          - .dart_tool
+          - linux/flutter/ephemeral
+      - type: dir
+        path: ../podku_client
+        dest: podku_client
+        skip:
+          - .dart_tool
+      - type: dir
+        path: ../podku_shared
+        dest: podku_shared
+        skip:
+          - .dart_tool
+      # Keep in sync with submodules/flutter
+      - type: git
+        url: https://github.com/flutter/flutter.git
+        tag: 3.47.0
+        commit: 4cf24164269a5ebf0c16a028a00727d0e77bbb05
+        dest: flutter
+      - type: file
+        path: com.github.lamarios.podku.desktop
+      - type: file
+        path: com.github.lamarios.podku.metainfo.xml
+      - type: file
+        path: version.env

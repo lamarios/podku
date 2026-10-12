@@ -570,6 +570,28 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/share_plus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/dart-sdk/lib/_internal/sdk_library_metadata/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/dart-sdk/lib/_internal/sdk_library_metadata/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/dart-sdk/lib/_internal/sdk_library_metadata/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/pkg/flutter_gpu/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/pkg/flutter_gpu/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/pkg/flutter_gpu/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/pkg/sky_engine/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/pkg/sky_engine/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/booted-system/sw/bin/cache/pkg/sky_engine/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/dart-sdk/lib/_internal/sdk_library_metadata/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/dart-sdk/lib/_internal/sdk_library_metadata/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/dart-sdk/lib/_internal/sdk_library_metadata/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/pkg/flutter_gpu/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/pkg/flutter_gpu/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/pkg/flutter_gpu/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/pkg/sky_engine/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/pkg/sky_engine/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak/.flatpak-builder/cache/objects/54/2b14975bb28ba3a0b02b1145c19f9a4ee911e95e586e3b6897687530139e5f.file/current-system/sw/bin/cache/pkg/sky_engine/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_libs_linux/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_libs_linux/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_libs_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flatpak" />
     </content>
   </component>
 </module>

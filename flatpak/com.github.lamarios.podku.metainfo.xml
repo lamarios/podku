@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.lamarios.podku</id>
+  <name>Podku</name>
+  <summary>Self-hosted podcast application</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <developer id="com.github.lamarios">
+    <name>lamarios</name>
+  </developer>
+  <description>
+    <p>Podku is a client for a self-hosted Podku server. Subscribe to podcasts, listen to episodes, keep them offline and control playback on other devices.</p>
+  </description>
+  <launchable type="desktop-id">com.github.lamarios.podku.desktop</launchable>
+  <url type="homepage">https://github.com/lamarios/podku</url>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="@VERSION@" date="@DATE@"/>
+  </releases>
+</component>
