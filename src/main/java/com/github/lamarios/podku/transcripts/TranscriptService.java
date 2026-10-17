@@ -92,7 +92,7 @@ public class TranscriptService {
 
       var transcripts =
           episodeTranscriptRepository
-              .findAllByEpisodeAndLanguageAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(
+              .findAllByEpisodeAndLanguageAndStartTimeGreaterThanEqualAndStartTimeLessThanEqualOrderByStartTimeAsc(
                   episode, language, startTimeString, endTimeString);
       return openaiService.streamTopic(transcripts);
     }

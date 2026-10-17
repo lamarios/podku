@@ -101,7 +101,7 @@ class TranscriptFollower extends StatelessWidget {
                           bottom: pu4,
                           child: M3EButton.icon(
                             icon: Icon(Icons.auto_awesome),
-                            label: Text(locals.past5MinutesSummary),
+                            label: Text(locals.getPast5MinutesSummary),
                             style: .tonal,
                             size: .xs,
                             onPressed: () {

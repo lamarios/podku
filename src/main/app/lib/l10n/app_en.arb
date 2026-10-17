@@ -54,5 +54,5 @@
   "noBookmarks": "No bookmarks, tap ",
   "noBookmarksEnd": "when playing a podcast.",
   "past5MinutesSummary": "Last 5 minutes summary",
-  "getPast5MinutesSummary": "Get last 5 minutes summary"
+  "getPast5MinutesSummary": "Summarize last 5 minutes"
 }

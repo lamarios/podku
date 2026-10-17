@@ -103,7 +103,7 @@ public interface EpisodeTranscriptRepository extends JpaRepository<EpisodeTransc
       Episode episode, String language, String startTimeIsGreaterThan, String endTimeIsLessThan);
 
   List<EpisodeTranscript>
-      findAllByEpisodeAndLanguageAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(
+      findAllByEpisodeAndLanguageAndStartTimeGreaterThanEqualAndStartTimeLessThanEqualOrderByStartTimeAsc(
           Episode episode,
           String language,
           String startTimeIsGreaterThan,
