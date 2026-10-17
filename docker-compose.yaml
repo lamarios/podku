@@ -10,5 +10,15 @@ services:
       POSTGRES_PASSWORD: "o1HC88oNaNCxtIy1Sc6mzDtTormrmBRC"
     volumes:
       - podku_data:/var/lib/postgresql
+  whisper:
+    image: hwdsl2/whisper-server
+    container_name: whisper
+    environment:
+      WHISPER_MODEL: small
+      WHISPER_API_KEY: abc
+      WHISPER_THREADS: 12
+      WHISPER_MAX_UPLOAD_MB: 0
+    ports:
+      - "9000:9000/tcp"  # For a host-based reverse proxy, change to "127.0.0.1:9000:9000/tcp"
 volumes:
   podku_data:

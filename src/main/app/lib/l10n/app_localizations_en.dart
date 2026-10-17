@@ -180,4 +180,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noBookmarksEnd => 'when playing a podcast.';
+
+  @override
+  String get past5MinutesSummary => 'Last 5 minutes summary';
+
+  @override
+  String get getPast5MinutesSummary => 'Get last 5 minutes summary';
 }

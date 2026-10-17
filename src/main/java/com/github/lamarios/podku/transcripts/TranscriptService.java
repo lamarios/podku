@@ -2,17 +2,23 @@
 package com.github.lamarios.podku.transcripts;
 
 import com.github.lamarios.podku.episodes.EpisodeService;
+import com.github.lamarios.podku.utils.OpenaiService;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 
 @Service
 public class TranscriptService {
   private final EpisodeService episodeService;
   private final EpisodeTranscriptRepository episodeTranscriptRepository;
+  private final OpenaiService openaiService;
 
   /**
    * Constructs the TranscriptService with required repositories and services.
@@ -23,9 +29,12 @@ public class TranscriptService {
    */
   @Autowired
   public TranscriptService(
-      EpisodeService episodeService, EpisodeTranscriptRepository episodeTranscriptRepository) {
+      EpisodeService episodeService,
+      EpisodeTranscriptRepository episodeTranscriptRepository,
+      OpenaiService openaiService) {
     this.episodeService = episodeService;
     this.episodeTranscriptRepository = episodeTranscriptRepository;
+    this.openaiService = openaiService;
   }
 
   /**
@@ -62,6 +71,30 @@ public class TranscriptService {
     } else {
       return episodeTranscriptRepository.findAllByEpisodeAndLanguage(
           episode, language, Sort.by(Sort.Direction.ASC, "startTime"));
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public Flux<String> getPast5MinutesSummary(
+      String episodeId, String language, long timeInSeconds) {
+    var episode = episodeService.getEpisode(episodeId);
+
+    if (episode == null) {
+      return Flux.empty();
+    } else {
+
+      long endTime = timeInSeconds * 1000L;
+      long startTime = endTime - (Duration.ofMinutes(5).get(ChronoUnit.SECONDS) * 1000);
+
+      String format = "HH:mm:ss.SSS";
+      String endTimeString = DurationFormatUtils.formatDuration(endTime, format, true);
+      String startTimeString = DurationFormatUtils.formatDuration(startTime, format, true);
+
+      var transcripts =
+          episodeTranscriptRepository
+              .findAllByEpisodeAndLanguageAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(
+                  episode, language, startTimeString, endTimeString);
+      return openaiService.streamTopic(transcripts);
     }
   }
 }
