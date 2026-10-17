@@ -7,10 +7,8 @@ import com.github.lamarios.podku.utils.OpenaiService;
 import com.github.lamarios.podku.utils.TransactionHelper;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.commons.lang3.time.DurationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +85,6 @@ public class BookmarkService {
     if (openaiService.enabled() && bookmark.getTime() != null) {
 
       long bookmarkTimeMs = bookmark.getTime() * 1000L;
-      var duration = DurationUtils.toDuration(bookmarkTimeMs, TimeUnit.MILLISECONDS);
 
       String format = "HH:mm:ss.SSS";
       String durationString = DurationFormatUtils.formatDuration(bookmarkTimeMs, format, true);

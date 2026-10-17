@@ -89,6 +89,7 @@ Class | Method | HTTP request | Description
 [*SearchApi*](doc/SearchApi.md) | [**search**](doc/SearchApi.md#search) | **GET** /api/search | 
 [*TranscriptsApi*](doc/TranscriptsApi.md) | [**getEpisodeLanguages**](doc/TranscriptsApi.md#getepisodelanguages) | **GET** /api/transcripts/{id}/languages | 
 [*TranscriptsApi*](doc/TranscriptsApi.md) | [**getTranscript**](doc/TranscriptsApi.md#gettranscript) | **GET** /api/transcripts/{id}/{language} | 
+[*TranscriptsApi*](doc/TranscriptsApi.md) | [**summarizePast5minutes**](doc/TranscriptsApi.md#summarizepast5minutes) | **GET** /api/transcripts/{id}/{language}/summary-until/{until} | 
 
 
 ## Documentation For Models

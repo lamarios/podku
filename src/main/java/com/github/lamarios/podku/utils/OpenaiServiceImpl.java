@@ -2,8 +2,12 @@ package com.github.lamarios.podku.utils;
 
 import com.github.lamarios.podku.transcripts.EpisodeTranscript;
 import com.openai.client.OpenAIClient;
+import com.openai.client.OpenAIClientAsync;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.client.okhttp.OpenAIOkHttpClientAsync;
+import com.openai.core.http.AsyncStreamResponse;
 import com.openai.models.ReasoningEffort;
+import com.openai.models.chat.completions.ChatCompletionChunk;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
 import com.openai.models.chat.completions.StructuredChatCompletionCreateParams;
 import com.openai.models.models.Model;
@@ -17,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Service("openaiService")
 public class OpenaiServiceImpl implements OpenaiService {
@@ -96,6 +101,21 @@ public class OpenaiServiceImpl implements OpenaiService {
     return client.build();
   }
 
+  private OpenAIClientAsync getAsyncClient() {
+    var client =
+        OpenAIOkHttpClientAsync.builder().baseUrl(url).checkJacksonVersionCompatibility(false);
+
+    if (apiKey != null) {
+      client = client.apiKey(apiKey);
+    } else {
+      client = client.apiKey("");
+    }
+
+    client.timeout(Duration.ofMinutes(2));
+
+    return client.build();
+  }
+
   /**
    * Queries the OpenAI chat completion API to summarize the topic of a bookmarked conversation.
    *
@@ -151,5 +171,58 @@ public class OpenaiServiceImpl implements OpenaiService {
                 openAiFeedResponse.topic(),
                 (System.currentTimeMillis() - start) / 1000));
     return first;
+  }
+
+  /**
+   * Get the summary of the given transcripts as a stream.
+   *
+   * @param transcripts list of transcripts to get
+   * @return a flux of strings
+   */
+  @Override
+  public Flux<String> streamTopic(List<EpisodeTranscript> transcripts) {
+    if (!enabled()) {
+      return Flux.empty();
+    }
+
+    String prompt =
+        """
+            Here is the transcript from the past 5 minutes of a podcast, you will write a quick summary of the discussion so the user can remember what was it about. Your answer will only contain the summary and nothing else.
+
+            The transcript:
+            %s
+            """
+            .formatted(
+                transcripts.stream()
+                    .map(EpisodeTranscript::getContent)
+                    .collect(Collectors.joining("\n")));
+
+    ChatCompletionCreateParams params =
+        ChatCompletionCreateParams.builder()
+            .addUserMessage(prompt)
+            .model(model)
+            .reasoningEffort(ReasoningEffort.NONE)
+            .build();
+
+    return Flux.create(
+        sink -> {
+          AsyncStreamResponse<ChatCompletionChunk> response =
+              getAsyncClient().chat().completions().createStreaming(params);
+
+          response.subscribe(
+              new AsyncStreamResponse.Handler<ChatCompletionChunk>() {
+                @Override
+                public void onNext(ChatCompletionChunk chunk) {
+                  chunk.choices().forEach(c -> c.delta().content().ifPresent(sink::next));
+                }
+
+                @Override
+                public void onComplete(Optional<Throwable> error) {
+                  error.ifPresentOrElse(sink::error, sink::complete);
+                }
+              });
+
+          sink.onDispose(response::close);
+        });
   }
 }

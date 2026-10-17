@@ -414,6 +414,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'when playing a podcast.'**
   String get noBookmarksEnd;
+
+  /// No description provided for @past5MinutesSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 5 minutes summary'**
+  String get past5MinutesSummary;
+
+  /// No description provided for @getPast5MinutesSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Get last 5 minutes summary'**
+  String get getPast5MinutesSummary;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

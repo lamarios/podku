@@ -1,6 +1,7 @@
 import 'package:anchored_list/anchored_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
@@ -8,6 +9,7 @@ import 'package:openapi/openapi.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/states/transcript.dart';
+import 'package:podku/player/views/components/past_5_minute_summary.dart';
 import 'package:podku/utils.dart';
 
 class TranscriptFollower extends StatelessWidget {
@@ -42,6 +44,7 @@ class TranscriptFollower extends StatelessWidget {
                                 children: [
                                   Icon(Icons.auto_awesome, size: 15, color: colors.secondary),
                                   Text(locals.aiGeneratedTranscript, style: textTheme.labelSmall),
+                                  Spacer(),
                                 ],
                               ),
                             Expanded(
@@ -92,6 +95,25 @@ class TranscriptFollower extends StatelessWidget {
                               ),
                             ),
                           ],
+                        ),
+                        Positioned(
+                          right: 0,
+                          bottom: pu4,
+                          child: M3EButton.icon(
+                            icon: Icon(Icons.auto_awesome),
+                            label: Text(locals.past5MinutesSummary),
+                            style: .tonal,
+                            size: .xs,
+                            onPressed: () {
+                              final player = context.read<PlayerCubit>();
+                              Past5MinuteSummary.open(
+                                context,
+                                episodeId: player.state.episode?.id ?? '',
+                                language: state.selectedLanguage ?? 'a.i',
+                                time: player.state.position.inSeconds,
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
