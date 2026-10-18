@@ -424,8 +424,14 @@ abstract class AppLocalizations {
   /// No description provided for @getPast5MinutesSummary.
   ///
   /// In en, this message translates to:
-  /// **'Get last 5 minutes summary'**
+  /// **'Summarize last 5 minutes'**
   String get getPast5MinutesSummary;
+
+  /// No description provided for @getPastNMinutesSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summarize {minutes, plural, =1{the last minute} other{last {minutes} minutes}}'**
+  String getPastNMinutesSummary(num minutes);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

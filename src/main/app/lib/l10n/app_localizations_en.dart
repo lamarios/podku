@@ -185,5 +185,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get past5MinutesSummary => 'Last 5 minutes summary';
 
   @override
-  String get getPast5MinutesSummary => 'Get last 5 minutes summary';
+  String get getPast5MinutesSummary => 'Summarize last 5 minutes';
+
+  @override
+  String getPastNMinutesSummary(num minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'last $minutes minutes',
+      one: 'the last minute',
+    );
+    return 'Summarize $_temp0';
+  }
 }

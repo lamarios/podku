@@ -99,18 +99,25 @@ class TranscriptFollower extends StatelessWidget {
                         Positioned(
                           right: 0,
                           bottom: pu4,
-                          child: M3EButton.icon(
-                            icon: Icon(Icons.auto_awesome),
-                            label: Text(locals.getPast5MinutesSummary),
-                            style: .tonal,
-                            size: .xs,
-                            onPressed: () {
-                              final player = context.read<PlayerCubit>();
-                              Past5MinuteSummary.open(
-                                context,
-                                episodeId: player.state.episode?.id ?? '',
-                                language: state.selectedLanguage ?? 'a.i',
-                                time: player.state.position.inSeconds,
+                          child: Builder(
+                            builder: (context) {
+                              final position = context.select(
+                                (PlayerCubit c) => (c.state.position.inMinutes + 1).clamp(1, 5),
+                              );
+                              return M3EButton.icon(
+                                icon: Icon(Icons.auto_awesome),
+                                label: Text(locals.getPastNMinutesSummary(position)),
+                                style: .tonal,
+                                size: .xs,
+                                onPressed: () {
+                                  final player = context.read<PlayerCubit>();
+                                  Past5MinuteSummary.open(
+                                    context,
+                                    episodeId: player.state.episode?.id ?? '',
+                                    language: state.selectedLanguage ?? 'a.i',
+                                    time: player.state.position.inSeconds,
+                                  );
+                                },
                               );
                             },
                           ),

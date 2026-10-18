@@ -6,7 +6,7 @@ class FadeInText extends StatefulWidget {
   final TextStyle? style;
   final Duration fade;
 
-  const FadeInText(this.text, {super.key, this.style, this.fade = const Duration(milliseconds: 300)});
+  const FadeInText(this.text, {super.key, this.style, this.fade = const Duration(milliseconds: 500)});
 
   @override
   State<FadeInText> createState() => _FadeInTextState();

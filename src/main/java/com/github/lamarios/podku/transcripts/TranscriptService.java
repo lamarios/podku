@@ -82,9 +82,9 @@ public class TranscriptService {
     if (episode == null) {
       return Flux.empty();
     } else {
-
-      long endTime = timeInSeconds * 1000L;
-      long startTime = endTime - (Duration.ofMinutes(5).get(ChronoUnit.SECONDS) * 1000);
+      long endTime = Math.max(1, timeInSeconds * 1000L);
+      long startTime =
+          Math.max(0, endTime - (Duration.ofMinutes(5).get(ChronoUnit.SECONDS) * 1000));
 
       String format = "HH:mm:ss.SSS";
       String endTimeString = DurationFormatUtils.formatDuration(endTime, format, true);
