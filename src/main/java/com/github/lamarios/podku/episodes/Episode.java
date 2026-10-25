@@ -13,9 +13,13 @@ import jakarta.persistence.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "episodes")
+// only write the columns that changed: the feed refresh, episode processing and playback progress
+// updates touch different columns of the same row and must not overwrite each other's values
+@DynamicUpdate
 public class Episode {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

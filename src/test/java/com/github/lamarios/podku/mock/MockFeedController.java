@@ -6,6 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -199,5 +203,93 @@ public class MockFeedController {
   @GetMapping(value = "/podcast", produces = MediaType.TEXT_HTML_VALUE)
   public String getPodcastPage() {
     return "<html><body>Mock Podcast Home</body></html>";
+  }
+
+  /**
+   * A response served by {@code /mock/dynamic/{name}}, configured by the tests.
+   *
+   * @param status HTTP status to answer with
+   * @param contentType content type of the body
+   * @param body response body
+   * @param etag {@code ETag} header to send (and to honour in {@code If-None-Match}), or null
+   * @param lastModified {@code Last-Modified} header to send (and to honour in {@code
+   *     If-Modified-Since}), or null
+   */
+  public record DynamicResponse(
+      int status, String contentType, String body, String etag, String lastModified) {}
+
+  private static final Map<String, DynamicResponse> DYNAMIC_RESPONSES = new ConcurrentHashMap<>();
+  private static final Map<String, AtomicInteger> FULL_RESPONSES = new ConcurrentHashMap<>();
+
+  /**
+   * Serves {@code body} as XML with a 200 at {@code /mock/dynamic/{name}}.
+   *
+   * @param name the path segment to serve at
+   * @param body the XML to serve
+   */
+  public static void serve(String name, String body) {
+    serve(name, new DynamicResponse(200, MediaType.APPLICATION_XML_VALUE, body, null, null));
+  }
+
+  /**
+   * Configures what {@code /mock/dynamic/{name}} answers.
+   *
+   * @param name the path segment to serve at
+   * @param response what to answer
+   */
+  public static void serve(String name, DynamicResponse response) {
+    DYNAMIC_RESPONSES.put(name, response);
+  }
+
+  /**
+   * Number of full (non-304) responses served at {@code /mock/dynamic/{name}}.
+   *
+   * @param name the path segment
+   * @return number of full responses served so far
+   */
+  public static int fullResponses(String name) {
+    return FULL_RESPONSES.computeIfAbsent(name, _ -> new AtomicInteger()).get();
+  }
+
+  /** Forgets every dynamic response, called between tests. */
+  public static void reset() {
+    DYNAMIC_RESPONSES.clear();
+    FULL_RESPONSES.clear();
+  }
+
+  @GetMapping("/dynamic/{name}")
+  public ResponseEntity<String> getDynamic(
+      @PathVariable String name,
+      @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String ifNoneMatch,
+      @RequestHeader(value = HttpHeaders.IF_MODIFIED_SINCE, required = false)
+          String ifModifiedSince) {
+    DynamicResponse response = DYNAMIC_RESPONSES.get(name);
+    if (response == null) {
+      return ResponseEntity.notFound().build();
+    }
+    if ((response.etag() != null && response.etag().equals(ifNoneMatch))
+        || (response.lastModified() != null && response.lastModified().equals(ifModifiedSince))) {
+      return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+    }
+    FULL_RESPONSES.computeIfAbsent(name, _ -> new AtomicInteger()).incrementAndGet();
+
+    var builder =
+        ResponseEntity.status(response.status())
+            .header(HttpHeaders.CONTENT_TYPE, response.contentType());
+    if (response.etag() != null) {
+      builder.eTag(response.etag());
+    }
+    if (response.lastModified() != null) {
+      builder.header(HttpHeaders.LAST_MODIFIED, response.lastModified());
+    }
+    return builder.body(response.body());
+  }
+
+  /** Permanently redirects to {@code /mock/dynamic/{name}}. */
+  @GetMapping("/redirect/{name}")
+  public ResponseEntity<Void> redirect(@PathVariable String name) {
+    return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+        .header(HttpHeaders.LOCATION, "/mock/dynamic/" + name)
+        .build();
   }
 }

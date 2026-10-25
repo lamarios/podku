@@ -16,6 +16,23 @@ public class EpisodeUtils {
   private static final Logger log = LogManager.getLogger();
 
   /**
+   * Key used to recognise the same episode across feed refreshes: the RSS guid when present, the
+   * audio URL otherwise and the title as a last resort (some feeds do not provide guids).
+   *
+   * @param e the episode
+   * @return a non-null identity key
+   */
+  public static String identityKey(Episode e) {
+    if (e.getGuid() != null && !e.getGuid().isBlank()) {
+      return "guid:" + e.getGuid();
+    }
+    if (e.getAudioUrl() != null && !e.getAudioUrl().isBlank()) {
+      return "audio:" + e.getAudioUrl();
+    }
+    return "title:" + e.getTitle();
+  }
+
+  /**
    * Downloads the episode audio into the cache folder, reusing an existing complete file when
    * present. The cache key is the episode's audio-URL hash.
    *

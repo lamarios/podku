@@ -1,6 +1,7 @@
 /* (C)2026 */
 package com.github.lamarios.podku.podcasts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.lamarios.podku.episodes.Episode;
 import com.github.lamarios.podku.utils.FastUrlCrypto;
 import jakarta.persistence.*;
@@ -21,6 +22,12 @@ public class Podcast {
   private String author;
   private String link;
   private String color;
+
+  /** {@code ETag} header of the last fetched feed, used for conditional refreshes. */
+  @JsonIgnore private String etag;
+
+  /** {@code Last-Modified} header of the last fetched feed, used for conditional refreshes. */
+  @JsonIgnore private String lastModified;
 
   @OneToMany(mappedBy = "podcast", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("pubDateMillis DESC")
@@ -254,5 +261,41 @@ public class Podcast {
    */
   public void setColor(String color) {
     this.color = color;
+  }
+
+  /**
+   * Gets the {@code ETag} header of the last fetched feed.
+   *
+   * @return the etag, or null if the server didn't send one
+   */
+  public String getEtag() {
+    return etag;
+  }
+
+  /**
+   * Sets the {@code ETag} header of the last fetched feed.
+   *
+   * @param etag the etag
+   */
+  public void setEtag(String etag) {
+    this.etag = etag;
+  }
+
+  /**
+   * Gets the {@code Last-Modified} header of the last fetched feed.
+   *
+   * @return the last modified date as sent by the server, or null
+   */
+  public String getLastModified() {
+    return lastModified;
+  }
+
+  /**
+   * Sets the {@code Last-Modified} header of the last fetched feed.
+   *
+   * @param lastModified the last modified date as sent by the server
+   */
+  public void setLastModified(String lastModified) {
+    this.lastModified = lastModified;
   }
 }

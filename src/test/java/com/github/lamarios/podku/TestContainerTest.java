@@ -55,6 +55,7 @@ public abstract class TestContainerTest {
     while (BackgroundTasks.getInFlight().get() > 0 && System.currentTimeMillis() < timeout) {
       Thread.sleep(50);
     }
+    MockFeedController.reset();
     bookmarkRepository.deleteAll();
     podcastRepository.deleteAll();
   }

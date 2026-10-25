@@ -13,6 +13,11 @@ whisper:
   apiKey: ${WHISPER_API_KEY:}
   episodeProcessCount: ${WHISPER_EPISODE_PROCESS_COUNT:0}
 spring:
+  task:
+    scheduling:
+      pool:
+        # the hourly podcast refresh can take a while, keep a thread free for the websocket pings
+        size: 2
   mvc:
     async:
       request-timeout: -1

@@ -12,3 +12,5 @@ LLM chat bots(claude, chatgpt) have been used to help finding a solution to some
 - Implemented backend FastUrlCrypto
 - Implemented first batch of unit tests for the backend, frontend and podkunnect
 - Setup necessary stuff to build the desktop application, flake and flatpak build
+- Reworked the backend podcast refresh flow (transaction handling, feed merging, ETag support, timeouts, episode processing retries) and its unit tests
+- Fixed a websocket session memory leak
