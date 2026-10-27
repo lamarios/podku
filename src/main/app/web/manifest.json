@@ -1,11 +1,11 @@
 {
-    "name": "podku_flutter",
-    "short_name": "podku_flutter",
+    "name": "Podku",
+    "short_name": "Podku",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A self-hosted podcast aggregator",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

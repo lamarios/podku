@@ -306,6 +306,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#linux-desktop-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linux desktop app
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -372,6 +383,17 @@
     <span class="md-ellipsis">
       
         Docker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linux-desktop-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linux desktop app
       
     </span>
   </a>
@@ -452,7 +474,12 @@
 <a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./podku-whisper:/var/lib/whisper</span>
 </code></pre></div>
 <p>Open a browser to http://localhost:8080 and the application should appear. You can also download the android application from the release page on <a href="https://github.com/lamarios/podku/releases">github</a> to access your server.
-To use <strong>Android Auto</strong> you <strong>must</strong> use the application from the <a href="https://play.google.com/store/apps/details?id=com.github.lamarios.podku">Google Play store</a></p></div>
+To use <strong>Android Auto</strong> you <strong>must</strong> use the application from the <a href="https://play.google.com/store/apps/details?id=com.github.lamarios.podku">Google Play store</a></p>
+<h2 id="linux-desktop-app">Linux desktop app</h2>
+<p>The desktop app is available as a flatpak. Download <a href="https://lamarios.github.io/podku/flatpak/podku.flatpakref">podku.flatpakref</a> and open it with your software center, or run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>flatpak<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>https://lamarios.github.io/podku/flatpak/podku.flatpakref
+</code></pre></div>
+<p>This adds the Podku flatpak repository, so the app will be updated along with your other flatpaks (<code>flatpak update</code>).</p></div>
 
 
 

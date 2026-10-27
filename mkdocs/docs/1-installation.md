@@ -61,3 +61,13 @@ services:
 
 Open a browser to http://localhost:8080 and the application should appear. You can also download the android application from the release page on [github](https://github.com/lamarios/podku/releases) to access your server.
 To use **Android Auto** you **must** use the application from the [Google Play store](https://play.google.com/store/apps/details?id=com.github.lamarios.podku)
+
+## Linux desktop app
+
+The desktop app is available as a flatpak. Download [podku.flatpakref](https://lamarios.github.io/podku/flatpak/podku.flatpakref) and open it with your software center, or run:
+
+```bash
+flatpak install --user https://lamarios.github.io/podku/flatpak/podku.flatpakref
+```
+
+This adds the Podku flatpak repository, so the app will be updated along with your other flatpaks (`flatpak update`).

@@ -10,9 +10,79 @@
 struct _MyApplication {
   GtkApplication parent_instance;
   char** dart_entrypoint_arguments;
+  GDBusProxy* settings_portal;
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+
+// GTK3 doesn't follow the desktop color scheme for the window decorations,
+// so we set the dark theme preference from the XDG settings portal ourselves.
+static constexpr char kAppearanceNamespace[] = "org.freedesktop.appearance";
+static constexpr char kColorSchemeKey[] = "color-scheme";
+static constexpr guint32 kColorSchemePreferDark = 1;
+
+static void apply_color_scheme(GVariant* value) {
+  gboolean dark = g_variant_is_of_type(value, G_VARIANT_TYPE_UINT32) &&
+                  g_variant_get_uint32(value) == kColorSchemePreferDark;
+  g_object_set(gtk_settings_get_default(), "gtk-application-prefer-dark-theme",
+               dark, nullptr);
+}
+
+static void settings_portal_signal_cb(GDBusProxy* proxy,
+                                      const gchar* sender_name,
+                                      const gchar* signal_name,
+                                      GVariant* parameters,
+                                      gpointer user_data) {
+  if (g_strcmp0(signal_name, "SettingChanged") != 0) {
+    return;
+  }
+  const gchar* name_space = nullptr;
+  const gchar* key = nullptr;
+  g_autoptr(GVariant) value = nullptr;
+  g_variant_get(parameters, "(&s&sv)", &name_space, &key, &value);
+  if (g_strcmp0(name_space, kAppearanceNamespace) == 0 &&
+      g_strcmp0(key, kColorSchemeKey) == 0) {
+    apply_color_scheme(value);
+  }
+}
+
+static void follow_color_scheme(MyApplication* self) {
+  self->settings_portal = g_dbus_proxy_new_for_bus_sync(
+      G_BUS_TYPE_SESSION, G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES, nullptr,
+      "org.freedesktop.portal.Desktop", "/org/freedesktop/portal/desktop",
+      "org.freedesktop.portal.Settings", nullptr, nullptr);
+  if (self->settings_portal == nullptr) {
+    return;
+  }
+  g_signal_connect(self->settings_portal, "g-signal",
+                   G_CALLBACK(settings_portal_signal_cb), nullptr);
+
+  // ReadOne returns the value directly, the deprecated Read used by older
+  // portals wraps it in another variant.
+  g_autoptr(GVariant) result = g_dbus_proxy_call_sync(
+      self->settings_portal, "ReadOne",
+      g_variant_new("(ss)", kAppearanceNamespace, kColorSchemeKey),
+      G_DBUS_CALL_FLAGS_NONE, -1, nullptr, nullptr);
+  gboolean wrapped = FALSE;
+  if (result == nullptr) {
+    result = g_dbus_proxy_call_sync(
+        self->settings_portal, "Read",
+        g_variant_new("(ss)", kAppearanceNamespace, kColorSchemeKey),
+        G_DBUS_CALL_FLAGS_NONE, -1, nullptr, nullptr);
+    wrapped = TRUE;
+  }
+  if (result == nullptr) {
+    return;
+  }
+  g_autoptr(GVariant) value = nullptr;
+  g_variant_get(result, "(v)", &value);
+  if (wrapped && g_variant_is_of_type(value, G_VARIANT_TYPE_VARIANT)) {
+    g_autoptr(GVariant) inner = g_variant_get_variant(value);
+    apply_color_scheme(inner);
+  } else {
+    apply_color_scheme(value);
+  }
+}
 
 // Called when first Flutter frame received.
 static void first_frame_cb(MyApplication* self, FlView* view) {
@@ -45,11 +115,11 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "podku_flutter");
+    gtk_header_bar_set_title(header_bar, "Podku");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "podku_flutter");
+    gtk_window_set_title(window, "Podku");
   }
 
   gtk_window_set_default_size(window, 1280, 720);
@@ -101,11 +171,13 @@ static gboolean my_application_local_command_line(GApplication* application,
 
 // Implements GApplication::startup.
 static void my_application_startup(GApplication* application) {
-  // MyApplication* self = MY_APPLICATION(object);
+  MyApplication* self = MY_APPLICATION(application);
 
   // Perform any actions required at application startup.
 
   G_APPLICATION_CLASS(my_application_parent_class)->startup(application);
+
+  follow_color_scheme(self);
 }
 
 // Implements GApplication::shutdown.
@@ -121,6 +193,7 @@ static void my_application_shutdown(GApplication* application) {
 static void my_application_dispose(GObject* object) {
   MyApplication* self = MY_APPLICATION(object);
   g_clear_pointer(&self->dart_entrypoint_arguments, g_strfreev);
+  g_clear_object(&self->settings_portal);
   G_OBJECT_CLASS(my_application_parent_class)->dispose(object);
 }
 
