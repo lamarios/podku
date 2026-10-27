@@ -1,0 +1,6 @@
+[Flatpak Repo]
+Title=Podku
+Url=https://lamarios.github.io/podku/flatpak/repo/
+Homepage=https://github.com/lamarios/podku
+Icon=https://lamarios.github.io/podku/assets/icon.svg
+GPGKey=mDMEauBUphYJKwYBBAHaRw8BAQdAlFyk1Ki0nM+L0VSH+jwxuyhouZmvzUASK7IuK3afXv20IVBvZGt1IEZsYXRwYWsgcC5mYXVjaG9uQGdtYWlsLmNvbYiWBBMWCgA+FiEE+T6U5/EHGaC17Lcbat3/Cq+lEi8FAmrgVKYCGwMFCQWjmoAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQat3/Cq+lEi9SxgEAizz12cFSeQM+VPg8rvk5kRUOtwUKsHJmvyvWt+QSNy0A+gOR63Qa4vTKYLbE3LBoC9vnN5eFgR7TTIdbM+9ssd0GuDgEauBUphIKKwYBBAGXVQEFAQEHQM560PD1bDFjVGZYyNXr7AQ+5h5QY5E3GEpU7mr4ATIEAwEIB4h4BBgWCgAgFiEE+T6U5/EHGaC17Lcbat3/Cq+lEi8FAmrgVKYCGwwACgkQat3/Cq+lEi9YlAEAkf+z5sS+ZhrvFOyjC3xfBs0tnFarSClWIp3y7FCjl9EA/09piBHh83SunWsrcZYOM0JBIl6zzCn8hGIf3RO+5LoO
