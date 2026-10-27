@@ -11,9 +11,13 @@ class HomeCubit extends Cubit<HomeState> {
   void setIndex(int index) {
     emit(state.copyWith(selectedIndex: index));
   }
+
+  void setRailExpanded(bool expanded) {
+    emit(state.copyWith(railExpanded: expanded));
+  }
 }
 
 @freezed
 sealed class HomeState with _$HomeState {
-  const factory HomeState({@Default(0) int selectedIndex}) = _HomeState;
+  const factory HomeState({@Default(0) int selectedIndex, @Default(true) bool railExpanded}) = _HomeState;
 }

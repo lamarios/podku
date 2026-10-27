@@ -15,6 +15,27 @@ part 'episodes.freezed.dart';
 
 const int _pageSize = 100;
 
+enum EpisodeThresholds {
+  today,
+  pastWeek,
+  older;
+
+  static EpisodeThresholds match(Episode episode) {
+    return EpisodeThresholds.values.firstWhere((element) => (episode.pubDateMillis ?? 1) > element.startTime);
+  }
+
+  int get startTime {
+    final now = DateTime.now();
+    final startOfToday = now.copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+    return switch (this) {
+      today => startOfToday.millisecondsSinceEpoch,
+      // rolling 7 days including today; copyWith rolls day underflow into the previous month/year
+      pastWeek => startOfToday.copyWith(day: now.day - 6).millisecondsSinceEpoch,
+      older => 0,
+    };
+  }
+}
+
 class EpisodesCubit extends Cubit<EpisodesState> {
   late final StreamSubscription<InternetConnectionStatus>? connectionSub;
   final ScrollController scrollController = ScrollController();
@@ -40,21 +61,35 @@ class EpisodesCubit extends Cubit<EpisodesState> {
     try {
       emit(state.copyWith(loading: !refresh));
 
-      final episodes = await client.episodes
-          .getEpisodes(
-            before: refresh ? DateTime.now().millisecondsSinceEpoch : state.cursor,
-            pageSize: refresh && state.episodes.isNotEmpty ? state.episodes.length : _pageSize,
-          )
-          .then((value) => value.data);
+      final episodes =
+          await client.episodes
+              .getEpisodes(
+                before: refresh ? DateTime.now().millisecondsSinceEpoch : state.cursor,
+                pageSize: refresh && state.episodes.isNotEmpty ? state.episodeCount : _pageSize,
+              )
+              .then((value) => value.data) ??
+          [];
 
       if (!isClosed) {
         emit(
-          state.copyWith(episodes: episodes ?? [], cursor: (episodes ?? []).lastOrNull?.pubDateMillis, loading: false),
+          state.copyWith(episodes: _mapEpisodes(episodes), cursor: episodes.lastOrNull?.pubDateMillis, loading: false),
         );
       }
     } catch (e, s) {
       emit(state.copyWith(error: e, stackTrace: s, loading: false));
     }
+  }
+
+  Map<EpisodeThresholds, List<Episode>> _mapEpisodes(List<Episode> episodes) {
+    Map<EpisodeThresholds, List<Episode>> mappedEpisodes = {};
+    for (var e in episodes) {
+      final threshold = EpisodeThresholds.match(e);
+
+      mappedEpisodes.putIfAbsent(threshold, () => []);
+      mappedEpisodes[threshold]?.add(e);
+    }
+
+    return mappedEpisodes;
   }
 
   Future<void> loadMore() async {
@@ -64,11 +99,16 @@ class EpisodesCubit extends Cubit<EpisodesState> {
     try {
       if (state.episodes.isNotEmpty) {
         emit(state.copyWith(loading: true));
-        final episodes = List<Episode>.from(state.episodes);
+        final episodes = Map<EpisodeThresholds, List<Episode>>.from(state.episodes);
 
-        episodes.addAll((await client.episodes.getEpisodes(before: state.cursor, pageSize: _pageSize)).data ?? []);
+        final newEpisodes = (await client.episodes.getEpisodes(before: state.cursor, pageSize: _pageSize)).data ?? [];
+        final mappedNewEpisodes = _mapEpisodes(newEpisodes);
 
-        emit(state.copyWith(episodes: episodes, loading: false, cursor: episodes.lastOrNull?.pubDateMillis));
+        for (var entry in mappedNewEpisodes.entries) {
+          // build a new list, Map.from is shallow and adding to the existing list would also change the previous state
+          episodes[entry.key] = [...?episodes[entry.key], ...entry.value];
+        }
+        emit(state.copyWith(episodes: episodes, loading: false, cursor: newEpisodes.lastOrNull?.pubDateMillis));
       }
     } catch (e, s) {
       emit(state.copyWith(error: e, stackTrace: s, loading: false));
@@ -77,10 +117,17 @@ class EpisodesCubit extends Cubit<EpisodesState> {
 
   Future<void> markEpisodeAsPlayed(Episode episode) async {
     try {
-      List<Episode> episodes = List.from(state.episodes);
-      final index = episodes.indexOf(episode);
-      if (index != -1) {
-        episodes[index] = episode.copyWith(progress: 1);
+      Map<EpisodeThresholds, List<Episode>> episodes = Map.from(state.episodes);
+      // search every group rather than using EpisodeThresholds.match, the thresholds move with the clock
+      // so the episode may no longer match the group it was put in when loaded
+      for (final MapEntry(key: threshold, value: list) in state.episodes.entries) {
+        final index = list.indexWhere((e) => e.id == episode.id);
+        if (index != -1) {
+          // copy the list, Map.from is shallow and mutating the existing list would also change the previous state
+          episodes[threshold] = List.of(list)
+            ..[index] = episode.copyWith(progress: episode.durationSeconds?.toDouble());
+          break;
+        }
       }
       emit(state.copyWith(episodes: episodes));
       await client.episodes.setProgress(
@@ -100,12 +147,12 @@ class EpisodesCubit extends Cubit<EpisodesState> {
     if (event == .connected || event == .slow) {
       getEpisodes(refresh: true);
     } else {
-      emit(state.copyWith(episodes: []));
+      emit(state.copyWith(episodes: {}));
     }
   }
 
   void onScrollChange() {
-    if (scrollController.position.extentAfter < 300 && state.episodes.length % _pageSize == 0) {
+    if (scrollController.position.extentAfter < 300 && state.episodeCount % _pageSize == 0) {
       EasyDebounce.debounce('load-more-episodes', Duration(milliseconds: 250), loadMore);
     }
   }
@@ -116,9 +163,13 @@ sealed class EpisodesState with _$EpisodesState implements WithError {
   @Implements<WithError>()
   const factory EpisodesState({
     @Default(false) bool loading,
-    @Default([]) List<Episode> episodes,
+    @Default({}) Map<EpisodeThresholds, List<Episode>> episodes,
     int? cursor,
     dynamic error,
     StackTrace? stackTrace,
   }) = _EpisodesState;
+
+  const EpisodesState._();
+
+  int get episodeCount => episodes.values.fold(0, (count, list) => count + list.length);
 }

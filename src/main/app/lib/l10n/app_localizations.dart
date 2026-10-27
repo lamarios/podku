@@ -432,6 +432,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Summarize {minutes, plural, =1{the last minute} other{last {minutes} minutes}}'**
   String getPastNMinutesSummary(num minutes);
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @pastSevenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Past 7 days'**
+  String get pastSevenDays;
+
+  /// No description provided for @older.
+  ///
+  /// In en, this message translates to:
+  /// **'Older'**
+  String get older;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get loadMore;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get logout;
+
+  /// No description provided for @continuePlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue listening'**
+  String get continuePlaying;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
