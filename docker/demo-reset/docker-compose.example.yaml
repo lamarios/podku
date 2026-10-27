@@ -1,0 +1,23 @@
+# Add the demo-reset service next to the demo's podku + postgres services.
+# It runs cleanup.sql every day at 04:00 (in the TZ below).
+services:
+  demo-reset:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      TZ: UTC # e.g. Asia/Singapore
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: podku
+      PGUSER: postgres
+      PGPASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./demo-reset/cleanup.sql:/cleanup.sql:ro
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo '0 4 * * * psql -v ON_ERROR_STOP=1 -f /cleanup.sql' | crontab -
+        exec crond -f -l 2

@@ -176,6 +176,50 @@
     .shot-card.phone{max-width:280px;margin:0 auto;}
     .shot-card.wide img{width:100%;height:auto;display:block;}
 
+    /* ---------- Try it ---------- */
+    .try-toolbar{
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+      margin-bottom:22px;
+    }
+    .seg{
+      display:inline-flex;padding:4px;gap:4px;border-radius:100px;
+      background:rgba(255,255,255,0.03);border:1px solid var(--panel-line);
+    }
+    .seg button{
+      font:inherit;font-size:13.5px;font-weight:500;color:var(--text-dim);
+      background:none;border:0;cursor:pointer;
+      padding:7px 16px;border-radius:100px;
+      transition:background .15s ease, color .15s ease;
+    }
+    .seg button[aria-pressed="true"]{background:var(--teal-mid);color:#0a1c1a;}
+    .try-newtab{font-size:14px;color:var(--text-dim);text-decoration:none;}
+    .try-newtab:hover{color:var(--teal-bright);}
+    .try-stage{
+      background:var(--panel);border:1px solid var(--panel-line);
+      border-radius:var(--radius-lg);padding:36px 20px;
+      display:flex;justify-content:center;
+    }
+    .try-device{
+      position:relative;width:390px;max-width:100%;height:760px;
+      border-radius:34px;padding:8px;
+      background:#081512;border:1px solid var(--panel-line);
+      box-shadow:0 40px 80px -30px rgba(0,0,0,0.7);
+      transition:width .3s ease, height .3s ease, border-radius .3s ease;
+    }
+    .try-device.tablet{width:1080px;height:720px;border-radius:24px;}
+    .try-device iframe,.try-launch{
+      width:100%;height:100%;border:0;display:block;
+      border-radius:26px;background:var(--bg-mid);
+    }
+    .try-device.tablet iframe,.try-device.tablet .try-launch{border-radius:16px;}
+    .try-launch{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+      text-align:center;padding:24px;cursor:pointer;color:var(--text);font:inherit;
+    }
+    .try-launch img{width:64px;height:64px;}
+    .try-launch .hint{font-size:13px;color:var(--text-faint);max-width:280px;}
+    .try-note{margin-top:16px;font-size:13px;color:var(--text-faint);text-align:center;}
+
     /* ---------- Features ---------- */
     .feature-grid{
       display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
@@ -248,6 +292,8 @@
       .navlinks .textlink span.label{display:none;}
       .cta-panel{padding:36px 22px;}
       .hero-eq{display:none;}
+      .seg{display:none;}
+      .try-device,.try-device.tablet{width:390px;height:min(760px,80vh);border-radius:34px;}
     }
     @media (max-width:600px){
       .wrap,.nav,.hero{padding-left:20px;padding-right:20px;}
@@ -273,6 +319,9 @@
       <a class="textlink" href="https://github.com/lamarios/podku" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.27 7.77 10.77.57.1.78-.25.78-.55v-2.14c-3.16.69-3.83-1.36-3.83-1.36-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.65 1.24 3.3.95.1-.73.4-1.24.72-1.53-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.05-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.13 1.16.91-.25 1.88-.38 2.85-.38.97 0 1.94.13 2.85.38 2.17-1.47 3.13-1.16 3.13-1.16.62 1.57.23 2.73.11 3.02.73.8 1.17 1.81 1.17 3.05 0 4.35-2.65 5.31-5.18 5.59.41.35.77 1.04.77 2.1v3.11c0 .3.21.66.79.55 4.5-1.5 7.76-5.75 7.76-10.77C23.25 5.48 18.27.5 12 .5z"/></svg>
         <span class="label">GitHub</span>
+      </a>
+      <a href="#try" class="textlink">
+        Try it
       </a>
       <a href="./documentation"class="textlink" aria-disabled="true">
         Docs
@@ -306,6 +355,7 @@
           View source on GitHub
         </a>
       </div>
+      <p style="margin:0 0 22px;"><a class="try-newtab" href="#try">▶ Or try it right now in your browser — no install →</a></p>
       <div class="hero-meta">
         <span>GPL-3.0 licensed</span><span class="dot"></span>
         <span>Self-hosted</span><span class="dot"></span>
@@ -324,6 +374,31 @@
         <span style="height:60%"></span>
         <span style="height:35%"></span>
         <span style="height:75%"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRY IT ================= -->
+  <section class="wrap" id="try">
+    <div class="section-head">
+      <p class="eyebrow">TRY IT</p>
+      <h2>Take it for a spin</h2>
+      <p>This is the real Podku web app, connected to a public demo server. Browse, subscribe, and play — nothing to install.</p>
+    </div>
+    <div class="try-toolbar">
+      <div class="seg" role="group" aria-label="Preview size">
+        <button type="button" data-device="phone" aria-pressed="true">Phone</button>
+        <button type="button" data-device="tablet" aria-pressed="false">Tablet</button>
+      </div>
+      <a class="try-newtab" href="https://podku.ftpix.com" target="_blank" rel="noopener">Open the demo in a new tab ↗</a>
+    </div>
+    <div class="try-stage">
+      <div class="try-device" id="try-device">
+        <button type="button" class="try-launch" id="try-launch">
+          <img src="assets/icon.svg" alt="">
+          <span class="btn btn-primary">▶ Launch the demo</span>
+          <span class="hint">Loads the full app (a few MB). The demo server is shared and reset from time to time.</span>
+        </button>
       </div>
     </div>
   </section>
@@ -472,5 +547,29 @@
   </div>
 </footer>
 
+<script>
+  (function () {
+    var device = document.getElementById('try-device');
+    var launch = document.getElementById('try-launch');
+
+    // Only load the app on demand: the WASM bundle is heavy and shouldn't slow down the landing page.
+    launch.addEventListener('click', function () {
+      var frame = document.createElement('iframe');
+      frame.src = 'https://podku.ftpix.com';
+      frame.title = 'Podku demo';
+      frame.allow = 'autoplay; fullscreen; clipboard-write';
+      device.replaceChild(frame, launch);
+    });
+
+    document.querySelectorAll('.seg button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.seg button').forEach(function (b) {
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        device.classList.toggle('tablet', btn.dataset.device === 'tablet');
+      });
+    });
+  })();
+</script>
 </body>
 </html>
