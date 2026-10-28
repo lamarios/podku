@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/episodes/states/continue_playing.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/continue_playing.dart';
 import 'package:podku/episodes/views/components/episode_in_grid.dart';
@@ -186,8 +187,11 @@ class EpisodeScreen extends StatelessWidget {
     final isMobile = BreakPoint.of(context) == .mobile;
     final colors = M3ETheme.of(context).colorScheme;
     final locals = AppLocalizations.of(context)!;
-    return BlocProvider(
-      create: (context) => EpisodesCubit(EpisodesState()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => EpisodesCubit(EpisodesState())),
+        BlocProvider(create: (context) => ContinuePlayingCubit(ContinuePlayingState())),
+      ],
       child: BlocBuilder<EpisodesCubit, EpisodesState>(
         builder: (context, state) {
           final hasMore = !state.loading && state.episodes.isNotEmpty && state.episodeCount % 100 == 0;
@@ -195,17 +199,26 @@ class EpisodeScreen extends StatelessWidget {
             listeners: [
               BlocListener<HomeCubit, HomeState>(
                 listenWhen: (previous, current) => current.selectedIndex == 0,
-                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
+                listener: (context, state) {
+                  context.read<EpisodesCubit>().getEpisodes(refresh: true);
+                  context.read<ContinuePlayingCubit>().getEpisodes(loading: false);
+                },
               ),
               BlocListener<PlayerCubit, PlayerState>(
                 listenWhen: (previous, current) => previous.episode != current.episode,
-                listener: (context, state) => context.read<EpisodesCubit>().getEpisodes(refresh: true),
+                listener: (context, state) {
+                  context.read<EpisodesCubit>().getEpisodes(refresh: true);
+                  context.read<ContinuePlayingCubit>().getEpisodes(loading: false);
+                },
               ),
             ],
             child: ErrorHandler<EpisodesCubit, EpisodesState>(
               showAsSnack: true,
               child: RefreshIndicator(
-                onRefresh: () => context.read<EpisodesCubit>().getEpisodes(refresh: true),
+                onRefresh: () async {
+                  context.read<EpisodesCubit>().getEpisodes(refresh: true);
+                  context.read<ContinuePlayingCubit>().getEpisodes(loading: true);
+                },
                 child: CustomScrollView(
                   controller: context.read<EpisodesCubit>().scrollController,
                   slivers: [

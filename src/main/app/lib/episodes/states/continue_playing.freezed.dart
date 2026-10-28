@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ContinuePlayingState {
 
- List<Episode> get episodes; bool get loading;
+ List<Episode> get episodes; bool get loading; dynamic get error; StackTrace? get stackTrace;
 /// Create a copy of ContinuePlayingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ContinuePlayingStateCopyWith<ContinuePlayingState> get copyWith => _$ContinuePl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContinuePlayingState&&const DeepCollectionEquality().equals(other.episodes, episodes)&&(identical(other.loading, loading) || other.loading == loading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContinuePlayingState&&const DeepCollectionEquality().equals(other.episodes, episodes)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(episodes),loading);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(episodes),loading,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'ContinuePlayingState(episodes: $episodes, loading: $loading)';
+  return 'ContinuePlayingState(episodes: $episodes, loading: $loading, error: $error, stackTrace: $stackTrace)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ContinuePlayingStateCopyWith<$Res>  {
   factory $ContinuePlayingStateCopyWith(ContinuePlayingState value, $Res Function(ContinuePlayingState) _then) = _$ContinuePlayingStateCopyWithImpl;
 @useResult
 $Res call({
- List<Episode> episodes, bool loading
+ List<Episode> episodes, bool loading, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -62,11 +62,13 @@ class _$ContinuePlayingStateCopyWithImpl<$Res>
 
 /// Create a copy of ContinuePlayingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? episodes = null,Object? loading = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? episodes = null,Object? loading = null,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_self.copyWith(
 episodes: null == episodes ? _self.episodes : episodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace?,
   ));
 }
 
@@ -148,10 +150,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Episode> episodes,  bool loading)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Episode> episodes,  bool loading,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ContinuePlayingState() when $default != null:
-return $default(_that.episodes,_that.loading);case _:
+return $default(_that.episodes,_that.loading,_that.error,_that.stackTrace);case _:
   return orElse();
 
 }
@@ -169,10 +171,10 @@ return $default(_that.episodes,_that.loading);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Episode> episodes,  bool loading)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Episode> episodes,  bool loading,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
 switch (_that) {
 case _ContinuePlayingState():
-return $default(_that.episodes,_that.loading);}
+return $default(_that.episodes,_that.loading,_that.error,_that.stackTrace);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +188,10 @@ return $default(_that.episodes,_that.loading);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Episode> episodes,  bool loading)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Episode> episodes,  bool loading,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
 switch (_that) {
 case _ContinuePlayingState() when $default != null:
-return $default(_that.episodes,_that.loading);case _:
+return $default(_that.episodes,_that.loading,_that.error,_that.stackTrace);case _:
   return null;
 
 }
@@ -200,8 +202,8 @@ return $default(_that.episodes,_that.loading);case _:
 /// @nodoc
 
 
-class _ContinuePlayingState implements ContinuePlayingState {
-  const _ContinuePlayingState({final  List<Episode> episodes = const [], this.loading = true}): _episodes = episodes;
+class _ContinuePlayingState implements ContinuePlayingState, WithError {
+  const _ContinuePlayingState({final  List<Episode> episodes = const [], this.loading = true, this.error, this.stackTrace}): _episodes = episodes;
   
 
  final  List<Episode> _episodes;
@@ -212,6 +214,8 @@ class _ContinuePlayingState implements ContinuePlayingState {
 }
 
 @override@JsonKey() final  bool loading;
+@override final  dynamic error;
+@override final  StackTrace? stackTrace;
 
 /// Create a copy of ContinuePlayingState
 /// with the given fields replaced by the non-null parameter values.
@@ -223,16 +227,16 @@ _$ContinuePlayingStateCopyWith<_ContinuePlayingState> get copyWith => __$Continu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContinuePlayingState&&const DeepCollectionEquality().equals(other._episodes, _episodes)&&(identical(other.loading, loading) || other.loading == loading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContinuePlayingState&&const DeepCollectionEquality().equals(other._episodes, _episodes)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_episodes),loading);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_episodes),loading,const DeepCollectionEquality().hash(error),stackTrace);
 
 @override
 String toString() {
-  return 'ContinuePlayingState(episodes: $episodes, loading: $loading)';
+  return 'ContinuePlayingState(episodes: $episodes, loading: $loading, error: $error, stackTrace: $stackTrace)';
 }
 
 
@@ -243,7 +247,7 @@ abstract mixin class _$ContinuePlayingStateCopyWith<$Res> implements $ContinuePl
   factory _$ContinuePlayingStateCopyWith(_ContinuePlayingState value, $Res Function(_ContinuePlayingState) _then) = __$ContinuePlayingStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<Episode> episodes, bool loading
+ List<Episode> episodes, bool loading, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -260,11 +264,13 @@ class __$ContinuePlayingStateCopyWithImpl<$Res>
 
 /// Create a copy of ContinuePlayingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? episodes = null,Object? loading = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? episodes = null,Object? loading = null,Object? error = freezed,Object? stackTrace = freezed,}) {
   return _then(_ContinuePlayingState(
 episodes: null == episodes ? _self._episodes : episodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace?,
   ));
 }
 

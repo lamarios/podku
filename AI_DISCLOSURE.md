@@ -1,16 +1,6 @@
 # AI Disclosure
 
-Most of the code has been written by hand some things have been done using agents, the list of fully AI generated code is listed below.
-LLM chat bots(claude, chatgpt) have been used to help finding a solution to some problems without simply copy/pasting it's output.
-
-# List of tasks implemented by AI
-
-- The app website (https://lamarios.github.io/podku/)
-- Generated Javadoc for the backend code
-- Implemented backend transcript parsers
-- Implemented backend podcast feed parser and iTunes search
-- Implemented backend FastUrlCrypto
-- Implemented first batch of unit tests for the backend, frontend and podkunnect
-- Setup necessary stuff to build the desktop application, flake and flatpak build
-- Reworked the backend podcast refresh flow (transaction handling, feed merging, ETag support, timeouts, episode processing retries) and its unit tests
-- Fixed a websocket session memory leak
+Most of the code has been written by hand some things have been done using agents, especially the annoying/boring stuff.
+Estimated split: 
+ - Runtime code 70% by hand / 30% coding agent
+ - Unit tests: 10% by hand / 90% coding agent

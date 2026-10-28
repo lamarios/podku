@@ -488,6 +488,7 @@ public class WebSocketSessionManager {
                             episode.getTitle(),
                             newPlayerStatus.position());
                         episode.setProgress(newPlayerStatus.position());
+                        episode.setProgressUpdated(System.currentTimeMillis());
                         episodeRepository.save(episode);
                       }));
     }
