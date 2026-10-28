@@ -123,7 +123,10 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
               var m3eThemeData = M3EThemeData.fromMaterial(Theme.of(context));
-              return M3ETheme(data: m3eThemeData, autoTheming: true, dynamicColoring: !kIsWeb, child: child!);
+              // MaterialApp already resolves light/dark and applies dynamic colors (with the adjusted surface), so
+              // M3ETheme must only mirror it. autoTheming regenerates the dark scheme from the primary color and
+              // dynamicColoring refetches the system colors, both drop the adjusted surface and break the match
+              return M3ETheme(data: m3eThemeData, child: child!);
             },
             darkTheme: ThemeData(
               colorScheme: darkColorScheme,

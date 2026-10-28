@@ -26,6 +26,7 @@ Name | Type | Description | Notes
 **link** | **String** |  | [optional] 
 **processed** | **bool** |  | [optional] 
 **timeUpdated** | **int** |  | [optional] 
+**progressUpdated** | **int** |  | [optional] 
 **audioUrlEncrypted** | **String** |  | [optional] 
 **chapters** | [**List&lt;Chapter&gt;**](Chapter.md) |  | [optional] 
 **files** | [**List&lt;EpisodeFile&gt;**](EpisodeFile.md) |  | [optional] 

@@ -97,6 +97,11 @@ void main() {
       // TODO
     });
 
+    // int progressUpdated
+    test('to test the property `progressUpdated`', () async {
+      // TODO
+    });
+
     // String audioUrlEncrypted
     test('to test the property `audioUrlEncrypted`', () async {
       // TODO

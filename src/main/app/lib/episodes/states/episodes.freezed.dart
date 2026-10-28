@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EpisodesState {
 
- bool get loading; List<Episode> get episodes; int? get cursor; dynamic get error; StackTrace? get stackTrace;
+ bool get loading; Map<EpisodeThresholds, List<Episode>> get episodes; int? get cursor; dynamic get error; StackTrace? get stackTrace;
 /// Create a copy of EpisodesState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $EpisodesStateCopyWith<$Res>  {
   factory $EpisodesStateCopyWith(EpisodesState value, $Res Function(EpisodesState) _then) = _$EpisodesStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, List<Episode> episodes, int? cursor, dynamic error, StackTrace? stackTrace
+ bool loading, Map<EpisodeThresholds, List<Episode>> episodes, int? cursor, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -66,7 +66,7 @@ class _$EpisodesStateCopyWithImpl<$Res>
   return _then(_self.copyWith(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episodes: null == episodes ? _self.episodes : episodes // ignore: cast_nullable_to_non_nullable
-as List<Episode>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
+as Map<EpisodeThresholds, List<Episode>>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
 as int?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
 as StackTrace?,
@@ -151,7 +151,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  List<Episode> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  Map<EpisodeThresholds, List<Episode>> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EpisodesState() when $default != null:
 return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stackTrace);case _:
@@ -172,7 +172,7 @@ return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stac
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  List<Episode> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  Map<EpisodeThresholds, List<Episode>> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)  $default,) {final _that = this;
 switch (_that) {
 case _EpisodesState():
 return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stackTrace);}
@@ -189,7 +189,7 @@ return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stac
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  List<Episode> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  Map<EpisodeThresholds, List<Episode>> episodes,  int? cursor,  dynamic error,  StackTrace? stackTrace)?  $default,) {final _that = this;
 switch (_that) {
 case _EpisodesState() when $default != null:
 return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stackTrace);case _:
@@ -203,16 +203,16 @@ return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stac
 /// @nodoc
 
 
-class _EpisodesState implements EpisodesState, WithError {
-  const _EpisodesState({this.loading = false, final  List<Episode> episodes = const [], this.cursor, this.error, this.stackTrace}): _episodes = episodes;
+class _EpisodesState extends EpisodesState implements WithError {
+  const _EpisodesState({this.loading = false, final  Map<EpisodeThresholds, List<Episode>> episodes = const {}, this.cursor, this.error, this.stackTrace}): _episodes = episodes,super._();
   
 
 @override@JsonKey() final  bool loading;
- final  List<Episode> _episodes;
-@override@JsonKey() List<Episode> get episodes {
-  if (_episodes is EqualUnmodifiableListView) return _episodes;
+ final  Map<EpisodeThresholds, List<Episode>> _episodes;
+@override@JsonKey() Map<EpisodeThresholds, List<Episode>> get episodes {
+  if (_episodes is EqualUnmodifiableMapView) return _episodes;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_episodes);
+  return EqualUnmodifiableMapView(_episodes);
 }
 
 @override final  int? cursor;
@@ -249,7 +249,7 @@ abstract mixin class _$EpisodesStateCopyWith<$Res> implements $EpisodesStateCopy
   factory _$EpisodesStateCopyWith(_EpisodesState value, $Res Function(_EpisodesState) _then) = __$EpisodesStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, List<Episode> episodes, int? cursor, dynamic error, StackTrace? stackTrace
+ bool loading, Map<EpisodeThresholds, List<Episode>> episodes, int? cursor, dynamic error, StackTrace? stackTrace
 });
 
 
@@ -270,7 +270,7 @@ class __$EpisodesStateCopyWithImpl<$Res>
   return _then(_EpisodesState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episodes: null == episodes ? _self._episodes : episodes // ignore: cast_nullable_to_non_nullable
-as List<Episode>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
+as Map<EpisodeThresholds, List<Episode>>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
 as int?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as dynamic,stackTrace: freezed == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
 as StackTrace?,

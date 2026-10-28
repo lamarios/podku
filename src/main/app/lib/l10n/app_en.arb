@@ -55,5 +55,11 @@
   "noBookmarksEnd": "when playing a podcast.",
   "past5MinutesSummary": "Last 5 minutes summary",
   "getPast5MinutesSummary": "Summarize last 5 minutes",
-  "getPastNMinutesSummary": "Summarize {minutes, plural, =1{the last minute} other{last {minutes} minutes}}"
+  "getPastNMinutesSummary": "Summarize {minutes, plural, =1{the last minute} other{last {minutes} minutes}}",
+  "today": "Today",
+  "pastSevenDays": "Past 7 days",
+  "older": "Older",
+  "loadMore": "Load more",
+  "logout": "Log out",
+  "continuePlaying": "Continue listening"
 }

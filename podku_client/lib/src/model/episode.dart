@@ -60,6 +60,8 @@ class Episode {
 
      this.timeUpdated,
 
+     this.progressUpdated,
+
      this.audioUrlEncrypted,
 
      this.chapters,
@@ -289,6 +291,18 @@ class Episode {
 
   @JsonKey(
     
+    name: r'progressUpdated',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final int? progressUpdated;
+
+
+
+  @JsonKey(
+    
     name: r'audioUrlEncrypted',
     required: false,
     includeIfNull: false,
@@ -369,6 +383,7 @@ class Episode {
       other.link == link &&
       other.processed == processed &&
       other.timeUpdated == timeUpdated &&
+      other.progressUpdated == progressUpdated &&
       other.audioUrlEncrypted == audioUrlEncrypted &&
       other.chapters == chapters &&
       other.files == files &&
@@ -395,6 +410,7 @@ class Episode {
         link.hashCode +
         processed.hashCode +
         timeUpdated.hashCode +
+        progressUpdated.hashCode +
         audioUrlEncrypted.hashCode +
         chapters.hashCode +
         files.hashCode +

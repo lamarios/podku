@@ -10,6 +10,7 @@ import 'package:podku/episodes/views/components/episode_in_list.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/views/components/sliver_grid_delegate_with_min_cross_axis_extent.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/swite_action_button.dart';
 
@@ -66,8 +67,8 @@ class OfflineEpisodesScreen extends StatelessWidget {
                           },
                         )
                       : SliverGrid.builder(
-                          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: EpisodeInGrid.crossAxisExtent,
+                          gridDelegate: SliverGridDelegateWithMinCrossAxisExtent(
+                            minCrossAxisExtent: EpisodeInGrid.minCrossAxisExtent,
                             mainAxisExtent: EpisodeInGrid.mainAxisExtent,
                             crossAxisSpacing: EpisodeInGrid.crossAxisSpacing,
                             mainAxisSpacing: EpisodeInGrid.mainAxisSpacing,

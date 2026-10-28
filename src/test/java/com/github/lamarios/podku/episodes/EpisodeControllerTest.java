@@ -105,6 +105,48 @@ public class EpisodeControllerTest extends TestContainerTest {
   }
 
   @Test
+  public void testGetInProgressEpisodes() throws InterruptedException {
+    List<Episode> episodes = episodeController.getEpisodes(null, 20);
+    Episode ep1 = episodes.get(0);
+    Episode ep2 = episodes.get(1);
+
+    assertTrue(episodeController.getInProgressEpisodes(10).isEmpty());
+
+    episodeController.setProgress(
+        new PlaybackProgress(ep1.getId().toString(), 100.0, "test-player", false));
+    // make sure the two progress updates don't share the same millisecond
+    Thread.sleep(5);
+    episodeController.setProgress(
+        new PlaybackProgress(ep2.getId().toString(), 50.0, "test-player", false));
+
+    // most recently listened first
+    List<Episode> inProgress = episodeController.getInProgressEpisodes(10);
+    assertEquals(
+        List.of(ep2.getId(), ep1.getId()), inProgress.stream().map(Episode::getId).toList());
+    assertNotNull(inProgress.get(0).getProgressUpdated());
+
+    assertEquals(1, episodeController.getInProgressEpisodes(1).size());
+
+    // less than 30 seconds left counts as finished
+    episodeController.setProgress(
+        new PlaybackProgress(
+            ep2.getId().toString(), ep2.getDurationSeconds() - 10.0, "test-player", false));
+    inProgress = episodeController.getInProgressEpisodes(10);
+    assertEquals(List.of(ep1.getId()), inProgress.stream().map(Episode::getId).toList());
+
+    // offline progress is ordered by the time it happened, not the time it was synced
+    OfflineProgress offline = new OfflineProgress();
+    offline.setProgress(300L);
+    offline.setTimeOfProgress(System.currentTimeMillis() + 1000);
+    episodeController.updateProgresses(Map.of(ep2.getId().toString(), offline));
+
+    inProgress = episodeController.getInProgressEpisodes(10);
+    assertEquals(
+        List.of(ep2.getId(), ep1.getId()), inProgress.stream().map(Episode::getId).toList());
+    assertEquals(offline.getTimeOfProgress(), inProgress.get(0).getProgressUpdated());
+  }
+
+  @Test
   public void testStartPlayback() {
     List<Episode> episodes = episodeController.getEpisodes(null, 20);
     assertFalse(episodes.isEmpty());

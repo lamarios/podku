@@ -43,6 +43,8 @@ abstract class _$EpisodeCWProxy {
 
   Episode timeUpdated(int? timeUpdated);
 
+  Episode progressUpdated(int? progressUpdated);
+
   Episode audioUrlEncrypted(String? audioUrlEncrypted);
 
   Episode chapters(List<Chapter>? chapters);
@@ -78,6 +80,7 @@ abstract class _$EpisodeCWProxy {
     String? link,
     bool? processed,
     int? timeUpdated,
+    int? progressUpdated,
     String? audioUrlEncrypted,
     List<Chapter>? chapters,
     List<EpisodeFile>? files,
@@ -151,6 +154,10 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
   Episode timeUpdated(int? timeUpdated) => this(timeUpdated: timeUpdated);
 
   @override
+  Episode progressUpdated(int? progressUpdated) =>
+      this(progressUpdated: progressUpdated);
+
+  @override
   Episode audioUrlEncrypted(String? audioUrlEncrypted) =>
       this(audioUrlEncrypted: audioUrlEncrypted);
 
@@ -192,6 +199,7 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
     Object? link = const $CopyWithPlaceholder(),
     Object? processed = const $CopyWithPlaceholder(),
     Object? timeUpdated = const $CopyWithPlaceholder(),
+    Object? progressUpdated = const $CopyWithPlaceholder(),
     Object? audioUrlEncrypted = const $CopyWithPlaceholder(),
     Object? chapters = const $CopyWithPlaceholder(),
     Object? files = const $CopyWithPlaceholder(),
@@ -271,6 +279,10 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
           ? _value.timeUpdated
           // ignore: cast_nullable_to_non_nullable
           : timeUpdated as int?,
+      progressUpdated: progressUpdated == const $CopyWithPlaceholder()
+          ? _value.progressUpdated
+          // ignore: cast_nullable_to_non_nullable
+          : progressUpdated as int?,
       audioUrlEncrypted: audioUrlEncrypted == const $CopyWithPlaceholder()
           ? _value.audioUrlEncrypted
           // ignore: cast_nullable_to_non_nullable
@@ -339,6 +351,10 @@ Episode _$EpisodeFromJson(
     link: $checkedConvert('link', (v) => v as String?),
     processed: $checkedConvert('processed', (v) => v as bool?),
     timeUpdated: $checkedConvert('timeUpdated', (v) => (v as num?)?.toInt()),
+    progressUpdated: $checkedConvert(
+      'progressUpdated',
+      (v) => (v as num?)?.toInt(),
+    ),
     audioUrlEncrypted: $checkedConvert(
       'audioUrlEncrypted',
       (v) => v as String?,
@@ -389,6 +405,7 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
   'link': ?instance.link,
   'processed': ?instance.processed,
   'timeUpdated': ?instance.timeUpdated,
+  'progressUpdated': ?instance.progressUpdated,
   'audioUrlEncrypted': ?instance.audioUrlEncrypted,
   'chapters': ?instance.chapters?.map((e) => e.toJson()).toList(),
   'files': ?instance.files?.map((e) => e.toJson()).toList(),

@@ -31,14 +31,48 @@ void main() {
       cubit.stream,
       emitsThrough(
         predicate<EpisodesState>(
-          (s) => s.episodes.length == 2 && s.episodes[0].title == 'Episode One',
+          (s) => s.episodeCount == 2 && s.episodes[EpisodeThresholds.older]?[0].title == 'Episode One',
         ),
       ),
     );
 
-    expect(cubit.state.episodes.length, 2);
-    expect(cubit.state.episodes[1].title, 'Episode Two');
+    expect(cubit.state.episodeCount, 2);
+    expect(cubit.state.episodes[EpisodeThresholds.older]![1].title, 'Episode Two');
     expect(cubit.state.loading, isFalse);
+    await cubit.close();
+  });
+
+  test('EpisodesCubit groups episodes by time frame', () async {
+    final now = DateTime.now();
+    final today = createMockEpisodeJson(id: 'ep-1', title: 'Today', pubDateMillis: now.millisecondsSinceEpoch);
+    final pastWeek = createMockEpisodeJson(
+      id: 'ep-2',
+      title: 'Past week',
+      pubDateMillis: now.subtract(const Duration(days: 3)).millisecondsSinceEpoch,
+    );
+    final older = createMockEpisodeJson(
+      id: 'ep-3',
+      title: 'Older',
+      pubDateMillis: now.subtract(const Duration(days: 30)).millisecondsSinceEpoch,
+    );
+
+    nock(testServerUrl).get(startsWith('/api/episodes'))
+      .reply(
+        200,
+        jsonEncode([today, pastWeek, older]),
+        headers: {'content-type': 'application/json'},
+      );
+
+    final cubit = EpisodesCubit(const EpisodesState());
+    await expectLater(
+      cubit.stream,
+      emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 3)),
+    );
+
+    expect(cubit.state.episodes[EpisodeThresholds.today]!.map((e) => e.title), ['Today']);
+    expect(cubit.state.episodes[EpisodeThresholds.pastWeek]!.map((e) => e.title), ['Past week']);
+    expect(cubit.state.episodes[EpisodeThresholds.older]!.map((e) => e.title), ['Older']);
+    expect(cubit.state.cursor, older['pubDateMillis']);
     await cubit.close();
   });
 
@@ -57,8 +91,9 @@ void main() {
     final cubit = EpisodesCubit(const EpisodesState());
     await expectLater(
       cubit.stream,
-      emitsThrough(predicate<EpisodesState>((s) => s.episodes.length == 1)),
+      emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 1)),
     );
+    final previousOlder = cubit.state.episodes[EpisodeThresholds.older]!;
 
     // Load more mock
     nock(testServerUrl).get(startsWith('/api/episodes'))
@@ -70,14 +105,17 @@ void main() {
 
     final loadMoreFuture = expectLater(
       cubit.stream,
-      emitsThrough(predicate<EpisodesState>((s) => s.episodes.length == 2)),
+      emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 2)),
     );
 
     await cubit.loadMore();
     await loadMoreFuture;
 
-    expect(cubit.state.episodes.length, 2);
-    expect(cubit.state.episodes.last.title, 'Episode Two');
+    expect(cubit.state.episodeCount, 2);
+    expect(cubit.state.episodes[EpisodeThresholds.older]!.last.title, 'Episode Two');
+    expect(cubit.state.cursor, 500);
+    // previous state must not have been mutated
+    expect(previousOlder.length, 1);
     await cubit.close();
   });
 }

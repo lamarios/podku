@@ -53,7 +53,10 @@ class ServerSetupScreen extends StatelessWidget {
                           crossAxisAlignment: .stretch,
                           mainAxisAlignment: .center,
                           children: [
-                            SvgPicture.asset('assets/podku-icon-no-background.svg', width: 200, height: 200),
+                            Padding(
+                              padding: .all(pu6),
+                              child: SvgPicture.asset('assets/podku-icon-no-background.svg', width: 80, height: 80),
+                            ),
                             Text(locals.serverUrl),
                             TextField(controller: cubit.controller),
                             SizedBox(

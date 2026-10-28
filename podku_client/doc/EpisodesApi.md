@@ -11,6 +11,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getEpisode**](EpisodesApi.md#getepisode) | **GET** /api/episodes/{id} | 
 [**getEpisodes**](EpisodesApi.md#getepisodes) | **GET** /api/episodes | 
+[**getInProgressEpisodes**](EpisodesApi.md#getinprogressepisodes) | **GET** /api/episodes/inProgress | 
 [**search2**](EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [**setProgress**](EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [**startPlayback**](EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
@@ -85,6 +86,47 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **before** | **int**|  | [optional] 
  **pageSize** | **int**|  | [optional] [default to 20]
+
+### Return type
+
+[**List&lt;Episode&gt;**](Episode.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getInProgressEpisodes**
+> List<Episode> getInProgressEpisodes(limit)
+
+
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getEpisodesApi();
+final int limit = 56; // int | 
+
+try {
+    final response = api.getInProgressEpisodes(limit);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling EpisodesApi->getInProgressEpisodes: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **limit** | **int**|  | [optional] [default to 10]
 
 ### Return type
 

@@ -197,4 +197,22 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'Summarize $_temp0';
   }
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get pastSevenDays => 'Past 7 days';
+
+  @override
+  String get older => 'Older';
+
+  @override
+  String get loadMore => 'Load more';
+
+  @override
+  String get logout => 'Log out';
+
+  @override
+  String get continuePlaying => 'Continue listening';
 }

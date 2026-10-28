@@ -71,6 +71,7 @@ Class | Method | HTTP request | Description
 [*BookmarksApi*](doc/BookmarksApi.md) | [**saveBookmark**](doc/BookmarksApi.md#savebookmark) | **PUT** /api/bookmarks | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**getEpisode**](doc/EpisodesApi.md#getepisode) | **GET** /api/episodes/{id} | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**getEpisodes**](doc/EpisodesApi.md#getepisodes) | **GET** /api/episodes | 
+[*EpisodesApi*](doc/EpisodesApi.md) | [**getInProgressEpisodes**](doc/EpisodesApi.md#getinprogressepisodes) | **GET** /api/episodes/inProgress | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**search2**](doc/EpisodesApi.md#search2) | **GET** /api/episodes/search | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**setProgress**](doc/EpisodesApi.md#setprogress) | **POST** /api/episodes/setProgress | 
 [*EpisodesApi*](doc/EpisodesApi.md) | [**startPlayback**](doc/EpisodesApi.md#startplayback) | **POST** /api/episodes/startPlayback | 
