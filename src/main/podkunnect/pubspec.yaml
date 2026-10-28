@@ -1,6 +1,6 @@
 name: podkunnect
 description: A sample command-line application.
-version: 1.3.11
+version: 1.4.0
 publish_to: none
 # repository: https://github.com/my_org/my_repo
 executables:
