@@ -23,6 +23,9 @@ if [ ! -d "$REPO/objects" ]; then
   ostree init --mode=archive-z2 --repo="$REPO"
 fi
 
+# git doesn't keep empty folders, recreate the ones ostree expects when the repo comes from a checkout
+mkdir -p "$REPO"/refs/{heads,mirrors,remotes} "$REPO"/{extensions,state,tmp}
+
 flatpak build-import-bundle --no-update-summary --gpg-sign="$GPG_KEY_ID" --gpg-homedir="$GPG_HOMEDIR" "$REPO" "$BUNDLE"
 
 # Only the latest build is kept, older commits stay available in the git history

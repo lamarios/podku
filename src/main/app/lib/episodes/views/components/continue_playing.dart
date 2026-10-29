@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/episodes/states/continue_playing.dart';
 import 'package:podku/episodes/views/components/episode_in_continue_playing.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -21,12 +20,7 @@ class ContinuePlaying extends StatelessWidget {
       showAsSnack: true,
       child: BlocBuilder<ContinuePlayingCubit, ContinuePlayingState>(
         builder: (context, state) {
-          if (state.loading) {
-            return Align(
-              alignment: .centerLeft,
-              child: SizedBox(width: 50, height: 50, child: LoadingIndicator()),
-            );
-          } else if (state.episodes.isEmpty) {
+          if (state.loading || state.episodes.isEmpty) {
             return SizedBox.shrink();
           } else {
             return Column(

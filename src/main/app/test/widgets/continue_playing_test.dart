@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:nock/nock.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/states/continue_playing.dart';
@@ -11,6 +11,7 @@ import 'package:podku/episodes/views/components/episode_in_continue_playing.dart
 import 'package:podku/player/states/player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:snaptest/snaptest.dart';
+
 import '../test_helper.dart';
 
 void main() {
@@ -69,12 +70,10 @@ void main() {
 
     await pumpContinuePlaying(tester);
 
-    expect(find.byType(LoadingIndicator), findsOneWidget);
     expect(find.text('Continue listening'), findsNothing);
 
     await settle(tester);
 
-    expect(find.byType(LoadingIndicator), findsNothing);
   });
 
   testWidgets('ContinuePlaying renders nothing when there are no in progress episodes', (tester) async {
@@ -85,7 +84,6 @@ void main() {
 
     expect(find.text('Continue listening'), findsNothing);
     expect(find.byType(EpisodeInContinuePlaying), findsNothing);
-    expect(find.byType(LoadingIndicator), findsNothing);
   });
 
   testWidgets('ContinuePlaying renders in progress episodes', (tester) async {
@@ -112,7 +110,6 @@ void main() {
     await pumpContinuePlaying(tester);
     await settle(tester);
 
-    expect(find.byType(LoadingIndicator), findsNothing);
     expect(find.text('Continue listening'), findsNothing);
     expect(find.byType(SnackBar), findsOneWidget);
   });
@@ -148,7 +145,6 @@ void main() {
     final refresh = cubit.getEpisodes(loading: false);
     await tester.pump();
 
-    expect(find.byType(LoadingIndicator), findsNothing);
     expect(find.text('Episode One'), findsOneWidget);
 
     await settle(tester);
