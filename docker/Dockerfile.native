@@ -1,0 +1,44 @@
+# GraalVM native image of the backend. The web app must already be built into
+# src/main/resources/public (same as for the JVM image).
+# Built in a container rather than with the nix GraalVM, as a nix built binary is linked against
+# the /nix/store glibc and wouldn't start on a regular distribution.
+FROM ghcr.io/graalvm/native-image-community:25 AS build
+
+ARG MAVEN_VERSION=3.9.11
+ARG BUILD_NUMBER=0
+
+RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+    | tar -xz -C /opt
+ENV PATH=/opt/apache-maven-${MAVEN_VERSION}/bin:$PATH
+
+WORKDIR /build
+COPY pom.xml .
+COPY src/main/java src/main/java
+COPY src/main/resources src/main/resources
+
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -B -q versions:set -DnewVersion=${BUILD_NUMBER} -DgenerateBackupPoms=false \
+    && mvn -B -Pnative -DskipTests native:compile
+
+# native-image writes the JDK native libraries it needs (libawt for ImageIO, ...) next to the
+# binary, they are loaded from the executable's directory at runtime
+RUN mkdir /out && cp target/podku target/*.so /out/
+
+# glibc must be at least the builder's (2.39)
+FROM debian:trixie-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl ca-certificates zlib1g \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /out/ /app/
+
+ADD ./docker/run-native.sh /run.sh
+RUN chmod +x /run.sh
+
+EXPOSE 8080
+
+CMD "./run.sh"
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1

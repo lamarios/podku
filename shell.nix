@@ -136,6 +136,8 @@ pkgs.mkShell {
       dart run tools/setup_git_hooks.dart
     fi
     export JAVA_HOME="${pkgs.jdk25_headless}"
+    # used by native-maven-plugin (mvn -Pnative native:compile) to find native-image
+    export GRAALVM_HOME="${pkgs.graalvmPackages.graalvm-ce}"
 
     flutter config --jdk-dir ${pkgs.jdk21}/lib/openjdk
 

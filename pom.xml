@@ -68,8 +68,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
         </dependency>
         <!-- Source: https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
@@ -77,6 +77,13 @@
             <artifactId>guava</artifactId>
             <version>33.6.0-jre</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- used directly (IOUtils), was only on the classpath through versions-maven-plugin (provided) -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.17.0</version>
         </dependency>
 
         <dependency>
@@ -104,7 +111,6 @@
             <groupId>com.konghq</groupId>
             <artifactId>unirest-java-core</artifactId>
             <version>4.9.0</version>
-            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.konghq/unirest-objectmapper-jackson -->
         <dependency>
@@ -199,6 +205,14 @@
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <buildArgs>
+                        <!-- Without AVX2 in the target, GraalVM skips its SIMD Arrays.sort library which
+                             links glibc's static libm.a and fails with "undefined reference to
+                             _dl_x86_cpu_features" with the nixpkgs GraalVM. Also keeps the binary portable. -->
+                        <buildArg>-march=compatibility</buildArg>
+                    </buildArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

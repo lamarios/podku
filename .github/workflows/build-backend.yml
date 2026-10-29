@@ -87,3 +87,29 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/podku:latest
             ${{ secrets.DOCKER_USERNAME }}/podku:${{ env.TAG_NAME }}
+      # GraalVM native image, compiled inside the Dockerfile (amd64 only). The release step reuses
+      # the build cache of the first one so it isn't compiled twice
+      - name: Build and push native Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          file: docker/Dockerfile.native
+          build-args: |
+            BUILD_NUMBER=${{ github.run_number }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/podku:${{ github.run_number }}-native
+      - name: Build and push native Docker image (Release)
+        uses: docker/build-push-action@v4
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          file: docker/Dockerfile.native
+          build-args: |
+            BUILD_NUMBER=${{ github.run_number }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/podku:latest-native
+            ${{ secrets.DOCKER_USERNAME }}/podku:${{ env.TAG_NAME }}-native
