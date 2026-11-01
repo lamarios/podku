@@ -31,7 +31,8 @@ cleanup:
   - '*.la'
 
 modules:
-  # just_audio plays through libmpv (media_kit) which isn't part of the runtime. Audio only build.
+  # just_audio and the episode videos play through libmpv (media_kit) which isn't part of the runtime. Built without
+  # OpenGL: media_kit_video falls back to software rendering for the videos.
   - name: libass
     config-opts:
       - --disable-static

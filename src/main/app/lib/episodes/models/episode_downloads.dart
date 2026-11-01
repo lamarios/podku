@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:openapi/openapi.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:podku_shared/podku_shared.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 
 extension EpisodeDownloads on Episode {
   static const String episodesFolder = 'episodes';
@@ -31,9 +31,9 @@ extension EpisodeDownloads on Episode {
     return f.listSync().map((f) => f.path).toList();
   }
 
-  String get episodeFile => 'episode${p.extension(Uri.parse(audioFile?.url ?? '').path)}';
+  String get episodeFile => 'episode${p.extension(Uri.parse(listeningFile?.url ?? '').path)}';
 
-  String get episodeTempFile => 'tmp_episode${p.extension(Uri.parse(audioFile?.url ?? '').path)}';
+  String get episodeTempFile => 'tmp_episode${p.extension(Uri.parse(listeningFile?.url ?? '').path)}';
 
   String get imageFile => 'image${p.extension(Uri.parse(podcast?.artworkUrl ?? '').path)}';
 

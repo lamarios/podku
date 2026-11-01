@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:logging/logging.dart';
+import 'package:media_kit/media_kit.dart' as mk;
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_downloads.dart';
 import 'package:podku/episodes/models/episode_url.dart';
@@ -22,37 +25,181 @@ const _autoPodcast = 'podcast-';
 const _autoOfflineList = 'offline';
 const _autoOffline = 'offline-';
 
+/// Plays episodes with two engines: just_audio for listening (background playback, audio focus, interruptions) and
+/// media_kit for watching videos, only used while the video is on screen. Only one engine is active at a time, the
+/// playback controls and the reported playback state follow the active one.
 class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   static final _log = Logger('PodkuAudioHandler');
   final _player = AudioPlayer();
   final StreamController<Duration> durationStream = StreamController.broadcast();
+
+  mk.Player? _videoPlayer;
+  VideoController? _videoController;
+  bool _videoActive = false;
+  String? _videoUrl;
+
+  // switching engines is asynchronous, switches are chained so they never interleave
+  Future<void> _videoSwitch = Future.value();
+
+  /// Whether the episode is currently played as a video.
+  bool get videoActive => _videoActive;
+
+  /// Controller rendering the video, set once a video has been played.
+  VideoController? get videoController => _videoController;
 
   PodkuAudioHandler() {
     init();
   }
 
   void init() {
-    _player.playerStateStream.listen(updatePlayerState);
+    // events of the audio player are ignored while the video player is active, e.g. the audio pausing when the video
+    // takes over
+    _player.playerStateStream.listen((event) {
+      if (!_videoActive) updatePlayerState(event);
+    });
     // _player.bufferedPositionStream.listen(updateBuffering);
-    _player.positionStream.listen(updatePosition);
-    _player.durationStream.listen(updateDuration);
+    _player.positionStream.listen((event) {
+      if (!_videoActive) updatePosition(event);
+    });
+    _player.durationStream.listen((event) {
+      if (!_videoActive) updateDuration(event);
+    });
+  }
+
+  mk.Player get _video {
+    var video = _videoPlayer;
+    if (video == null) {
+      video = mk.Player();
+      _videoController = VideoController(
+        video,
+        configuration: !kIsWeb && Platform.isAndroid && kDebugMode
+            ? const VideoControllerConfiguration(vo: 'mediacodec_embed', hwdec: 'mediacodec')
+            : const VideoControllerConfiguration(),
+      );
+      video.stream.playing.listen((_) => _updateVideoState());
+      video.stream.completed.listen((_) => _updateVideoState());
+      video.stream.buffering.listen((_) => _updateVideoState());
+      video.stream.position.listen((event) {
+        // the position is reported as zero until the media is loaded and seeked to its start position
+        if (_videoActive && video!.state.duration > Duration.zero) updatePosition(event);
+      });
+      video.stream.duration.listen((event) {
+        if (_videoActive && event > Duration.zero) updateDuration(event);
+      });
+      video.stream.error.listen((event) => _log.warning('Video player error: $event'));
+      _videoPlayer = video;
+    }
+    return video;
+  }
+
+  Duration get _position => _videoActive ? _video.state.position : _player.position;
+
+  /// Watches the episode: hands the playback over from the audio player to the video player, at the same position.
+  ///
+  /// [url] is the video URL of the episode currently loaded in the audio player.
+  Future<void> showVideo(String url) => _switchEngine(() async {
+    if (_videoActive && _videoUrl == url) {
+      return;
+    }
+    final position = _player.position;
+    final playing = _player.playing;
+    _log.fine('Switching to video at $position, playing: $playing');
+
+    _videoActive = true;
+    _videoUrl = url;
+    await _player.pause();
+    try {
+      final video = _video;
+      await video.setRate(_player.speed);
+      await video.setVolume(_player.volume * 100);
+      await video.open(mk.Media(url, start: position), play: playing);
+    } catch (e, s) {
+      _log.severe('Failed to play video, going back to audio', e, s);
+      _videoActive = false;
+      _videoUrl = null;
+      if (playing) _player.play();
+    }
+  });
+
+  /// Listens to the episode: hands the playback over from the video player back to the audio player, at the same
+  /// position.
+  Future<void> showAudio() => _switchEngine(() async {
+    if (!_videoActive) {
+      return;
+    }
+    final video = _video;
+    final position = video.state.position;
+    final playing = video.state.playing;
+    _log.fine('Switching to audio at $position, playing: $playing');
+
+    _videoActive = false;
+    _videoUrl = null;
+    await video.stop();
+    await _player.seek(position);
+    playbackState.add(playbackState.value.copyWith(updatePosition: position));
+    if (playing) {
+      // not awaited, just_audio's play only completes once the playback is paused
+      _player.play();
+    }
+  });
+
+  Future<void> _switchEngine(Future<void> Function() switchEngine) {
+    return _videoSwitch = _videoSwitch.then((_) => switchEngine()).catchError((Object e, StackTrace s) {
+      _log.severe('Failed to switch player', e, s);
+    });
+  }
+
+  void _updateVideoState() {
+    if (!_videoActive) {
+      return;
+    }
+    final state = _video.state;
+    playbackState.add(
+      playbackState.value.copyWith(
+        playing: state.playing,
+        controls: [state.playing ? .pause : .play, .rewind, .fastForward],
+        processingState: state.completed
+            ? .completed
+            : state.buffering
+            ? .buffering
+            : .ready,
+      ),
+    );
+  }
+
+  /// Stops the video player, without resuming the audio.
+  Future<void> _stopVideo() async {
+    if (_videoActive) {
+      _videoActive = false;
+      _videoUrl = null;
+      await _videoPlayer?.stop();
+    }
   }
 
   @override
   Future<void> play() async {
     _log.fine('play');
-    _player.play();
+    if (_videoActive) {
+      await _video.play();
+    } else {
+      _player.play();
+    }
   }
 
   @override
   Future<void> pause() async {
     _log.fine('Pause');
-    _player.pause();
+    if (_videoActive) {
+      await _video.pause();
+    } else {
+      _player.pause();
+    }
   }
 
   @override
   Future<void> stop() async {
     _log.fine('stop');
+    await _switchEngine(_stopVideo);
     _player.stop();
     playbackState.add(playbackState.value.copyWith(playing: false, processingState: .completed));
   }
@@ -69,6 +216,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
 
   /// volume: 0 - 100
   Future<void> setVolume(double volume) async {
+    await _videoPlayer?.setVolume(volume);
     return _player.setVolume((volume / 100));
   }
 
@@ -220,27 +368,37 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
     if (position.isNegative) {
       return;
     }
-    _player.seek(position);
+    _seek(position);
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }
 
   @override
   Future<void> fastForward() async {
-    var position = (_player.position) + Duration(seconds: 30);
-    _player.seek(position);
+    var position = _position + Duration(seconds: 30);
+    _seek(position);
 
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
   }
 
   @override
   Future<void> rewind() async {
-    var position = (_player.position) + Duration(seconds: -10);
-    _player.seek(position);
+    var position = _position + Duration(seconds: -10);
+    _seek(position);
     playbackState.add(playbackState.value.copyWith(updatePosition: position));
+  }
+
+  void _seek(Duration position) {
+    if (_videoActive) {
+      _video.seek(position);
+    } else {
+      _player.seek(position);
+    }
   }
 
   Future<void> playEpisode(Episode episode, {Duration? initialPosition, bool offline = false}) async {
     playbackState.add(playbackState.value.copyWith(processingState: .loading));
+    // a new episode always starts on the audio player, the video is shown on demand
+    await _switchEngine(_stopVideo);
 
     // we should try to get the latest version of the episode for up to date progress
     if (!offline) {
@@ -359,6 +517,7 @@ class PodkuAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> setSpeed(double speed) async {
     _player.setSpeed(speed);
+    _videoPlayer?.setRate(speed);
     playbackState.add(playbackState.value.copyWith(speed: speed));
   }
 

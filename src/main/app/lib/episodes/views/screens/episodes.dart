@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/episodes/states/continue_playing.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/continue_playing.dart';
@@ -22,7 +23,6 @@ import 'package:podku/utils/views/components/sliver_grid_delegate_with_min_cross
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/error_listener.dart';
 import 'package:podku/utils/views/components/swite_action_button.dart';
-import 'package:podku_shared/podku_shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeScreen extends StatelessWidget {
@@ -68,7 +68,7 @@ class EpisodeScreen extends StatelessWidget {
                         MenuItemButton(
                           onPressed: () async {
                             if (kIsWeb) {
-                              launchUrl(Uri.parse(e.audioFile?.url ?? ''));
+                              launchUrl(Uri.parse(e.listeningFile?.url ?? ''));
                             } else {
                               context.read<DownloadManagerCubit>().download(e, manualDownload: true);
                             }
@@ -122,7 +122,7 @@ class EpisodeScreen extends StatelessWidget {
                     content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
                     color: Colors.transparent,
                     onTap: (handler) async {
-                      launchUrl(Uri.parse(e.audioFile?.url ?? ''));
+                      launchUrl(Uri.parse(e.listeningFile?.url ?? ''));
                       await handler(false);
                     },
                   ),

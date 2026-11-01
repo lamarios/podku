@@ -61,5 +61,7 @@
   "older": "Older",
   "loadMore": "Load more",
   "logout": "Log out",
-  "continuePlaying": "Continue listening"
+  "continuePlaying": "Continue listening",
+  "watchVideo": "Watch the video",
+  "listenToAudio": "Listen to the audio"
 }

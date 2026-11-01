@@ -6,8 +6,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-96.0.0/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-100.0.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-85.0.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-100.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -15,8 +15,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-10.2.0/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-13.0.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-7.7.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/analyzer-13.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -131,9 +131,9 @@
         <entry key="build_daemon">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_daemon-4.1.5/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_daemon-4.1.3/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_daemon-4.1.7/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_daemon-4.1.5/lib" />
             </list>
           </value>
         </entry>
@@ -147,9 +147,9 @@
         <entry key="build_runner">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.15.1/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.15.0/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.7.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.15.1/lib" />
             </list>
           </value>
         </entry>
@@ -171,9 +171,9 @@
         <entry key="built_value">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.12.7/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.12.6/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.13.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.12.7/lib" />
             </list>
           </value>
         </entry>
@@ -925,10 +925,52 @@
             </list>
           </value>
         </entry>
+        <entry key="media_kit_libs_android_video">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_android_video-1.3.8/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="media_kit_libs_ios_video">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_ios_video-1.1.4/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="media_kit_libs_linux">
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_linux-1.2.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="media_kit_libs_macos_video">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_macos_video-1.1.4/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="media_kit_libs_video">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_video-1.0.7/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="media_kit_libs_windows_video">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_windows_video-1.0.11/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="media_kit_video">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_video-2.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -1294,8 +1336,8 @@
         <entry key="source_maps">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/source_maps-0.10.13/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/source_maps-0.10.14/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/source_maps-0.10.13/lib" />
             </list>
           </value>
         </entry>
@@ -1396,8 +1438,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.1/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.2/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.26.3/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test-1.31.2/lib" />
             </list>
           </value>
         </entry>
@@ -1405,8 +1447,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.12/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.13/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.7/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.13/lib" />
             </list>
           </value>
         </entry>
@@ -1414,8 +1456,8 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.18/lib" />
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.19/lib" />
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.12/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/test_core-0.6.19/lib" />
             </list>
           </value>
         </entry>
@@ -1857,7 +1899,13 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/material_loading_indicator-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/material_new_shapes-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit-1.2.6/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_android_video-1.3.8/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_ios_video-1.1.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_linux-1.2.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_macos_video-1.1.4/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_video-1.0.7/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_libs_windows_video-1.0.11/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/media_kit_video-2.0.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.18.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.19.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/mime-2.0.0/lib" />

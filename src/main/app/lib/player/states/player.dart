@@ -14,6 +14,7 @@ import 'package:logging/logging.dart';
 import 'package:openapi/openapi.dart';
 import 'package:path/path.dart' as p;
 import 'package:podku/episodes/models/episode_downloads.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/main.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/offline_episodes/utils.dart';
@@ -43,6 +44,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   StreamSubscription<Duration>? _durationChangedSubscription;
   StreamSubscription<bool>? _showBigPlayerSubscription;
   StreamSubscription<List<PlayerInfo>>? _clientsSubscription;
+
+  // videos are only shown while the app is on screen
+  bool _appVisible = true;
 
   PlayerCubit(super.initialState) {
     /*
@@ -193,9 +197,49 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         (oldBreakPoint == .mobile || oldBreakPoint == .tablet) &&
         state.showMiniPlayer) {
       emit(state.copyWith(showBigPlayer: true, showMiniPlayer: false));
+      _updateVideo();
     }
 
     handleBackButton(state.showBigPlayer);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) {
+    final visible = appState == .resumed || appState == .inactive;
+    if (visible != _appVisible) {
+      _appVisible = visible;
+      _updateVideo();
+    }
+  }
+
+  /// Whether the current episode should be watched: when it is played on this device with the video enabled, and the
+  /// big player is on screen. Otherwise it is listened to, also when it only has a video.
+  bool get _wantsVideo =>
+      isPlayingLocally &&
+      _appVisible &&
+      isOnline &&
+      !state.loading &&
+      state.videoEnabled &&
+      state.showBigPlayer &&
+      !state.hidePlayer &&
+      state.episode?.videoProxyUrl != null;
+
+  /// Switches between watching and listening to the current episode depending on [_wantsVideo].
+  Future<void> _updateVideo() async {
+    if (_wantsVideo) {
+      await _player.showVideo(state.episode!.videoProxyUrl!);
+    } else {
+      await _player.showAudio();
+    }
+    if (!isClosed) {
+      emit(state.copyWith(showingVideo: _player.videoActive));
+    }
+  }
+
+  /// Switches between watching and listening to an episode that has both a video and an audio.
+  void toggleVideo() {
+    emit(state.copyWith(videoEnabled: !state.videoEnabled));
+    _updateVideo();
   }
 
   PodkuAudioHandler get _player => getIt.get<PodkuAudioHandler>();
@@ -257,6 +301,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
             showBigPlayer: true,
             showTranscript: false,
             volume: _player.getVolume() * 100,
+            videoEnabled: false,
+            showingVideo: false,
           ),
         );
         var backendEpisode =
@@ -272,7 +318,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           backendEpisode = episode;
         }
 
-        if (backendEpisode != null && episode.audioFile != null) {
+        if (backendEpisode != null && episode.listeningFile != null) {
           episode = backendEpisode;
           emit(
             state.copyWith(
@@ -280,6 +326,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
               bufferPosition: Duration.zero,
               position: Duration.zero,
               duration: Duration(seconds: episode.durationSeconds ?? 1),
+              videoEnabled: episode.defaultsToVideo,
             ),
           );
           await _player.stop();
@@ -299,6 +346,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           await _player.play();
 
           listenToPlayerEvents();
+          await _updateVideo();
         }
       } catch (e, s) {
         _log.severe('Failed to play episode', e, s);
@@ -319,6 +367,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       _log.fine('We stop playing');
       // we stop
       _player.stop();
+      emit(state.copyWith(showingVideo: false));
     } else if (event.playerId == sessionId) {
       _log.fine("Starting playback from transfer");
       // we start
@@ -367,6 +416,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void showPlayers(bool miniPlayer, bool bigPlayer) {
     emit(state.copyWith(showMiniPlayer: miniPlayer, showBigPlayer: bigPlayer));
+    _updateVideo();
   }
 
   void skip(int seconds) {
@@ -478,6 +528,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   bool backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     if (_currentBreakPoint == .mobile) {
       emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true));
+      _updateVideo();
     }
     return true;
   }
@@ -500,6 +551,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
         bufferPosition: .zero,
         duration: .zero,
         playing: false,
+        videoEnabled: false,
+        showingVideo: false,
       ),
     );
     if (isPlayingLocally) {
@@ -522,6 +575,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       }
       if (!state.showBigPlayer && !state.showMiniPlayer) {
         emit(state.copyWith(showBigPlayer: true));
+        _updateVideo();
       }
 
       _sendCurrentState(true);
@@ -575,6 +629,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
 
   void setHidePlayers(bool hide) {
     emit(state.copyWith(hidePlayer: hide));
+    _updateVideo();
   }
 }
 
@@ -595,6 +650,10 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(false) bool showTranscript,
     @Default(false) bool showVolume,
     @Default(false) bool draggingVolume,
+    // whether the episode should be watched when the big player is shown
+    @Default(false) bool videoEnabled,
+    // whether the episode is currently played as a video
+    @Default(false) bool showingVideo,
     @Default(1) double volume,
     @Default([]) List<PlayerInfo> clients,
     PlayerInfo? currentPlayer,

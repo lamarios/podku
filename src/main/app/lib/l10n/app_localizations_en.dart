@@ -215,4 +215,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continuePlaying => 'Continue listening';
+
+  @override
+  String get watchVideo => 'Watch the video';
+
+  @override
+  String get listenToAudio => 'Listen to the audio';
 }

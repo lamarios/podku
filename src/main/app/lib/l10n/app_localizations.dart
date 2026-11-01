@@ -468,6 +468,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue listening'**
   String get continuePlaying;
+
+  /// No description provided for @watchVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch the video'**
+  String get watchVideo;
+
+  /// No description provided for @listenToAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to the audio'**
+  String get listenToAudio;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
