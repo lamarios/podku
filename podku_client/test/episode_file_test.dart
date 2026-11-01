@@ -37,5 +37,40 @@ void main() {
       // TODO
     });
 
+    // int lengthBytes
+    test('to test the property `lengthBytes`', () async {
+      // TODO
+    });
+
+    // double bitrate
+    test('to test the property `bitrate`', () async {
+      // TODO
+    });
+
+    // int height
+    test('to test the property `height`', () async {
+      // TODO
+    });
+
+    // String title
+    test('to test the property `title`', () async {
+      // TODO
+    });
+
+    // String codecs
+    test('to test the property `codecs`', () async {
+      // TODO
+    });
+
+    // bool defaultMedia
+    test('to test the property `defaultMedia`', () async {
+      // TODO
+    });
+
+    // String urlEncrypted
+    test('to test the property `urlEncrypted`', () async {
+      // TODO
+    });
+
   });
 }

@@ -144,7 +144,12 @@ void main() {
     });
 
     test('responds to clientList with active status when playback is active', () async {
-      final episode = Episode(id: 'ep-001', title: 'Episode 1', durationSeconds: 3600, audioUrlEncrypted: 'hash001');
+      final episode = Episode(
+        id: 'ep-001',
+        title: 'Episode 1',
+        durationSeconds: 3600,
+        files: [EpisodeFile(type: EpisodeFileTypeEnum.audio, urlEncrypted: 'hash001')],
+      );
 
       podkunnect.playbackStatus = PlayerStatus(
         episode: episode,
@@ -171,13 +176,32 @@ void main() {
     });
 
     test('ignores playback transfer directed to a different playerId', () async {
-      final episode = Episode(id: 'ep-002', title: 'Episode 2', durationSeconds: 1800, audioUrlEncrypted: 'hash002');
+      final episode = Episode(
+        id: 'ep-002',
+        title: 'Episode 2',
+        durationSeconds: 1800,
+        files: [EpisodeFile(type: EpisodeFileTypeEnum.audio, urlEncrypted: 'hash002')],
+      );
 
       final transfer = TransferPlayback(episode: episode, position: 45, playerId: 'different-player-id');
 
       podkunnect.handlePlaybackTransfer(transfer);
 
       // Should not start playback for this device
+      expect(podkunnect.playbackStatus, isNull);
+    });
+
+    test('does not start playback of an episode without audio file', () async {
+      final episode = Episode(
+        id: 'ep-video',
+        title: 'Video only',
+        durationSeconds: 600,
+        files: [EpisodeFile(type: EpisodeFileTypeEnum.video, urlEncrypted: 'video-hash', defaultMedia: true)],
+      );
+
+      await podkunnect.startPlayback(episode: episode, position: 0);
+
+      expect(podkunnect.player, isNull);
       expect(podkunnect.playbackStatus, isNull);
     });
 

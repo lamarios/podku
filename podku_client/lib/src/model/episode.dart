@@ -30,12 +30,6 @@ class Episode {
 
      this.description,
 
-     this.audioUrl,
-
-     this.audioType,
-
-     this.audioLengthBytes,
-
      this.pubDateMillis,
 
      this.durationSeconds,
@@ -61,8 +55,6 @@ class Episode {
      this.timeUpdated,
 
      this.progressUpdated,
-
-     this.audioUrlEncrypted,
 
      this.chapters,
 
@@ -106,42 +98,6 @@ class Episode {
 
 
   final String? description;
-
-
-
-  @JsonKey(
-    
-    name: r'audioUrl',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final String? audioUrl;
-
-
-
-  @JsonKey(
-    
-    name: r'audioType',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final String? audioType;
-
-
-
-  @JsonKey(
-    
-    name: r'audioLengthBytes',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final int? audioLengthBytes;
 
 
 
@@ -303,18 +259,6 @@ class Episode {
 
   @JsonKey(
     
-    name: r'audioUrlEncrypted',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final String? audioUrlEncrypted;
-
-
-
-  @JsonKey(
-    
     name: r'chapters',
     required: false,
     includeIfNull: false,
@@ -368,9 +312,6 @@ class Episode {
       other.id == id &&
       other.title == title &&
       other.description == description &&
-      other.audioUrl == audioUrl &&
-      other.audioType == audioType &&
-      other.audioLengthBytes == audioLengthBytes &&
       other.pubDateMillis == pubDateMillis &&
       other.durationSeconds == durationSeconds &&
       other.progress == progress &&
@@ -384,7 +325,6 @@ class Episode {
       other.processed == processed &&
       other.timeUpdated == timeUpdated &&
       other.progressUpdated == progressUpdated &&
-      other.audioUrlEncrypted == audioUrlEncrypted &&
       other.chapters == chapters &&
       other.files == files &&
       other.people == people &&
@@ -395,9 +335,6 @@ class Episode {
         id.hashCode +
         title.hashCode +
         description.hashCode +
-        audioUrl.hashCode +
-        audioType.hashCode +
-        audioLengthBytes.hashCode +
         pubDateMillis.hashCode +
         durationSeconds.hashCode +
         progress.hashCode +
@@ -411,7 +348,6 @@ class Episode {
         processed.hashCode +
         timeUpdated.hashCode +
         progressUpdated.hashCode +
-        audioUrlEncrypted.hashCode +
         chapters.hashCode +
         files.hashCode +
         people.hashCode +

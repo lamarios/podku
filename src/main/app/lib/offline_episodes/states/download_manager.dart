@@ -153,7 +153,7 @@ class DownloadManagerCubit extends Cubit<DownloadManagerState> with WidgetsBindi
     List<Episode> episodes = [];
     for (final f in episodeDirectories) {
       try {
-        var episode = Episode.fromJson(jsonDecode(await f.readAsString()));
+        var episode = EpisodeDownloads.fromOfflineJson(jsonDecode(await f.readAsString()));
         if (await episode.validOfflineFiles) {
           episodes.add(episode);
         }

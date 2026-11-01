@@ -13,12 +13,6 @@ abstract class _$EpisodeCWProxy {
 
   Episode description(String? description);
 
-  Episode audioUrl(String? audioUrl);
-
-  Episode audioType(String? audioType);
-
-  Episode audioLengthBytes(int? audioLengthBytes);
-
   Episode pubDateMillis(int? pubDateMillis);
 
   Episode durationSeconds(int? durationSeconds);
@@ -45,8 +39,6 @@ abstract class _$EpisodeCWProxy {
 
   Episode progressUpdated(int? progressUpdated);
 
-  Episode audioUrlEncrypted(String? audioUrlEncrypted);
-
   Episode chapters(List<Chapter>? chapters);
 
   Episode files(List<EpisodeFile>? files);
@@ -65,9 +57,6 @@ abstract class _$EpisodeCWProxy {
     String? id,
     String? title,
     String? description,
-    String? audioUrl,
-    String? audioType,
-    int? audioLengthBytes,
     int? pubDateMillis,
     int? durationSeconds,
     double? progress,
@@ -81,7 +70,6 @@ abstract class _$EpisodeCWProxy {
     bool? processed,
     int? timeUpdated,
     int? progressUpdated,
-    String? audioUrlEncrypted,
     List<Chapter>? chapters,
     List<EpisodeFile>? files,
     List<EpisodePerson>? people,
@@ -103,16 +91,6 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
 
   @override
   Episode description(String? description) => this(description: description);
-
-  @override
-  Episode audioUrl(String? audioUrl) => this(audioUrl: audioUrl);
-
-  @override
-  Episode audioType(String? audioType) => this(audioType: audioType);
-
-  @override
-  Episode audioLengthBytes(int? audioLengthBytes) =>
-      this(audioLengthBytes: audioLengthBytes);
 
   @override
   Episode pubDateMillis(int? pubDateMillis) =>
@@ -158,10 +136,6 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
       this(progressUpdated: progressUpdated);
 
   @override
-  Episode audioUrlEncrypted(String? audioUrlEncrypted) =>
-      this(audioUrlEncrypted: audioUrlEncrypted);
-
-  @override
   Episode chapters(List<Chapter>? chapters) => this(chapters: chapters);
 
   @override
@@ -184,9 +158,6 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
     Object? id = const $CopyWithPlaceholder(),
     Object? title = const $CopyWithPlaceholder(),
     Object? description = const $CopyWithPlaceholder(),
-    Object? audioUrl = const $CopyWithPlaceholder(),
-    Object? audioType = const $CopyWithPlaceholder(),
-    Object? audioLengthBytes = const $CopyWithPlaceholder(),
     Object? pubDateMillis = const $CopyWithPlaceholder(),
     Object? durationSeconds = const $CopyWithPlaceholder(),
     Object? progress = const $CopyWithPlaceholder(),
@@ -200,7 +171,6 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
     Object? processed = const $CopyWithPlaceholder(),
     Object? timeUpdated = const $CopyWithPlaceholder(),
     Object? progressUpdated = const $CopyWithPlaceholder(),
-    Object? audioUrlEncrypted = const $CopyWithPlaceholder(),
     Object? chapters = const $CopyWithPlaceholder(),
     Object? files = const $CopyWithPlaceholder(),
     Object? people = const $CopyWithPlaceholder(),
@@ -219,18 +189,6 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
           ? _value.description
           // ignore: cast_nullable_to_non_nullable
           : description as String?,
-      audioUrl: audioUrl == const $CopyWithPlaceholder()
-          ? _value.audioUrl
-          // ignore: cast_nullable_to_non_nullable
-          : audioUrl as String?,
-      audioType: audioType == const $CopyWithPlaceholder()
-          ? _value.audioType
-          // ignore: cast_nullable_to_non_nullable
-          : audioType as String?,
-      audioLengthBytes: audioLengthBytes == const $CopyWithPlaceholder()
-          ? _value.audioLengthBytes
-          // ignore: cast_nullable_to_non_nullable
-          : audioLengthBytes as int?,
       pubDateMillis: pubDateMillis == const $CopyWithPlaceholder()
           ? _value.pubDateMillis
           // ignore: cast_nullable_to_non_nullable
@@ -283,10 +241,6 @@ class _$EpisodeCWProxyImpl implements _$EpisodeCWProxy {
           ? _value.progressUpdated
           // ignore: cast_nullable_to_non_nullable
           : progressUpdated as int?,
-      audioUrlEncrypted: audioUrlEncrypted == const $CopyWithPlaceholder()
-          ? _value.audioUrlEncrypted
-          // ignore: cast_nullable_to_non_nullable
-          : audioUrlEncrypted as String?,
       chapters: chapters == const $CopyWithPlaceholder()
           ? _value.chapters
           // ignore: cast_nullable_to_non_nullable
@@ -324,12 +278,6 @@ Episode _$EpisodeFromJson(
     id: $checkedConvert('id', (v) => v as String?),
     title: $checkedConvert('title', (v) => v as String?),
     description: $checkedConvert('description', (v) => v as String?),
-    audioUrl: $checkedConvert('audioUrl', (v) => v as String?),
-    audioType: $checkedConvert('audioType', (v) => v as String?),
-    audioLengthBytes: $checkedConvert(
-      'audioLengthBytes',
-      (v) => (v as num?)?.toInt(),
-    ),
     pubDateMillis: $checkedConvert(
       'pubDateMillis',
       (v) => (v as num?)?.toInt(),
@@ -354,10 +302,6 @@ Episode _$EpisodeFromJson(
     progressUpdated: $checkedConvert(
       'progressUpdated',
       (v) => (v as num?)?.toInt(),
-    ),
-    audioUrlEncrypted: $checkedConvert(
-      'audioUrlEncrypted',
-      (v) => v as String?,
     ),
     chapters: $checkedConvert(
       'chapters',
@@ -390,9 +334,6 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
   'id': ?instance.id,
   'title': ?instance.title,
   'description': ?instance.description,
-  'audioUrl': ?instance.audioUrl,
-  'audioType': ?instance.audioType,
-  'audioLengthBytes': ?instance.audioLengthBytes,
   'pubDateMillis': ?instance.pubDateMillis,
   'durationSeconds': ?instance.durationSeconds,
   'progress': ?instance.progress,
@@ -406,7 +347,6 @@ Map<String, dynamic> _$EpisodeToJson(Episode instance) => <String, dynamic>{
   'processed': ?instance.processed,
   'timeUpdated': ?instance.timeUpdated,
   'progressUpdated': ?instance.progressUpdated,
-  'audioUrlEncrypted': ?instance.audioUrlEncrypted,
   'chapters': ?instance.chapters?.map((e) => e.toJson()).toList(),
   'files': ?instance.files?.map((e) => e.toJson()).toList(),
   'people': ?instance.people?.map((e) => e.toJson()).toList(),

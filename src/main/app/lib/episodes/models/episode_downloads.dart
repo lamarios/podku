@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:openapi/openapi.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:podku_shared/podku_shared.dart';
 
 extension EpisodeDownloads on Episode {
   static const String episodesFolder = 'episodes';
@@ -30,9 +31,9 @@ extension EpisodeDownloads on Episode {
     return f.listSync().map((f) => f.path).toList();
   }
 
-  String get episodeFile => 'episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
+  String get episodeFile => 'episode${p.extension(Uri.parse(audioFile?.url ?? '').path)}';
 
-  String get episodeTempFile => 'tmp_episode${p.extension(Uri.parse(audioUrl ?? '').path)}';
+  String get episodeTempFile => 'tmp_episode${p.extension(Uri.parse(audioFile?.url ?? '').path)}';
 
   String get imageFile => 'image${p.extension(Uri.parse(podcast?.artworkUrl ?? '').path)}';
 
@@ -45,6 +46,29 @@ extension EpisodeDownloads on Episode {
     final hasEpisode = files.any((element) => element.endsWith(episodeFile));
 
     return hasData && hasEpisode & hasImage;
+  }
+
+  /// Reads an episode from a downloaded [data] file. Episodes downloaded before the media moved to the episode files
+  /// only have the legacy audio fields, their audio file is rebuilt from them.
+  static Episode fromOfflineJson(Map<String, dynamic> json) {
+    final legacyAudioUrl = json['audioUrl'];
+    final hasFiles = (json['files'] as List?)?.isNotEmpty ?? false;
+    if (legacyAudioUrl is String && !hasFiles) {
+      json = {
+        ...json,
+        'files': [
+          EpisodeFile(
+            type: EpisodeFileTypeEnum.audio,
+            url: legacyAudioUrl,
+            urlEncrypted: json['audioUrlEncrypted'] as String?,
+            mime: json['audioType'] as String?,
+            lengthBytes: json['audioLengthBytes'] as int?,
+            defaultMedia: true,
+          ).toJson(),
+        ],
+      };
+    }
+    return Episode.fromJson(json);
   }
 
   Future<bool> get isManualDownload async {

@@ -143,7 +143,9 @@ public class EpisodeService {
   private void processEpisode(Episode episode) {
     log.info("Processing episode: {}", episode.getTitle());
 
-    if (episode.getFiles() == null || episode.getFiles().isEmpty()) {
+    // media files (audio, video) don't need processing
+    if (episode.getFiles() == null
+        || episode.getFiles().stream().allMatch(f -> f.getType().isMedia())) {
       episode.setProcessed(true);
       episodeRepository.save(episode);
       log.info("Episode {} has nothing to process", episode.getTitle());

@@ -61,7 +61,7 @@ class MockWebSocketSessionManagerServer {
           title: 'Mocked Server Episode',
           durationSeconds: 120,
           progress: 10,
-          audioUrlEncrypted: 'mock-encrypted-audio',
+          files: [EpisodeFile(type: EpisodeFileTypeEnum.audio, urlEncrypted: 'mock-encrypted-audio')],
         );
         request.response.headers.contentType = ContentType.json;
         request.response.write(jsonEncode(episode.toJson()));
@@ -170,7 +170,7 @@ void main() {
         id: 'ep-abc',
         title: 'Morning News',
         durationSeconds: 180,
-        audioUrlEncrypted: 'mock-audio-hash',
+        files: [EpisodeFile(type: EpisodeFileTypeEnum.audio, urlEncrypted: 'mock-audio-hash')],
       );
 
       // Server transfers playback to this device
@@ -205,7 +205,7 @@ void main() {
         id: 'ep-def',
         title: 'Night Podcast',
         durationSeconds: 300,
-        audioUrlEncrypted: 'mock-audio-hash-2',
+        files: [EpisodeFile(type: EpisodeFileTypeEnum.audio, urlEncrypted: 'mock-audio-hash-2')],
       );
 
       await client.startPlayback(episode: episode, position: 0);
@@ -240,7 +240,7 @@ void main() {
         id: 'ep-ctrl',
         title: 'Control Test',
         durationSeconds: 60,
-        audioUrlEncrypted: 'mock-audio-hash-3',
+        files: [EpisodeFile(type: EpisodeFileTypeEnum.audio, urlEncrypted: 'mock-audio-hash-3')],
       );
       await client.startPlayback(episode: episode, position: 0);
 

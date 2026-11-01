@@ -12,6 +12,7 @@ import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/views/components/bottom_sheet_title.dart';
 import 'package:podku/utils/views/components/description.dart';
+import 'package:podku_shared/podku_shared.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -95,7 +96,7 @@ class EpisodeSheet extends StatelessWidget {
                   TextButton.icon(
                     onPressed: () {
                       if (kIsWeb) {
-                        launchUrl(Uri.parse(episode.audioUrl ?? ''));
+                        launchUrl(Uri.parse(episode.audioFile?.url ?? ''));
                       } else {
                         context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
                         Navigator.of(context).pop();
@@ -105,7 +106,7 @@ class EpisodeSheet extends StatelessWidget {
                     icon: Icon(Icons.download),
                   ),
                 TextButton.icon(
-                  onPressed: () => SharePlus.instance.share(ShareParams(uri: Uri.parse(episode.audioUrl!))),
+                  onPressed: () => SharePlus.instance.share(ShareParams(uri: Uri.parse(episode.audioFile!.url!))),
                   icon: Icon(Icons.share),
                   label: Text(locals.share),
                 ),

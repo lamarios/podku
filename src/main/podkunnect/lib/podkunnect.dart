@@ -148,6 +148,10 @@ class Podkunnect {
   }
 
   Future<void> startPlayback({required Episode episode, required int position}) async {
+    if (episode.audioFile == null) {
+      _log.warning('Episode ${episode.title} has no audio file, not playing it');
+      return;
+    }
     // if we were already playing at a certain volume, we keep it
     final volume = _player?.state.volume ?? this.volume;
     _log.fine("Starting playback volume: $volume");
@@ -268,6 +272,10 @@ class Podkunnect {
 
     final volume = _player?.state.volume ?? this.volume;
     backendEpisode ??= episode;
+    if (backendEpisode.audioFile == null) {
+      _log.warning('Episode ${episode.title} has no audio file, not playing it');
+      return;
+    }
     _player ??= _playerFactory != null ? _playerFactory() : Player();
 
     _player?.open(

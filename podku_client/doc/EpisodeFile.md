@@ -14,6 +14,13 @@ Name | Type | Description | Notes
 **mime** | **String** |  | [optional] 
 **language** | **String** |  | [optional] 
 **rel** | **String** |  | [optional] 
+**lengthBytes** | **int** |  | [optional] 
+**bitrate** | **double** |  | [optional] 
+**height** | **int** |  | [optional] 
+**title** | **String** |  | [optional] 
+**codecs** | **String** |  | [optional] 
+**defaultMedia** | **bool** |  | [optional] 
+**urlEncrypted** | **String** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

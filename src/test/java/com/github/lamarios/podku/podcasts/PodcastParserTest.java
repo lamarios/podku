@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.lamarios.podku.TestContainerTest;
 import com.github.lamarios.podku.episodes.Episode;
+import com.github.lamarios.podku.episodes.EpisodeFile;
+import com.github.lamarios.podku.episodes.EpisodeFileType;
 import com.github.lamarios.podku.mock.MockFeedController;
 import com.github.lamarios.podku.mock.MockFeedController.DynamicResponse;
+import com.github.lamarios.podku.utils.FastUrlCrypto;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -28,7 +31,7 @@ public class PodcastParserTest extends TestContainerTest {
   }
 
   @Test
-  public void testParsesFeed() {
+  public void testParsesFeed() throws Exception {
     MockFeedController.serve(
         "feed",
         feed(
@@ -44,8 +47,59 @@ public class PodcastParserTest extends TestContainerTest {
         podcast.getEpisodes().stream().map(Episode::getTitle).toList());
     Episode a = podcast.getEpisodes().getFirst();
     assertSame(podcast, a.getPodcast());
-    assertEquals(1, a.getFiles().size());
-    assertSame(a, a.getFiles().getFirst().getEpisode());
+    assertEquals(
+        List.of(EpisodeFileType.transcript, EpisodeFileType.audio),
+        a.getFiles().stream().map(EpisodeFile::getType).toList());
+    assertTrue(a.getFiles().stream().allMatch(f -> f.getEpisode() == a));
+    EpisodeFile audio = a.getFiles().getLast();
+    assertEquals("http://localhost/EpisodeA.mp3", audio.getUrl());
+    assertEquals("audio/mpeg", audio.getMime());
+    assertEquals(1L, audio.getLengthBytes());
+    assertTrue(audio.getDefaultMedia());
+    assertEquals(audio.getUrl(), FastUrlCrypto.instance.decrypt(audio.getUrlEncrypted()));
+  }
+
+  @Test
+  public void testParsesAlternateEnclosures() {
+    MockFeedController.serve(
+        "feed",
+        feed(
+            "Media",
+            item("a", "a")
+                .alternateEnclosure(
+                    "video/mp4", 1080, "HD", "http://localhost/a-1080.mp4", "ipfs://a-1080")
+                .alternateEnclosure(
+                    "application/x-mpegURL", 720, "Stream", "http://localhost/a.m3u8")
+                .alternateEnclosure("audio/opus", null, "Opus", "http://localhost/a.opus")
+                // repeats the main enclosure, kept once
+                .alternateEnclosure("audio/mpeg", null, "Default", "http://localhost/a.mp3")));
+
+    List<EpisodeFile> files =
+        parser.parseUrl(podcastAt("/mock/dynamic/feed")).getEpisodes().getFirst().getFiles();
+
+    assertEquals(
+        List.of(
+            "http://localhost/a.mp3",
+            "http://localhost/a-1080.mp4",
+            "ipfs://a-1080",
+            "http://localhost/a.m3u8",
+            "http://localhost/a.opus"),
+        files.stream().map(EpisodeFile::getUrl).toList());
+    assertEquals(
+        List.of(
+            EpisodeFileType.audio,
+            EpisodeFileType.video,
+            EpisodeFileType.video,
+            EpisodeFileType.video,
+            EpisodeFileType.audio),
+        files.stream().map(EpisodeFile::getType).toList());
+    EpisodeFile hd = files.get(1);
+    assertEquals("video/mp4", hd.getMime());
+    assertEquals(1080, hd.getHeight());
+    assertEquals("HD", hd.getTitle());
+    assertEquals(42L, hd.getLengthBytes());
+    assertEquals(128.5, hd.getBitrate());
+    assertFalse(hd.getDefaultMedia());
   }
 
   @Test

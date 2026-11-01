@@ -2,6 +2,7 @@
 package com.github.lamarios.podku.transcripts;
 
 import com.github.lamarios.podku.episodes.Episode;
+import com.github.lamarios.podku.episodes.EpisodeFile;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.episodes.EpisodeUtils;
 import com.github.lamarios.podku.episodes.VttParser;
@@ -141,9 +142,16 @@ public class WhisperService {
             log.info("Episode already has transcript");
             return;
           }
+          // the given episode may be detached, its lazy files are read from a managed copy
+          EpisodeFile media =
+              episodeRepository.findById(e.getId()).map(EpisodeUtils::defaultMedia).orElse(null);
+          if (media == null) {
+            log.info("Episode has no media to transcribe");
+            return;
+          }
           // if none we download the audio file (if not cached)
           try {
-            Path episode = EpisodeUtils.downloadEpisode(e, episodeCacheFolder);
+            Path episode = EpisodeUtils.downloadEpisode(media, episodeCacheFolder);
             // we send it to whisper
             try (UnirestInstance client = Unirest.spawnInstance();
                 InputStream fis = new FileInputStream(episode.toFile())) {

@@ -272,7 +272,7 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
           backendEpisode = episode;
         }
 
-        if (backendEpisode != null && episode.audioUrl != null) {
+        if (backendEpisode != null && episode.audioFile != null) {
           episode = backendEpisode;
           emit(
             state.copyWith(
