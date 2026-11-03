@@ -51,30 +51,32 @@ class RemotePlayersDialog extends StatelessWidget {
 
     final locals = AppLocalizations.of(context)!;
 
-    return isMobile
-        ? M3EBottomSheet.show(
-            context,
-            showDragHandle: false,
-            builder: (context) => SafeArea(
-              top: false,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.7),
-                child: RemotePlayersDialog(showTitle: true),
+    return context.read<PlayerCubit>().showOverPlayer(
+      () => isMobile
+          ? M3EBottomSheet.show(
+              context,
+              showDragHandle: false,
+              builder: (context) => SafeArea(
+                top: false,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.7),
+                  child: RemotePlayersDialog(showTitle: true),
+                ),
+              ),
+            )
+          : M3EDialog.show(
+              context,
+              dialog: M3EDialog(
+                // backgroundColor: Colors.transparent,
+                // constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
+                content: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.6),
+                  child: RemotePlayersDialog(showTitle: false),
+                ),
+                title: locals.devices,
               ),
             ),
-          )
-        : M3EDialog.show(
-            context,
-            dialog: M3EDialog(
-              // backgroundColor: Colors.transparent,
-              // constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
-              content: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.6),
-                child: RemotePlayersDialog(showTitle: false),
-              ),
-              title: locals.devices,
-            ),
-          );
+    );
   }
 
   @override

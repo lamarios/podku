@@ -52,11 +52,9 @@ class EpisodeInContinuePlaying extends StatelessWidget {
               motion: MaterialSpringMotion.expressiveSpatialFast(),
               value: isEpisodePlaying ? 1 : 0,
               builder: (context, value, child) {
-                final backgroundColor = Color.lerp(
-                  isMobile ? colors.primaryContainer.withValues(alpha: 0) : baseColors.surfaceContainer,
-                  colors.primaryContainer,
-                  value,
-                )!;
+                final backgroundColor = isMobile
+                    ? colors.primaryContainer.withValues(alpha: 0)
+                    : baseColors.surfaceContainer;
 
                 final clipper2 = MorphClipper(
                   Morph(

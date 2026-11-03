@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:podku/player/states/audio_handler.dart';
+import 'package:podku/player/views/components/player_video_controls.dart';
 import 'package:podku/utils.dart';
 
 /// The video of the episode being watched, shown in place of the podcast image in the big player.
@@ -31,7 +32,7 @@ class PlayerVideo extends StatelessWidget {
             height: width * 9 / 16,
             child: Video(
               controller: controller,
-              controls: NoVideoControls,
+              controls: (state) => const PlayerVideoControls(),
               // the player cubit switches to the audio player when the app goes to the background
               pauseUponEnteringBackgroundMode: false,
             ),

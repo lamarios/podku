@@ -63,5 +63,10 @@
   "logout": "Log out",
   "continuePlaying": "Continue listening",
   "watchVideo": "Watch the video",
-  "listenToAudio": "Listen to the audio"
+  "listenToAudio": "Listen to the audio",
+  "fullscreen": "Full screen",
+  "exitFullscreen": "Exit full screen",
+  "pause": "Pause",
+  "rewind": "Rewind 10 seconds",
+  "skipForward": "Skip forward 10 seconds"
 }

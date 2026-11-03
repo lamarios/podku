@@ -480,6 +480,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Listen to the audio'**
   String get listenToAudio;
+
+  /// No description provided for @fullscreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen'**
+  String get fullscreen;
+
+  /// No description provided for @exitFullscreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit full screen'**
+  String get exitFullscreen;
+
+  /// No description provided for @pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pause;
+
+  /// No description provided for @rewind.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewind 10 seconds'**
+  String get rewind;
+
+  /// No description provided for @skipForward.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip forward 10 seconds'**
+  String get skipForward;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

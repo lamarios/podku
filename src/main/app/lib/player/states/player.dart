@@ -48,6 +48,9 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   // videos are only shown while the app is on screen
   bool _appVisible = true;
 
+  // popups (bottom sheets, dialogs) currently open over the big player
+  int _popups = 0;
+
   PlayerCubit(super.initialState) {
     /*
     _player.androidPlaybackInfo.stream.playbackEventStream.listen((event) => onPlaybackEvent(event));
@@ -233,6 +236,24 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
     }
     if (!isClosed) {
       emit(state.copyWith(showingVideo: _player.videoActive));
+    }
+  }
+
+  /// Shows a popup over the big player, e.g. a bottom sheet: while it is open the back button closes it instead of
+  /// minimizing the big player.
+  Future<T?> showOverPlayer<T>(Future<T?> Function() show) async {
+    _popups++;
+    try {
+      return await show();
+    } finally {
+      _popups--;
+    }
+  }
+
+  /// Whether the video is shown full screen, set by the full screen video controls.
+  void setFullscreen(bool fullscreen) {
+    if (!isClosed) {
+      emit(state.copyWith(fullscreen: fullscreen));
     }
   }
 
@@ -526,6 +547,10 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   bool backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (state.fullscreen || _popups > 0) {
+      // the back button leaves the full screen video or closes the popup, handled by their route
+      return false;
+    }
     if (_currentBreakPoint == .mobile) {
       emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true));
       _updateVideo();
@@ -654,6 +679,8 @@ sealed class PlayerState with _$PlayerState implements WithError {
     @Default(false) bool videoEnabled,
     // whether the episode is currently played as a video
     @Default(false) bool showingVideo,
+    // whether the video is shown full screen
+    @Default(false) bool fullscreen,
     @Default(1) double volume,
     @Default([]) List<PlayerInfo> clients,
     PlayerInfo? currentPlayer,
