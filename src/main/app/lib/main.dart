@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
+import 'package:media_kit/media_kit.dart' show MediaKit;
 import 'package:logging/logging.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
@@ -62,6 +63,9 @@ void main() async {
   } else {
     deviceName = sessionId;
   }
+
+  // media_kit plays the episode videos
+  MediaKit.ensureInitialized();
 
   // just_audio has no native linux implementation, use mpv through media_kit there
   if (!kIsWeb && Platform.isLinux) {

@@ -31,6 +31,20 @@ class EpisodeFile {
      this.language,
 
      this.rel,
+
+     this.lengthBytes,
+
+     this.bitrate,
+
+     this.height,
+
+     this.title,
+
+     this.codecs,
+
+     this.defaultMedia,
+
+     this.urlEncrypted,
   });
 
   @JsonKey(
@@ -105,6 +119,90 @@ class EpisodeFile {
 
 
 
+  @JsonKey(
+    
+    name: r'lengthBytes',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final int? lengthBytes;
+
+
+
+  @JsonKey(
+    
+    name: r'bitrate',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final double? bitrate;
+
+
+
+  @JsonKey(
+    
+    name: r'height',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final int? height;
+
+
+
+  @JsonKey(
+    
+    name: r'title',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? title;
+
+
+
+  @JsonKey(
+    
+    name: r'codecs',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? codecs;
+
+
+
+  @JsonKey(
+    
+    name: r'defaultMedia',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final bool? defaultMedia;
+
+
+
+  @JsonKey(
+    
+    name: r'urlEncrypted',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? urlEncrypted;
+
+
+
 
 
     @override
@@ -114,7 +212,14 @@ class EpisodeFile {
       other.type == type &&
       other.mime == mime &&
       other.language == language &&
-      other.rel == rel;
+      other.rel == rel &&
+      other.lengthBytes == lengthBytes &&
+      other.bitrate == bitrate &&
+      other.height == height &&
+      other.title == title &&
+      other.codecs == codecs &&
+      other.defaultMedia == defaultMedia &&
+      other.urlEncrypted == urlEncrypted;
 
     @override
     int get hashCode =>
@@ -123,7 +228,14 @@ class EpisodeFile {
         type.hashCode +
         mime.hashCode +
         language.hashCode +
-        rel.hashCode;
+        rel.hashCode +
+        lengthBytes.hashCode +
+        bitrate.hashCode +
+        height.hashCode +
+        title.hashCode +
+        codecs.hashCode +
+        defaultMedia.hashCode +
+        urlEncrypted.hashCode;
 
   factory EpisodeFile.fromJson(Map<String, dynamic> json) => _$EpisodeFileFromJson(json);
 
@@ -141,7 +253,11 @@ enum EpisodeFileTypeEnum {
 @JsonValue(r'transcript')
 transcript(r'transcript'),
 @JsonValue(r'chapters')
-chapters(r'chapters');
+chapters(r'chapters'),
+@JsonValue(r'audio')
+audio(r'audio'),
+@JsonValue(r'video')
+video(r'video');
 
 const EpisodeFileTypeEnum(this.value);
 

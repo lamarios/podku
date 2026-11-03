@@ -45,6 +45,10 @@ let
     libxi
     libxinerama
     wayland
+    # libmpv, media_kit_video links against it to render the episode videos
+    mpv-unwrapped
+    # only needed so pkg-config can resolve the libsystemd dependency declared by dbus
+    systemdLibs
   ];
 
 in

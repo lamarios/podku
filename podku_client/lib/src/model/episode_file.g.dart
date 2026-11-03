@@ -19,6 +19,20 @@ abstract class _$EpisodeFileCWProxy {
 
   EpisodeFile rel(String? rel);
 
+  EpisodeFile lengthBytes(int? lengthBytes);
+
+  EpisodeFile bitrate(double? bitrate);
+
+  EpisodeFile height(int? height);
+
+  EpisodeFile title(String? title);
+
+  EpisodeFile codecs(String? codecs);
+
+  EpisodeFile defaultMedia(bool? defaultMedia);
+
+  EpisodeFile urlEncrypted(String? urlEncrypted);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `EpisodeFile(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -32,6 +46,13 @@ abstract class _$EpisodeFileCWProxy {
     String? mime,
     String? language,
     String? rel,
+    int? lengthBytes,
+    double? bitrate,
+    int? height,
+    String? title,
+    String? codecs,
+    bool? defaultMedia,
+    String? urlEncrypted,
   });
 }
 
@@ -60,6 +81,29 @@ class _$EpisodeFileCWProxyImpl implements _$EpisodeFileCWProxy {
   EpisodeFile rel(String? rel) => this(rel: rel);
 
   @override
+  EpisodeFile lengthBytes(int? lengthBytes) => this(lengthBytes: lengthBytes);
+
+  @override
+  EpisodeFile bitrate(double? bitrate) => this(bitrate: bitrate);
+
+  @override
+  EpisodeFile height(int? height) => this(height: height);
+
+  @override
+  EpisodeFile title(String? title) => this(title: title);
+
+  @override
+  EpisodeFile codecs(String? codecs) => this(codecs: codecs);
+
+  @override
+  EpisodeFile defaultMedia(bool? defaultMedia) =>
+      this(defaultMedia: defaultMedia);
+
+  @override
+  EpisodeFile urlEncrypted(String? urlEncrypted) =>
+      this(urlEncrypted: urlEncrypted);
+
+  @override
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `EpisodeFile(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -73,6 +117,13 @@ class _$EpisodeFileCWProxyImpl implements _$EpisodeFileCWProxy {
     Object? mime = const $CopyWithPlaceholder(),
     Object? language = const $CopyWithPlaceholder(),
     Object? rel = const $CopyWithPlaceholder(),
+    Object? lengthBytes = const $CopyWithPlaceholder(),
+    Object? bitrate = const $CopyWithPlaceholder(),
+    Object? height = const $CopyWithPlaceholder(),
+    Object? title = const $CopyWithPlaceholder(),
+    Object? codecs = const $CopyWithPlaceholder(),
+    Object? defaultMedia = const $CopyWithPlaceholder(),
+    Object? urlEncrypted = const $CopyWithPlaceholder(),
   }) {
     return EpisodeFile(
       id: id == const $CopyWithPlaceholder()
@@ -99,6 +150,34 @@ class _$EpisodeFileCWProxyImpl implements _$EpisodeFileCWProxy {
           ? _value.rel
           // ignore: cast_nullable_to_non_nullable
           : rel as String?,
+      lengthBytes: lengthBytes == const $CopyWithPlaceholder()
+          ? _value.lengthBytes
+          // ignore: cast_nullable_to_non_nullable
+          : lengthBytes as int?,
+      bitrate: bitrate == const $CopyWithPlaceholder()
+          ? _value.bitrate
+          // ignore: cast_nullable_to_non_nullable
+          : bitrate as double?,
+      height: height == const $CopyWithPlaceholder()
+          ? _value.height
+          // ignore: cast_nullable_to_non_nullable
+          : height as int?,
+      title: title == const $CopyWithPlaceholder()
+          ? _value.title
+          // ignore: cast_nullable_to_non_nullable
+          : title as String?,
+      codecs: codecs == const $CopyWithPlaceholder()
+          ? _value.codecs
+          // ignore: cast_nullable_to_non_nullable
+          : codecs as String?,
+      defaultMedia: defaultMedia == const $CopyWithPlaceholder()
+          ? _value.defaultMedia
+          // ignore: cast_nullable_to_non_nullable
+          : defaultMedia as bool?,
+      urlEncrypted: urlEncrypted == const $CopyWithPlaceholder()
+          ? _value.urlEncrypted
+          // ignore: cast_nullable_to_non_nullable
+          : urlEncrypted as String?,
     );
   }
 }
@@ -113,21 +192,31 @@ extension $EpisodeFileCopyWith on EpisodeFile {
 // JsonSerializableGenerator
 // **************************************************************************
 
-EpisodeFile _$EpisodeFileFromJson(Map<String, dynamic> json) =>
-    $checkedCreate('EpisodeFile', json, ($checkedConvert) {
-      final val = EpisodeFile(
-        id: $checkedConvert('id', (v) => v as String?),
-        url: $checkedConvert('url', (v) => v as String?),
-        type: $checkedConvert(
-          'type',
-          (v) => $enumDecodeNullable(_$EpisodeFileTypeEnumEnumMap, v),
-        ),
-        mime: $checkedConvert('mime', (v) => v as String?),
-        language: $checkedConvert('language', (v) => v as String?),
-        rel: $checkedConvert('rel', (v) => v as String?),
-      );
-      return val;
-    });
+EpisodeFile _$EpisodeFileFromJson(Map<String, dynamic> json) => $checkedCreate(
+  'EpisodeFile',
+  json,
+  ($checkedConvert) {
+    final val = EpisodeFile(
+      id: $checkedConvert('id', (v) => v as String?),
+      url: $checkedConvert('url', (v) => v as String?),
+      type: $checkedConvert(
+        'type',
+        (v) => $enumDecodeNullable(_$EpisodeFileTypeEnumEnumMap, v),
+      ),
+      mime: $checkedConvert('mime', (v) => v as String?),
+      language: $checkedConvert('language', (v) => v as String?),
+      rel: $checkedConvert('rel', (v) => v as String?),
+      lengthBytes: $checkedConvert('lengthBytes', (v) => (v as num?)?.toInt()),
+      bitrate: $checkedConvert('bitrate', (v) => (v as num?)?.toDouble()),
+      height: $checkedConvert('height', (v) => (v as num?)?.toInt()),
+      title: $checkedConvert('title', (v) => v as String?),
+      codecs: $checkedConvert('codecs', (v) => v as String?),
+      defaultMedia: $checkedConvert('defaultMedia', (v) => v as bool?),
+      urlEncrypted: $checkedConvert('urlEncrypted', (v) => v as String?),
+    );
+    return val;
+  },
+);
 
 Map<String, dynamic> _$EpisodeFileToJson(EpisodeFile instance) =>
     <String, dynamic>{
@@ -137,9 +226,18 @@ Map<String, dynamic> _$EpisodeFileToJson(EpisodeFile instance) =>
       'mime': ?instance.mime,
       'language': ?instance.language,
       'rel': ?instance.rel,
+      'lengthBytes': ?instance.lengthBytes,
+      'bitrate': ?instance.bitrate,
+      'height': ?instance.height,
+      'title': ?instance.title,
+      'codecs': ?instance.codecs,
+      'defaultMedia': ?instance.defaultMedia,
+      'urlEncrypted': ?instance.urlEncrypted,
     };
 
 const _$EpisodeFileTypeEnumEnumMap = {
   EpisodeFileTypeEnum.transcript: 'transcript',
   EpisodeFileTypeEnum.chapters: 'chapters',
+  EpisodeFileTypeEnum.audio: 'audio',
+  EpisodeFileTypeEnum.video: 'video',
 };

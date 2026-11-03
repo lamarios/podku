@@ -128,10 +128,10 @@ public class PodcastRefreshTest extends TestContainerTest {
 
     List<Stored> episodes = stored(id);
     assertEquals(List.of("a", "b", "c"), episodes.stream().map(Stored::title).toList());
-    assertEquals(List.of(transcript("a2")), episodes.get(0).fileUrls());
+    assertEquals(List.of(transcript("a2"), "http://localhost/a.mp3"), episodes.get(0).fileUrls());
     assertFalse(episodes.get(0).processed(), "changed files must trigger reprocessing");
     assertTrue(episodes.get(1).processed(), "unchanged episode must not be reprocessed");
-    assertEquals(List.of(transcript("c1")), episodes.get(2).fileUrls());
+    assertEquals(List.of(transcript("c1"), "http://localhost/c.mp3"), episodes.get(2).fileUrls());
     assertFalse(episodes.get(2).processed());
   }
 
@@ -162,6 +162,31 @@ public class PodcastRefreshTest extends TestContainerTest {
     refresh(id, "feed", feed("Audio", item("a", "a").audio("http://localhost/v2.mp3")));
 
     assertFalse(stored(id).getFirst().processed());
+  }
+
+  @Test
+  public void testAlternateEnclosureChangeUpdatesFilesWithoutReprocessing() throws Exception {
+    UUID id =
+        subscribe(
+            "feed",
+            feed(
+                "Media",
+                item("a", "a")
+                    .alternateEnclosure("video/mp4", 720, "SD", "http://localhost/a-720.mp4")));
+    markAllProcessed(id);
+
+    refresh(
+        id,
+        "feed",
+        feed(
+            "Media",
+            item("a", "a")
+                .alternateEnclosure("video/mp4", 1080, "HD", "http://localhost/a-1080.mp4")));
+
+    Stored episode = stored(id).getFirst();
+    assertEquals(
+        List.of("http://localhost/a.mp3", "http://localhost/a-1080.mp4"), episode.fileUrls());
+    assertTrue(episode.processed(), "media changes must not trigger reprocessing");
   }
 
   @Test

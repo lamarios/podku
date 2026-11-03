@@ -1,11 +1,17 @@
+import 'dart:async';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nock/nock.dart';
 import 'package:podku/l10n/app_localizations.dart';
+import 'package:openapi/openapi.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
+import 'package:podku/player/states/audio_handler.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/server/client/client.dart';
 import 'package:podku/server/states/server.dart';
@@ -96,6 +102,58 @@ class FakePlayerCubit extends Cubit<PlayerState> implements PlayerCubit {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+/// Audio handler recording the playback engine switches instead of playing anything.
+class FakeAudioHandler extends BaseAudioHandler implements PodkuAudioHandler {
+  @override
+  final StreamController<Duration> durationStream = StreamController.broadcast();
+
+  /// Engine switches, `video:<url>` when switching to the video and `audio` when switching back.
+  final List<String> switches = [];
+  bool _videoActive = false;
+
+  @override
+  bool get videoActive => _videoActive;
+
+  @override
+  VideoController? get videoController => null;
+
+  @override
+  Future<void> showVideo(String url) async {
+    if (!_videoActive) {
+      switches.add('video:$url');
+    }
+    _videoActive = true;
+  }
+
+  @override
+  Future<void> showAudio() async {
+    if (_videoActive) {
+      switches.add('audio');
+    }
+    _videoActive = false;
+  }
+
+  @override
+  Future<void> playEpisode(Episode episode, {Duration? initialPosition, bool offline = false}) async {}
+
+  @override
+  Future<void> play() async {}
+
+  @override
+  Future<void> pause() async {}
+
+  @override
+  Future<void> stop() async {
+    _videoActive = false;
+  }
+
+  @override
+  double getVolume() => 1;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class FakeDownloadManagerCubit extends Cubit<DownloadManagerState>
     implements DownloadManagerCubit {
   FakeDownloadManagerCubit([DownloadManagerState? state])
@@ -175,6 +233,7 @@ Map<String, dynamic> createMockEpisodeJson({
   int pubDateMillis = 1704067200000,
   int durationSeconds = 1800,
   double progress = 0.0,
+  List<Map<String, dynamic>>? files,
 }) {
   return {
     'id': id,
@@ -186,8 +245,30 @@ Map<String, dynamic> createMockEpisodeJson({
     'progress': progress,
     'processed': true,
     'podcast': createMockPodcastLightJson(),
+    'files': ?files,
   };
 }
+
+Map<String, dynamic> createMockEpisodeFileJson({
+  required String type,
+  String? url,
+  String? mime,
+  bool? defaultMedia,
+}) {
+  return {
+    'type': type,
+    'url': url ?? 'http://example.com/episode.$type',
+    'urlEncrypted': 'encrypted-${url ?? type}',
+    'mime': ?mime,
+    'defaultMedia': ?defaultMedia,
+  };
+}
+
+Map<String, dynamic> audioFileJson({bool defaultMedia = true, String url = 'http://example.com/episode.mp3'}) =>
+    createMockEpisodeFileJson(type: 'audio', url: url, mime: 'audio/mpeg', defaultMedia: defaultMedia);
+
+Map<String, dynamic> videoFileJson({bool defaultMedia = false, String url = 'http://example.com/episode.mp4'}) =>
+    createMockEpisodeFileJson(type: 'video', url: url, mime: 'video/mp4', defaultMedia: defaultMedia);
 
 Map<String, dynamic> createMockBookmarkWithTranscriptJson({
   String bookmarkId = '323e4567-e89b-12d3-a456-426614174002',

@@ -95,6 +95,26 @@ public final class MockFeeds {
     }
 
     /**
+     * Adds a podcast 2.0 alternate enclosure.
+     *
+     * @param type the enclosure MIME type
+     * @param height the video height, or null
+     * @param title the enclosure title
+     * @param uris the source URIs
+     * @return this
+     */
+    public Item alternateEnclosure(String type, Integer height, String title, String... uris) {
+      StringBuilder sources = new StringBuilder();
+      for (String uri : uris) {
+        sources.append("<podcast:source uri=\"%s\"/>".formatted(uri));
+      }
+      files.add(
+          "<podcast:alternateEnclosure type=\"%s\" length=\"42\" bitrate=\"128.5\"%s title=\"%s\">%s</podcast:alternateEnclosure>"
+              .formatted(type, height == null ? "" : " height=\"" + height + "\"", title, sources));
+      return this;
+    }
+
+    /**
      * Adds a person.
      *
      * @param name the person name

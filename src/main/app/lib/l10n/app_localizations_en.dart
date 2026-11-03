@@ -215,4 +215,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continuePlaying => 'Continue listening';
+
+  @override
+  String get watchVideo => 'Watch the video';
+
+  @override
+  String get listenToAudio => 'Listen to the audio';
+
+  @override
+  String get fullscreen => 'Full screen';
+
+  @override
+  String get exitFullscreen => 'Exit full screen';
+
+  @override
+  String get pause => 'Pause';
+
+  @override
+  String get rewind => 'Rewind 10 seconds';
+
+  @override
+  String get skipForward => 'Skip forward 10 seconds';
 }

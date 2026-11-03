@@ -17,11 +17,13 @@ import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_transcript.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/player_speed.dart';
+import 'package:podku/player/views/components/player_video.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/player/views/components/remote_players.dart';
 import 'package:podku/player/views/components/transcript_follower.dart';
@@ -96,6 +98,9 @@ class BigPlayer extends StatelessWidget {
                         final playing = context.select((PlayerCubit c) => c.state.playing);
                         final loading = context.select((PlayerCubit c) => c.state.loading);
                         final showTranscript = context.select((PlayerCubit c) => c.state.showTranscript);
+                        final showingVideo = context.select((PlayerCubit c) => c.state.showingVideo);
+                        final videoEnabled = context.select((PlayerCubit c) => c.state.videoEnabled);
+                        final playingLocally = context.select((PlayerCubit c) => c.isPlayingLocally);
                         return AnimatedSwitcher(
                           switchOutCurve: Curves.easeInOutQuad,
                           switchInCurve: Curves.easeInOutQuad,
@@ -114,6 +119,13 @@ class BigPlayer extends StatelessWidget {
                                             motion: MaterialSpringMotion.expressiveSpatialDefault(),
                                             value: showTranscript ? 1 : 0,
                                             builder: (context, value, child) {
+                                              // the video of the episode replaces the podcast image
+                                              if (showingVideo) {
+                                                return PlayerVideo(
+                                                  scale: lerpDouble(1, 0.6, value)!,
+                                                  borderRadius: lerpDouble(pu4, pu2, value)!,
+                                                );
+                                              }
                                               return SingleMotionBuilder(
                                                 motion: MaterialSpringMotion.expressiveSpatialDefault(),
                                                 value: playing && !showTranscript ? 1 : 0,
@@ -314,6 +326,15 @@ class BigPlayer extends StatelessWidget {
                                                 );
                                               },
                                             ),
+                                            if (playingLocally && episode.canSwitchVideo)
+                                              IconButton(
+                                                onPressed: cubit.toggleVideo,
+                                                tooltip: videoEnabled ? locals.listenToAudio : locals.watchVideo,
+                                                icon: Icon(
+                                                  videoEnabled ? Icons.headphones : Icons.videocam,
+                                                  color: colors.primary,
+                                                ),
+                                              ),
                                             RemotePlayers(),
                                           ],
                                         ),

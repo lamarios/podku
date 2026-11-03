@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/episodes/states/continue_playing.dart';
 import 'package:podku/episodes/states/episodes.dart';
 import 'package:podku/episodes/views/components/continue_playing.dart';
@@ -67,7 +68,7 @@ class EpisodeScreen extends StatelessWidget {
                         MenuItemButton(
                           onPressed: () async {
                             if (kIsWeb) {
-                              launchUrl(Uri.parse(e.audioUrl ?? ''));
+                              launchUrl(Uri.parse(e.listeningFile?.url ?? ''));
                             } else {
                               context.read<DownloadManagerCubit>().download(e, manualDownload: true);
                             }
@@ -121,7 +122,7 @@ class EpisodeScreen extends StatelessWidget {
                     content: SwipeActionButton(color: colors.secondaryContainer, icon: Icon(Icons.download)),
                     color: Colors.transparent,
                     onTap: (handler) async {
-                      launchUrl(Uri.parse(e.audioUrl ?? ''));
+                      launchUrl(Uri.parse(e.listeningFile?.url ?? ''));
                       await handler(false);
                     },
                   ),

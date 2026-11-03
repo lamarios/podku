@@ -72,14 +72,14 @@ final class PodcastFeedMerger {
 
     // if past refreshes stored duplicates, keep updating the first one only
     Map<String, Episode> existing = new HashMap<>();
-    // episodes stored without a guid, by audio URL: lets a feed that starts publishing guids match
-    // its already stored episodes instead of duplicating them
-    Map<String, Episode> withoutGuidByAudio = new HashMap<>();
+    // episodes stored without a guid, by default media URL: lets a feed that starts publishing
+    // guids match its already stored episodes instead of duplicating them
+    Map<String, Episode> withoutGuidByMedia = new HashMap<>();
     for (Episode episode : target.getEpisodes()) {
       existing.putIfAbsent(EpisodeUtils.identityKey(episode), episode);
-      if ((episode.getGuid() == null || episode.getGuid().isBlank())
-          && episode.getAudioUrl() != null) {
-        withoutGuidByAudio.putIfAbsent(episode.getAudioUrl(), episode);
+      String mediaUrl = EpisodeUtils.defaultMediaUrl(episode);
+      if ((episode.getGuid() == null || episode.getGuid().isBlank()) && mediaUrl != null) {
+        withoutGuidByMedia.putIfAbsent(mediaUrl, episode);
       }
     }
 
@@ -87,8 +87,9 @@ final class PodcastFeedMerger {
     int updated = 0;
     for (Episode freshEpisode : fresh.getEpisodes()) {
       Episode episode = existing.get(EpisodeUtils.identityKey(freshEpisode));
-      if (episode == null && freshEpisode.getAudioUrl() != null) {
-        episode = withoutGuidByAudio.remove(freshEpisode.getAudioUrl());
+      String freshMediaUrl = EpisodeUtils.defaultMediaUrl(freshEpisode);
+      if (episode == null && freshMediaUrl != null) {
+        episode = withoutGuidByMedia.remove(freshMediaUrl);
       }
       if (episode == null) {
         freshEpisode.setPodcast(target);
@@ -96,7 +97,10 @@ final class PodcastFeedMerger {
         added++;
       } else {
         // an episode is matched at most once
-        withoutGuidByAudio.remove(episode.getAudioUrl(), episode);
+        String mediaUrl = EpisodeUtils.defaultMediaUrl(episode);
+        if (mediaUrl != null) {
+          withoutGuidByMedia.remove(mediaUrl, episode);
+        }
         mergeEpisode(episode, freshEpisode);
         updated++;
       }
@@ -113,14 +117,19 @@ final class PodcastFeedMerger {
       target.setPeople(new ArrayList<>());
     }
 
-    boolean audioChanged = !Objects.equals(target.getAudioUrl(), fresh.getAudioUrl());
-    boolean filesChanged =
-        replaceIfChanged(
-            target.getFiles(),
-            fresh.getFiles(),
-            PodcastFeedMerger::fileSignature,
-            file -> file.setEpisode(target));
-    if (audioChanged || filesChanged) {
+    boolean mediaChanged =
+        !Objects.equals(EpisodeUtils.defaultMediaUrl(target), EpisodeUtils.defaultMediaUrl(fresh));
+    // alternate media don't need processing, only a change of the default media or of the other
+    // files triggers it
+    boolean processableFilesChanged =
+        !processableFileSignatures(target.getFiles())
+            .equals(processableFileSignatures(fresh.getFiles()));
+    replaceIfChanged(
+        target.getFiles(),
+        fresh.getFiles(),
+        PodcastFeedMerger::fileSignature,
+        file -> file.setEpisode(target));
+    if (mediaChanged || processableFilesChanged) {
       target.setProcessed(false);
     }
 
@@ -136,9 +145,6 @@ final class PodcastFeedMerger {
     target.setTitle(fresh.getTitle());
     target.setDescription(fresh.getDescription());
     target.setImageUrl(fresh.getImageUrl());
-    target.setAudioUrl(fresh.getAudioUrl());
-    target.setAudioType(fresh.getAudioType());
-    target.setAudioLengthBytes(fresh.getAudioLengthBytes());
     target.setDurationSeconds(fresh.getDurationSeconds());
     target.setPubDateMillis(fresh.getPubDateMillis());
     target.setEpisodeType(fresh.getEpisodeType());
@@ -169,7 +175,28 @@ final class PodcastFeedMerger {
   }
 
   private static List<Object> fileSignature(EpisodeFile f) {
-    return Arrays.asList(f.getType(), f.getUrl(), f.getMime(), f.getLanguage(), f.getRel());
+    return Arrays.asList(
+        f.getType(),
+        f.getUrl(),
+        f.getMime(),
+        f.getLanguage(),
+        f.getRel(),
+        f.getLengthBytes(),
+        f.getBitrate(),
+        f.getHeight(),
+        f.getTitle(),
+        f.getCodecs(),
+        f.getDefaultMedia());
+  }
+
+  private static List<List<Object>> processableFileSignatures(List<EpisodeFile> files) {
+    if (files == null) {
+      return List.of();
+    }
+    return files.stream()
+        .filter(f -> f.getType() == null || !f.getType().isMedia())
+        .map(PodcastFeedMerger::fileSignature)
+        .toList();
   }
 
   private static List<Object> episodePersonSignature(EpisodePerson p) {

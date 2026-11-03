@@ -40,7 +40,8 @@ The backend is the source of truth for the API contract: the Dart client is gene
   ```bash
   nix-shell --run "flutter ..."   # or cd src/main/app && nix-shell --run 'dart ...'
   ```
-- **Do not commit generated code.** `podku_client/`, `/target/`, `/image-cache/`, `/episode-cache/`, and the built Flutter output in `src/main/resources/public/` are gitignored / generated. Regenerate them (see [Common Tasks](#common-tasks)).
+- **Do not commit generated code.** `/target/`, `/image-cache/`, `/episode-cache/`, and the built Flutter output in `src/main/resources/public/` are gitignored / generated. Regenerate them (see [Common Tasks](#common-tasks)).
+- **`podku_client/` is the exception: it is generated but committed.** Never hand-edit it; regenerate it with `make generate-client` and commit the result alongside the API change that caused it.
 - **Prefer path dependencies over published packages** for `podku_shared` and `podku_client` (see pubspec files). Don't publish these internally.
 - When changing the API, regenerate the Dart client so app/podkunnect stay in sync.
 
@@ -128,7 +129,7 @@ docker compose up -d        # postgres on localhost:8090, db "podku"
 ## Shared Code & Generated Client
 
 - **`podku_shared/`** — shared Dart models (freezed/json_serializable) used by both the app and podkunnect. Path dependency; regenerate with build runner after edits.
-- **`podku_client/`** — generated OpenAPI client (`dart-dio`, `json_serializable`). Generated from the backend's live spec. Regenerate it whenever the API changes (see [Common Tasks](#common-tasks)).
+- **`podku_client/`** — generated OpenAPI client (`dart-dio`, `json_serializable`). Generated from the backend's live spec and **committed to git**. Regenerate it whenever the API changes (see [Common Tasks](#common-tasks)), against a backend running the latest code, and commit the regenerated files with the backend change.
 
 ## Configuration & Environment Variables
 
@@ -142,7 +143,7 @@ Read `src/main/resources/application.yml`. Key env vars:
 
 - **Java formatting** is enforced by Spotless (`googleJavaFormat`, `cleanthat`, `removeUnusedImports`) via the Maven build — keep code formatted or `mvn` will fail the check.
 - **Dart**: run `dart analyze` (and `flutter analyze`) before finishing; respect `analysis_options.yaml` in each Dart package.
-- Keep generated files out of git/version control; regenerate instead of hand-editing them.
+- Keep generated files out of git/version control (except `podku_client/`, see above); regenerate instead of hand-editing them.
 - Match surrounding code style (indentation, naming, KDoc/Javadoc, file layout) rather than imposing a new one.
 
 ## Common Tasks

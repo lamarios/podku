@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
 import 'package:material_3_expressive/components/navigation_bar/m3e_navigation_bar.dart';
@@ -19,6 +18,7 @@ import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/components/episode_sheet.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/home/views/components/animated_logo.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/player.dart';
@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                 ? M3EAppBar.search(
                     leading: Padding(
                       padding: .symmetric(horizontal: pu4),
-                      child: SvgPicture.asset('assets/podku-icon-no-background.svg', width: 30, height: 30),
+                      child: AnimatedPodkuLogo(size: 30),
                     ),
                     backgroundColor: Colors.transparent,
                     centerTitle: true,
@@ -167,11 +167,7 @@ class HomeScreen extends StatelessWidget {
                                             final textSize = lerpDouble(0, 30, value)!.clamp(0, 100000).toDouble();
                                             return Column(
                                               children: [
-                                                SvgPicture.asset(
-                                                  'assets/podku-icon-no-background.svg',
-                                                  width: logoSize,
-                                                  height: logoSize,
-                                                ),
+                                                AnimatedPodkuLogo(size: logoSize),
                                                 Text('Podku', style: TextStyle(fontSize: textSize)),
                                               ],
                                             );

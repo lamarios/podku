@@ -592,6 +592,21 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_libs_linux/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_libs_linux/build" />
       <excludeFolder url="file://$MODULE_DIR$/flatpak" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_video/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_video/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_video/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_video/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_video/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/linux/flutter/ephemeral/.plugin_symlinks/media_kit_video/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_libs_windows_video/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_libs_windows_video/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_libs_windows_video/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_video/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_video/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_video/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_video/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_video/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows/flutter/ephemeral/.plugin_symlinks/media_kit_video/example/build" />
     </content>
   </component>
 </module>

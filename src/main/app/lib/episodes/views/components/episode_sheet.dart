@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:openapi/openapi.dart';
+import 'package:podku/episodes/models/episode_url.dart';
 import 'package:podku/episodes/views/components/people_wrap.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
@@ -95,7 +96,7 @@ class EpisodeSheet extends StatelessWidget {
                   TextButton.icon(
                     onPressed: () {
                       if (kIsWeb) {
-                        launchUrl(Uri.parse(episode.audioUrl ?? ''));
+                        launchUrl(Uri.parse(episode.listeningFile?.url ?? ''));
                       } else {
                         context.read<DownloadManagerCubit>().download(episode, manualDownload: true);
                         Navigator.of(context).pop();
@@ -105,7 +106,7 @@ class EpisodeSheet extends StatelessWidget {
                     icon: Icon(Icons.download),
                   ),
                 TextButton.icon(
-                  onPressed: () => SharePlus.instance.share(ShareParams(uri: Uri.parse(episode.audioUrl!))),
+                  onPressed: () => SharePlus.instance.share(ShareParams(uri: Uri.parse(episode.listeningFile!.url!))),
                   icon: Icon(Icons.share),
                   label: Text(locals.share),
                 ),

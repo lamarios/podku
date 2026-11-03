@@ -3,6 +3,11 @@ package com.github.lamarios.podku.urls;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.lamarios.podku.TestContainerTest;
+import com.github.lamarios.podku.episodes.Episode;
+import com.github.lamarios.podku.episodes.EpisodeFile;
+import com.github.lamarios.podku.episodes.EpisodeFileType;
+import com.github.lamarios.podku.episodes.EpisodeUtils;
+import com.github.lamarios.podku.podcasts.Podcast;
 import com.github.lamarios.podku.utils.FastUrlCrypto;
 import com.google.common.hash.Hashing;
 import java.io.ByteArrayOutputStream;
@@ -111,5 +116,38 @@ public class UrlControllerTest extends TestContainerTest {
 
     ResponseEntity<StreamingResponseBody> response = urlController.getImage(encryptedUrl, null);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
+  public void testDownloadedEpisodeMediaIsServedFromCache() throws Exception {
+    Podcast podcast = new Podcast();
+    podcast.setName("Cache");
+    Episode episode = new Episode();
+    episode.setTitle("Cached episode");
+    episode.setPodcast(podcast);
+    EpisodeFile media = new EpisodeFile();
+    media.setType(EpisodeFileType.audio);
+    media.setUrl(getBaseUrl() + "/mock/audio.mp3");
+    media.setEpisode(episode);
+
+    Path cachedFile = EpisodeUtils.downloadEpisode(media, Paths.get(episodeCacheFolder));
+
+    try {
+      assertEquals(EpisodeUtils.mediaCacheKey(media), cachedFile.getFileName().toString());
+      assertEquals(2048, Files.size(cachedFile));
+      // overwrite the cached copy to tell it apart from the upstream file
+      byte[] cachedBytes = "from the cache".getBytes(StandardCharsets.UTF_8);
+      Files.write(cachedFile, cachedBytes);
+
+      ResponseEntity<StreamingResponseBody> response =
+          urlController.proxyAudio(media.getUrlEncrypted(), null, new MockHttpServletRequest());
+
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      response.getBody().writeTo(out);
+      assertArrayEquals(cachedBytes, out.toByteArray());
+    } finally {
+      Files.deleteIfExists(cachedFile);
+    }
   }
 }

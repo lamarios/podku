@@ -8,6 +8,7 @@ import 'package:material_3_expressive/material_3_expressive.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/l10n/app_localizations.dart';
+import 'package:podku/player/states/player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -61,31 +62,33 @@ class Past5MinuteSummary extends StatelessWidget {
   }) async {
     final isMobile = BreakPoint.of(context) == .mobile;
     final locals = AppLocalizations.of(context)!;
-    return isMobile
-        ? M3EBottomSheet.show(
-            context,
-            showDragHandle: false,
-            builder: (context) => SafeArea(
-              top: false,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.7),
-                child: Past5MinuteSummary(episodeId: episodeId, language: language, time: time),
+    return context.read<PlayerCubit>().showOverPlayer(
+      () => isMobile
+          ? M3EBottomSheet.show(
+              context,
+              showDragHandle: false,
+              builder: (context) => SafeArea(
+                top: false,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.7),
+                  child: Past5MinuteSummary(episodeId: episodeId, language: language, time: time),
+                ),
+              ),
+            )
+          : M3EDialog.show(
+              context,
+              dialog: M3EDialog(
+                // backgroundColor: Colors.transparent,
+                // constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
+                icon: Icon(M3EIcons.auto_awesome),
+                content: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.6),
+                  child: Past5MinuteSummary(episodeId: episodeId, language: language, time: time),
+                ),
+                title: locals.past5MinutesSummary,
               ),
             ),
-          )
-        : M3EDialog.show(
-            context,
-            dialog: M3EDialog(
-              // backgroundColor: Colors.transparent,
-              // constraints: BoxConstraints(maxWidth: 400, maxHeight: 700),
-              icon: Icon(M3EIcons.auto_awesome),
-              content: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.6),
-                child: Past5MinuteSummary(episodeId: episodeId, language: language, time: time),
-              ),
-              title: locals.past5MinutesSummary,
-            ),
-          );
+    );
   }
 
   @override

@@ -9,17 +9,16 @@ import be.ceau.opml.entity.Body;
 import be.ceau.opml.entity.Head;
 import be.ceau.opml.entity.Opml;
 import be.ceau.opml.entity.Outline;
+import com.github.lamarios.podku.episodes.EpisodeFile;
 import com.github.lamarios.podku.episodes.EpisodeRepository;
 import com.github.lamarios.podku.episodes.EpisodeService;
 import com.github.lamarios.podku.episodes.EpisodeUtils;
 import com.github.lamarios.podku.search.SearchResult;
 import com.github.lamarios.podku.transcripts.WhisperService;
 import com.github.lamarios.podku.utils.TransactionHelper;
-import com.google.common.hash.Hashing;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -404,32 +403,31 @@ public class PodcastService {
     if (episodeCacheCount > 0) {
       log.info("Starting to cache episodes locally");
       // the downloads happen outside the transaction so no DB connection is held meanwhile
-      var episodes =
+      // the episode files are lazy, the media to cache is resolved inside the transaction
+      List<EpisodeFile> medias =
           TransactionHelper.doInNewTransaction(
               platformTransactionManager,
               true,
               () ->
-                  episodeRepository.getEpisodeByPubDateMillisBefore(
-                      System.currentTimeMillis(),
-                      Sort.by(Sort.Direction.DESC, "pubDateMillis"),
-                      Limit.of(episodeCacheCount)));
+                  episodeRepository
+                      .getEpisodeByPubDateMillisBefore(
+                          System.currentTimeMillis(),
+                          Sort.by(Sort.Direction.DESC, "pubDateMillis"),
+                          Limit.of(episodeCacheCount))
+                      .stream()
+                      .map(EpisodeUtils::defaultMedia)
+                      .filter(Objects::nonNull)
+                      .toList());
 
-      for (var e : episodes) {
+      for (var media : medias) {
         try {
-          EpisodeUtils.downloadEpisode(e, episodeCacheFolder);
+          EpisodeUtils.downloadEpisode(media, episodeCacheFolder);
         } catch (IOException ex) {
-          log.error("Failed to download episode {}", e.getTitle(), ex);
+          log.error("Failed to download episode {}", media.getEpisode().getTitle(), ex);
         }
       }
 
-      List<String> episodeHashes =
-          episodes.stream()
-              .map(
-                  e ->
-                      Hashing.sha256()
-                          .hashString(e.getAudioUrl(), StandardCharsets.UTF_8)
-                          .toString())
-              .toList();
+      List<String> episodeHashes = medias.stream().map(EpisodeUtils::mediaCacheKey).toList();
 
       try (var files = Files.list(episodeCacheFolder)) {
         files.forEach(

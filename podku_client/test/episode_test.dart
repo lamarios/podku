@@ -22,21 +22,6 @@ void main() {
       // TODO
     });
 
-    // String audioUrl
-    test('to test the property `audioUrl`', () async {
-      // TODO
-    });
-
-    // String audioType
-    test('to test the property `audioType`', () async {
-      // TODO
-    });
-
-    // int audioLengthBytes
-    test('to test the property `audioLengthBytes`', () async {
-      // TODO
-    });
-
     // int pubDateMillis
     test('to test the property `pubDateMillis`', () async {
       // TODO
@@ -99,11 +84,6 @@ void main() {
 
     // int progressUpdated
     test('to test the property `progressUpdated`', () async {
-      // TODO
-    });
-
-    // String audioUrlEncrypted
-    test('to test the property `audioUrlEncrypted`', () async {
       // TODO
     });
 
