@@ -100,42 +100,28 @@ class EpisodeInContinuePlaying extends StatelessWidget {
                                     children: [
                                       ClipPath(
                                         clipper: clipper2,
-                                        child: Stack(
-                                          children: [
-                                            episode.podcast != null && showPodcastImage
-                                                ? PodcastImage(
-                                                    podcastLight: episode.podcast!,
-                                                    width: pictureSize,
-                                                    height: pictureSize,
-                                                    borderRadius: pu2,
-                                                  )
-                                                : Container(
-                                                    width: pictureSize,
-                                                    height: pictureSize,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: .circular(pu4),
-                                                      color: colors.secondaryContainer,
-                                                    ),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.podcasts,
-                                                        size: pictureSize / 3,
-                                                        color: colors.onSecondaryContainer.withValues(alpha: 0.5),
-                                                      ),
-                                                    ),
+                                        child: episode.podcast != null && showPodcastImage
+                                            ? PodcastImage(
+                                                podcastLight: episode.podcast!,
+                                                width: pictureSize,
+                                                height: pictureSize,
+                                                borderRadius: pu2,
+                                              )
+                                            : Container(
+                                                width: pictureSize,
+                                                height: pictureSize,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: .circular(pu4),
+                                                  color: colors.secondaryContainer,
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.podcasts,
+                                                    size: pictureSize / 3,
+                                                    color: colors.onSecondaryContainer.withValues(alpha: 0.5),
                                                   ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
-
-                                                  begin: .bottomCenter,
-                                                  end: .topCenter,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
                                       ),
                                       CustomPaint(
                                         size: Size(pictureSize, pictureSize),
