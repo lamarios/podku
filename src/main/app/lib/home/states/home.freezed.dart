@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeState {
 
- int get selectedIndex; bool get railExpanded;
+ int get selectedIndex; int? get previousIndex; bool get railExpanded;
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $HomeStateCopyWith<HomeState> get copyWith => _$HomeStateCopyWithImpl<HomeState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.previousIndex, previousIndex) || other.previousIndex == previousIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedIndex,railExpanded);
+int get hashCode => Object.hash(runtimeType,selectedIndex,previousIndex,railExpanded);
 
 @override
 String toString() {
-  return 'HomeState(selectedIndex: $selectedIndex, railExpanded: $railExpanded)';
+  return 'HomeState(selectedIndex: $selectedIndex, previousIndex: $previousIndex, railExpanded: $railExpanded)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- int selectedIndex, bool railExpanded
+ int selectedIndex, int? previousIndex, bool railExpanded
 });
 
 
@@ -62,10 +62,11 @@ class _$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedIndex = null,Object? railExpanded = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectedIndex = null,Object? previousIndex = freezed,Object? railExpanded = null,}) {
   return _then(_self.copyWith(
 selectedIndex: null == selectedIndex ? _self.selectedIndex : selectedIndex // ignore: cast_nullable_to_non_nullable
-as int,railExpanded: null == railExpanded ? _self.railExpanded : railExpanded // ignore: cast_nullable_to_non_nullable
+as int,previousIndex: freezed == previousIndex ? _self.previousIndex : previousIndex // ignore: cast_nullable_to_non_nullable
+as int?,railExpanded: null == railExpanded ? _self.railExpanded : railExpanded // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -148,10 +149,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int selectedIndex,  bool railExpanded)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int selectedIndex,  int? previousIndex,  bool railExpanded)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.selectedIndex,_that.railExpanded);case _:
+return $default(_that.selectedIndex,_that.previousIndex,_that.railExpanded);case _:
   return orElse();
 
 }
@@ -169,10 +170,10 @@ return $default(_that.selectedIndex,_that.railExpanded);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int selectedIndex,  bool railExpanded)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int selectedIndex,  int? previousIndex,  bool railExpanded)  $default,) {final _that = this;
 switch (_that) {
 case _HomeState():
-return $default(_that.selectedIndex,_that.railExpanded);}
+return $default(_that.selectedIndex,_that.previousIndex,_that.railExpanded);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +187,10 @@ return $default(_that.selectedIndex,_that.railExpanded);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int selectedIndex,  bool railExpanded)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int selectedIndex,  int? previousIndex,  bool railExpanded)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.selectedIndex,_that.railExpanded);case _:
+return $default(_that.selectedIndex,_that.previousIndex,_that.railExpanded);case _:
   return null;
 
 }
@@ -201,10 +202,11 @@ return $default(_that.selectedIndex,_that.railExpanded);case _:
 
 
 class _HomeState implements HomeState {
-  const _HomeState({this.selectedIndex = 0, this.railExpanded = true});
+  const _HomeState({this.selectedIndex = 0, this.previousIndex, this.railExpanded = true});
   
 
 @override@JsonKey() final  int selectedIndex;
+@override final  int? previousIndex;
 @override@JsonKey() final  bool railExpanded;
 
 /// Create a copy of HomeState
@@ -217,16 +219,16 @@ _$HomeStateCopyWith<_HomeState> get copyWith => __$HomeStateCopyWithImpl<_HomeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.previousIndex, previousIndex) || other.previousIndex == previousIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedIndex,railExpanded);
+int get hashCode => Object.hash(runtimeType,selectedIndex,previousIndex,railExpanded);
 
 @override
 String toString() {
-  return 'HomeState(selectedIndex: $selectedIndex, railExpanded: $railExpanded)';
+  return 'HomeState(selectedIndex: $selectedIndex, previousIndex: $previousIndex, railExpanded: $railExpanded)';
 }
 
 
@@ -237,7 +239,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- int selectedIndex, bool railExpanded
+ int selectedIndex, int? previousIndex, bool railExpanded
 });
 
 
@@ -254,10 +256,11 @@ class __$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectedIndex = null,Object? railExpanded = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedIndex = null,Object? previousIndex = freezed,Object? railExpanded = null,}) {
   return _then(_HomeState(
 selectedIndex: null == selectedIndex ? _self.selectedIndex : selectedIndex // ignore: cast_nullable_to_non_nullable
-as int,railExpanded: null == railExpanded ? _self.railExpanded : railExpanded // ignore: cast_nullable_to_non_nullable
+as int,previousIndex: freezed == previousIndex ? _self.previousIndex : previousIndex // ignore: cast_nullable_to_non_nullable
+as int?,railExpanded: null == railExpanded ? _self.railExpanded : railExpanded // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

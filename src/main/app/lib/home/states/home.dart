@@ -9,7 +9,9 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit(super.initialState, {required this.searchController});
 
   void setIndex(int index) {
-    emit(state.copyWith(selectedIndex: index));
+    if (index == state.selectedIndex) return;
+    // previousIndex lets the branch container know which branch to animate out
+    emit(state.copyWith(selectedIndex: index, previousIndex: state.selectedIndex));
   }
 
   void setRailExpanded(bool expanded) {
@@ -19,5 +21,6 @@ class HomeCubit extends Cubit<HomeState> {
 
 @freezed
 sealed class HomeState with _$HomeState {
-  const factory HomeState({@Default(0) int selectedIndex, @Default(true) bool railExpanded}) = _HomeState;
+  const factory HomeState({@Default(0) int selectedIndex, int? previousIndex, @Default(true) bool railExpanded}) =
+      _HomeState;
 }
