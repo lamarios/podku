@@ -241,10 +241,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               child: Padding(
                                 padding: .symmetric(horizontal: pu2),
-                                child: KeyedSubtree(
-                                  key: ValueKey(navigationShell.currentIndex),
-                                  child: navigationShell,
-                                ),
+                                child: navigationShell,
                               ),
                             ),
                           ),

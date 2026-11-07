@@ -7,6 +7,7 @@ import 'package:podku/bookmarks/views/screens/bookmark_screen.dart';
 import 'package:podku/bookmarks/views/screens/bookmarks_screen.dart';
 import 'package:podku/episodes/views/screens/episodes.dart';
 import 'package:podku/home/states/home.dart';
+import 'package:podku/home/views/components/animated_branch_container.dart';
 import 'package:podku/home/views/screens/home.dart';
 import 'package:podku/offline_episodes/views/screens/download_settings.dart';
 import 'package:podku/offline_episodes/views/screens/offline_episodes.dart';
@@ -16,6 +17,7 @@ import 'package:podku/podcasts/views/screens/podcasts.dart';
 import 'package:podku/search/views/screens/search.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/server/views/screens/setup.dart';
+import 'package:podku/utils/models/breakpoint.dart';
 import 'package:podku/utils/router/go_route_refresh_stream.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -59,10 +61,19 @@ GoRouter router(ServerCubit serverCubit) => GoRouter(
           path: '/search',
           builder: (context, state) => SearchScreen(query: state.extra != null ? state.extra as String : null),
         ),
-        StatefulShellRoute.indexedStack(
+        StatefulShellRoute(
+          navigatorContainerBuilder: (context, navigationShell, children) => AnimatedBranchContainer(
+            currentIndex: navigationShell.currentIndex,
+            // the navigation rail is vertical so the branches slide up and down to match it
+            axis: BreakPoint.of(context) == .mobile ? .horizontal : .vertical,
+            children: children,
+          ),
           builder: (context, state, navigationShell) {
             return BlocProvider(
-              create: (context) => HomeCubit(HomeState(selectedIndex: 0), searchController: M3ESearchController()),
+              create: (context) => HomeCubit(
+                HomeState(selectedIndex: navigationShell.currentIndex),
+                searchController: M3ESearchController(),
+              ),
               child: HomeScreen(navigationShell: navigationShell),
             );
           },
