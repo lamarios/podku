@@ -8,16 +8,25 @@ import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/play_pause_button.dart';
+import 'package:podku/player/views/components/playing_podcast_image.dart';
 import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
-import 'package:podku/podcasts/views/components/podcast_image.dart';
 import 'package:podku/utils.dart';
-import 'package:podku/utils/views/components/shape_clipper.dart';
+
+/// Content of the collapsed player. The card behind it (color, shape, shadow) is drawn by the expandable player panel.
+/// Scale of the mini player podcast image, which pops out of the card while playing.
+double miniPlayerImageScale(double playingValue) => lerpDouble(1, 1.2, playingValue)!;
 
 class MiniPlayer extends StatelessWidget {
   static const double playerSize = 75;
 
-  const MiniPlayer({super.key});
+  /// Key of the podcast image slot, used to measure where the image is when expanding to the big player.
+  final GlobalKey? imageKey;
+
+  /// Hides the podcast image while keeping its slot, when the image is drawn elsewhere (during the expansion).
+  final bool hideImage;
+
+  const MiniPlayer({super.key, this.imageKey, this.hideImage = false});
 
   static SliverPadding miniPlayerPadding() {
     return SliverPadding(padding: .only(bottom: playerSize * 2));
@@ -43,34 +52,14 @@ class MiniPlayer extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: GestureDetector(
+                  behavior: .opaque,
                   onTap: () => cubit.showPlayers(false, true),
                   child: SingleMotionBuilder(
                     motion: MaterialSpringMotion.expressiveSpatialFast(),
                     value: isPlaying ? 1 : 0,
                     builder: (context, value, child) {
-                      double borderSize = lerpDouble(0, 2, value)!;
-                      final borderColor = Color.lerp(Colors.transparent, colors.primary, value);
-                      var clipper = MorphClipper(
-                        Morph(
-                          RoundedPolygon.rectangle(
-                            width: 1,
-                            height: 1,
-                            rounding: CornerRounding(radius: 0.15),
-                            centerX: 0.5,
-                            centerY: 0.5,
-                          ),
-                          M3EMaterialNewShapes.cookie9Sided,
-                        ),
-                        value,
-                      );
-
-                      return Container(
+                      return SizedBox(
                         height: 70,
-                        decoration: BoxDecoration(
-                          color: Color.lerp(colors.secondaryContainer, colors.primaryContainer, value),
-                          borderRadius: .circular(lerpDouble(pu3, pu8, value)!),
-                          boxShadow: [BoxShadow(blurRadius: pu4, color: Colors.black.withValues(alpha: 0.5))],
-                        ),
                         child: Builder(
                           builder: (context) {
                             final episode = context.select((PlayerCubit c) => c.state.episode);
@@ -85,28 +74,27 @@ class MiniPlayer extends StatelessWidget {
 
                             return Row(
                               children: [
-                                Transform.scale(
-                                  scale: lerpDouble(1, 1.2, value),
-                                  child: Stack(
-                                    children: [
-                                      ClipPath(
-                                        clipper: clipper,
-                                        child: PodcastImage(
-                                          podcastLight: episode.podcast!,
-                                          width: playerSize,
-                                          height: playerSize,
-                                          borderRadius: pu,
+                                // the key is outside the scale: the expandable player measures the slot's layout box
+                                // and applies the playing scale itself, as it changes while the mini player is hidden
+                                SizedBox(
+                                  key: imageKey,
+                                  width: playerSize,
+                                  height: playerSize,
+                                  child: Transform.scale(
+                                    scale: miniPlayerImageScale(value),
+                                    child: SizedBox(
+                                      width: playerSize,
+                                      height: playerSize,
+                                      child: Opacity(
+                                        opacity: hideImage ? 0 : 1,
+                                        child: PlayingPodcastImage(
+                                          podcast: episode.podcast!,
+                                          size: playerSize,
+                                          playingValue: value,
+                                          borderColor: colors.primary,
                                         ),
                                       ),
-                                      CustomPaint(
-                                        size: Size(playerSize, playerSize),
-                                        painter: BorderPainter(
-                                          clipper: clipper,
-                                          color: borderColor!,
-                                          width: borderSize,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                                 Gap(pu6),

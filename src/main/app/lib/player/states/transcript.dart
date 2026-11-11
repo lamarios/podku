@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:anchored_list/anchored_list.dart';
 import 'package:flutter/animation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:openapi/openapi.dart';
@@ -62,6 +63,16 @@ class TranscriptCubit extends Cubit<TranscriptState> {
     var newIndex = findCurrentTranscriptIndex(state.transcript, event);
     if (newIndex != state.index && newIndex != -1) {
       emit(state.copyWith(index: newIndex));
+      // the list is only built once the first index is known, so it isn't attached yet on the first update:
+      // jump to the current line once it has been laid out
+      if (!listController.isAttached) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (!isClosed && listController.isAttached) {
+            listController.jumpToIndex(state.index, alignment: 0.5);
+          }
+        });
+        return;
+      }
       listController.animateToIndex(
         newIndex,
         alignment: 0.5,

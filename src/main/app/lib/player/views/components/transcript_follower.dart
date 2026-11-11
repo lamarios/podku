@@ -48,50 +48,29 @@ class TranscriptFollower extends StatelessWidget {
                                 ],
                               ),
                             Expanded(
-                              child: Stack(
-                                children: [
-                                  AnchoredList.builder(
-                                    controller: cubit.listController,
-                                    itemCount: state.transcript.length,
-                                    scrollDirection: .vertical,
-                                    itemBuilder: (context, index) => _TranscriptLine(
-                                      line: state.transcript[index],
-                                      lineIndex: index,
-                                      currentIndex: state.index,
-                                    ),
+                              // fade the top and bottom of the list through its alpha channel so it works on
+                              // top of a translucent / blurred background
+                              child: ShaderMask(
+                                blendMode: .dstIn,
+                                shaderCallback: (bounds) {
+                                  final fade = bounds.height == 0 ? 0.0 : (100 / bounds.height).clamp(0.0, 0.5);
+                                  return LinearGradient(
+                                    begin: .topCenter,
+                                    end: .bottomCenter,
+                                    colors: const [Colors.transparent, Colors.black, Colors.black, Colors.transparent],
+                                    stops: [0, fade, 1 - fade, 1],
+                                  ).createShader(bounds);
+                                },
+                                child: AnchoredList.builder(
+                                  controller: cubit.listController,
+                                  itemCount: state.transcript.length,
+                                  scrollDirection: .vertical,
+                                  itemBuilder: (context, index) => _TranscriptLine(
+                                    line: state.transcript[index],
+                                    lineIndex: index,
+                                    currentIndex: state.index,
                                   ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      height: 100,
-
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [colors.surface, colors.surface.withValues(alpha: 0)],
-                                          begin: .bottomCenter,
-                                          end: .topCenter,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [colors.surface, colors.surface.withValues(alpha: 0)],
-                                          end: .bottomCenter,
-                                          begin: .topCenter,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ],
