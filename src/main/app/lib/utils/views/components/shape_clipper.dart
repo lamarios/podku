@@ -58,7 +58,8 @@ class BorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant BorderPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.width != width || oldDelegate.clipper.shouldReclip(clipper);
 }
 
 RoundedPolygon _fitToSize(RoundedPolygon polygon, Size size) {

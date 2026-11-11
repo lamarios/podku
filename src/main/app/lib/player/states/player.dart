@@ -436,7 +436,14 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
   }
 
   void showPlayers(bool miniPlayer, bool bigPlayer) {
-    emit(state.copyWith(showMiniPlayer: miniPlayer, showBigPlayer: bigPlayer));
+    emit(
+      state.copyWith(
+        showMiniPlayer: miniPlayer,
+        showBigPlayer: bigPlayer,
+        // the transcript is closed when collapsing, so expanding again shows the player
+        showTranscript: bigPlayer && state.showTranscript,
+      ),
+    );
     _updateVideo();
   }
 
@@ -552,7 +559,8 @@ class PlayerCubit extends Cubit<PlayerState> with WidgetsBindingObserver {
       return false;
     }
     if (_currentBreakPoint == .mobile) {
-      emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true));
+      // the transcript is closed when collapsing, so expanding again shows the player
+      emit(state.copyWith(showBigPlayer: false, showMiniPlayer: true, showTranscript: false));
       _updateVideo();
     }
     return true;

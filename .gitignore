@@ -20,3 +20,4 @@ pubspec_overrides.yaml
 /flatpak/repo/
 /flatpak/*.flatpak
 /flatpak/version.env
+offline_progress.json

@@ -104,6 +104,8 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
   assets:
     - assets/
+  shaders:
+    - shaders/progressive_blur.frag
 dependency_overrides:
   flutter_secure_storage: ^10.0.0
 

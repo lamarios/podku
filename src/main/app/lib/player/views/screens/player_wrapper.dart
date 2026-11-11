@@ -7,6 +7,7 @@ import 'package:material_3_expressive/foundations/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 import 'package:podku/player/views/components/big_player.dart';
+import 'package:podku/player/views/components/expandable_player.dart';
 import 'package:podku/player/views/components/mini_player.dart';
 import 'package:podku/server/states/server.dart';
 import 'package:podku/server/views/components/offline_indicator.dart';
@@ -24,7 +25,6 @@ class PlayerWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.sizeOf(context).height;
     var breakPoint = BreakPoint.of(context);
     final isMobile = breakPoint == .mobile || breakPoint == .tablet;
     final colors = M3ETheme.of(context).colorScheme;
@@ -78,39 +78,6 @@ class PlayerWrapper extends StatelessWidget {
                   ),
                   child: child,
                 ),
-                if (isMobile)
-                  Builder(
-                    builder: (context) {
-                      final showMiniPlayer = context.select((PlayerCubit c) => c.state.showMiniPlayer);
-                      final double offlinePadding = isOnline ? 0 : OfflineIndicator.height;
-
-                      return SingleMotionBuilder(
-                        motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                        value: !hidePlayer && showMiniPlayer ? 1 : 0,
-                        from: 0,
-                        builder: (context, value, child) {
-                          var isHome = routerState.fullPath?.startsWith("/home") ?? false;
-                          return value < 0.1
-                              ? SizedBox.shrink()
-                              : SingleMotionBuilder(
-                                  motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                                  value: isHome && breakPoint == .mobile ? 100 : pu2,
-                                  builder: (context, bottomValue, child) {
-                                    final isTablet = breakPoint == .tablet;
-                                    return Positioned(
-                                      left: isTablet ? 100 : pu4,
-                                      right: isTablet ? 100 : pu4,
-                                      bottom: lerpDouble(500, bottomValue + offlinePadding, value),
-                                      child: SafeArea(
-                                        child: Opacity(opacity: value.clamp(0, 1), child: MiniPlayer()),
-                                      ),
-                                    );
-                                  },
-                                );
-                        },
-                      );
-                    },
-                  ),
                 SingleMotionBuilder(
                   value: isOnline ? -OfflineIndicator.height * 10 : 0,
                   motion: MaterialSpringMotion.expressiveSpatialDefault(),
@@ -118,31 +85,45 @@ class PlayerWrapper extends StatelessWidget {
                       Positioned(left: 0, bottom: value, right: 0, child: child!),
                   child: OfflineIndicator(),
                 ),
-                Builder(
-                  builder: (context) {
-                    final showBigPlayer = context.select((PlayerCubit c) => c.state.showBigPlayer);
-                    return SingleMotionBuilder(
-                      motion: MaterialSpringMotion.expressiveSpatialDefault(),
-                      value: showBigPlayer ? 1 : 0,
-                      from: 0,
-                      builder: (context, value, child) {
-                        return value <= 0.1
-                            ? SizedBox.shrink()
-                            : Positioned(
-                                left: isMobile ? 0 : null,
-                                right: isMobile ? 0 : lerpDouble(-_bigPlayerWidth, 0, value),
-                                bottom: 0,
-                                top: isMobile ? lerpDouble(screenHeight, 0, value) : 0,
-                                child: ConditionalWrap(
-                                  wrapIf: !isMobile,
-                                  wrapper: (child) => SizedBox(width: _bigPlayerWidth, child: child),
-                                  child: BigPlayer(),
-                                ),
-                              );
+                if (isMobile)
+                  Positioned.fill(
+                    child: Builder(
+                      builder: (context) {
+                        final double offlinePadding = isOnline ? 0 : OfflineIndicator.height;
+                        final isHome = routerState.fullPath?.startsWith("/home") ?? false;
+                        // the mini player sits above the navigation bar on the home screens
+                        return SingleMotionBuilder(
+                          motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                          value: isHome && breakPoint == .mobile ? 100 : pu2,
+                          builder: (context, bottomValue, child) => ExpandablePlayer(
+                            miniBottom: bottomValue + offlinePadding,
+                            miniHorizontalPadding: breakPoint == .tablet ? 100 : pu4,
+                          ),
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  )
+                else
+                  Builder(
+                    builder: (context) {
+                      final showBigPlayer = context.select((PlayerCubit c) => c.state.showBigPlayer);
+                      return SingleMotionBuilder(
+                        motion: MaterialSpringMotion.expressiveSpatialDefault(),
+                        value: showBigPlayer ? 1 : 0,
+                        from: 0,
+                        builder: (context, value, child) {
+                          return value <= 0.1
+                              ? SizedBox.shrink()
+                              : Positioned(
+                                  right: lerpDouble(-_bigPlayerWidth, 0, value),
+                                  bottom: 0,
+                                  top: 0,
+                                  child: SizedBox(width: _bigPlayerWidth, child: BigPlayer()),
+                                );
+                        },
+                      );
+                    },
+                  ),
               ],
             ),
           ),
