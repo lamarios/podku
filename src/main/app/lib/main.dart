@@ -22,6 +22,7 @@ import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/colors.dart';
 import 'package:uuid/uuid.dart';
+import 'package:podku/utils/views/components/legacy_material_bridge.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -136,8 +137,7 @@ class MyApp extends StatelessWidget {
                 data: m3eThemeData,
                 // some dependencies still use package:flutter/material.dart, the bridge gives them our theme and
                 // localizations. Remove once they all migrated to material_ui
-                // ignore: deprecated_member_use
-                child: MaterialUiCompatibilityBridge(child: child!),
+                child: LegacyMaterialBridge(child: child!),
               );
             },
             darkTheme: ThemeData(
