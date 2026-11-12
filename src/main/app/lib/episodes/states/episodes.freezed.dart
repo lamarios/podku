@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'episodes.dart';
@@ -9,6 +9,7 @@ part of 'episodes.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $EpisodesStateCopyWith<EpisodesState> get copyWith => _$EpisodesStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EpisodesState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.episodes, episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  final _this = this as EpisodesState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EpisodesState&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&const DeepCollectionEquality().equals(other.episodes, _this.episodes)&&(identical(other.cursor, _this.cursor) || other.cursor == _this.cursor)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.stackTrace, _this.stackTrace) || other.stackTrace == _this.stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(episodes),cursor,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+  final _this = this as EpisodesState;
+  return Object.hash(runtimeType,_this.loading,const DeepCollectionEquality().hash(_this.episodes),_this.cursor,const DeepCollectionEquality().hash(_this.error),_this.stackTrace);
+}
 
 @override
 String toString() {
-  return 'EpisodesState(loading: $loading, episodes: $episodes, cursor: $cursor, error: $error, stackTrace: $stackTrace)';
+  final _this = this as EpisodesState;
+  return 'EpisodesState(loading: ${_this.loading}, episodes: ${_this.episodes}, cursor: ${_this.cursor}, error: ${_this.error}, stackTrace: ${_this.stackTrace})';
 }
 
 
@@ -63,7 +69,7 @@ class _$EpisodesStateCopyWithImpl<$Res>
 /// Create a copy of EpisodesState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? episodes = null,Object? cursor = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(EpisodesState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episodes: null == episodes ? _self.episodes : episodes // ignore: cast_nullable_to_non_nullable
 as Map<EpisodeThresholds, List<Episode>>,cursor: freezed == cursor ? _self.cursor : cursor // ignore: cast_nullable_to_non_nullable
@@ -204,7 +210,7 @@ return $default(_that.loading,_that.episodes,_that.cursor,_that.error,_that.stac
 
 
 class _EpisodesState extends EpisodesState implements WithError {
-  const _EpisodesState({this.loading = false, final  Map<EpisodeThresholds, List<Episode>> episodes = const {}, this.cursor, this.error, this.stackTrace}): _episodes = episodes,super._();
+  const _EpisodesState({this.loading = false,  Map<EpisodeThresholds, List<Episode>> episodes = const {}, this.cursor, this.error, this.stackTrace}): _episodes = episodes,super._();
   
 
 @override@JsonKey() final  bool loading;
@@ -229,16 +235,18 @@ _$EpisodesStateCopyWith<_EpisodesState> get copyWith => __$EpisodesStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EpisodesState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other._episodes, _episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EpisodesState&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.episodes, _episodes)&&(identical(other.cursor, cursor) || other.cursor == cursor)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(_episodes),cursor,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+    return Object.hash(runtimeType,loading,const DeepCollectionEquality().hash(_episodes),cursor,const DeepCollectionEquality().hash(error),stackTrace);
+}
 
 @override
 String toString() {
-  return 'EpisodesState(loading: $loading, episodes: $episodes, cursor: $cursor, error: $error, stackTrace: $stackTrace)';
+    return 'EpisodesState(loading: $loading, episodes: $episodes, cursor: $cursor, error: $error, stackTrace: $stackTrace)';
 }
 
 

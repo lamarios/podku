@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bookmarks.dart';
@@ -9,6 +9,7 @@ part of 'bookmarks.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $BookmarksStateCopyWith<BookmarksState> get copyWith => _$BookmarksStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarksState&&const DeepCollectionEquality().equals(other.bookmarks, bookmarks)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  final _this = this as BookmarksState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarksState&&const DeepCollectionEquality().equals(other.bookmarks, _this.bookmarks)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.stackTrace, _this.stackTrace) || other.stackTrace == _this.stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(bookmarks),loading,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+  final _this = this as BookmarksState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.bookmarks),_this.loading,const DeepCollectionEquality().hash(_this.error),_this.stackTrace);
+}
 
 @override
 String toString() {
-  return 'BookmarksState(bookmarks: $bookmarks, loading: $loading, error: $error, stackTrace: $stackTrace)';
+  final _this = this as BookmarksState;
+  return 'BookmarksState(bookmarks: ${_this.bookmarks}, loading: ${_this.loading}, error: ${_this.error}, stackTrace: ${_this.stackTrace})';
 }
 
 
@@ -63,7 +69,7 @@ class _$BookmarksStateCopyWithImpl<$Res>
 /// Create a copy of BookmarksState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bookmarks = null,Object? loading = null,Object? error = freezed,Object? stackTrace = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(BookmarksState(
 bookmarks: null == bookmarks ? _self.bookmarks : bookmarks // ignore: cast_nullable_to_non_nullable
 as List<BookmarkWithTranscript>,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -203,7 +209,7 @@ return $default(_that.bookmarks,_that.loading,_that.error,_that.stackTrace);case
 
 
 class _BookmarksState implements BookmarksState, WithError {
-  const _BookmarksState({final  List<BookmarkWithTranscript> bookmarks = const [], this.loading = true, this.error, this.stackTrace}): _bookmarks = bookmarks;
+  const _BookmarksState({ List<BookmarkWithTranscript> bookmarks = const [], this.loading = true, this.error, this.stackTrace}): _bookmarks = bookmarks;
   
 
  final  List<BookmarkWithTranscript> _bookmarks;
@@ -227,16 +233,18 @@ _$BookmarksStateCopyWith<_BookmarksState> get copyWith => __$BookmarksStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarksState&&const DeepCollectionEquality().equals(other._bookmarks, _bookmarks)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarksState&&const DeepCollectionEquality().equals(other.bookmarks, _bookmarks)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_bookmarks),loading,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_bookmarks),loading,const DeepCollectionEquality().hash(error),stackTrace);
+}
 
 @override
 String toString() {
-  return 'BookmarksState(bookmarks: $bookmarks, loading: $loading, error: $error, stackTrace: $stackTrace)';
+    return 'BookmarksState(bookmarks: $bookmarks, loading: $loading, error: $error, stackTrace: $stackTrace)';
 }
 
 

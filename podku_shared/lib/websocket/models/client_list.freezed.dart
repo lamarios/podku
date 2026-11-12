@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'client_list.dart';
@@ -9,6 +9,7 @@ part of 'client_list.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $ClientListCopyWith<ClientList> get copyWith => _$ClientListCopyWithImpl<ClientL
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClientList&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.clients, clients));
+  final _this = this as ClientList;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClientList&&(identical(other.currentPlayer, _this.currentPlayer) || other.currentPlayer == _this.currentPlayer)&&const DeepCollectionEquality().equals(other.clients, _this.clients));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,currentPlayer,const DeepCollectionEquality().hash(clients));
+int get hashCode {
+  final _this = this as ClientList;
+  return Object.hash(runtimeType,_this.currentPlayer,const DeepCollectionEquality().hash(_this.clients));
+}
 
 @override
 String toString() {
-  return 'ClientList(currentPlayer: $currentPlayer, clients: $clients)';
+  final _this = this as ClientList;
+  return 'ClientList(currentPlayer: ${_this.currentPlayer}, clients: ${_this.clients})';
 }
 
 
@@ -66,7 +72,7 @@ class _$ClientListCopyWithImpl<$Res>
 /// Create a copy of ClientList
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? currentPlayer = freezed,Object? clients = null,}) {
-  return _then(_self.copyWith(
+  return _then(ClientList(
 currentPlayer: freezed == currentPlayer ? _self.currentPlayer : currentPlayer // ignore: cast_nullable_to_non_nullable
 as PlayerInfo?,clients: null == clients ? _self.clients : clients // ignore: cast_nullable_to_non_nullable
 as List<PlayerInfo>,
@@ -216,7 +222,7 @@ return $default(_that.currentPlayer,_that.clients);case _:
 @JsonSerializable()
 
 class _ClientList implements ClientList {
-  const _ClientList({this.currentPlayer, final  List<PlayerInfo> clients = const []}): _clients = clients;
+  const _ClientList({this.currentPlayer,  List<PlayerInfo> clients = const []}): _clients = clients;
   factory _ClientList.fromJson(Map<String, dynamic> json) => _$ClientListFromJson(json);
 
 @override final  PlayerInfo? currentPlayer;
@@ -241,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClientList&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other._clients, _clients));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClientList&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.clients, _clients));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,currentPlayer,const DeepCollectionEquality().hash(_clients));
+int get hashCode {
+    return Object.hash(runtimeType,currentPlayer,const DeepCollectionEquality().hash(_clients));
+}
 
 @override
 String toString() {
-  return 'ClientList(currentPlayer: $currentPlayer, clients: $clients)';
+    return 'ClientList(currentPlayer: $currentPlayer, clients: $clients)';
 }
 
 

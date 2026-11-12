@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'scrobbling.dart';
@@ -9,6 +9,7 @@ part of 'scrobbling.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ScrobblingStateCopyWith<ScrobblingState> get copyWith => _$ScrobblingStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScrobblingState&&(identical(other.holding, holding) || other.holding == holding)&&(identical(other.holdingPosition, holdingPosition) || other.holdingPosition == holdingPosition));
+  final _this = this as ScrobblingState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScrobblingState&&(identical(other.holding, _this.holding) || other.holding == _this.holding)&&(identical(other.holdingPosition, _this.holdingPosition) || other.holdingPosition == _this.holdingPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,holding,holdingPosition);
+int get hashCode {
+  final _this = this as ScrobblingState;
+  return Object.hash(runtimeType,_this.holding,_this.holdingPosition);
+}
 
 @override
 String toString() {
-  return 'ScrobblingState(holding: $holding, holdingPosition: $holdingPosition)';
+  final _this = this as ScrobblingState;
+  return 'ScrobblingState(holding: ${_this.holding}, holdingPosition: ${_this.holdingPosition})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ScrobblingStateCopyWithImpl<$Res>
 /// Create a copy of ScrobblingState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? holding = null,Object? holdingPosition = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ScrobblingState(
 holding: null == holding ? _self.holding : holding // ignore: cast_nullable_to_non_nullable
 as bool,holdingPosition: freezed == holdingPosition ? _self.holdingPosition : holdingPosition // ignore: cast_nullable_to_non_nullable
 as double?,
@@ -217,16 +223,18 @@ _$ScrobblingStateCopyWith<_ScrobblingState> get copyWith => __$ScrobblingStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScrobblingState&&(identical(other.holding, holding) || other.holding == holding)&&(identical(other.holdingPosition, holdingPosition) || other.holdingPosition == holdingPosition));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScrobblingState&&(identical(other.holding, holding) || other.holding == holding)&&(identical(other.holdingPosition, holdingPosition) || other.holdingPosition == holdingPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,holding,holdingPosition);
+int get hashCode {
+    return Object.hash(runtimeType,holding,holdingPosition);
+}
 
 @override
 String toString() {
-  return 'ScrobblingState(holding: $holding, holdingPosition: $holdingPosition)';
+    return 'ScrobblingState(holding: $holding, holdingPosition: $holdingPosition)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'server.dart';
@@ -9,6 +9,7 @@ part of 'server.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ServerStateCopyWith<ServerState> get copyWith => _$ServerStateCopyWithImpl<Serv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized)&&(identical(other.client, client) || other.client == client)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.status, status) || other.status == status));
+  final _this = this as ServerState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerState&&(identical(other.serverUrl, _this.serverUrl) || other.serverUrl == _this.serverUrl)&&const DeepCollectionEquality().equals(other.initialized, _this.initialized)&&(identical(other.client, _this.client) || other.client == _this.client)&&(identical(other.stackTrace, _this.stackTrace) || other.stackTrace == _this.stackTrace)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.status, _this.status) || other.status == _this.status));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized),client,stackTrace,loading,const DeepCollectionEquality().hash(error),status);
+int get hashCode {
+  final _this = this as ServerState;
+  return Object.hash(runtimeType,_this.serverUrl,const DeepCollectionEquality().hash(_this.initialized),_this.client,_this.stackTrace,_this.loading,const DeepCollectionEquality().hash(_this.error),_this.status);
+}
 
 @override
 String toString() {
-  return 'ServerState(serverUrl: $serverUrl, initialized: $initialized, client: $client, stackTrace: $stackTrace, loading: $loading, error: $error, status: $status)';
+  final _this = this as ServerState;
+  return 'ServerState(serverUrl: ${_this.serverUrl}, initialized: ${_this.initialized}, client: ${_this.client}, stackTrace: ${_this.stackTrace}, loading: ${_this.loading}, error: ${_this.error}, status: ${_this.status})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ServerStateCopyWithImpl<$Res>
 /// Create a copy of ServerState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? serverUrl = freezed,Object? initialized = freezed,Object? client = freezed,Object? stackTrace = freezed,Object? loading = null,Object? error = freezed,Object? status = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServerState(
 serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,initialized: freezed == initialized ? _self.initialized : initialized // ignore: cast_nullable_to_non_nullable
 as dynamic,client: freezed == client ? _self.client : client // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$ServerStateCopyWith<_ServerState> get copyWith => __$ServerStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized)&&(identical(other.client, client) || other.client == client)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.status, status) || other.status == status));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerState&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&const DeepCollectionEquality().equals(other.initialized, initialized)&&(identical(other.client, client) || other.client == client)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.status, status) || other.status == status));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized),client,stackTrace,loading,const DeepCollectionEquality().hash(error),status);
+int get hashCode {
+    return Object.hash(runtimeType,serverUrl,const DeepCollectionEquality().hash(initialized),client,stackTrace,loading,const DeepCollectionEquality().hash(error),status);
+}
 
 @override
 String toString() {
-  return 'ServerState(serverUrl: $serverUrl, initialized: $initialized, client: $client, stackTrace: $stackTrace, loading: $loading, error: $error, status: $status)';
+    return 'ServerState(serverUrl: $serverUrl, initialized: $initialized, client: $client, stackTrace: $stackTrace, loading: $loading, error: $error, status: $status)';
 }
 
 

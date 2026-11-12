@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'transcript.dart';
@@ -9,6 +9,7 @@ part of 'transcript.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $TranscriptStateCopyWith<TranscriptState> get copyWith => _$TranscriptStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TranscriptState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.index, index) || other.index == index)&&(identical(other.selectedLanguage, selectedLanguage) || other.selectedLanguage == selectedLanguage)&&const DeepCollectionEquality().equals(other.transcript, transcript)&&const DeepCollectionEquality().equals(other.languages, languages));
+  final _this = this as TranscriptState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TranscriptState&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.index, _this.index) || other.index == _this.index)&&(identical(other.selectedLanguage, _this.selectedLanguage) || other.selectedLanguage == _this.selectedLanguage)&&const DeepCollectionEquality().equals(other.transcript, _this.transcript)&&const DeepCollectionEquality().equals(other.languages, _this.languages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,index,selectedLanguage,const DeepCollectionEquality().hash(transcript),const DeepCollectionEquality().hash(languages));
+int get hashCode {
+  final _this = this as TranscriptState;
+  return Object.hash(runtimeType,_this.loading,_this.index,_this.selectedLanguage,const DeepCollectionEquality().hash(_this.transcript),const DeepCollectionEquality().hash(_this.languages));
+}
 
 @override
 String toString() {
-  return 'TranscriptState(loading: $loading, index: $index, selectedLanguage: $selectedLanguage, transcript: $transcript, languages: $languages)';
+  final _this = this as TranscriptState;
+  return 'TranscriptState(loading: ${_this.loading}, index: ${_this.index}, selectedLanguage: ${_this.selectedLanguage}, transcript: ${_this.transcript}, languages: ${_this.languages})';
 }
 
 
@@ -63,7 +69,7 @@ class _$TranscriptStateCopyWithImpl<$Res>
 /// Create a copy of TranscriptState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? index = null,Object? selectedLanguage = freezed,Object? transcript = null,Object? languages = null,}) {
-  return _then(_self.copyWith(
+  return _then(TranscriptState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int,selectedLanguage: freezed == selectedLanguage ? _self.selectedLanguage : selectedLanguage // ignore: cast_nullable_to_non_nullable
@@ -204,7 +210,7 @@ return $default(_that.loading,_that.index,_that.selectedLanguage,_that.transcrip
 
 
 class _TranscriptState implements TranscriptState {
-  const _TranscriptState({this.loading = true, this.index = -1, this.selectedLanguage, final  List<EpisodeTranscript> transcript = const [], final  List<String> languages = const []}): _transcript = transcript,_languages = languages;
+  const _TranscriptState({this.loading = true, this.index = -1, this.selectedLanguage,  List<EpisodeTranscript> transcript = const [],  List<String> languages = const []}): _transcript = transcript,_languages = languages;
   
 
 @override@JsonKey() final  bool loading;
@@ -235,16 +241,18 @@ _$TranscriptStateCopyWith<_TranscriptState> get copyWith => __$TranscriptStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TranscriptState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.index, index) || other.index == index)&&(identical(other.selectedLanguage, selectedLanguage) || other.selectedLanguage == selectedLanguage)&&const DeepCollectionEquality().equals(other._transcript, _transcript)&&const DeepCollectionEquality().equals(other._languages, _languages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TranscriptState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.index, index) || other.index == index)&&(identical(other.selectedLanguage, selectedLanguage) || other.selectedLanguage == selectedLanguage)&&const DeepCollectionEquality().equals(other.transcript, _transcript)&&const DeepCollectionEquality().equals(other.languages, _languages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,index,selectedLanguage,const DeepCollectionEquality().hash(_transcript),const DeepCollectionEquality().hash(_languages));
+int get hashCode {
+    return Object.hash(runtimeType,loading,index,selectedLanguage,const DeepCollectionEquality().hash(_transcript),const DeepCollectionEquality().hash(_languages));
+}
 
 @override
 String toString() {
-  return 'TranscriptState(loading: $loading, index: $index, selectedLanguage: $selectedLanguage, transcript: $transcript, languages: $languages)';
+    return 'TranscriptState(loading: $loading, index: $index, selectedLanguage: $selectedLanguage, transcript: $transcript, languages: $languages)';
 }
 
 

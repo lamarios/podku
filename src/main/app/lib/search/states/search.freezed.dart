@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'search.dart';
@@ -9,6 +9,7 @@ part of 'search.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SearchStateCopyWith<SearchState> get copyWith => _$SearchStateCopyWithImpl<Sear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.loadingDiscover, loadingDiscover) || other.loadingDiscover == loadingDiscover)&&(identical(other.loadingPodcasts, loadingPodcasts) || other.loadingPodcasts == loadingPodcasts)&&(identical(other.loadingEpisodes, loadingEpisodes) || other.loadingEpisodes == loadingEpisodes)&&const DeepCollectionEquality().equals(other.discoverResults, discoverResults)&&const DeepCollectionEquality().equals(other.podcastResults, podcastResults)&&const DeepCollectionEquality().equals(other.episodeResults, episodeResults));
+  final _this = this as SearchState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.query, _this.query) || other.query == _this.query)&&(identical(other.loadingDiscover, _this.loadingDiscover) || other.loadingDiscover == _this.loadingDiscover)&&(identical(other.loadingPodcasts, _this.loadingPodcasts) || other.loadingPodcasts == _this.loadingPodcasts)&&(identical(other.loadingEpisodes, _this.loadingEpisodes) || other.loadingEpisodes == _this.loadingEpisodes)&&const DeepCollectionEquality().equals(other.discoverResults, _this.discoverResults)&&const DeepCollectionEquality().equals(other.podcastResults, _this.podcastResults)&&const DeepCollectionEquality().equals(other.episodeResults, _this.episodeResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,loadingDiscover,loadingPodcasts,loadingEpisodes,const DeepCollectionEquality().hash(discoverResults),const DeepCollectionEquality().hash(podcastResults),const DeepCollectionEquality().hash(episodeResults));
+int get hashCode {
+  final _this = this as SearchState;
+  return Object.hash(runtimeType,_this.query,_this.loadingDiscover,_this.loadingPodcasts,_this.loadingEpisodes,const DeepCollectionEquality().hash(_this.discoverResults),const DeepCollectionEquality().hash(_this.podcastResults),const DeepCollectionEquality().hash(_this.episodeResults));
+}
 
 @override
 String toString() {
-  return 'SearchState(query: $query, loadingDiscover: $loadingDiscover, loadingPodcasts: $loadingPodcasts, loadingEpisodes: $loadingEpisodes, discoverResults: $discoverResults, podcastResults: $podcastResults, episodeResults: $episodeResults)';
+  final _this = this as SearchState;
+  return 'SearchState(query: ${_this.query}, loadingDiscover: ${_this.loadingDiscover}, loadingPodcasts: ${_this.loadingPodcasts}, loadingEpisodes: ${_this.loadingEpisodes}, discoverResults: ${_this.discoverResults}, podcastResults: ${_this.podcastResults}, episodeResults: ${_this.episodeResults})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SearchStateCopyWithImpl<$Res>
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? loadingDiscover = null,Object? loadingPodcasts = null,Object? loadingEpisodes = null,Object? discoverResults = null,Object? podcastResults = null,Object? episodeResults = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchState(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,loadingDiscover: null == loadingDiscover ? _self.loadingDiscover : loadingDiscover // ignore: cast_nullable_to_non_nullable
 as bool,loadingPodcasts: null == loadingPodcasts ? _self.loadingPodcasts : loadingPodcasts // ignore: cast_nullable_to_non_nullable
@@ -206,7 +212,7 @@ return $default(_that.query,_that.loadingDiscover,_that.loadingPodcasts,_that.lo
 
 
 class _SearchState implements SearchState {
-  const _SearchState({this.query = "", this.loadingDiscover = false, this.loadingPodcasts = false, this.loadingEpisodes = false, final  List<SearchResult> discoverResults = const [], final  List<PodcastLight> podcastResults = const [], final  List<EpisodeSearchResult> episodeResults = const []}): _discoverResults = discoverResults,_podcastResults = podcastResults,_episodeResults = episodeResults;
+  const _SearchState({this.query = "", this.loadingDiscover = false, this.loadingPodcasts = false, this.loadingEpisodes = false,  List<SearchResult> discoverResults = const [],  List<PodcastLight> podcastResults = const [],  List<EpisodeSearchResult> episodeResults = const []}): _discoverResults = discoverResults,_podcastResults = podcastResults,_episodeResults = episodeResults;
   
 
 @override@JsonKey() final  String query;
@@ -245,16 +251,18 @@ _$SearchStateCopyWith<_SearchState> get copyWith => __$SearchStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.loadingDiscover, loadingDiscover) || other.loadingDiscover == loadingDiscover)&&(identical(other.loadingPodcasts, loadingPodcasts) || other.loadingPodcasts == loadingPodcasts)&&(identical(other.loadingEpisodes, loadingEpisodes) || other.loadingEpisodes == loadingEpisodes)&&const DeepCollectionEquality().equals(other._discoverResults, _discoverResults)&&const DeepCollectionEquality().equals(other._podcastResults, _podcastResults)&&const DeepCollectionEquality().equals(other._episodeResults, _episodeResults));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.loadingDiscover, loadingDiscover) || other.loadingDiscover == loadingDiscover)&&(identical(other.loadingPodcasts, loadingPodcasts) || other.loadingPodcasts == loadingPodcasts)&&(identical(other.loadingEpisodes, loadingEpisodes) || other.loadingEpisodes == loadingEpisodes)&&const DeepCollectionEquality().equals(other.discoverResults, _discoverResults)&&const DeepCollectionEquality().equals(other.podcastResults, _podcastResults)&&const DeepCollectionEquality().equals(other.episodeResults, _episodeResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,loadingDiscover,loadingPodcasts,loadingEpisodes,const DeepCollectionEquality().hash(_discoverResults),const DeepCollectionEquality().hash(_podcastResults),const DeepCollectionEquality().hash(_episodeResults));
+int get hashCode {
+    return Object.hash(runtimeType,query,loadingDiscover,loadingPodcasts,loadingEpisodes,const DeepCollectionEquality().hash(_discoverResults),const DeepCollectionEquality().hash(_podcastResults),const DeepCollectionEquality().hash(_episodeResults));
+}
 
 @override
 String toString() {
-  return 'SearchState(query: $query, loadingDiscover: $loadingDiscover, loadingPodcasts: $loadingPodcasts, loadingEpisodes: $loadingEpisodes, discoverResults: $discoverResults, podcastResults: $podcastResults, episodeResults: $episodeResults)';
+    return 'SearchState(query: $query, loadingDiscover: $loadingDiscover, loadingPodcasts: $loadingPodcasts, loadingEpisodes: $loadingEpisodes, discoverResults: $discoverResults, podcastResults: $podcastResults, episodeResults: $episodeResults)';
 }
 
 

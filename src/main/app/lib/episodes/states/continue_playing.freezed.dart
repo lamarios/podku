@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'continue_playing.dart';
@@ -9,6 +9,7 @@ part of 'continue_playing.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ContinuePlayingStateCopyWith<ContinuePlayingState> get copyWith => _$ContinuePl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContinuePlayingState&&const DeepCollectionEquality().equals(other.episodes, episodes)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  final _this = this as ContinuePlayingState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContinuePlayingState&&const DeepCollectionEquality().equals(other.episodes, _this.episodes)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.stackTrace, _this.stackTrace) || other.stackTrace == _this.stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(episodes),loading,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+  final _this = this as ContinuePlayingState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.episodes),_this.loading,const DeepCollectionEquality().hash(_this.error),_this.stackTrace);
+}
 
 @override
 String toString() {
-  return 'ContinuePlayingState(episodes: $episodes, loading: $loading, error: $error, stackTrace: $stackTrace)';
+  final _this = this as ContinuePlayingState;
+  return 'ContinuePlayingState(episodes: ${_this.episodes}, loading: ${_this.loading}, error: ${_this.error}, stackTrace: ${_this.stackTrace})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ContinuePlayingStateCopyWithImpl<$Res>
 /// Create a copy of ContinuePlayingState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? episodes = null,Object? loading = null,Object? error = freezed,Object? stackTrace = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ContinuePlayingState(
 episodes: null == episodes ? _self.episodes : episodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -203,7 +209,7 @@ return $default(_that.episodes,_that.loading,_that.error,_that.stackTrace);case 
 
 
 class _ContinuePlayingState implements ContinuePlayingState, WithError {
-  const _ContinuePlayingState({final  List<Episode> episodes = const [], this.loading = true, this.error, this.stackTrace}): _episodes = episodes;
+  const _ContinuePlayingState({ List<Episode> episodes = const [], this.loading = true, this.error, this.stackTrace}): _episodes = episodes;
   
 
  final  List<Episode> _episodes;
@@ -227,16 +233,18 @@ _$ContinuePlayingStateCopyWith<_ContinuePlayingState> get copyWith => __$Continu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContinuePlayingState&&const DeepCollectionEquality().equals(other._episodes, _episodes)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContinuePlayingState&&const DeepCollectionEquality().equals(other.episodes, _episodes)&&(identical(other.loading, loading) || other.loading == loading)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_episodes),loading,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_episodes),loading,const DeepCollectionEquality().hash(error),stackTrace);
+}
 
 @override
 String toString() {
-  return 'ContinuePlayingState(episodes: $episodes, loading: $loading, error: $error, stackTrace: $stackTrace)';
+    return 'ContinuePlayingState(episodes: $episodes, loading: $loading, error: $error, stackTrace: $stackTrace)';
 }
 
 

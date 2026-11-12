@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'download_manager.dart';
@@ -9,6 +9,7 @@ part of 'download_manager.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $DownloadManagerStateCopyWith<DownloadManagerState> get copyWith => _$DownloadMa
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as DownloadManagerState;
   properties
     ..add(DiagnosticsProperty('type', 'DownloadManagerState'))
-    ..add(DiagnosticsProperty('ongoingDownloads', ongoingDownloads))..add(DiagnosticsProperty('offlineEpisodes', offlineEpisodes));
+    ..add(DiagnosticsProperty('ongoingDownloads', _this.ongoingDownloads))..add(DiagnosticsProperty('offlineEpisodes', _this.offlineEpisodes));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadManagerState&&const DeepCollectionEquality().equals(other.ongoingDownloads, ongoingDownloads)&&const DeepCollectionEquality().equals(other.offlineEpisodes, offlineEpisodes));
+  final _this = this as DownloadManagerState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DownloadManagerState&&const DeepCollectionEquality().equals(other.ongoingDownloads, _this.ongoingDownloads)&&const DeepCollectionEquality().equals(other.offlineEpisodes, _this.offlineEpisodes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(ongoingDownloads),const DeepCollectionEquality().hash(offlineEpisodes));
+int get hashCode {
+  final _this = this as DownloadManagerState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.ongoingDownloads),const DeepCollectionEquality().hash(_this.offlineEpisodes));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'DownloadManagerState(ongoingDownloads: $ongoingDownloads, offlineEpisodes: $offlineEpisodes)';
+  final _this = this as DownloadManagerState;
+  return 'DownloadManagerState(ongoingDownloads: ${_this.ongoingDownloads}, offlineEpisodes: ${_this.offlineEpisodes})';
 }
 
 
@@ -69,7 +76,7 @@ class _$DownloadManagerStateCopyWithImpl<$Res>
 /// Create a copy of DownloadManagerState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ongoingDownloads = null,Object? offlineEpisodes = null,}) {
-  return _then(_self.copyWith(
+  return _then(DownloadManagerState(
 ongoingDownloads: null == ongoingDownloads ? _self.ongoingDownloads : ongoingDownloads // ignore: cast_nullable_to_non_nullable
 as Map<String, DownloadProgress>,offlineEpisodes: null == offlineEpisodes ? _self.offlineEpisodes : offlineEpisodes // ignore: cast_nullable_to_non_nullable
 as List<Episode>,
@@ -207,7 +214,7 @@ return $default(_that.ongoingDownloads,_that.offlineEpisodes);case _:
 
 
 class _DownloadManagerState extends DownloadManagerState with DiagnosticableTreeMixin {
-  const _DownloadManagerState({final  Map<String, DownloadProgress> ongoingDownloads = const {}, final  List<Episode> offlineEpisodes = const []}): _ongoingDownloads = ongoingDownloads,_offlineEpisodes = offlineEpisodes,super._();
+  const _DownloadManagerState({ Map<String, DownloadProgress> ongoingDownloads = const {},  List<Episode> offlineEpisodes = const []}): _ongoingDownloads = ongoingDownloads,_offlineEpisodes = offlineEpisodes,super._();
   
 
  final  Map<String, DownloadProgress> _ongoingDownloads;
@@ -234,23 +241,25 @@ _$DownloadManagerStateCopyWith<_DownloadManagerState> get copyWith => __$Downloa
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'DownloadManagerState'))
     ..add(DiagnosticsProperty('ongoingDownloads', ongoingDownloads))..add(DiagnosticsProperty('offlineEpisodes', offlineEpisodes));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DownloadManagerState&&const DeepCollectionEquality().equals(other._ongoingDownloads, _ongoingDownloads)&&const DeepCollectionEquality().equals(other._offlineEpisodes, _offlineEpisodes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DownloadManagerState&&const DeepCollectionEquality().equals(other.ongoingDownloads, _ongoingDownloads)&&const DeepCollectionEquality().equals(other.offlineEpisodes, _offlineEpisodes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_ongoingDownloads),const DeepCollectionEquality().hash(_offlineEpisodes));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_ongoingDownloads),const DeepCollectionEquality().hash(_offlineEpisodes));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'DownloadManagerState(ongoingDownloads: $ongoingDownloads, offlineEpisodes: $offlineEpisodes)';
+    return 'DownloadManagerState(ongoingDownloads: $ongoingDownloads, offlineEpisodes: $offlineEpisodes)';
 }
 
 
