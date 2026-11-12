@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 
 import 'package:podku/utils.dart';

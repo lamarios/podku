@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_3_expressive/foundations/m3e_icons.dart';
 import 'package:nock/nock.dart';
@@ -19,19 +19,9 @@ void main() {
   });
 
   testWidgets('BookmarksScreen renders empty state when no bookmarks exist', (tester) async {
-    nock(testServerUrl).get('/api/bookmarks')
-      .reply(
-        200,
-        jsonEncode([]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl).get('/api/bookmarks').reply(200, jsonEncode([]), headers: {'content-type': 'application/json'});
 
-    await tester.pumpWidget(
-      wrapWithMaterial(
-        size: const Size(400, 700),
-        child: const BookmarksScreen(),
-      ),
-    );
+    await tester.pumpWidget(wrapWithMaterial(size: const Size(400, 700), child: const BookmarksScreen()));
 
     await tester.pumpAndSettle();
 
@@ -44,28 +34,14 @@ void main() {
   });
 
   testWidgets('BookmarksScreen renders bookmarks from nock mock', (tester) async {
-    final b1 = createMockBookmarkWithTranscriptJson(
-      bookmarkId: 'bm-1',
-      topic: 'Intro to Flutter BLoC',
-    );
-    final b2 = createMockBookmarkWithTranscriptJson(
-      bookmarkId: 'bm-2',
-      topic: 'Testing with Testcontainers',
-    );
+    final b1 = createMockBookmarkWithTranscriptJson(bookmarkId: 'bm-1', topic: 'Intro to Flutter BLoC');
+    final b2 = createMockBookmarkWithTranscriptJson(bookmarkId: 'bm-2', topic: 'Testing with Testcontainers');
 
-    nock(testServerUrl).get('/api/bookmarks')
-      .reply(
-        200,
-        jsonEncode([b1, b2]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(
+      testServerUrl,
+    ).get('/api/bookmarks').reply(200, jsonEncode([b1, b2]), headers: {'content-type': 'application/json'});
 
-    await tester.pumpWidget(
-      wrapWithMaterial(
-        size: const Size(400, 700),
-        child: const BookmarksScreen(),
-      ),
-    );
+    await tester.pumpWidget(wrapWithMaterial(size: const Size(400, 700), child: const BookmarksScreen()));
 
     await tester.pumpAndSettle();
 

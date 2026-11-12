@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/components/dialogs/m3e_dialogs.dart';
 import 'package:podku/l10n/app_localizations.dart';

@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/bottom_sheets/m3e_bottom_sheets.dart';
 import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/components/dialogs/m3e_dialogs.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';

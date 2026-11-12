@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'podcast_from_url.dart';
@@ -9,6 +9,7 @@ part of 'podcast_from_url.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PodcastFromUrlStateCopyWith<PodcastFromUrlState> get copyWith => _$PodcastFromU
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastFromUrlState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.page, page) || other.page == page)&&(identical(other.podcastError, podcastError) || other.podcastError == podcastError));
+  final _this = this as PodcastFromUrlState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastFromUrlState&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.podcast, _this.podcast) || other.podcast == _this.podcast)&&(identical(other.page, _this.page) || other.page == _this.page)&&(identical(other.podcastError, _this.podcastError) || other.podcastError == _this.podcastError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,podcast,page,podcastError);
+int get hashCode {
+  final _this = this as PodcastFromUrlState;
+  return Object.hash(runtimeType,_this.loading,_this.podcast,_this.page,_this.podcastError);
+}
 
 @override
 String toString() {
-  return 'PodcastFromUrlState(loading: $loading, podcast: $podcast, page: $page, podcastError: $podcastError)';
+  final _this = this as PodcastFromUrlState;
+  return 'PodcastFromUrlState(loading: ${_this.loading}, podcast: ${_this.podcast}, page: ${_this.page}, podcastError: ${_this.podcastError})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PodcastFromUrlStateCopyWithImpl<$Res>
 /// Create a copy of PodcastFromUrlState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? podcast = freezed,Object? page = null,Object? podcastError = null,}) {
-  return _then(_self.copyWith(
+  return _then(PodcastFromUrlState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,podcast: freezed == podcast ? _self.podcast : podcast // ignore: cast_nullable_to_non_nullable
 as Podcast?,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
@@ -221,16 +227,18 @@ _$PodcastFromUrlStateCopyWith<_PodcastFromUrlState> get copyWith => __$PodcastFr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastFromUrlState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.page, page) || other.page == page)&&(identical(other.podcastError, podcastError) || other.podcastError == podcastError));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastFromUrlState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.podcast, podcast) || other.podcast == podcast)&&(identical(other.page, page) || other.page == page)&&(identical(other.podcastError, podcastError) || other.podcastError == podcastError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,podcast,page,podcastError);
+int get hashCode {
+    return Object.hash(runtimeType,loading,podcast,page,podcastError);
+}
 
 @override
 String toString() {
-  return 'PodcastFromUrlState(loading: $loading, podcast: $podcast, page: $page, podcastError: $podcastError)';
+    return 'PodcastFromUrlState(loading: $loading, podcast: $podcast, page: $page, podcastError: $podcastError)';
 }
 
 

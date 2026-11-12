@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/lists/components/m3e_card_list_item.dart';
@@ -51,6 +51,8 @@ class PodcastEpisode extends StatelessWidget {
             outerRadius: isEpisodePlaying ? pu8 * 2 : pu4,
             innerRadius: isEpisodePlaying ? pu8 * 2 : pu4,
             gap: pu,
+            // material_3_expressive 1.2 dropped the default 12dp item padding
+            padding: .all(pu3),
             color: Color.lerp(
               isPlayerOnEpisode ? colors.secondaryContainer : colors.surfaceContainer,
               colors.primaryContainer,

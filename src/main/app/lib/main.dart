@@ -4,14 +4,14 @@ import 'package:audio_service/audio_service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:media_kit/media_kit.dart' show MediaKit;
 import 'package:logging/logging.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/offline_episodes/states/download_manager.dart';
 import 'package:podku/player/states/audio_handler.dart';
@@ -22,6 +22,7 @@ import 'package:podku/server/states/server.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/colors.dart';
 import 'package:uuid/uuid.dart';
+import 'package:podku/utils/views/components/legacy_material_bridge.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -123,14 +124,21 @@ class MyApp extends StatelessWidget {
           child: MaterialApp.router(
             routerConfig: _router,
             debugShowCheckedModeBanner: kDebugMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            // the generated AppLocalizations.localizationsDelegates registers flutter_localizations' delegates, which
+            // only provide the legacy package:flutter/material.dart localizations, material_ui needs its own
+            localizationsDelegates: const [AppLocalizations.delegate, ...GlobalMaterialLocalizations.delegates],
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
               var m3eThemeData = M3EThemeData.fromMaterial(Theme.of(context));
               // MaterialApp already resolves light/dark and applies dynamic colors (with the adjusted surface), so
               // M3ETheme must only mirror it. autoTheming regenerates the dark scheme from the primary color and
               // dynamicColoring refetches the system colors, both drop the adjusted surface and break the match
-              return M3ETheme(data: m3eThemeData, child: child!);
+              return M3ETheme(
+                data: m3eThemeData,
+                // some dependencies still use package:flutter/material.dart, the bridge gives them our theme and
+                // localizations. Remove once they all migrated to material_ui
+                child: LegacyMaterialBridge(child: child!),
+              );
             },
             darkTheme: ThemeData(
               colorScheme: darkColorScheme,

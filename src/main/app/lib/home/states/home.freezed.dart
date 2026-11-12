@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'home.dart';
@@ -9,6 +9,7 @@ part of 'home.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $HomeStateCopyWith<HomeState> get copyWith => _$HomeStateCopyWithImpl<HomeState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.previousIndex, previousIndex) || other.previousIndex == previousIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
+  final _this = this as HomeState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.selectedIndex, _this.selectedIndex) || other.selectedIndex == _this.selectedIndex)&&(identical(other.previousIndex, _this.previousIndex) || other.previousIndex == _this.previousIndex)&&(identical(other.railExpanded, _this.railExpanded) || other.railExpanded == _this.railExpanded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedIndex,previousIndex,railExpanded);
+int get hashCode {
+  final _this = this as HomeState;
+  return Object.hash(runtimeType,_this.selectedIndex,_this.previousIndex,_this.railExpanded);
+}
 
 @override
 String toString() {
-  return 'HomeState(selectedIndex: $selectedIndex, previousIndex: $previousIndex, railExpanded: $railExpanded)';
+  final _this = this as HomeState;
+  return 'HomeState(selectedIndex: ${_this.selectedIndex}, previousIndex: ${_this.previousIndex}, railExpanded: ${_this.railExpanded})';
 }
 
 
@@ -63,7 +69,7 @@ class _$HomeStateCopyWithImpl<$Res>
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? selectedIndex = null,Object? previousIndex = freezed,Object? railExpanded = null,}) {
-  return _then(_self.copyWith(
+  return _then(HomeState(
 selectedIndex: null == selectedIndex ? _self.selectedIndex : selectedIndex // ignore: cast_nullable_to_non_nullable
 as int,previousIndex: freezed == previousIndex ? _self.previousIndex : previousIndex // ignore: cast_nullable_to_non_nullable
 as int?,railExpanded: null == railExpanded ? _self.railExpanded : railExpanded // ignore: cast_nullable_to_non_nullable
@@ -219,16 +225,18 @@ _$HomeStateCopyWith<_HomeState> get copyWith => __$HomeStateCopyWithImpl<_HomeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.previousIndex, previousIndex) || other.previousIndex == previousIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.selectedIndex, selectedIndex) || other.selectedIndex == selectedIndex)&&(identical(other.previousIndex, previousIndex) || other.previousIndex == previousIndex)&&(identical(other.railExpanded, railExpanded) || other.railExpanded == railExpanded));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedIndex,previousIndex,railExpanded);
+int get hashCode {
+    return Object.hash(runtimeType,selectedIndex,previousIndex,railExpanded);
+}
 
 @override
 String toString() {
-  return 'HomeState(selectedIndex: $selectedIndex, previousIndex: $previousIndex, railExpanded: $railExpanded)';
+    return 'HomeState(selectedIndex: $selectedIndex, previousIndex: $previousIndex, railExpanded: $railExpanded)';
 }
 
 

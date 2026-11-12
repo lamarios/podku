@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
@@ -125,6 +125,9 @@ class HomeScreen extends StatelessWidget {
                                       // density: .compact,
                                       // size: .small,
                                       shapeFamily: .round,
+                                      // the SafeArea above already handles the insets, since 1.2 the bar reads the raw
+                                      // view padding (ignoring the SafeArea) and would add the bottom inset twice
+                                      safeArea: false,
                                       selectedIndex: navigationShell.currentIndex,
                                       destinations: [
                                         M3ENavigationBarDestination(

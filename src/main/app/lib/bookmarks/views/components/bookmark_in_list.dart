@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/cards/m3e_cards.dart';
 import 'package:material_3_expressive/components/lists/components/m3e_card_list_item.dart';
@@ -93,6 +93,8 @@ class BookmarkInList extends StatelessWidget {
                   outerRadius: pu2,
                   innerRadius: pu2,
                   gap: 0,
+                  // material_3_expressive 1.2 dropped the default 12dp item padding
+                  padding: .all(pu3),
                   child: Row(
                     crossAxisAlignment: .center,
                     spacing: pu,

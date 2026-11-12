@@ -6,7 +6,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

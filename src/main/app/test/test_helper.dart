@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,20 +43,24 @@ class TestServerCubit extends ServerCubit {
         if (testServer) {
           await client.podcasts.getPodcasts();
         }
-        emit(state.copyWith(
-          client: client,
-          serverUrl: serverUrl,
-          initialized: true,
-          status: InternetConnectionStatus.connected,
-        ));
+        emit(
+          state.copyWith(
+            client: client,
+            serverUrl: serverUrl,
+            initialized: true,
+            status: InternetConnectionStatus.connected,
+          ),
+        );
         return true;
       } else {
-        emit(state.copyWith(
-          status: InternetConnectionStatus.disconnected,
-          client: null,
-          serverUrl: null,
-          initialized: false,
-        ));
+        emit(
+          state.copyWith(
+            status: InternetConnectionStatus.disconnected,
+            client: null,
+            serverUrl: null,
+            initialized: false,
+          ),
+        );
         return false;
       }
     } catch (e, s) {
@@ -73,8 +77,7 @@ void setupTestGetIt({String serverUrl = testServerUrl}) {
   nock.init();
   SharedPreferences.setMockInitialValues({'serverUrl': serverUrl});
 
-  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
     const MethodChannel('plugins.flutter.io/path_provider'),
     (MethodCall methodCall) async => '.',
   );
@@ -85,12 +88,7 @@ void setupTestGetIt({String serverUrl = testServerUrl}) {
 
   final client = Client(serverUrl);
   final serverCubit = TestServerCubit(
-    ServerState(
-      serverUrl: serverUrl,
-      client: client,
-      initialized: true,
-      status: InternetConnectionStatus.connected,
-    ),
+    ServerState(serverUrl: serverUrl, client: client, initialized: true, status: InternetConnectionStatus.connected),
   );
   getIt.registerSingleton<ServerCubit>(serverCubit);
 }
@@ -154,10 +152,8 @@ class FakeAudioHandler extends BaseAudioHandler implements PodkuAudioHandler {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class FakeDownloadManagerCubit extends Cubit<DownloadManagerState>
-    implements DownloadManagerCubit {
-  FakeDownloadManagerCubit([DownloadManagerState? state])
-      : super(state ?? const DownloadManagerState());
+class FakeDownloadManagerCubit extends Cubit<DownloadManagerState> implements DownloadManagerCubit {
+  FakeDownloadManagerCubit([DownloadManagerState? state]) : super(state ?? const DownloadManagerState());
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -171,39 +167,25 @@ Widget wrapWithMaterial({
   DownloadManagerCubit? downloadManagerCubit,
 }) {
   Widget content = Scaffold(
-    body: size != null
-        ? SizedBox(width: size.width, height: size.height, child: child)
-        : child,
+    body: size != null ? SizedBox(width: size.width, height: size.height, child: child) : child,
   );
 
   if (downloadManagerCubit != null) {
-    content = BlocProvider<DownloadManagerCubit>.value(
-      value: downloadManagerCubit,
-      child: content,
-    );
+    content = BlocProvider<DownloadManagerCubit>.value(value: downloadManagerCubit, child: content);
   }
 
   if (playerCubit != null) {
-    content = BlocProvider<PlayerCubit>.value(
-      value: playerCubit,
-      child: content,
-    );
+    content = BlocProvider<PlayerCubit>.value(value: playerCubit, child: content);
   }
 
   if (serverCubit != null) {
-    content = BlocProvider<ServerCubit>.value(
-      value: serverCubit,
-      child: content,
-    );
+    content = BlocProvider<ServerCubit>.value(value: serverCubit, child: content);
   }
 
   return MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    theme: ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1b3a3a)),
-    ),
+    theme: ThemeData(useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1b3a3a))),
     home: content,
   );
 }
@@ -249,12 +231,7 @@ Map<String, dynamic> createMockEpisodeJson({
   };
 }
 
-Map<String, dynamic> createMockEpisodeFileJson({
-  required String type,
-  String? url,
-  String? mime,
-  bool? defaultMedia,
-}) {
+Map<String, dynamic> createMockEpisodeFileJson({required String type, String? url, String? mime, bool? defaultMedia}) {
   return {
     'type': type,
     'url': url ?? 'http://example.com/episode.$type',
@@ -277,12 +254,7 @@ Map<String, dynamic> createMockBookmarkWithTranscriptJson({
   String transcriptContent = 'Here we explain how the backend communicates with the Flutter client.',
 }) {
   return {
-    'bookmark': {
-      'id': bookmarkId,
-      'time': timeSeconds,
-      'topic': topic,
-      'episode': createMockEpisodeJson(),
-    },
+    'bookmark': {'id': bookmarkId, 'time': timeSeconds, 'topic': topic, 'episode': createMockEpisodeJson()},
     'transcripts': {
       'en': [
         {
@@ -292,8 +264,8 @@ Map<String, dynamic> createMockBookmarkWithTranscriptJson({
           'speaker': 'Alice',
           'content': transcriptContent,
           'language': 'en',
-        }
-      ]
-    }
+        },
+      ],
+    },
   };
 }

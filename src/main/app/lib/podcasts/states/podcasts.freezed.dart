@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'podcasts.dart';
@@ -9,6 +9,7 @@ part of 'podcasts.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $PodcastStateCopyWith<PodcastState> get copyWith => _$PodcastStateCopyWithImpl<P
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PodcastState;
   properties
     ..add(DiagnosticsProperty('type', 'PodcastState'))
-    ..add(DiagnosticsProperty('subscriptions', subscriptions))..add(DiagnosticsProperty('subscribingTo', subscribingTo))..add(DiagnosticsProperty('error', error))..add(DiagnosticsProperty('stackTrace', stackTrace));
+    ..add(DiagnosticsProperty('subscriptions', _this.subscriptions))..add(DiagnosticsProperty('subscribingTo', _this.subscribingTo))..add(DiagnosticsProperty('error', _this.error))..add(DiagnosticsProperty('stackTrace', _this.stackTrace));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastState&&const DeepCollectionEquality().equals(other.subscriptions, subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  final _this = this as PodcastState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PodcastState&&const DeepCollectionEquality().equals(other.subscriptions, _this.subscriptions)&&(identical(other.subscribingTo, _this.subscribingTo) || other.subscribingTo == _this.subscribingTo)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.stackTrace, _this.stackTrace) || other.stackTrace == _this.stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+  final _this = this as PodcastState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.subscriptions),_this.subscribingTo,const DeepCollectionEquality().hash(_this.error),_this.stackTrace);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
+  final _this = this as PodcastState;
+  return 'PodcastState(subscriptions: ${_this.subscriptions}, subscribingTo: ${_this.subscribingTo}, error: ${_this.error}, stackTrace: ${_this.stackTrace})';
 }
 
 
@@ -69,7 +76,7 @@ class _$PodcastStateCopyWithImpl<$Res>
 /// Create a copy of PodcastState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? subscriptions = null,Object? subscribingTo = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PodcastState(
 subscriptions: null == subscriptions ? _self.subscriptions : subscriptions // ignore: cast_nullable_to_non_nullable
 as List<PodcastLight>,subscribingTo: freezed == subscribingTo ? _self.subscribingTo : subscribingTo // ignore: cast_nullable_to_non_nullable
 as SearchResult?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -209,7 +216,7 @@ return $default(_that.subscriptions,_that.subscribingTo,_that.error,_that.stackT
 
 
 class _PodcastState with DiagnosticableTreeMixin implements PodcastState, WithError {
-  const _PodcastState({final  List<PodcastLight> subscriptions = const [], this.subscribingTo, this.error, this.stackTrace}): _subscriptions = subscriptions;
+  const _PodcastState({ List<PodcastLight> subscriptions = const [], this.subscribingTo, this.error, this.stackTrace}): _subscriptions = subscriptions;
   
 
  final  List<PodcastLight> _subscriptions;
@@ -232,23 +239,25 @@ _$PodcastStateCopyWith<_PodcastState> get copyWith => __$PodcastStateCopyWithImp
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PodcastState'))
     ..add(DiagnosticsProperty('subscriptions', subscriptions))..add(DiagnosticsProperty('subscribingTo', subscribingTo))..add(DiagnosticsProperty('error', error))..add(DiagnosticsProperty('stackTrace', stackTrace));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastState&&const DeepCollectionEquality().equals(other._subscriptions, _subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PodcastState&&const DeepCollectionEquality().equals(other.subscriptions, _subscriptions)&&(identical(other.subscribingTo, subscribingTo) || other.subscribingTo == subscribingTo)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_subscriptions),subscribingTo,const DeepCollectionEquality().hash(error),stackTrace);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
+    return 'PodcastState(subscriptions: $subscriptions, subscribingTo: $subscribingTo, error: $error, stackTrace: $stackTrace)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'player.dart';
@@ -9,15 +9,13 @@ part of 'player.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerState {
 
- bool get loading; Episode? get episode; Duration get position; Duration get bufferPosition; Duration get duration; double get speed; bool get playing; bool get showMiniPlayer; bool get hidePlayer; bool get showBigPlayer; bool get showTranscript; bool get showVolume; bool get draggingVolume;// whether the episode should be watched when the big player is shown
- bool get videoEnabled;// whether the episode is currently played as a video
- bool get showingVideo;// whether the video is shown full screen
- bool get fullscreen; double get volume; List<PlayerInfo> get clients; PlayerInfo? get currentPlayer; dynamic get error; StackTrace? get stackTrace;
+ bool get loading; Episode? get episode; Duration get position; Duration get bufferPosition; Duration get duration; double get speed; bool get playing; bool get showMiniPlayer; bool get hidePlayer; bool get showBigPlayer; bool get showTranscript; bool get showVolume; bool get draggingVolume; bool get videoEnabled; bool get showingVideo; bool get fullscreen; double get volume; List<PlayerInfo> get clients; PlayerInfo? get currentPlayer; dynamic get error; StackTrace? get stackTrace;
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +26,21 @@ $PlayerStateCopyWith<PlayerState> get copyWith => _$PlayerStateCopyWithImpl<Play
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.hidePlayer, hidePlayer) || other.hidePlayer == hidePlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&(identical(other.showVolume, showVolume) || other.showVolume == showVolume)&&(identical(other.draggingVolume, draggingVolume) || other.draggingVolume == draggingVolume)&&(identical(other.videoEnabled, videoEnabled) || other.videoEnabled == videoEnabled)&&(identical(other.showingVideo, showingVideo) || other.showingVideo == showingVideo)&&(identical(other.fullscreen, fullscreen) || other.fullscreen == fullscreen)&&(identical(other.volume, volume) || other.volume == volume)&&const DeepCollectionEquality().equals(other.clients, clients)&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+  final _this = this as PlayerState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerState&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.episode, _this.episode) || other.episode == _this.episode)&&(identical(other.position, _this.position) || other.position == _this.position)&&(identical(other.bufferPosition, _this.bufferPosition) || other.bufferPosition == _this.bufferPosition)&&(identical(other.duration, _this.duration) || other.duration == _this.duration)&&(identical(other.speed, _this.speed) || other.speed == _this.speed)&&(identical(other.playing, _this.playing) || other.playing == _this.playing)&&(identical(other.showMiniPlayer, _this.showMiniPlayer) || other.showMiniPlayer == _this.showMiniPlayer)&&(identical(other.hidePlayer, _this.hidePlayer) || other.hidePlayer == _this.hidePlayer)&&(identical(other.showBigPlayer, _this.showBigPlayer) || other.showBigPlayer == _this.showBigPlayer)&&(identical(other.showTranscript, _this.showTranscript) || other.showTranscript == _this.showTranscript)&&(identical(other.showVolume, _this.showVolume) || other.showVolume == _this.showVolume)&&(identical(other.draggingVolume, _this.draggingVolume) || other.draggingVolume == _this.draggingVolume)&&(identical(other.videoEnabled, _this.videoEnabled) || other.videoEnabled == _this.videoEnabled)&&(identical(other.showingVideo, _this.showingVideo) || other.showingVideo == _this.showingVideo)&&(identical(other.fullscreen, _this.fullscreen) || other.fullscreen == _this.fullscreen)&&(identical(other.volume, _this.volume) || other.volume == _this.volume)&&const DeepCollectionEquality().equals(other.clients, _this.clients)&&(identical(other.currentPlayer, _this.currentPlayer) || other.currentPlayer == _this.currentPlayer)&&const DeepCollectionEquality().equals(other.error, _this.error)&&(identical(other.stackTrace, _this.stackTrace) || other.stackTrace == _this.stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,loading,episode,position,bufferPosition,duration,speed,playing,showMiniPlayer,hidePlayer,showBigPlayer,showTranscript,showVolume,draggingVolume,videoEnabled,showingVideo,fullscreen,volume,const DeepCollectionEquality().hash(clients),currentPlayer,const DeepCollectionEquality().hash(error),stackTrace]);
+int get hashCode {
+  final _this = this as PlayerState;
+  return Object.hashAll([runtimeType,_this.loading,_this.episode,_this.position,_this.bufferPosition,_this.duration,_this.speed,_this.playing,_this.showMiniPlayer,_this.hidePlayer,_this.showBigPlayer,_this.showTranscript,_this.showVolume,_this.draggingVolume,_this.videoEnabled,_this.showingVideo,_this.fullscreen,_this.volume,const DeepCollectionEquality().hash(_this.clients),_this.currentPlayer,const DeepCollectionEquality().hash(_this.error),_this.stackTrace]);
+}
 
 @override
 String toString() {
-  return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, speed: $speed, playing: $playing, showMiniPlayer: $showMiniPlayer, hidePlayer: $hidePlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, showVolume: $showVolume, draggingVolume: $draggingVolume, videoEnabled: $videoEnabled, showingVideo: $showingVideo, fullscreen: $fullscreen, volume: $volume, clients: $clients, currentPlayer: $currentPlayer, error: $error, stackTrace: $stackTrace)';
+  final _this = this as PlayerState;
+  return 'PlayerState(loading: ${_this.loading}, episode: ${_this.episode}, position: ${_this.position}, bufferPosition: ${_this.bufferPosition}, duration: ${_this.duration}, speed: ${_this.speed}, playing: ${_this.playing}, showMiniPlayer: ${_this.showMiniPlayer}, hidePlayer: ${_this.hidePlayer}, showBigPlayer: ${_this.showBigPlayer}, showTranscript: ${_this.showTranscript}, showVolume: ${_this.showVolume}, draggingVolume: ${_this.draggingVolume}, videoEnabled: ${_this.videoEnabled}, showingVideo: ${_this.showingVideo}, fullscreen: ${_this.fullscreen}, volume: ${_this.volume}, clients: ${_this.clients}, currentPlayer: ${_this.currentPlayer}, error: ${_this.error}, stackTrace: ${_this.stackTrace})';
 }
 
 
@@ -66,7 +69,7 @@ class _$PlayerStateCopyWithImpl<$Res>
 /// Create a copy of PlayerState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? episode = freezed,Object? position = null,Object? bufferPosition = null,Object? duration = null,Object? speed = null,Object? playing = null,Object? showMiniPlayer = null,Object? hidePlayer = null,Object? showBigPlayer = null,Object? showTranscript = null,Object? showVolume = null,Object? draggingVolume = null,Object? videoEnabled = null,Object? showingVideo = null,Object? fullscreen = null,Object? volume = null,Object? clients = null,Object? currentPlayer = freezed,Object? error = freezed,Object? stackTrace = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PlayerState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
@@ -235,7 +238,7 @@ return $default(_that.loading,_that.episode,_that.position,_that.bufferPosition,
 
 
 class _PlayerState implements PlayerState, WithError {
-  const _PlayerState({this.loading = false, this.episode, this.position = const Duration(seconds: 0), this.bufferPosition = const Duration(seconds: 0), this.duration = const Duration(seconds: 1), this.speed = 1, this.playing = false, this.showMiniPlayer = false, this.hidePlayer = false, this.showBigPlayer = false, this.showTranscript = false, this.showVolume = false, this.draggingVolume = false, this.videoEnabled = false, this.showingVideo = false, this.fullscreen = false, this.volume = 1, final  List<PlayerInfo> clients = const [], this.currentPlayer, this.error, this.stackTrace}): _clients = clients;
+  const _PlayerState({this.loading = false, this.episode, this.position = const Duration(seconds: 0), this.bufferPosition = const Duration(seconds: 0), this.duration = const Duration(seconds: 1), this.speed = 1, this.playing = false, this.showMiniPlayer = false, this.hidePlayer = false, this.showBigPlayer = false, this.showTranscript = false, this.showVolume = false, this.draggingVolume = false, this.videoEnabled = false, this.showingVideo = false, this.fullscreen = false, this.volume = 1,  List<PlayerInfo> clients = const [], this.currentPlayer, this.error, this.stackTrace}): _clients = clients;
   
 
 @override@JsonKey() final  bool loading;
@@ -251,11 +254,8 @@ class _PlayerState implements PlayerState, WithError {
 @override@JsonKey() final  bool showTranscript;
 @override@JsonKey() final  bool showVolume;
 @override@JsonKey() final  bool draggingVolume;
-// whether the episode should be watched when the big player is shown
 @override@JsonKey() final  bool videoEnabled;
-// whether the episode is currently played as a video
 @override@JsonKey() final  bool showingVideo;
-// whether the video is shown full screen
 @override@JsonKey() final  bool fullscreen;
 @override@JsonKey() final  double volume;
  final  List<PlayerInfo> _clients;
@@ -279,16 +279,18 @@ _$PlayerStateCopyWith<_PlayerState> get copyWith => __$PlayerStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.hidePlayer, hidePlayer) || other.hidePlayer == hidePlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&(identical(other.showVolume, showVolume) || other.showVolume == showVolume)&&(identical(other.draggingVolume, draggingVolume) || other.draggingVolume == draggingVolume)&&(identical(other.videoEnabled, videoEnabled) || other.videoEnabled == videoEnabled)&&(identical(other.showingVideo, showingVideo) || other.showingVideo == showingVideo)&&(identical(other.fullscreen, fullscreen) || other.fullscreen == fullscreen)&&(identical(other.volume, volume) || other.volume == volume)&&const DeepCollectionEquality().equals(other._clients, _clients)&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.bufferPosition, bufferPosition) || other.bufferPosition == bufferPosition)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.showMiniPlayer, showMiniPlayer) || other.showMiniPlayer == showMiniPlayer)&&(identical(other.hidePlayer, hidePlayer) || other.hidePlayer == hidePlayer)&&(identical(other.showBigPlayer, showBigPlayer) || other.showBigPlayer == showBigPlayer)&&(identical(other.showTranscript, showTranscript) || other.showTranscript == showTranscript)&&(identical(other.showVolume, showVolume) || other.showVolume == showVolume)&&(identical(other.draggingVolume, draggingVolume) || other.draggingVolume == draggingVolume)&&(identical(other.videoEnabled, videoEnabled) || other.videoEnabled == videoEnabled)&&(identical(other.showingVideo, showingVideo) || other.showingVideo == showingVideo)&&(identical(other.fullscreen, fullscreen) || other.fullscreen == fullscreen)&&(identical(other.volume, volume) || other.volume == volume)&&const DeepCollectionEquality().equals(other.clients, _clients)&&(identical(other.currentPlayer, currentPlayer) || other.currentPlayer == currentPlayer)&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,loading,episode,position,bufferPosition,duration,speed,playing,showMiniPlayer,hidePlayer,showBigPlayer,showTranscript,showVolume,draggingVolume,videoEnabled,showingVideo,fullscreen,volume,const DeepCollectionEquality().hash(_clients),currentPlayer,const DeepCollectionEquality().hash(error),stackTrace]);
+int get hashCode {
+    return Object.hashAll([runtimeType,loading,episode,position,bufferPosition,duration,speed,playing,showMiniPlayer,hidePlayer,showBigPlayer,showTranscript,showVolume,draggingVolume,videoEnabled,showingVideo,fullscreen,volume,const DeepCollectionEquality().hash(_clients),currentPlayer,const DeepCollectionEquality().hash(error),stackTrace]);
+}
 
 @override
 String toString() {
-  return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, speed: $speed, playing: $playing, showMiniPlayer: $showMiniPlayer, hidePlayer: $hidePlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, showVolume: $showVolume, draggingVolume: $draggingVolume, videoEnabled: $videoEnabled, showingVideo: $showingVideo, fullscreen: $fullscreen, volume: $volume, clients: $clients, currentPlayer: $currentPlayer, error: $error, stackTrace: $stackTrace)';
+    return 'PlayerState(loading: $loading, episode: $episode, position: $position, bufferPosition: $bufferPosition, duration: $duration, speed: $speed, playing: $playing, showMiniPlayer: $showMiniPlayer, hidePlayer: $hidePlayer, showBigPlayer: $showBigPlayer, showTranscript: $showTranscript, showVolume: $showVolume, draggingVolume: $draggingVolume, videoEnabled: $videoEnabled, showingVideo: $showingVideo, fullscreen: $fullscreen, volume: $volume, clients: $clients, currentPlayer: $currentPlayer, error: $error, stackTrace: $stackTrace)';
 }
 
 

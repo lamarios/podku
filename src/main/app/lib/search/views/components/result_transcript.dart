@@ -1,14 +1,14 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/components/buttons/m3e_buttons.dart';
 import 'package:material_3_expressive/components/cards/m3e_cards.dart';
 import 'package:material_3_expressive/components/icon_buttons/m3e_icon_buttons.dart';
 import 'package:material_3_expressive/foundations/foundations.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/l10n/app_localizations.dart';

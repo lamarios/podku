@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';

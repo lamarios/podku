@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
-import 'package:material_3_expressive/foundations/m3e_material_new_shapes_bridge.dart';
+import 'package:material_ui/material_ui.dart' hide CornerRounding, RoundedPolygon;
+import 'package:material_3_expressive/foundations/shape/m3e_material_new_shapes_bridge.dart';
 
 class ShapeClipper extends CustomClipper<Path> {
   final RoundedPolygon polygon;

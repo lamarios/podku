@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/components/progress_indicators/m3e_progress_indicators.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_progress.dart';

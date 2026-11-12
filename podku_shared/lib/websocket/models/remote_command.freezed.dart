@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'remote_command.dart';
@@ -9,6 +9,7 @@ part of 'remote_command.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $RemoteCommandCopyWith<RemoteCommand> get copyWith => _$RemoteCommandCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.volume, volume) || other.volume == volume));
+  final _this = this as RemoteCommand;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoteCommand&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.episode, _this.episode) || other.episode == _this.episode)&&(identical(other.position, _this.position) || other.position == _this.position)&&(identical(other.speed, _this.speed) || other.speed == _this.speed)&&(identical(other.volume, _this.volume) || other.volume == _this.volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,episode,position,speed,volume);
+int get hashCode {
+  final _this = this as RemoteCommand;
+  return Object.hash(runtimeType,_this.type,_this.episode,_this.position,_this.speed,_this.volume);
+}
 
 @override
 String toString() {
-  return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed, volume: $volume)';
+  final _this = this as RemoteCommand;
+  return 'RemoteCommand(type: ${_this.type}, episode: ${_this.episode}, position: ${_this.position}, speed: ${_this.speed}, volume: ${_this.volume})';
 }
 
 
@@ -66,7 +72,7 @@ class _$RemoteCommandCopyWithImpl<$Res>
 /// Create a copy of RemoteCommand
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? episode = freezed,Object? position = freezed,Object? speed = freezed,Object? volume = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(RemoteCommand(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as CommandType,episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: freezed == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.volume, volume) || other.volume == volume));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoteCommand&&(identical(other.type, type) || other.type == type)&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.volume, volume) || other.volume == volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,episode,position,speed,volume);
+int get hashCode {
+    return Object.hash(runtimeType,type,episode,position,speed,volume);
+}
 
 @override
 String toString() {
-  return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed, volume: $volume)';
+    return 'RemoteCommand(type: $type, episode: $episode, position: $position, speed: $speed, volume: $volume)';
 }
 
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart' hide CornerRounding, RoundedPolygon;
 import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';

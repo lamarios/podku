@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:material_3_expressive/components/app_bars/m3e_app_bars.dart';
@@ -8,10 +8,10 @@ import 'package:material_3_expressive/components/cards/m3e_cards.dart';
 import 'package:material_3_expressive/components/menus/m3e_menus.dart';
 import 'package:material_3_expressive/components/sliders/m3e_sliders.dart';
 import 'package:material_3_expressive/components/snackbar/m3e_snackbar.dart';
-import 'package:material_3_expressive/components/toggle_button_group/m3e_toggle_button_group.dart';
-import 'package:material_3_expressive/components/toggle_button_group/models/m3e_button_group_action.dart';
+import 'package:material_3_expressive/components/button_group/m3e_button_group.dart';
+import 'package:material_3_expressive/components/button_group/models/m3e_button_group_action.dart';
 import 'package:material_3_expressive/foundations/foundations.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:motor/motor.dart';
 import 'package:openapi/openapi.dart';
@@ -35,6 +35,8 @@ import 'package:podku/utils/views/components/description.dart';
 import 'package:podku/utils/views/components/progressive_blur.dart';
 
 const double _imageWidth = 170;
+
+const double _bigControlsWidth = 104;
 
 class BigPlayer extends StatelessWidget {
   /// Key of the podcast image slot, used to measure where the image is when expanding from the mini player.
@@ -179,9 +181,13 @@ class BigPlayer extends StatelessWidget {
                                               },
                                               actions: [
                                                 M3EButtonGroupAction(
+                                                  // 1.2 sizes icon only actions to a square of the button
+                                                  // height (136) which overflows phones, keep the previous width
+                                                  minWidth: _bigControlsWidth,
                                                   icon: Icon(Icons.fast_rewind, color: colors.onSecondaryContainer),
                                                 ),
                                                 M3EButtonGroupAction(
+                                                  minWidth: _bigControlsWidth,
                                                   icon: AnimatedIcon(
                                                     icon: AnimatedIcons.play_pause,
                                                     color: colors.onSecondaryContainer,
@@ -189,6 +195,7 @@ class BigPlayer extends StatelessWidget {
                                                   ),
                                                 ),
                                                 M3EButtonGroupAction(
+                                                  minWidth: _bigControlsWidth,
                                                   icon: Icon(Icons.fast_forward, color: colors.onSecondaryContainer),
                                                 ),
                                               ],

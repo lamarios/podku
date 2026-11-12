@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:podku/utils.dart';
+import 'package:podku/utils/views/components/legacy_material_bridge.dart';
 
 class ForcedDarkThemeBuilder extends StatelessWidget {
   final Function(BuildContext context) builder;
@@ -12,7 +13,8 @@ class ForcedDarkThemeBuilder extends StatelessWidget {
       data: ThemeData(
         colorScheme: .fromSeed(seedColor: appColor, brightness: Brightness.dark),
       ),
-      child: Builder(builder: (innerContext) => builder(innerContext)),
+      // re-bridge so dependencies still on package:flutter/material.dart also get the dark theme
+      child: LegacyMaterialBridge(child: Builder(builder: (innerContext) => builder(innerContext))),
     );
   }
 }

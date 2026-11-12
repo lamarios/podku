@@ -17,6 +17,18 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/web" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/app/windows" />
       <excludeFolder url="file://$MODULE_DIR$/submodules" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_client/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_client/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_client/build" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/podku_shared/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/podkunnect/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/podkunnect/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/podkunnect/build" />
     </content>
   </component>
 </module>

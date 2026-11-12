@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'player_status.dart';
@@ -9,6 +9,7 @@ part of 'player_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $PlayerStatusCopyWith<PlayerStatus> get copyWith => _$PlayerStatusCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerStatus&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.volume, volume) || other.volume == volume));
+  final _this = this as PlayerStatus;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerStatus&&(identical(other.episode, _this.episode) || other.episode == _this.episode)&&(identical(other.position, _this.position) || other.position == _this.position)&&(identical(other.duration, _this.duration) || other.duration == _this.duration)&&(identical(other.speed, _this.speed) || other.speed == _this.speed)&&(identical(other.playing, _this.playing) || other.playing == _this.playing)&&(identical(other.broadcast, _this.broadcast) || other.broadcast == _this.broadcast)&&(identical(other.volume, _this.volume) || other.volume == _this.volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,episode,position,duration,speed,playing,broadcast,volume);
+int get hashCode {
+  final _this = this as PlayerStatus;
+  return Object.hash(runtimeType,_this.episode,_this.position,_this.duration,_this.speed,_this.playing,_this.broadcast,_this.volume);
+}
 
 @override
 String toString() {
-  return 'PlayerStatus(episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing, broadcast: $broadcast, volume: $volume)';
+  final _this = this as PlayerStatus;
+  return 'PlayerStatus(episode: ${_this.episode}, position: ${_this.position}, duration: ${_this.duration}, speed: ${_this.speed}, playing: ${_this.playing}, broadcast: ${_this.broadcast}, volume: ${_this.volume})';
 }
 
 
@@ -66,7 +72,7 @@ class _$PlayerStatusCopyWithImpl<$Res>
 /// Create a copy of PlayerStatus
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? episode = freezed,Object? position = null,Object? duration = null,Object? speed = null,Object? playing = null,Object? broadcast = null,Object? volume = null,}) {
-  return _then(_self.copyWith(
+  return _then(PlayerStatus(
 episode: freezed == episode ? _self.episode : episode // ignore: cast_nullable_to_non_nullable
 as Episode?,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as int,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerStatus&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.volume, volume) || other.volume == volume));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerStatus&&(identical(other.episode, episode) || other.episode == episode)&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.speed, speed) || other.speed == speed)&&(identical(other.playing, playing) || other.playing == playing)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.volume, volume) || other.volume == volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,episode,position,duration,speed,playing,broadcast,volume);
+int get hashCode {
+    return Object.hash(runtimeType,episode,position,duration,speed,playing,broadcast,volume);
+}
 
 @override
 String toString() {
-  return 'PlayerStatus(episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing, broadcast: $broadcast, volume: $volume)';
+    return 'PlayerStatus(episode: $episode, position: $position, duration: $duration, speed: $speed, playing: $playing, broadcast: $broadcast, volume: $volume)';
 }
 
 

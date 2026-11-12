@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 
 class OfflineIndicator extends StatelessWidget {

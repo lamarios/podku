@@ -15,12 +15,9 @@ void main() {
   });
 
   void mockInProgress(List<Map<String, dynamic>> episodes) {
-    nock(testServerUrl).get(startsWith('/api/episodes/inProgress'))
-      .reply(
-        200,
-        jsonEncode(episodes),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/episodes/inProgress'))
+        .reply(200, jsonEncode(episodes), headers: {'content-type': 'application/json'});
   }
 
   void mockInProgressError() {
@@ -31,10 +28,7 @@ void main() {
     mockInProgressError();
 
     final cubit = ContinuePlayingCubit(const ContinuePlayingState());
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<ContinuePlayingState>((s) => s.error != null)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<ContinuePlayingState>((s) => s.error != null)));
 
     expect(cubit.state.loading, isFalse);
     expect(cubit.state.episodes, isEmpty);
@@ -46,10 +40,7 @@ void main() {
     mockInProgress([createMockEpisodeJson(id: 'ep-1', title: 'Episode One')]);
 
     final cubit = ContinuePlayingCubit(const ContinuePlayingState());
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)));
 
     mockInProgressError();
     await cubit.getEpisodes(loading: false);
@@ -69,10 +60,7 @@ void main() {
     final cubit = ContinuePlayingCubit(const ContinuePlayingState());
     expect(cubit.state.loading, isTrue);
 
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)));
 
     expect(cubit.state.episodes.map((e) => e.title), ['Episode One', 'Episode Two']);
     await cubit.close();
@@ -82,10 +70,7 @@ void main() {
     mockInProgress([createMockEpisodeJson(id: 'ep-1', title: 'Episode One')]);
 
     final cubit = ContinuePlayingCubit(const ContinuePlayingState());
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)));
 
     mockInProgress([
       createMockEpisodeJson(id: 'ep-1', title: 'Episode One'),
@@ -106,10 +91,7 @@ void main() {
     mockInProgress([]);
 
     final cubit = ContinuePlayingCubit(const ContinuePlayingState());
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<ContinuePlayingState>((s) => !s.loading)));
     expect(cubit.state.episodes, isEmpty);
 
     mockInProgress([createMockEpisodeJson(id: 'ep-1', title: 'Episode One')]);

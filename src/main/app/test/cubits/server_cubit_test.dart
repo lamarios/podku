@@ -30,12 +30,7 @@ void main() {
 
   test('ServerCubit connects and strips trailing slash on valid URL', () async {
     const baseUrl = 'http://localhost:8080';
-    nock(baseUrl).get('/api/podcasts')
-      .reply(
-        200,
-        jsonEncode([]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(baseUrl).get('/api/podcasts').reply(200, jsonEncode([]), headers: {'content-type': 'application/json'});
 
     final cubit = ServerCubit(const ServerState());
     final success = await cubit.setServerUrl('$baseUrl/', testServer: true);
@@ -50,12 +45,7 @@ void main() {
 
   test('ServerCubit emits error when server test fails', () async {
     const errorServer = 'http://failed-server:8080';
-    nock(errorServer).get('/api/podcasts')
-      .reply(
-        500,
-        'Server Error',
-        headers: {'content-type': 'text/plain'},
-      );
+    nock(errorServer).get('/api/podcasts').reply(500, 'Server Error', headers: {'content-type': 'text/plain'});
 
     final cubit = ServerCubit(const ServerState());
     final success = await cubit.setServerUrl(errorServer, testServer: true);
