@@ -41,6 +41,11 @@
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2"/>
+        <!-- Hybrid Composition++ (Flutter 3.50+): used on API 34+ devices running Impeller on Vulkan,
+             others automatically fall back to the regular platform view mode -->
+        <meta-data
+                android:name="io.flutter.embedding.android.EnableHcpp"
+                android:value="true"/>
         <meta-data
                 android:name="com.google.android.gms.car.application"
                 android:resource="@xml/automotive_app_desc"/>

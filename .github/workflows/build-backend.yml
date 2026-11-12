@@ -56,7 +56,7 @@ jobs:
       - name: build web
         working-directory: ./src/main/app
         run: |
-          nix-shell --run "flutter build web --release --build-name ${TAG_NAME} --build-number ${{ github.run_number }} --wasm -o ../resources/public" ../../../shell.nix
+          nix-shell --run "flutter build web --release --build-name ${TAG_NAME} --build-number ${{ github.run_number }} --wasm --web-content-hash -o ../resources/public" ../../../shell.nix
       # build backend
       - name: Build version
         run: echo "Building backend ${{ github.run_number }}"
