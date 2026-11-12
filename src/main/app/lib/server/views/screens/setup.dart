@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/server/states/server.dart';

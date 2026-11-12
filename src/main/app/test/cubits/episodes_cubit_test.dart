@@ -18,12 +18,9 @@ void main() {
     final ep1 = createMockEpisodeJson(id: 'ep-1', title: 'Episode One');
     final ep2 = createMockEpisodeJson(id: 'ep-2', title: 'Episode Two');
 
-    nock(testServerUrl).get(startsWith('/api/episodes'))
-      .reply(
-        200,
-        jsonEncode([ep1, ep2]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/episodes'))
+        .reply(200, jsonEncode([ep1, ep2]), headers: {'content-type': 'application/json'});
 
     final cubit = EpisodesCubit(const EpisodesState());
 
@@ -56,18 +53,12 @@ void main() {
       pubDateMillis: now.subtract(const Duration(days: 30)).millisecondsSinceEpoch,
     );
 
-    nock(testServerUrl).get(startsWith('/api/episodes'))
-      .reply(
-        200,
-        jsonEncode([today, pastWeek, older]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/episodes'))
+        .reply(200, jsonEncode([today, pastWeek, older]), headers: {'content-type': 'application/json'});
 
     final cubit = EpisodesCubit(const EpisodesState());
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 3)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 3)));
 
     expect(cubit.state.episodes[EpisodeThresholds.today]!.map((e) => e.title), ['Today']);
     expect(cubit.state.episodes[EpisodeThresholds.pastWeek]!.map((e) => e.title), ['Past week']);
@@ -81,27 +72,18 @@ void main() {
     final ep2 = createMockEpisodeJson(id: 'ep-2', title: 'Episode Two', pubDateMillis: 500);
 
     // Initial load
-    nock(testServerUrl).get(startsWith('/api/episodes'))
-      .reply(
-        200,
-        jsonEncode([ep1]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(
+      testServerUrl,
+    ).get(startsWith('/api/episodes')).reply(200, jsonEncode([ep1]), headers: {'content-type': 'application/json'});
 
     final cubit = EpisodesCubit(const EpisodesState());
-    await expectLater(
-      cubit.stream,
-      emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 1)),
-    );
+    await expectLater(cubit.stream, emitsThrough(predicate<EpisodesState>((s) => s.episodeCount == 1)));
     final previousOlder = cubit.state.episodes[EpisodeThresholds.older]!;
 
     // Load more mock
-    nock(testServerUrl).get(startsWith('/api/episodes'))
-      .reply(
-        200,
-        jsonEncode([ep2]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(
+      testServerUrl,
+    ).get(startsWith('/api/episodes')).reply(200, jsonEncode([ep2]), headers: {'content-type': 'application/json'});
 
     final loadMoreFuture = expectLater(
       cubit.stream,

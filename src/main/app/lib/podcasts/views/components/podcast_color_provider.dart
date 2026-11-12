@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:material_3_expressive/foundations/foundations.dart';
 import 'package:openapi/openapi.dart';
 
@@ -25,10 +25,15 @@ class PodcastColorProvider extends StatelessWidget {
       data: M3EThemeData.fromMaterial(
         Theme.of(context).copyWith(brightness: brightness),
       ).copyWith(colorScheme: colorScheme),
-      child: Builder(
-        builder: (context) {
-          return builder(context, colorScheme);
-        },
+      // M3ETheme only sets the material_ui theme, re-bridge so dependencies still on package:flutter/material.dart
+      // (e.g. material_loading_indicator) also get the podcast colors
+      // ignore: deprecated_member_use
+      child: MaterialUiCompatibilityBridge(
+        child: Builder(
+          builder: (context) {
+            return builder(context, colorScheme);
+          },
+        ),
       ),
     );
   }

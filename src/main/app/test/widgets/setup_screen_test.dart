@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -28,10 +28,8 @@ void main() {
       routes: [
         GoRoute(
           path: '/setup',
-          builder: (context, state) => BlocProvider<ServerCubit>.value(
-            value: serverCubit,
-            child: const ServerSetupScreen(),
-          ),
+          builder: (context, state) =>
+              BlocProvider<ServerCubit>.value(value: serverCubit, child: const ServerSetupScreen()),
         ),
         GoRoute(
           path: '/home/episodes',
@@ -56,12 +54,9 @@ void main() {
     await snap(name: 'server_setup_screen', matchToGolden: true);
 
     // Mock successful server connection verification
-    nock('http://localhost:8080').get('/api/podcasts')
-      .reply(
-        200,
-        jsonEncode([]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(
+      'http://localhost:8080',
+    ).get('/api/podcasts').reply(200, jsonEncode([]), headers: {'content-type': 'application/json'});
 
     await tester.enterText(find.byType(TextField), 'http://localhost:8080');
     await tester.pump();

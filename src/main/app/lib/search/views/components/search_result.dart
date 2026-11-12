@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/podcasts/states/podcasts.dart';
 import 'package:podku/podcasts/views/components/podcast_image.dart';

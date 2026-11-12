@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/views/components/episode_in_list.dart';
@@ -21,11 +21,7 @@ void main() {
       explicit: false,
       progress: 600.0,
       processed: true,
-      podcast: PodcastLight(
-        id: 'pod-test-1',
-        name: 'Podku Developer Podcast',
-        url: 'http://example.com/feed.xml',
-      ),
+      podcast: PodcastLight(id: 'pod-test-1', name: 'Podku Developer Podcast', url: 'http://example.com/feed.xml'),
     );
 
     final playerCubit = FakePlayerCubit(const PlayerState());
@@ -40,10 +36,7 @@ void main() {
         size: const Size(450, 180),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: EpisodeInList(
-            episode: episode,
-            showPodcastImage: false,
-          ),
+          child: EpisodeInList(episode: episode, showPodcastImage: false),
         ),
       ),
     );
@@ -56,4 +49,3 @@ void main() {
     await snap(name: 'episode_in_list_card', matchToGolden: true);
   });
 }
-

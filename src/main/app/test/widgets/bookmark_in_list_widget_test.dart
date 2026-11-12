@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/bookmarks/views/components/bookmark_in_list.dart';
@@ -12,10 +12,7 @@ void main() {
         id: 'bm-1',
         time: 125,
         topic: 'State Management with BLoC',
-        episode: Episode(
-          id: 'ep-1',
-          title: 'Episode 42: Flutter Architecture',
-        ),
+        episode: Episode(id: 'ep-1', title: 'Episode 42: Flutter Architecture'),
       ),
       transcripts: {
         'en': [
@@ -45,10 +42,7 @@ void main() {
 
     expect(find.text('Episode 42: Flutter Architecture'), findsOneWidget);
     expect(find.text('State Management with BLoC'), findsOneWidget);
-    expect(
-      find.text('BLoC allows for predictable and testable state transitions.'),
-      findsOneWidget,
-    );
+    expect(find.text('BLoC allows for predictable and testable state transitions.'), findsOneWidget);
 
     // Golden screenshot for this UI component
     await snap(name: 'bookmark_in_list_card', matchToGolden: true);

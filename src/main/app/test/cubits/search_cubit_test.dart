@@ -15,38 +15,23 @@ void main() {
   });
 
   test('SearchCubit searches podcasts, episodes and itunes directory', () async {
-    final mockDiscoverResult = {
-      'collectionName': 'Discover Show',
-      'feedUrl': 'http://example.com/discover.xml',
-    };
+    final mockDiscoverResult = {'collectionName': 'Discover Show', 'feedUrl': 'http://example.com/discover.xml'};
 
     final mockPodcastResult = createMockPodcastLightJson(name: 'Subscribed Tech');
 
-    final mockEpisodeResult = {
-      'episode': createMockEpisodeJson(title: 'Found Episode'),
-      'matchedTranscripts': [],
-    };
+    final mockEpisodeResult = {'episode': createMockEpisodeJson(title: 'Found Episode'), 'matchedTranscripts': []};
 
-    nock(testServerUrl).get(startsWith('/api/search'))
-      .reply(
-        200,
-        jsonEncode([mockDiscoverResult]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/search'))
+        .reply(200, jsonEncode([mockDiscoverResult]), headers: {'content-type': 'application/json'});
 
-    nock(testServerUrl).get(startsWith('/api/podcasts/search'))
-      .reply(
-        200,
-        jsonEncode([mockPodcastResult]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/podcasts/search'))
+        .reply(200, jsonEncode([mockPodcastResult]), headers: {'content-type': 'application/json'});
 
-    nock(testServerUrl).get(startsWith('/api/episodes/search'))
-      .reply(
-        200,
-        jsonEncode([mockEpisodeResult]),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/episodes/search'))
+        .reply(200, jsonEncode([mockEpisodeResult]), headers: {'content-type': 'application/json'});
 
     final cubit = SearchCubit(const SearchState(), 'flutter');
 
@@ -55,10 +40,7 @@ void main() {
       cubit.stream,
       emitsThrough(
         predicate<SearchState>(
-          (s) =>
-              s.discoverResults.isNotEmpty &&
-              s.podcastResults.isNotEmpty &&
-              s.episodeResults.isNotEmpty,
+          (s) => s.discoverResults.isNotEmpty && s.podcastResults.isNotEmpty && s.episodeResults.isNotEmpty,
         ),
       ),
     );

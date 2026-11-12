@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_3_expressive/components/lists/m3e_lists.dart';
 import 'package:material_3_expressive/foundations/m3e_icons.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:podku/l10n/app_localizations.dart';
 import 'package:podku/main.dart';
 import 'package:podku/player/states/player.dart';

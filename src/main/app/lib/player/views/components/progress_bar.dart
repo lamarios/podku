@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_3_expressive/components/progress_indicators/m3e_progress_indicators.dart';
 import 'package:material_3_expressive/components/sliders/m3e_sliders.dart';

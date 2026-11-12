@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:motor/motor.dart';
 import 'package:podku/player/states/player.dart';
 

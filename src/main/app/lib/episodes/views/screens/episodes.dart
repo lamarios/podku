@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:gap/gap.dart';
-import 'package:material_3_expressive/foundations/m3e_theme.dart';
+import 'package:material_3_expressive/foundations/theme/m3e_theme.dart';
 import 'package:material_loading_indicator/loading_indicator.dart';
 import 'package:openapi/openapi.dart';
 import 'package:podku/episodes/models/episode_url.dart';

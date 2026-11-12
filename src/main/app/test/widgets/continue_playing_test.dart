@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nock/nock.dart';
@@ -25,12 +25,9 @@ void main() {
   });
 
   void mockInProgress(List<Map<String, dynamic>> episodes) {
-    nock(testServerUrl).get(startsWith('/api/episodes/inProgress'))
-      .reply(
-        200,
-        jsonEncode(episodes),
-        headers: {'content-type': 'application/json'},
-      );
+    nock(testServerUrl)
+        .get(startsWith('/api/episodes/inProgress'))
+        .reply(200, jsonEncode(episodes), headers: {'content-type': 'application/json'});
   }
 
   Future<ContinuePlayingCubit> pumpContinuePlaying(
@@ -73,7 +70,6 @@ void main() {
     expect(find.text('Continue listening'), findsNothing);
 
     await settle(tester);
-
   });
 
   testWidgets('ContinuePlaying renders nothing when there are no in progress episodes', (tester) async {
