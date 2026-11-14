@@ -36,6 +36,10 @@ import 'package:podku/utils/views/components/progressive_blur.dart';
 
 const double _imageWidth = 170;
 
+/// Scale of the big player podcast image depending on the playing state (0 = paused, 1 = playing). Driven by the same
+/// spring as the cookie morph so the image gets the same bounce as the mini player's one.
+double bigPlayerImageScale(double playingValue) => lerpDouble(1, 1.2, playingValue)!;
+
 const double _bigControlsWidth = 104;
 
 class BigPlayer extends StatelessWidget {
@@ -138,11 +142,16 @@ class BigPlayer extends StatelessWidget {
                                                 child: SingleMotionBuilder(
                                                   motion: MaterialSpringMotion.expressiveSpatialFast(),
                                                   value: playing ? 1 : 0,
-                                                  builder: (context, playingValue, child) => PlayingPodcastImage(
-                                                    podcast: episode.podcast!,
-                                                    size: _imageWidth,
-                                                    playingValue: playingValue,
-                                                    borderColor: colors.primary,
+                                                  // the key is outside the scale: the expandable player measures
+                                                  // the slot's layout box and applies the playing scale itself
+                                                  builder: (context, playingValue, child) => Transform.scale(
+                                                    scale: bigPlayerImageScale(playingValue),
+                                                    child: PlayingPodcastImage(
+                                                      podcast: episode.podcast!,
+                                                      size: _imageWidth,
+                                                      playingValue: playingValue,
+                                                      borderColor: colors.primary,
+                                                    ),
                                                   ),
                                                 ),
                                               ),

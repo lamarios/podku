@@ -32,3 +32,5 @@ flatpak-install: flatpak
 	flatpak install --user --reinstall -y flatpak/podku.flatpak
 
 .PHONY: flatpak flatpak-install
+
+

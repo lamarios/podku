@@ -52,6 +52,34 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
   bool _flyImage = false;
   double? _transitionTarget;
 
+  // The players are cached so that they aren't rebuilt on every frame of the transition, only when the image visibility
+  // changes (they listen to the player state on their own). Repaint boundaries keep their content from being repainted
+  // while the panel moves.
+  bool? _bigHideImage;
+  Widget? _bigPlayerWidget;
+  bool? _miniHideImage;
+  Widget? _miniPlayerWidget;
+
+  Widget _bigPlayer(bool hideImage) {
+    if (_bigPlayerWidget == null || _bigHideImage != hideImage) {
+      _bigHideImage = hideImage;
+      _bigPlayerWidget = RepaintBoundary(
+        child: BigPlayer(imageKey: _bigImageKey, hideImage: hideImage),
+      );
+    }
+    return _bigPlayerWidget!;
+  }
+
+  Widget _miniPlayer(bool hideImage) {
+    if (_miniPlayerWidget == null || _miniHideImage != hideImage) {
+      _miniHideImage = hideImage;
+      _miniPlayerWidget = RepaintBoundary(
+        child: MiniPlayer(imageKey: _miniImageKey, hideImage: hideImage),
+      );
+    }
+    return _miniPlayerWidget!;
+  }
+
   /// Bounds of the widget holding [key], in this widget's coordinates, as laid out during the last frame.
   Rect? _measure(GlobalKey key) {
     final box = key.currentContext?.findRenderObject();
@@ -83,24 +111,26 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
     final screen = MediaQuery.sizeOf(context);
     final bottomInset = MediaQuery.paddingOf(context).bottom;
 
-    return SingleMotionBuilder(
-      motion: MaterialSpringMotion.expressiveSpatialFast(snapToEnd: true),
-      value: visible ? 1 : 0,
-      from: 0,
-      builder: (context, appear, _) {
-        if (!visible && appear < 0.01) {
-          return const SizedBox.shrink();
-        }
-        return SingleMotionBuilder(
-          motion: MaterialSpringMotion.expressiveSpatialSlow(snapToEnd: true),
-          value: target,
-          from: 0,
-          builder: (context, t, _) => SingleMotionBuilder(
-            motion: MaterialSpringMotion.expressiveSpatialFast(),
-            value: playing ? 1 : 0,
-            builder: (context, playingValue, _) => PodcastColorProvider(
-              podcastLight: podcast,
-              builder: (context, colors) {
+    // the color provider builds a whole theme from the podcast color: kept outside of the animation builders so that it
+    // (and everything depending on the theme) isn't rebuilt on every frame of the transition
+    return PodcastColorProvider(
+      podcastLight: podcast,
+      builder: (context, colors) => SingleMotionBuilder(
+        motion: MaterialSpringMotion.expressiveSpatialFast(snapToEnd: true),
+        value: visible ? 1 : 0,
+        from: 0,
+        builder: (context, appear, _) {
+          if (!visible && appear < 0.01) {
+            return const SizedBox.shrink();
+          }
+          return SingleMotionBuilder(
+            motion: MaterialSpringMotion.expressiveSpatialDefault(snapToEnd: true),
+            value: target,
+            from: 0,
+            builder: (context, t, _) => SingleMotionBuilder(
+              motion: MaterialSpringMotion.expressiveSpatialFast(),
+              value: playing ? 1 : 0,
+              builder: (context, playingValue, _) {
                 final expansion = t.clamp(0.0, 1.0);
                 final playingProgress = playingValue.clamp(0.0, 1.0);
 
@@ -134,9 +164,15 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
                   width: miniImageSlot.width * miniImageScale,
                   height: miniImageSlot.height * miniImageScale,
                 );
-                final bigImageRect =
+                final bigImageSlot =
                     _measure(_bigImageKey) ??
                     Rect.fromCenter(center: Offset(screen.width / 2, screen.height * 0.35), width: 170, height: 170);
+                final bigImageScale = bigPlayerImageScale(playingValue);
+                final bigImageRect = Rect.fromCenter(
+                  center: bigImageSlot.center,
+                  width: bigImageSlot.width * bigImageScale,
+                  height: bigImageSlot.height * bigImageScale,
+                );
 
                 final mountMini = target == 0 || t < 0.999;
                 final mountBig = target == 1 || t > 0.001;
@@ -174,7 +210,7 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
                                       ignoring: target == 0,
                                       child: Opacity(
                                         opacity: ((t - 0.25) / 0.75).clamp(0.0, 1.0),
-                                        child: BigPlayer(imageKey: _bigImageKey, hideImage: flying || target == 0),
+                                        child: _bigPlayer(flying || target == 0),
                                       ),
                                     ),
                                   ),
@@ -195,7 +231,7 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
                           ignoring: target == 1,
                           child: Opacity(
                             opacity: (appear * (1 - t / 0.3)).clamp(0.0, 1.0),
-                            child: MiniPlayer(imageKey: _miniImageKey, hideImage: flying || target == 1),
+                            child: _miniPlayer(flying || target == 1),
                           ),
                         ),
                       ),
@@ -205,13 +241,17 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
                         child: IgnorePointer(
                           child: Opacity(
                             opacity: (appear * (videoEnabled ? 1 - t / 0.5 : 1)).clamp(0.0, 1.0),
-                            // same look as the mini and big player images, only the size changes while flying
-                            child: LayoutBuilder(
-                              builder: (context, constraints) => PlayingPodcastImage(
-                                podcast: podcast,
-                                size: constraints.biggest.shortestSide,
-                                playingValue: playingValue,
-                                borderColor: colors.primary,
+                            // same look as the mini and big player images, only the size changes while flying.
+                            // Laid out once at the big player's size and scaled down, so that flying only changes a
+                            // transform (no relayout, clip path or image resize on every frame)
+                            child: FittedBox(
+                              child: RepaintBoundary(
+                                child: PlayingPodcastImage(
+                                  podcast: podcast,
+                                  size: bigImageSlot.shortestSide,
+                                  playingValue: playingValue,
+                                  borderColor: colors.primary,
+                                ),
                               ),
                             ),
                           ),
@@ -221,9 +261,9 @@ class _ExpandablePlayerState extends State<ExpandablePlayer> {
                 );
               },
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
