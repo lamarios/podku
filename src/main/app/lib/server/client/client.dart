@@ -9,6 +9,7 @@ class Client {
   late final MediaApi media;
   late final Openapi _client;
   late final BookmarksApi bookmarks;
+  late final RecommendationsApi recommendations;
   final String serverUrl;
 
   Client(this.serverUrl) {
@@ -28,5 +29,6 @@ class Client {
     search = _client.getSearchApi();
     media = _client.getMediaApi();
     bookmarks = _client.getBookmarksApi();
+    recommendations = _client.getRecommendationsApi();
   }
 }

@@ -48,15 +48,51 @@ class TranscriptCubit extends Cubit<TranscriptState> {
           state.copyWith(
             languages: languages,
             transcript: transcripts,
-            index: -1,
+            index: findClosestTranscriptIndex(transcripts, playerCubit.state.position),
             loading: false,
             selectedLanguage: languages.first,
           ),
         );
+        _jumpToCurrentLineOnceLaidOut();
       } else {
         emit(state.copyWith(loading: false));
       }
     }
+  }
+
+  /// Switches the transcript to another of the episode's languages, keeping the current line in view.
+  Future<void> selectLanguage(String language) async {
+    final episodeId = playerCubit.state.episode?.id;
+    if (episodeId == null || language == state.selectedLanguage) {
+      return;
+    }
+    emit(state.copyWith(loading: true));
+    final List<EpisodeTranscript> transcript = await client.transcripts
+        .getTranscript(id: episodeId, language: language)
+        .then((value) => value.data ?? []);
+    if (isClosed) {
+      return;
+    }
+    // position on the current line right away rather than waiting for the next position update, which doesn't
+    // come while paused
+    emit(
+      state.copyWith(
+        transcript: transcript,
+        selectedLanguage: language,
+        index: findClosestTranscriptIndex(transcript, playerCubit.state.position),
+        loading: false,
+      ),
+    );
+    _jumpToCurrentLineOnceLaidOut();
+  }
+
+  /// The list is rebuilt when the transcript changes: jump to the current line once it has been laid out.
+  void _jumpToCurrentLineOnceLaidOut() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!isClosed && listController.isAttached && state.index != -1) {
+        listController.jumpToIndex(state.index, alignment: 0.5);
+      }
+    });
   }
 
   void onPositionChanged(Duration event) {
@@ -80,6 +116,21 @@ class TranscriptCubit extends Cubit<TranscriptState> {
         curve: Curves.easeInOutQuint,
       );
     }
+  }
+
+  /// Like [findCurrentTranscriptIndex], but when no line covers [position] (a gap between lines, or before the first
+  /// one), returns the last line started before it, or the first line. Used when there is no previous line to keep
+  /// highlighted, as the panel waits for an index before showing the transcript.
+  static int findClosestTranscriptIndex(List<EpisodeTranscript> transcript, Duration position) {
+    if (transcript.isEmpty) {
+      return -1;
+    }
+    final index = findCurrentTranscriptIndex(transcript, position);
+    if (index != -1) {
+      return index;
+    }
+    final previous = transcript.lastIndexWhere((line) => line.startDuration <= position);
+    return previous == -1 ? 0 : previous;
   }
 
   static int findCurrentTranscriptIndex(List<EpisodeTranscript> transcript, Duration position) {

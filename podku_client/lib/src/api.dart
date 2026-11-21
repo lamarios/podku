@@ -12,6 +12,7 @@ import 'package:openapi/src/api/episodes_api.dart';
 import 'package:openapi/src/api/media_api.dart';
 import 'package:openapi/src/api/ping_api.dart';
 import 'package:openapi/src/api/podcasts_api.dart';
+import 'package:openapi/src/api/recommendations_api.dart';
 import 'package:openapi/src/api/search_api.dart';
 import 'package:openapi/src/api/transcripts_api.dart';
 
@@ -134,6 +135,12 @@ class Openapi {
   /// by doing that all interceptors will not be executed
   PodcastsApi getPodcastsApi() {
     return PodcastsApi(dio);
+  }
+
+  /// Get RecommendationsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  RecommendationsApi getRecommendationsApi() {
+    return RecommendationsApi(dio);
   }
 
   /// Get SearchApi instance, base route and serializer can be overridden by a given but be careful,

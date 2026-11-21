@@ -28,6 +28,7 @@ import 'package:podku/player/views/components/progress_bar.dart';
 import 'package:podku/player/views/components/remote_players.dart';
 import 'package:podku/player/views/components/transcript_follower.dart';
 import 'package:podku/podcasts/views/components/podcast_color_provider.dart';
+import 'package:podku/recommendations/views/components/recommended_podcasts.dart';
 import 'package:podku/utils.dart';
 import 'package:podku/utils/models/app_action.dart';
 import 'package:podku/utils/models/breakpoint.dart';
@@ -370,7 +371,7 @@ class BigPlayer extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                  padding: .fromLTRB(pu4, pu4, pu4, pu4 + MediaQuery.paddingOf(context).bottom),
+                                  padding: .all(pu4),
                                   child: M3ECard(
                                     color: colors.surfaceContainerHigh,
                                     child: Column(
@@ -383,6 +384,11 @@ class BigPlayer extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                                if (episode.id != null)
+                                  Padding(
+                                    padding: .only(bottom: pu4 + MediaQuery.paddingOf(context).bottom),
+                                    child: RecommendedPodcasts(episodeId: episode.id!),
+                                  ),
                               ],
                             ),
                           ),

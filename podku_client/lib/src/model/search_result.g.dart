@@ -21,6 +21,10 @@ abstract class _$SearchResultCWProxy {
 
   SearchResult genres(List<String>? genres);
 
+  SearchResult genreIds(List<String>? genreIds);
+
+  SearchResult primaryGenreName(String? primaryGenreName);
+
   SearchResult color(String? color);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `SearchResult(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -37,6 +41,8 @@ abstract class _$SearchResultCWProxy {
     String? feedUrl,
     String? artworkUrl600,
     List<String>? genres,
+    List<String>? genreIds,
+    String? primaryGenreName,
     String? color,
   });
 }
@@ -73,6 +79,13 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
   SearchResult genres(List<String>? genres) => this(genres: genres);
 
   @override
+  SearchResult genreIds(List<String>? genreIds) => this(genreIds: genreIds);
+
+  @override
+  SearchResult primaryGenreName(String? primaryGenreName) =>
+      this(primaryGenreName: primaryGenreName);
+
+  @override
   SearchResult color(String? color) => this(color: color);
 
   @override
@@ -90,6 +103,8 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
     Object? feedUrl = const $CopyWithPlaceholder(),
     Object? artworkUrl600 = const $CopyWithPlaceholder(),
     Object? genres = const $CopyWithPlaceholder(),
+    Object? genreIds = const $CopyWithPlaceholder(),
+    Object? primaryGenreName = const $CopyWithPlaceholder(),
     Object? color = const $CopyWithPlaceholder(),
   }) {
     return SearchResult(
@@ -121,6 +136,14 @@ class _$SearchResultCWProxyImpl implements _$SearchResultCWProxy {
           ? _value.genres
           // ignore: cast_nullable_to_non_nullable
           : genres as List<String>?,
+      genreIds: genreIds == const $CopyWithPlaceholder()
+          ? _value.genreIds
+          // ignore: cast_nullable_to_non_nullable
+          : genreIds as List<String>?,
+      primaryGenreName: primaryGenreName == const $CopyWithPlaceholder()
+          ? _value.primaryGenreName
+          // ignore: cast_nullable_to_non_nullable
+          : primaryGenreName as String?,
       color: color == const $CopyWithPlaceholder()
           ? _value.color
           // ignore: cast_nullable_to_non_nullable
@@ -139,29 +162,32 @@ extension $SearchResultCopyWith on SearchResult {
 // JsonSerializableGenerator
 // **************************************************************************
 
-SearchResult _$SearchResultFromJson(Map<String, dynamic> json) =>
-    $checkedCreate('SearchResult', json, ($checkedConvert) {
-      final val = SearchResult(
-        artworkUrlEncrypted: $checkedConvert(
-          'artworkUrlEncrypted',
-          (v) => v as String?,
-        ),
-        collectionId: $checkedConvert(
-          'collectionId',
-          (v) => (v as num?)?.toInt(),
-        ),
-        collectionName: $checkedConvert('collectionName', (v) => v as String?),
-        artistName: $checkedConvert('artistName', (v) => v as String?),
-        feedUrl: $checkedConvert('feedUrl', (v) => v as String?),
-        artworkUrl600: $checkedConvert('artworkUrl600', (v) => v as String?),
-        genres: $checkedConvert(
-          'genres',
-          (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
-        ),
-        color: $checkedConvert('color', (v) => v as String?),
-      );
-      return val;
-    });
+SearchResult _$SearchResultFromJson(
+  Map<String, dynamic> json,
+) => $checkedCreate('SearchResult', json, ($checkedConvert) {
+  final val = SearchResult(
+    artworkUrlEncrypted: $checkedConvert(
+      'artworkUrlEncrypted',
+      (v) => v as String?,
+    ),
+    collectionId: $checkedConvert('collectionId', (v) => (v as num?)?.toInt()),
+    collectionName: $checkedConvert('collectionName', (v) => v as String?),
+    artistName: $checkedConvert('artistName', (v) => v as String?),
+    feedUrl: $checkedConvert('feedUrl', (v) => v as String?),
+    artworkUrl600: $checkedConvert('artworkUrl600', (v) => v as String?),
+    genres: $checkedConvert(
+      'genres',
+      (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
+    ),
+    genreIds: $checkedConvert(
+      'genreIds',
+      (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
+    ),
+    primaryGenreName: $checkedConvert('primaryGenreName', (v) => v as String?),
+    color: $checkedConvert('color', (v) => v as String?),
+  );
+  return val;
+});
 
 Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
     <String, dynamic>{
@@ -172,5 +198,7 @@ Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
       'feedUrl': ?instance.feedUrl,
       'artworkUrl600': ?instance.artworkUrl600,
       'genres': ?instance.genres,
+      'genreIds': ?instance.genreIds,
+      'primaryGenreName': ?instance.primaryGenreName,
       'color': ?instance.color,
     };

@@ -21,9 +21,18 @@ class _Chunk {
 class _FadeInTextState extends State<FadeInText> with SingleTickerProviderStateMixin {
   final _clock = Stopwatch()..start();
   final _fading = <_Chunk>[];
-  late String _settled = widget.text; // fully visible prefix
-  late String _prev = widget.text;
+  // initialized in initState: a `late` initializer would only run on first access, and _prev is first read in
+  // didUpdateWidget, where widget is already the new one, dropping the text appended by the first update
+  String _settled = ''; // fully visible prefix
+  String _prev = '';
   late final Ticker _ticker = createTicker(_onTick);
+
+  @override
+  void initState() {
+    super.initState();
+    _settled = widget.text;
+    _prev = widget.text;
+  }
 
   void _onTick(Duration _) {
     final now = _clock.elapsed;

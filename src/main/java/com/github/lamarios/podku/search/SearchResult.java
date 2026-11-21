@@ -26,6 +26,12 @@ public class SearchResult {
   @JsonProperty("genres")
   private List<String> genres;
 
+  @JsonProperty("genreIds")
+  private List<String> genreIds;
+
+  @JsonProperty("primaryGenreName")
+  private String primaryGenreName;
+
   @JsonProperty("color")
   private String color;
 
@@ -179,5 +185,41 @@ public class SearchResult {
    */
   public void setGenres(java.util.List<String> genres) {
     this.genres = genres;
+  }
+
+  /**
+   * Gets the iTunes genre identifiers of the podcast, as strings (e.g. "1318").
+   *
+   * @return list of genre identifiers
+   */
+  public List<String> getGenreIds() {
+    return genreIds;
+  }
+
+  /**
+   * Sets the iTunes genre identifiers of the podcast.
+   *
+   * @param genreIds list of genre identifiers
+   */
+  public void setGenreIds(List<String> genreIds) {
+    this.genreIds = genreIds;
+  }
+
+  /**
+   * Gets the name of the podcast's primary iTunes genre.
+   *
+   * @return primary genre name
+   */
+  public String getPrimaryGenreName() {
+    return primaryGenreName;
+  }
+
+  /**
+   * Sets the name of the podcast's primary iTunes genre.
+   *
+   * @param primaryGenreName primary genre name
+   */
+  public void setPrimaryGenreName(String primaryGenreName) {
+    this.primaryGenreName = primaryGenreName;
   }
 }

@@ -57,4 +57,12 @@ public interface PodcastRepository extends JpaRepository<Podcast, UUID> {
    */
   @Query("select p.id from Podcast p")
   List<UUID> findAllIds();
+
+  /**
+   * Returns the feed URL of every subscribed podcast.
+   *
+   * @return all feed urls
+   */
+  @Query("select p.url from Podcast p")
+  List<String> findAllUrls();
 }
