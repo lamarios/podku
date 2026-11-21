@@ -510,6 +510,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip forward 10 seconds'**
   String get skipForward;
+
+  /// No description provided for @youMightAlsoLike.
+  ///
+  /// In en, this message translates to:
+  /// **'You might also like'**
+  String get youMightAlsoLike;
+
+  /// No description provided for @aiTranscriptLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get aiTranscriptLanguage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

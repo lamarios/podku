@@ -15,6 +15,8 @@ Name | Type | Description | Notes
 **feedUrl** | **String** |  | [optional] 
 **artworkUrl600** | **String** |  | [optional] 
 **genres** | **List&lt;String&gt;** |  | [optional] 
+**genreIds** | **List&lt;String&gt;** |  | [optional] 
+**primaryGenreName** | **String** |  | [optional] 
 **color** | **String** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

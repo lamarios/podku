@@ -87,6 +87,7 @@ Class | Method | HTTP request | Description
 [*PodcastsApi*](doc/PodcastsApi.md) | [**search1**](doc/PodcastsApi.md#search1) | **GET** /api/podcasts/search | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**subscribeToPodcast**](doc/PodcastsApi.md#subscribetopodcast) | **POST** /api/podcasts | 
 [*PodcastsApi*](doc/PodcastsApi.md) | [**unsubsribe**](doc/PodcastsApi.md#unsubsribe) | **DELETE** /api/podcasts/{id} | 
+[*RecommendationsApi*](doc/RecommendationsApi.md) | [**getEpisodeRecommendations**](doc/RecommendationsApi.md#getepisoderecommendations) | **GET** /api/episodes/{episodeId}/recommendations | 
 [*SearchApi*](doc/SearchApi.md) | [**search**](doc/SearchApi.md#search) | **GET** /api/search | 
 [*TranscriptsApi*](doc/TranscriptsApi.md) | [**getEpisodeLanguages**](doc/TranscriptsApi.md#getepisodelanguages) | **GET** /api/transcripts/{id}/languages | 
 [*TranscriptsApi*](doc/TranscriptsApi.md) | [**getTranscript**](doc/TranscriptsApi.md#gettranscript) | **GET** /api/transcripts/{id}/{language} | 

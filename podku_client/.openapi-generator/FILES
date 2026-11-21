@@ -21,6 +21,7 @@ doc/Podcast.md
 doc/PodcastLight.md
 doc/PodcastPerson.md
 doc/PodcastsApi.md
+doc/RecommendationsApi.md
 doc/SearchApi.md
 doc/SearchResult.md
 doc/TranscriptsApi.md
@@ -31,6 +32,7 @@ lib/src/api/episodes_api.dart
 lib/src/api/media_api.dart
 lib/src/api/ping_api.dart
 lib/src/api/podcasts_api.dart
+lib/src/api/recommendations_api.dart
 lib/src/api/search_api.dart
 lib/src/api/transcripts_api.dart
 lib/src/auth/api_key_auth.dart
@@ -72,6 +74,7 @@ test/podcast_light_test.dart
 test/podcast_person_test.dart
 test/podcast_test.dart
 test/podcasts_api_test.dart
+test/recommendations_api_test.dart
 test/search_api_test.dart
 test/search_result_test.dart
 test/transcripts_api_test.dart

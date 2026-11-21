@@ -87,4 +87,16 @@ public interface EpisodeRepository extends JpaRepository<Episode, UUID> {
    */
   @Query("select e.id from Episode e where e.podcast.id = :podcastId and e.processed = false")
   List<UUID> findUnprocessedIdsByPodcastId(@Param("podcastId") UUID podcastId);
+
+  /**
+   * Titles of the latest episodes of a podcast.
+   *
+   * @param podcastId the podcast
+   * @param limit maximum number of titles
+   * @return the titles, latest first
+   */
+  @Query(
+      "select e.title from Episode e where e.podcast.id = :podcastId"
+          + " order by e.pubDateMillis desc nulls last")
+  List<String> findLatestTitles(@Param("podcastId") UUID podcastId, Limit limit);
 }

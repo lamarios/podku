@@ -30,6 +30,8 @@ class EpisodeSheet extends StatelessWidget {
         ? M3EBottomSheet.show(
             context,
             showDragHandle: false,
+            // "collapsed" (the default) caps the initial height at half the screen, cutting the actions off
+            initialValue: .expanded,
             builder: (context) => SafeArea(
               top: false,
               child: ConstrainedBox(

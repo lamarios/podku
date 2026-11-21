@@ -64,7 +64,9 @@ class HomeScreen extends StatelessWidget {
             appBar: isMobile
                 ? M3EAppBar.search(
                     leading: Padding(
-                      padding: .symmetric(horizontal: pu4),
+                      // the search bar starts 48dp after the leading slot whatever its width, keep the logo inside that slot
+                      // so there is a gap between the logo and the bar
+                      padding: const EdgeInsetsDirectional.only(start: pu2),
                       child: AnimatedPodkuLogo(size: 30),
                     ),
                     backgroundColor: Colors.transparent,
@@ -73,6 +75,8 @@ class HomeScreen extends StatelessWidget {
                     barBackgroundColor: WidgetStatePropertyAll(colors.surfaceContainerLowest),
                     barHintText: locals.search,
                     density: .compact,
+                    // material_3_expressive >= 1.2 sizes the bar to the theme's 56dp, keep the previous compact 48dp
+                    searchConstraints: const BoxConstraints.tightFor(height: 48),
                     onOpen: () => context.read<PlayerCubit>().setHidePlayers(true),
                     onClose: () => context.read<PlayerCubit>().setHidePlayers(false),
                     actions: [

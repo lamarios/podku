@@ -34,6 +34,10 @@ class SearchResult {
 
      this.genres,
 
+     this.genreIds,
+
+     this.primaryGenreName,
+
      this.color,
   });
 
@@ -123,6 +127,30 @@ class SearchResult {
 
   @JsonKey(
     
+    name: r'genreIds',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final List<String>? genreIds;
+
+
+
+  @JsonKey(
+    
+    name: r'primaryGenreName',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? primaryGenreName;
+
+
+
+  @JsonKey(
+    
     name: r'color',
     required: false,
     includeIfNull: false,
@@ -144,6 +172,8 @@ class SearchResult {
       other.feedUrl == feedUrl &&
       other.artworkUrl600 == artworkUrl600 &&
       other.genres == genres &&
+      other.genreIds == genreIds &&
+      other.primaryGenreName == primaryGenreName &&
       other.color == color;
 
     @override
@@ -155,6 +185,8 @@ class SearchResult {
         feedUrl.hashCode +
         artworkUrl600.hashCode +
         genres.hashCode +
+        genreIds.hashCode +
+        primaryGenreName.hashCode +
         color.hashCode;
 
   factory SearchResult.fromJson(Map<String, dynamic> json) => _$SearchResultFromJson(json);

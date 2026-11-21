@@ -236,4 +236,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skipForward => 'Skip forward 10 seconds';
+
+  @override
+  String get youMightAlsoLike => 'You might also like';
+
+  @override
+  String get aiTranscriptLanguage => 'AI';
 }

@@ -42,6 +42,16 @@ void main() {
       // TODO
     });
 
+    // List<String> genreIds
+    test('to test the property `genreIds`', () async {
+      // TODO
+    });
+
+    // String primaryGenreName
+    test('to test the property `primaryGenreName`', () async {
+      // TODO
+    });
+
     // String color
     test('to test the property `color`', () async {
       // TODO
