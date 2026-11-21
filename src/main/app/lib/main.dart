@@ -123,7 +123,7 @@ class MyApp extends StatelessWidget {
 
           child: MaterialApp.router(
             routerConfig: _router,
-            debugShowCheckedModeBanner: kDebugMode,
+            debugShowCheckedModeBanner: false,
             // the generated AppLocalizations.localizationsDelegates registers flutter_localizations' delegates, which
             // only provide the legacy package:flutter/material.dart localizations, material_ui needs its own
             localizationsDelegates: const [AppLocalizations.delegate, ...GlobalMaterialLocalizations.delegates],
